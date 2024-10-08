@@ -1,0 +1,13 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_API.Models;
+
+namespace SEP490_G87_Vita_Nutrient_System_API.Interfaces
+{
+    public interface UsersInterface
+    {
+		public Task<ActionResult<User>> GetUserLogin(string account, string password);
+        public Task<ActionResult<User>> GetUserByAccount(string account);
+        public Task<ActionResult<User>> GetUserRegister(User user);
+
+    }
+}
