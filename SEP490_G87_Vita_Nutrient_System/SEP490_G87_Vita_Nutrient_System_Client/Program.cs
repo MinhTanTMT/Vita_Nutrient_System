@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client
 {
@@ -7,6 +7,16 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDistributedMemoryCache(); // Sử dụng bộ nhớ trong để lưu trữ session (yêu cầu)
+
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true; 
+                options.Cookie.IsEssential = true; 
+            });
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -17,6 +27,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
                     options.LoginPath = "/Home/Login";
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Session timeout
                 });
+
+
 
             builder.Services.AddAuthorization();
 
@@ -34,6 +46,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSession();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

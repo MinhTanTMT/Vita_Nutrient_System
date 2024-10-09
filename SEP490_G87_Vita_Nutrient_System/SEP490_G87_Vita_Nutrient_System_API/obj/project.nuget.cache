@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gxYaabiarHM=",
+  "dgSpecHash": "0Okvpi7wW5k=",
   "success": true,
-  "projectFilePath": "C:\\Users\\msi\\source\\repos\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj",
+  "projectFilePath": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\msi\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\msi\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
