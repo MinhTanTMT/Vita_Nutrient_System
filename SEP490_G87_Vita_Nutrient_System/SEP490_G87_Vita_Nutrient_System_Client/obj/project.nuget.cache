@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Jk+bkfrgcKM=",
+  "dgSpecHash": "3aYSf5UdC3U=",
   "success": true,
-  "projectFilePath": "C:\\Users\\msi\\source\\repos\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj",
+  "projectFilePath": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\msi\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\msi\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

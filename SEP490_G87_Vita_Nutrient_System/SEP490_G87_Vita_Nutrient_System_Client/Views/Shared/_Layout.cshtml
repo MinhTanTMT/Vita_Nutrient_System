@@ -59,31 +59,50 @@
                     </form>
                 </div>
                 <ul class="navbar-nav navbar-nav-right">
-                    <li class="nav-item nav-profile dropdown">
-                        <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="nav-profile-img">
-                                <img src="~/images/faces/face1.jpg" alt="image">
-                                <span class="availability-status online"></span>
-                            </div>
-                            <div class="nav-profile-text">
-                                <p class="mb-1 text-black">David Greymaax</p>
-                            </div>
-                        </a>
-                        <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                            <a class="dropdown-item" href="#">
-                                <i class="mdi mdi-cached me-2 text-success"></i> Activity Log
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
-                                <i class="mdi mdi-logout me-2 text-primary"></i> Signout
-                            </a>
-                            <form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" style="display:none;">
-                                <button type="submit">Logout</button>
-                            </form>
+                    @{
+                        var userId = User.FindFirst("UserId")?.Value;
+                    
 
+                        if (userId == null)
+                        {
+                            
+                        }
+                        else
+                        {
 
-                        </div>
-                    </li>
+                            <li class="nav-item nav-profile dropdown">
+                                <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="nav-profile-img">
+                                        @if (Context.Session.GetString("imageUrl") != null)
+                                        {
+                                            <img src="@Context.Session.GetString("imageUrl")" alt="Image" />
+                                        }
+                                        <span class="availability-status online"></span>
+                                    </div>
+                                    <div class="nav-profile-text">
+                                        @if (Context.Session.GetString("takeFullName") != null)
+                                        {
+                                            <p class="mb-1 text-black">@Context.Session.GetString("takeFullName")</p>
+                                        }
+                                        
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                                    <a class="dropdown-item" href="#">
+                                        <i class="mdi mdi-cached me-2 text-success"></i> Activity Log
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                        <i class="mdi mdi-logout me-2 text-primary"></i> Signout
+                                    </a>
+                                    <form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" style="display:none;">
+                                        <button type="submit">Logout</button>
+                                    </form>
+                                </div>
+                            </li>
+                        }
+                    }
+
                     <li class="nav-item d-none d-lg-block full-screen-link">
                         <a class="nav-link">
                             <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
@@ -207,20 +226,29 @@
                             <li class="nav-item nav-profile">
                                 <a href="#" class="nav-link">
                                     <div class="nav-profile-image">
-                                        <img src="~/images/faces/face1.jpg" alt="profile">
+
+                                        @if (Context.Session.GetString("imageUrl") != null)
+                                        {
+
+                                            <img src="@Context.Session.GetString("imageUrl")" alt="profile" onclick="event.preventDefault(); document.getElementById('goProfilePage').submit();">
+                                        }
+
+                                        <form asp-controller="User" asp-action="ProfileUser" method="get" id="logoutForm" style="display:none;">
+                                            <button type="submit">Logout</button>
+                                        </form>
+
                                         <span class="login-status online"></span>
                                         <!--change to offline or busy as needed-->
                                     </div>
                                     <div class="nav-profile-text d-flex flex-column">
                                         <span class="font-weight-bold mb-2">David Grey. H</span>
-                                        <span class="text-secondary text-small">Project Manager</span>
+                                        <span class="text-secondary text-small">@role</span>
                                     </div>
                                     <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
                                 </a>
                             </li>
                             if (role.Equals("Admin"))
                             {
-                                
                                 <li class="nav-item">
                                     <a class="nav-link" href="index.html">
                                         <span class="menu-title">Dashboard</span>
@@ -264,22 +292,7 @@
                                         <i class="mdi mdi-table-large menu-icon"></i>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
-                                        <span class="menu-title">Sample Pages</span>
-                                        <i class="menu-arrow"></i>
-                                        <i class="mdi mdi-medical-bag menu-icon"></i>
-                                    </a>
-                                    <div class="collapse" id="general-pages">
-                                        <ul class="nav flex-column sub-menu">
-                                            <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
-                                            <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-                                            <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
-                                            <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-                                            <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
-                                        </ul>
-                                    </div>
-                                </li>
+                                
                                 <li class="nav-item sidebar-actions">
                                     <span class="nav-link">
                                         <div class="border-bottom">
@@ -310,14 +323,27 @@
                         }
                         else
                         {
-                            
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+                                    <span class="menu-title">Sample Pages</span>
+                                    <i class="menu-arrow"></i>
+                                    <i class="mdi mdi-medical-bag menu-icon"></i>
+                                </a>
+                                <div class="collapse" id="general-pages">
+                                    <ul class="nav flex-column sub-menu">
+                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
+                                        <li class="nav-item"> <a class="nav-link" href="home/login"> Login </a></li>
+                                        <li class="nav-item"> <a class="nav-link" href="home/register"> Register </a></li>
+                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
+                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
+                                    </ul>
+                                </div>
+                            </li>
                         }
-
                     }
 
                 </ul>
             </nav>
-
 
             <!-- partial -->
             <div class="main-panel">

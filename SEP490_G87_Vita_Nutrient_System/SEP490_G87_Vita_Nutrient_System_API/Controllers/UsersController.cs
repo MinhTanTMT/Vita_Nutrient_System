@@ -36,9 +36,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
             var UserLogin = new
             {
-				Account = user.Account,
-				RoleName = user.RoleNavigation.RoleName,
-				UserId = user.UserId
+                FullName = user.FirstName + " " + user.LastName,
+                user.Urlimage,
+                user.Account,
+                user.RoleNavigation.RoleName,
+                user.UserId
             };
             return Ok(UserLogin);
         }
@@ -68,16 +70,28 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            //var userReturn = await _context.Users.Include(u => u.RoleNavigation).FirstOrDefaultAsync(u => u.Account.Equals(user.Account) && u.Password.Equals(user.Password));
+            //var userReturn = await _context.Users.FirstOrDefaultAsync(u => u.Account.Equals(user.Account) && u.Password.Equals(user.Password));
             //if (userReturn == null)
             //{
             //    return NotFound();
             //}
 
-            return Ok();
+            return Ok(user);
         }
 
 
+        [HttpGet("GetUserById/{id}")]
+        public async Task<ActionResult<User>> GetUserById(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
 
     }
 }

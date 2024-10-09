@@ -7,21 +7,20 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
+using Humanizer;
 
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
     public class HomeController : Controller, HomeInterface
     {
-
-        Uri baseAdd = new Uri("https://localhost:7034/api");
-
+   
         private readonly HttpClient client = null;
         public HomeController()
         {
-           
+            Uri URIBase = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<Uri>("myUri");
             client = new HttpClient();
-            client.BaseAddress = baseAdd;
+            client.BaseAddress = URIBase;
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
@@ -50,13 +49,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 string data = await content.ReadAsStringAsync();
                 dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
 
+                importStringToSession("takeFullName", u.fullName, "string");
+                importStringToSession("imageUrl", u.urlimage, "URL");
+                
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name,(string) u.account),
                     new Claim(ClaimTypes.Role,(string) u.roleName),
                     new Claim("UserId", (string)u.userId)
                 };
-
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
@@ -86,6 +87,32 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+
+        public void importStringToSession(string assignToValue, dynamic? data, string type)
+        {
+            if (type.Equals("URL"))
+            {
+                if (data != null && !string.IsNullOrEmpty((string)data))
+                {
+                    var takeFullName = Url.Content((string)data);
+                    if (HttpContext.Session != null)
+                    {
+                        HttpContext.Session.SetString(assignToValue, takeFullName);
+                    }
+                }
+            } else if (type.Equals("string"))
+            {
+                if (data != null && !string.IsNullOrEmpty((string)data))
+                {
+                    if (HttpContext.Session != null)
+                    {
+                        HttpContext.Session.SetString(assignToValue, (string)data);
+                    }
+                }
+            }
+        }
+
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -109,39 +136,51 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else
             {
-                //short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
+                short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
                 User user = new User()
                 {
                     Account = account,
                     Password = password,
-                    Role = 4,
+                    Role = roleUser,
                     IsActive = true
                 };
+
                 HttpResponseMessage res = await client.PostAsJsonAsync(client.BaseAddress + "/Users/Register", user);
                 if (res.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    HttpContent content = res.Content;
-                    string data = await content.ReadAsStringAsync();
-                    dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
 
-                    var claims = new List<Claim>
+                    HttpResponseMessage resLogin = await client.GetAsync(client.BaseAddress + "/Users/Login?account=" + account + "&password=" + password);
+
+                    if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        HttpContent content = resLogin.Content;
+                        string data = await content.ReadAsStringAsync();
+                        dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
+
+                        var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name,(string) u.account),
                             new Claim(ClaimTypes.Role,(string) u.roleName),
-                            //new Claim("UserId", (string)u.userId)
+                            new Claim("UserId", (string)u.userId)
 
                         };
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = true,
+                            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                        };
+
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
                     {
-                        IsPersistent = true,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
-                    };
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-                    return RedirectToAction("Login", "Home");
+                        ViewBag.AlertMessage = "Invalid login attempt. 3";
+                        return View();
+                    }
                 }
                 else
                 {
@@ -167,7 +206,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

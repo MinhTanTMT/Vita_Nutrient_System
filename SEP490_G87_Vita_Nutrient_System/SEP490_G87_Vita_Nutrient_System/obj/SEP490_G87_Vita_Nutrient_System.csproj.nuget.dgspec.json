@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\msi\\source\\repos\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System.csproj": {}
+    "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System.csproj": {}
   },
   "projects": {
-    "C:\\Users\\msi\\source\\repos\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System.csproj": {
+    "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\msi\\source\\repos\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System.csproj",
+        "projectUniqueName": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System.csproj",
         "projectName": "SEP490_G87_Vita_Nutrient_System",
-        "projectPath": "C:\\Users\\msi\\source\\repos\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System.csproj",
+        "projectPath": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System.csproj",
         "packagesPath": "C:\\Users\\msi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\msi\\source\\repos\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\obj\\",
+        "outputPath": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\msi\\AppData\\Roaming\\NuGet\\NuGet.Config",
