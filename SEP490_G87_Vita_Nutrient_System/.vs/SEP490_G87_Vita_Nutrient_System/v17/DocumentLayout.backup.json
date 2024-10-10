@@ -7,28 +7,36 @@
       "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\views\\user\\profileuser.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\views\\user\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\views\\user\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\controllers\\nutritionistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\controllers\\nutritionistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{549F69C3-CF53-451A-B52F-4E37A1910041}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{549F69C3-CF53-451A-B52F-4E37A1910041}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\views\\test\\mytest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\views\\test\\mytest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\interfaces\\homeinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\interfaces\\homeinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\controllers\\testcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\controllers\\testcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{549F69C3-CF53-451A-B52F-4E37A1910041}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\controllers\\takecodeuserdetailscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{549F69C3-CF53-451A-B52F-4E37A1910041}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\controllers\\takecodeuserdetailscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\models\\systemsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -39,20 +47,12 @@
       "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{549F69C3-CF53-451A-B52F-4E37A1910041}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\controllers\\takecodeuserscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{549F69C3-CF53-451A-B52F-4E37A1910041}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\controllers\\takecodeuserscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\views\\home\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\views\\home\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|solutionrelative:sep490_g87_vita_nutrient_system_client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{76928AB3-6E6E-4B2C-B8EA-B67E8903D31A}|SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system\\sep490_g87_vita_nutrient_system_client\\interfaces\\commonfunctioninterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -70,71 +70,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 269,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MyTest.cshtml",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Views\\Test\\MyTest.cshtml",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\Test\\MyTest.cshtml",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Views\\Test\\MyTest.cshtml",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\Test\\MyTest.cshtml",
+              "DocumentIndex": 2,
+              "Title": "NutritionistController.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\NutritionistController.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\NutritionistController.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\NutritionistController.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\NutritionistController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-09T03:09:48.078Z",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T01:03:48.547Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "UserController.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Views\\User\\UserController.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\User\\UserController.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Views\\User\\UserController.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\User\\UserController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\UserController.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\UserController.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\UserController.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAQwCAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T03:08:13.23Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\HomeController.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAIMAAAAAAAAAAAAuwM8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T01:33:11.843Z",
+              "WhenOpened": "2024-10-09T12:57:22.173Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "UsersController.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
-              "ViewState": "AgIAAEoAAAAAAAAAAAAIwFoAAAANAAAAAAAAAA==",
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\HomeController.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T02:22:53.219Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "TakeCodeUserDetailsController.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\TakeCodeUserDetailsController.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\TakeCodeUserDetailsController.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\TakeCodeUserDetailsController.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\TakeCodeUserDetailsController.cs",
-              "ViewState": "AgIAAEQAAAAAAAAAAAAIwFkAAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T05:29:23.459Z",
+              "WhenOpened": "2024-10-09T01:33:11.843Z",
               "EditorCaption": ""
             },
             {
@@ -145,14 +119,39 @@
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\User\\ProfileUser.cshtml",
               "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Views\\User\\ProfileUser.cshtml",
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\User\\ProfileUser.cshtml",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAAAIAAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAEgAAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-10-09T04:18:01.538Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-09T02:22:53.219Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 7,
+              "Title": "HomeInterface.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Interfaces\\HomeInterface.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Interfaces\\HomeInterface.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Interfaces\\HomeInterface.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Interfaces\\HomeInterface.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-09T12:50:06.059Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "SystemSetting.cs",
               "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Models\\SystemSetting.cs",
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Models\\SystemSetting.cs",
@@ -160,12 +159,11 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Models\\SystemSetting.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T03:16:25.086Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-09T03:16:25.086Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\Shared\\_Layout.cshtml",
@@ -173,12 +171,37 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAJEAAAAAAAAAAAAYwOsAAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-09T01:42:04.205Z",
+              "WhenOpened": "2024-10-09T01:42:04.205Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Program.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Program.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Program.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Program.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-09T01:54:24.007Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\AdminController.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T01:03:51.2Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "TestController.cs",
               "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\TestController.cs",
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\TestController.cs",
@@ -186,25 +209,11 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Controllers\\TestController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T03:09:53.651Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-09T03:09:53.651Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "TakeCodeUsersController.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\TakeCodeUsersController.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\TakeCodeUsersController.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\TakeCodeUsersController.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\TakeCodeUsersController.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAQwCIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T05:35:31.048Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "Login.cshtml",
               "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Views\\Home\\Login.cshtml",
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Views\\Home\\Login.cshtml",
@@ -217,18 +226,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 12,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Program.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\Program.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\Program.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_Client\\Program.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAQwDAAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-09T01:54:24.007Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\appsettings.json",
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_Client\\appsettings.json",

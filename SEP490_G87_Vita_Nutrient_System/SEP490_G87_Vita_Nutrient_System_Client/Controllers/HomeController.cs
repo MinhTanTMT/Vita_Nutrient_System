@@ -61,7 +61,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true,
+                    IsPersistent = false,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
                 };
 
@@ -168,7 +168,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var authProperties = new AuthenticationProperties
                         {
-                            IsPersistent = true,
+                            IsPersistent = false,
                             ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
                         };
 
