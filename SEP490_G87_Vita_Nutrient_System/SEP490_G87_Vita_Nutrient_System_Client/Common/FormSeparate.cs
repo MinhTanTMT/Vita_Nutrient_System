@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
+﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Common
 {
-	public class AdminController : Controller
-	{
+    public class FormSeparate
+    {
+
         ////////////////////////////////////////////////////////////
         /// Tân
         ////////////////////////////////////////////////////////////
@@ -44,5 +43,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
 
-	}
+
+
+
+    }
 }

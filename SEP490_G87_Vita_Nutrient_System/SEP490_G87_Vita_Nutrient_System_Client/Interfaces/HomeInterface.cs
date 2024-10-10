@@ -5,6 +5,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Interfaces
     public interface HomeInterface
     {
 
+
+        ////////////////////////////////////////////////////////////
+        /// Tân
+        ////////////////////////////////////////////////////////////
+        ///
+
         public IActionResult Index();
         public IActionResult Login();
         public Task<IActionResult> Login(string account, string password);
@@ -12,8 +18,46 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Interfaces
         public Task<IActionResult> Register(string account, string password, string confirm);
         public Task<bool> checkExsitAsync(string account);
         public Task<IActionResult> Logout();
-
         public void importStringToSession(string assignToValue, dynamic? data, string type);
+
+
+
+        ////////////////////////////////////////////////////////////
+        /// Dũng
+        ////////////////////////////////////////////////////////////
+        ///
+
+
+
+
+
+
+        ////////////////////////////////////////////////////////////
+        /// Chiến
+        ////////////////////////////////////////////////////////////
+        ///
+
+
+
+
+
+        ////////////////////////////////////////////////////////////
+        /// Sơn
+        ////////////////////////////////////////////////////////////
+        ///
+
+
+
+
+
+        ////////////////////////////////////////////////////////////
+        /// Tùng
+        ////////////////////////////////////////////////////////////
+        ///
+
+
+
+
 
     }
 }
