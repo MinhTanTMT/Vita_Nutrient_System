@@ -14,7 +14,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
     public class HomeController : Controller, HomeInterface
     {
-   
+
+        ////////////////////////////////////////////////////////////
+        /// Tân
+        ////////////////////////////////////////////////////////////
+        ///
+
         private readonly HttpClient client = null;
         public HomeController()
         {
@@ -51,7 +56,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 importStringToSession("takeFullName", u.fullName, "string");
                 importStringToSession("imageUrl", u.urlimage, "URL");
-                
+
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name,(string) u.account),
@@ -100,7 +105,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         HttpContext.Session.SetString(assignToValue, takeFullName);
                     }
                 }
-            } else if (type.Equals("string"))
+            }
+            else if (type.Equals("string"))
             {
                 if (data != null && !string.IsNullOrEmpty((string)data))
                 {
@@ -202,7 +208,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             else
             {
                 return true;
-                
+
             }
         }
 
@@ -212,6 +218,42 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Home");
         }
+
+
+
+        ////////////////////////////////////////////////////////////
+        /// Dũng
+        ////////////////////////////////////////////////////////////
+        ///
+
+
+
+
+
+
+        ////////////////////////////////////////////////////////////
+        /// Chiến
+        ////////////////////////////////////////////////////////////
+        ///
+
+
+
+
+
+        ////////////////////////////////////////////////////////////
+        /// Sơn
+        ////////////////////////////////////////////////////////////
+        ///
+
+
+
+
+
+        ////////////////////////////////////////////////////////////
+        /// Tùng
+        ////////////////////////////////////////////////////////////
+        ///
+
 
     }
 }

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
+﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Interfaces
 {
-	public class AdminController : Controller
-	{
+    public interface UserInterface
+    {
         ////////////////////////////////////////////////////////////
         /// Tân
         ////////////////////////////////////////////////////////////
@@ -43,6 +41,5 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
-
-	}
+    }
 }
