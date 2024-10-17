@@ -79,6 +79,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
+        public List<User> GetAllUsers()
+        {
+            return _context.Users.ToList();
+        }
+
 
 
         ////////////////////////////////////////////////////////////

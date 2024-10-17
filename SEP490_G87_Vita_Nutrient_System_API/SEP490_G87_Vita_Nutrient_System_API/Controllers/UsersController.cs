@@ -73,5 +73,28 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(dataReturn);
         }
+
+        [HttpGet("GetAllUser")]
+        public async Task<ActionResult<List<dynamic>>> GetAllUsers()
+        {
+
+            var users = repositories.GetAllUsers();
+
+            var result = users.Select(
+                u => new 
+                {
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Dob = u.Dob,
+                    Gender = u.Gender,
+                    Address = u.Address,
+                    Phone = u.Phone,
+                    Role = new {RoleId = u.Role, RoleName = u.RoleNavigation.RoleName},
+                    IsActive = u.IsActive,
+                    Account = u.Account
+                }).ToList();
+
+            return Ok(result);
+        }
     }
 }
