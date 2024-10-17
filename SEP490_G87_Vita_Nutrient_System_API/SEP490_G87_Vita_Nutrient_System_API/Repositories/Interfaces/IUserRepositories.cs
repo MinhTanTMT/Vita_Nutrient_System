@@ -40,7 +40,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         ////////////////////////////////////////////////////////////
         ///
 
-        List<User> GetAllUsers();
+        IQueryable<User> GetAllUsers();
 
         ////////////////////////////////////////////////////////////
         /// Tùng
