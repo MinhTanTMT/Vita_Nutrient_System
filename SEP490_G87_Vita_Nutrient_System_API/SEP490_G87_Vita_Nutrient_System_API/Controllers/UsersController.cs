@@ -96,5 +96,39 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("GetUserDetailInfo/{id}")]
+        public async Task<ActionResult<dynamic>> GetUserDetailInfo(int id)
+        {
+
+            var user = repositories.GetUserDetailsInfo(id);
+
+            var result = new
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Dob = user.Dob,
+                Gender = user.Gender,
+                Address = user.Address,
+                Phone = user.Phone,
+                Role = new { RoleId = user.Role, RoleName = user.RoleNavigation.RoleName },
+                IsActive = user.IsActive,
+                Account = user.Account,
+                DetailsInformation = new
+                {
+                    Description = user.UserDetail.DescribeYourself,
+                    Height = user.UserDetail.Height,
+                    Weight = user.UserDetail.Weight,
+                    Age = user.UserDetail.Age,
+                    WantImprove = user.UserDetail.WantImprove,
+                    UnderlyingDisease = user.UserDetail.UnderlyingDisease,
+                    InforConfirmGood = user.UserDetail.InforConfirmGood,
+                    InforConfirmBad = user.UserDetail.InforConfirmBad,
+                    IsPremium = user.UserDetail.IsPremium
+                }
+            };
+
+            return Ok(result);
+        }
     }
 }

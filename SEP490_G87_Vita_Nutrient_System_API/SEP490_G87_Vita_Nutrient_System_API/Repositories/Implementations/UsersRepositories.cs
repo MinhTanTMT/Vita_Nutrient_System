@@ -84,6 +84,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return _context.Users;
         }
 
+        public User GetUserDetailsInfo(int id)
+        {
+            var user = _context.Users
+                .Include(u => u.RoleNavigation)
+                .Include(u => u.UserDetail)
+                .FirstOrDefault(u => u.UserId == id);
+
+            return user;
+        }
+
 
 
         ////////////////////////////////////////////////////////////
