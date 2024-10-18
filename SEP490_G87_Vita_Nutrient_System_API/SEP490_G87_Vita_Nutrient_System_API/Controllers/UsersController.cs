@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
+using SEP490_G87_Vita_Nutrient_System_API.RequestModels;
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
     [Route("api/[controller]")]
@@ -129,6 +130,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             };
 
             return Ok(result);
+        }
+
+        [HttpPost("UpdateUserStatus")]
+        public async Task<ActionResult<dynamic>> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
+        {
+            User u = repositories.GetUserById(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if(u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.IsActive = request.Status;
+            repositories.UpdateUser(u);
+
+            return Ok("Update user status successfully!");
         }
     }
 }
