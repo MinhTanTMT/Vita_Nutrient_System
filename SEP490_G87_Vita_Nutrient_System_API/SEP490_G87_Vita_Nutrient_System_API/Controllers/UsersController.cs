@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
-using SEP490_G87_Vita_Nutrient_System_API.RequestModels;
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
     [Route("api/[controller]")]
@@ -91,6 +92,34 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                     Address = u.Address,
                     Phone = u.Phone,
                     Role = new {RoleId = u.Role, RoleName = u.RoleNavigation.RoleName},
+                    IsActive = u.IsActive,
+                    Account = u.Account
+                }).ToList();
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetUserByRole/{roleId}")]
+        public async Task<ActionResult<dynamic>> GetUsersByRole(int roleId)
+        {
+            //kiem tra xem roleId duoc truyen vao co hop le hay khong
+            if(!Enum.IsDefined(typeof(UserRole), roleId))
+            {
+                return BadRequest("Invalid role id!");
+            }
+
+            var users = repositories.GetUsersByRole(roleId);
+
+            var result = users.Select(
+                u => new
+                {
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Dob = u.Dob,
+                    Gender = u.Gender,
+                    Address = u.Address,
+                    Phone = u.Phone,
+                    Role = new { RoleId = u.Role, RoleName = u.RoleNavigation.RoleName },
                     IsActive = u.IsActive,
                     Account = u.Account
                 }).ToList();
