@@ -1,6 +1,37 @@
 [
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
+    "Method": "APICheckQRPaySuccessful",
+    "RelativePath": "api/BankPayment/APICheckQRPaySuccessful",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "accountNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "content",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "amountIn",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
     "Method": "APIGetAllRecentTransactions",
     "RelativePath": "api/BankPayment/APIGetAllRecentTransactions",
     "HttpMethod": "GET",
@@ -10,6 +41,62 @@
     "ReturnTypes": [
       {
         "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.Transaction",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
+    "Method": "APIGetQRPayDefaultSystem",
+    "RelativePath": "api/BankPayment/APIGetQRPayDefaultSystem",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idBankInformation",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "amount",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "content",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
+    "Method": "APITest",
+    "RelativePath": "api/BankPayment/APITest",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
         "MediaTypes": [
           "text/plain",
           "application/json",
