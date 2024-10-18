@@ -47,7 +47,11 @@ public partial class User
 
     public virtual NutritionistDetail? NutritionistDetail { get; set; }
 
-    public virtual Role? RoleNavigation { get; set; } = null!;
+    public virtual Role RoleNavigation { get; set; } = null!;
+
+    public virtual ICollection<TransactionsSystem> TransactionsSystemPayees { get; set; } = new List<TransactionsSystem>();
+
+    public virtual ICollection<TransactionsSystem> TransactionsSystemUserPays { get; set; } = new List<TransactionsSystem>();
 
     public virtual UserDetail? UserDetail { get; set; }
 

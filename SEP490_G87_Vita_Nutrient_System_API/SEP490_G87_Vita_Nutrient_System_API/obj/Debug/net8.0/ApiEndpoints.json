@@ -1,5 +1,25 @@
 [
   {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
+    "Method": "APIGetAllRecentTransactions",
+    "RelativePath": "api/BankPayment/APIGetAllRecentTransactions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.Transaction",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
     "Method": "APIGetUserByAccount",
     "RelativePath": "api/Users/checkExit",

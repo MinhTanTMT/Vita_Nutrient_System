@@ -61,6 +61,8 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     public virtual DbSet<SlotOfTheDay> SlotOfTheDays { get; set; }
 
+    public virtual DbSet<TransactionsSystem> TransactionsSystems { get; set; }
+
     public virtual DbSet<TypeOfCalculation> TypeOfCalculations { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -70,13 +72,8 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
     public virtual DbSet<UserListManagement> UserListManagements { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(config.GetConnectionString("value"));
-        }
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -512,6 +509,49 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.ToTable("SlotOfTheDay", "Business");
 
             entity.Property(e => e.Slot).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<TransactionsSystem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC072DB8F78F");
+
+            entity.ToTable("TransactionsSystem", "Business");
+
+            entity.Property(e => e.AccountNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Accumulated).HasColumnType("money");
+            entity.Property(e => e.AmountIn).HasColumnType("money");
+            entity.Property(e => e.AmountOut).HasColumnType("money");
+            entity.Property(e => e.Apitransactions).HasColumnName("APITransactions");
+            entity.Property(e => e.BankBrandName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Code)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.PayeeId).HasColumnName("PayeeID");
+            entity.Property(e => e.ReferenceNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.SubAccount)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.TransactionContent)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.TransactionDate).HasColumnType("datetime");
+            entity.Property(e => e.UserPayId).HasColumnName("UserPayID");
+
+            entity.HasOne(d => d.Payee).WithMany(p => p.TransactionsSystemPayees)
+                .HasForeignKey(d => d.PayeeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Transacti__Payee__40F9A68C");
+
+            entity.HasOne(d => d.UserPay).WithMany(p => p.TransactionsSystemUserPays)
+                .HasForeignKey(d => d.UserPayId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Transacti__UserP__40058253");
         });
 
         modelBuilder.Entity<TypeOfCalculation>(entity =>
