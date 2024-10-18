@@ -79,22 +79,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
-        public IQueryable<User> GetAllUsers()
-        {
-            return _context.Users;
-        }
-
-        public User GetUserDetailsInfo(int id)
-        {
-            var user = _context.Users
-                .Include(u => u.RoleNavigation)
-                .Include(u => u.UserDetail)
-                .FirstOrDefault(u => u.UserId == id);
-
-            return user;
-        }
-
-
 
         ////////////////////////////////////////////////////////////
         /// Dũng
@@ -119,8 +103,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Sơn
         ////////////////////////////////////////////////////////////
         ///
+        public IQueryable<User> GetAllUsers()
+        {
+            return _context.Users;
+        }
 
+        public User GetUserDetailsInfo(int id)
+        {
+            var user = _context.Users
+                .Include(u => u.RoleNavigation)
+                .Include(u => u.UserDetail)
+                .FirstOrDefault(u => u.UserId == id);
 
+            return user;
+        }
+
+        public void UpdateUser(User user)
+        {
+            _context.Entry<User>(user).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
 
 
 
