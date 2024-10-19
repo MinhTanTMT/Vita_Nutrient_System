@@ -80,12 +80,9 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
         {
             optionsBuilder.UseSqlServer(config.GetConnectionString("value"));
         }
-
     }
-
-
-    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -96,6 +93,7 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.ToTable("ArticlesNews", "Business");
 
             entity.Property(e => e.Content).HasMaxLength(500);
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
             entity.Property(e => e.NameCreater).HasMaxLength(50);
             entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");
