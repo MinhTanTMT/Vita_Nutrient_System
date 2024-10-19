@@ -24,8 +24,6 @@
                                     <th> # </th>
                                     <th> Account </th>
                                     <th> Full name </th>
-                                    <th> DOB </th>
-                                    <th> Gender </th>
                                     <th> Address </th>
                                     <th> Phone </th>
                                     <th> Status </th>
@@ -39,8 +37,6 @@
                                         <td>@(i + 1)</td>
                                         <td>@u.Account</td>
                                         <td>@u.FirstName @u.LastName</td>
-                                        <td> @u.Dob </td>
-                                        <td> @u.Gender </td>
                                         <td> @u.Address </td>
                                         <td> @u.Phone </td>
                                         <td>
@@ -52,6 +48,9 @@
                                             {
                                                 <label class="badge badge-gradient-danger">Inactive</label>
                                             }
+                                        </td>
+                                        <td>
+                                            <a class="btn-link" asp-controller="Admin" asp-action="UserDetail" asp-route-userId="@u.UserId">View</a>
                                         </td>
                                     </tr>
                                 }

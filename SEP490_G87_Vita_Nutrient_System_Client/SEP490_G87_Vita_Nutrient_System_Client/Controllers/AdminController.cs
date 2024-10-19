@@ -71,11 +71,32 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     string data = await normalUserContent.ReadAsStringAsync();
                     List<dynamic> normalUsersData = JsonConvert.DeserializeObject< List<dynamic>>(data);
 
-                    HttpContent premiumUserContent = normalUserResponse.Content;
+                    HttpContent premiumUserContent = premiumUserResponse.Content;
                     string data1 = await premiumUserContent.ReadAsStringAsync();
                     List<dynamic> premiumUsersData = JsonConvert.DeserializeObject<List<dynamic>>(data1);
 
-                    List<User> users = normalUsersData.Select(
+                    var users = normalUsersData.Select(
+                        ud => new User
+                        {
+                            UserId = ud.id,
+                            FirstName = ud.firstName,
+                            LastName = ud.lastName,
+                            Urlimage = ud.urlimage,
+                            Dob = ud.dob,
+                            Gender = ud.gender ?? false,
+                            Address = ud.address,
+                            Phone = ud.phone,
+                            UserRole = new UserRole
+                            {
+                                RoleId = ud.role.roleId,
+                                RoleName = ud.role.roleName,
+                            },
+                            IsActive = ud.isActive,
+                            Account = ud.account,
+                        }
+                        );
+
+                    var premiumUsers = premiumUsersData.Select(
                         ud => new User
                         {
                             UserId = ud.id,
@@ -96,26 +117,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         }
                         ).ToList();
 
-                    users.Concat(premiumUsersData.Select(
-                        ud => new User
-                        {
-                            UserId = ud.id,
-                            FirstName = ud.firstName,
-                            LastName = ud.lastName,
-                            Urlimage = ud.urlimage,
-                            Dob = ud.dob,
-                            Gender = ud.gender ?? false,
-                            Address = ud.address,
-                            Phone = ud.phone,
-                            UserRole = new UserRole
-                            {
-                                RoleId = ud.role.roleId,
-                                RoleName = ud.role.roleName,
-                            },
-                            IsActive = ud.isActive,
-                            Account = ud.account,
-                        }
-                        ));
+                    users = users.Concat( premiumUsers ).ToList();
 
                     ViewBag.listUsers = users;
                 }
@@ -133,7 +135,21 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        [HttpGet("admin/usermanagement/userdetail/{userId}")]
+        public async Task<IActionResult> UserDetail(int userId)
+        {
+            try
+            {
+                ViewBag.id = userId;
 
+                return View("~/Views/Admin/UserManagement/UserDetail.cshtml");
+            }
+            catch (Exception)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/Admin/UserManagement/UserDetail.cshtml");
+            }
+        }
 
 
         ////////////////////////////////////////////////////////////
