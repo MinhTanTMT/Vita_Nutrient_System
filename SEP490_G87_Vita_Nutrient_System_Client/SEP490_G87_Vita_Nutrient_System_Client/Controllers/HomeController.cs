@@ -54,7 +54,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 importStringToSession("takeFullName", u.fullName, "string");
                 importStringToSession("imageUrl", u.urlimage, "URL");
-
+                
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name,(string) u.account),
@@ -71,7 +71,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
                 if (((string)u.roleName).Equals("Admin"))
                 {
-                    return RedirectToAction("Home");
+                    return RedirectToAction("Dashboard", "Admin");
                 }
                 else if (((string)u.roleName).Equals("Nutritionist"))
                 {

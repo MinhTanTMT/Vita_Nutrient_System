@@ -1,0 +1,65 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<User> listUsers = ViewBag.listUsers;
+}
+
+<div class="row" style="width: 100%;">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">List Users</h4>
+
+                @if (listUsers == null || listUsers.Count == 0)
+                {
+                    <h1>There is no users.</h1>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> Account </th>
+                                    <th> Full name </th>
+                                    <th> DOB </th>
+                                    <th> Gender </th>
+                                    <th> Address </th>
+                                    <th> Phone </th>
+                                    <th> Status </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(int i = 0; i < listUsers.Count; i++)
+                                {
+                                    User u = listUsers[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@u.Account</td>
+                                        <td>@u.FirstName @u.LastName</td>
+                                        <td> @u.Dob </td>
+                                        <td> @u.Gender </td>
+                                        <td> @u.Address </td>
+                                        <td> @u.Phone </td>
+                                        <td>
+                                            @if (u.IsActive == true)
+                                            {
+                                                <label class="badge badge-gradient-success">Active</label>
+                                            }
+                                            else
+                                            {
+                                                <label class="badge badge-gradient-danger">Inactive</label>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
