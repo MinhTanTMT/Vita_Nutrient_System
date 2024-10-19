@@ -2,4 +2,38 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    User user = ViewBag.user;
 }
+<link rel="stylesheet" href="~/css/listUser.css">
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card profile-wrapper">
+            <div class="profile-header row">
+                <div class="avatar col-3">
+                    @if(user.Urlimage == null || user.Urlimage.Length == 0)
+                    {
+                        <img src="~/images/default_avatar.png" alt="avatar" style="width: 100%"/>
+                    }
+                    else
+                    {
+                        <img src="@user.Urlimage" alt="avatar"
+                             onerror="this.src='/images/default_avatar.png'; this.onerror=null; " />
+                    }
+                </div>
+
+                <div class="full-name col-9">
+                    @user.FirstName @user.LastName
+                </div>
+            </div>
+
+            <div class="profile-body">
+                <div class=""></div>
+            </div>
+
+            <div class="profile-footer">
+
+            </div>
+        </div>
+    </div>
+</div>

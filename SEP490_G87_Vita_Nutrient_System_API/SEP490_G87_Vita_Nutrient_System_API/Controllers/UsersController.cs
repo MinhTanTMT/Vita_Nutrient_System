@@ -137,6 +137,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             var user = repositories.GetUserDetailsInfo(id);
 
+            if(user == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            bool? nullableBool = null;
+            short? nullableInt = null;
+
             var result = new
             {
                 Id = user.UserId,
@@ -150,8 +158,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 Role = new { RoleId = user.Role, RoleName = user.RoleNavigation.RoleName },
                 IsActive = user.IsActive,
                 Account = user.Account,
-                DetailsInformation = new
-                {
+                DetailsInformation = user.UserDetail is null ?
+                new{
+                    Description = String.Empty,
+                    Height = nullableInt,
+                    Weight = nullableInt,
+                    Age = nullableInt,
+                    WantImprove = String.Empty,
+                    UnderlyingDisease = String.Empty,
+                    InforConfirmGood = String.Empty,
+                    InforConfirmBad = String.Empty,
+                    IsPremium = nullableBool
+                } 
+                : 
+                new{
                     Description = user.UserDetail.DescribeYourself,
                     Height = user.UserDetail.Height,
                     Weight = user.UserDetail.Weight,

@@ -57,10 +57,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                //get user
+                //get users
                 HttpResponseMessage normalUserResponse =
                     await client.GetAsync(client.BaseAddress + "/Users/GetUserByRole/" + (int)UserRoles.USER);
-                //get user premium
+                //get users premium
                 HttpResponseMessage premiumUserResponse =
                     await client.GetAsync(client.BaseAddress + "/Users/GetUserByRole/" + (int)UserRoles.USERPREMIUM);
 
@@ -140,9 +140,57 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                ViewBag.id = userId;
+                //get user
+                HttpResponseMessage response =
+                    await client.GetAsync(client.BaseAddress + "/Users/GetUserDetailInfo/" + userId);
 
-                return View("~/Views/Admin/UserManagement/UserDetail.cshtml");
+                if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                    User user = new()
+                    {
+                        UserId = userData.id,
+                        FirstName = userData.firstName,
+                        LastName = userData.lastName,
+                        Urlimage = userData.urlimage,
+                        Dob = userData.dob,
+                        Gender = userData.gender ?? false,
+                        Address = userData.address,
+                        Phone = userData.phone,
+                        UserRole = new UserRole
+                        {
+                            RoleId = userData.role.roleId,
+                            RoleName = userData.role.roleName,
+                        },
+                        UserDetail = new UserDetail
+                        {
+                            UserId = userData.id,
+                            DescribeYourself = userData.description,
+                            Height = userData.height,
+                            Weight = userData.weight,
+                            Age = userData.age,
+                            WantImprove = userData.wantImprove,
+                            UnderlyingDisease = userData.underlyingDisease,
+                            InforConfirmGood = userData.inforConfirmGood,
+                            InforConfirmBad = userData.inforConfirmBad,
+                            IsPremium = userData.isPremium
+                        },
+                        IsActive = userData.isActive,
+                        Account = userData.account,
+                    };
+
+                    ViewBag.user = user;
+
+                    return View("~/Views/Admin/UserManagement/UserDetail.cshtml");
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get user detail information! Please try again!";
+                    return View("~/Views/Admin/UserManagement/UserDetail.cshtml");
+                }
             }
             catch (Exception)
             {
