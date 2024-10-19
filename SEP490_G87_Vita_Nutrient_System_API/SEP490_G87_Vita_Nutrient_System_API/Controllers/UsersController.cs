@@ -85,8 +85,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var result = users.Select(
                 u => new 
                 {
+                    Id = u.UserId,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
+                    Urlimage = u.Urlimage,
                     Dob = u.Dob,
                     Gender = u.Gender,
                     Address = u.Address,
@@ -113,8 +115,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var result = users.Select(
                 u => new
                 {
+                    Id = u.UserId,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
+                    Urlimage = u.Urlimage,
                     Dob = u.Dob,
                     Gender = u.Gender,
                     Address = u.Address,
@@ -135,8 +139,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             var result = new
             {
+                Id = user.UserId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Urlimage = user.Urlimage,
                 Dob = user.Dob,
                 Gender = user.Gender,
                 Address = user.Address,
