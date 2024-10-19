@@ -8132,19 +8132,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\msi\\.nuget\\packages\\": {}
+    "C:\\Users\\Lom\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj",
+      "projectUniqueName": "D:\\day-hoc\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj",
       "projectName": "SEP490_G87_Vita_Nutrient_System_API",
-      "projectPath": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj",
-      "packagesPath": "C:\\Users\\msi\\.nuget\\packages\\",
-      "outputPath": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\obj\\",
+      "projectPath": "D:\\day-hoc\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj",
+      "packagesPath": "C:\\Users\\Lom\\.nuget\\packages\\",
+      "outputPath": "D:\\day-hoc\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\msi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Lom\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8152,7 +8152,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8220,7 +8219,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
