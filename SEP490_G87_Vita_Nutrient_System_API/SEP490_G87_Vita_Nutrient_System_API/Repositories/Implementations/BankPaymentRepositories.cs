@@ -41,7 +41,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        public async Task<List<Transaction>> GetAllRecentTransactions()
+        public async Task<IEnumerable<Transaction>> GetAllRecentTransactions()
         {
 
             clientBank.DefaultRequestHeaders.Clear();
@@ -56,7 +56,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 HttpContent content = res.Content;
                 string data = await content.ReadAsStringAsync();
                 ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(data);
-                List<Transaction> listTransaction = apiResponse.transactions.ToList();
+                IEnumerable<Transaction> listTransaction = apiResponse.transactions.ToList();
                 return listTransaction; ;
             }
             else
@@ -65,7 +65,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
         }
 
-        public async Task<List<Transaction>> GetTransactionsFromDateToDate(DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<Transaction>> GetTransactionsFromDateToDate(DateTime startDate, DateTime endDate)
         {
 
             clientBank.DefaultRequestHeaders.Clear();
@@ -79,7 +79,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 HttpContent content = res.Content;
                 string data = await content.ReadAsStringAsync();
                 ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(data);
-                List<Transaction> listTransaction = apiResponse.transactions.ToList();
+                IEnumerable<Transaction> listTransaction = apiResponse.transactions.ToList();
                 return listTransaction; ;
             }
             else
@@ -87,7 +87,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return null;
             }
         }
-        public async Task<List<Transaction>> GetTransactionFromIDBack(int idTransaction)
+        public async Task<IEnumerable<Transaction>> GetTransactionFromIDBack(int idTransaction)
         {
 
             clientBank.DefaultRequestHeaders.Clear();
@@ -101,7 +101,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 HttpContent content = res.Content;
                 string data = await content.ReadAsStringAsync();
                 ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(data);
-                List<Transaction> listTransaction = apiResponse.transactions.ToList();
+                IEnumerable<Transaction> listTransaction = apiResponse.transactions.ToList();
                 return listTransaction; ;
             }
             else
@@ -110,7 +110,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
         }
 
-        public async Task<List<Transaction>> GetTheLastTransactionsOfBankAccountNumber(string accountNumber, int limit)
+        public async Task<IEnumerable<Transaction>> GetTheLastTransactionsOfBankAccountNumber(string accountNumber, int limit)
         {
 
             clientBank.DefaultRequestHeaders.Clear();
@@ -123,7 +123,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 HttpContent content = res.Content;
                 string data = await content.ReadAsStringAsync();
                 ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(data);
-                List<Transaction> listTransaction = apiResponse.transactions.ToList();
+                IEnumerable<Transaction> listTransaction = apiResponse.transactions.ToList();
                 return listTransaction; ;
             }
             else
@@ -135,7 +135,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<dynamic> CheckQRPaySuccessfulByContent(string accountNumber, int limit, string content, decimal amountIn)
         {
-            List<Transaction> dataTransaction = await GetTheLastTransactionsOfBankAccountNumber(accountNumber, limit);
+            IEnumerable<Transaction> dataTransaction = await GetTheLastTransactionsOfBankAccountNumber(accountNumber, limit);
             TransactionsSystem dataTransactionsSystem = await _context.TransactionsSystems.OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.TransactionContent.Equals(content) && x.AmountIn == amountIn);
             if (dataTransactionsSystem != null && dataTransaction != null)
             {
@@ -150,7 +150,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         intsertData.AccountNumber = contentCompare.account_number;
                         intsertData.TransactionDate = DateTime.Parse(contentCompare.transaction_date);
                         intsertData.AmountOut = decimal.Parse(contentCompare.amount_out);
-                        //intsertData.AmountIn = decimal.Parse(contentCompare.amount_in),
                         intsertData.Accumulated = decimal.Parse(contentCompare.accumulated);
                         intsertData.ReferenceNumber = contentCompare.reference_number;
                         intsertData.Code = Convert.ToString(contentCompare.code);
@@ -176,7 +175,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
         }
 
-        public async Task<List<Transaction>> GetTransactionsWithTheTransferredAmount(int amountIn)
+        public async Task<IEnumerable<Transaction>> GetTransactionsWithTheTransferredAmount(int amountIn)
         {
 
             clientBank.DefaultRequestHeaders.Clear();
@@ -190,7 +189,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 HttpContent content = res.Content;
                 string data = await content.ReadAsStringAsync();
                 ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(data);
-                List<Transaction> listTransaction = apiResponse.transactions.ToList();
+                IEnumerable<Transaction> listTransaction = apiResponse.transactions.ToList();
                 return listTransaction; ;
             }
             else
@@ -199,7 +198,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
         }
 
-        public async Task<List<Transaction>> GetDetailsOfATransaction(int idTransaction)
+        public async Task<IEnumerable<Transaction>> GetDetailsOfATransaction(int idTransaction)
         {
 
             clientBank.DefaultRequestHeaders.Clear();
@@ -213,7 +212,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 HttpContent content = res.Content;
                 string data = await content.ReadAsStringAsync();
                 ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(data);
-                List<Transaction> listTransaction = apiResponse.transactions.ToList();
+                IEnumerable<Transaction> listTransaction = apiResponse.transactions.ToList();
                 return listTransaction; ;
             }
             else
@@ -245,5 +244,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return linkQRPayDefaultSystem;
             }
         }
+
+
+
+        public async Task<IEnumerable<TransactionsSystem>> GetAllTransactionsSystem(int userMainId)
+        {
+
+            int month = DateTime.Now.Month;
+
+            IEnumerable<TransactionsSystem> transactionsSystem = _context.TransactionsSystems.Where(x => ((x.PayeeId == userMainId) || (x.UserPayId == userMainId)) && x.TransactionDate.Value.Month == month).ToList();
+            return transactionsSystem;
+        }
+
     }
 }

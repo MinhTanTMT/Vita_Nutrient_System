@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http.Headers;
 using System.Security.Principal;
 using static System.Net.WebRequestMethods;
@@ -26,7 +27,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         //[HttpGet, Authorize]
-        [HttpGet]
         public async Task<IActionResult> QRCodePaymentPageAsync()
         {
             try
@@ -83,6 +83,42 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View();
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> AdminDashboardAsync()
+        {
+            try
+            {
+                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetAllTransactionsSystem?userMainId=1");
+
+                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = res.Content;
+                    string data = await content.ReadAsStringAsync();
+                    IEnumerable<TransactionsSystem> transactionsSystemData = JsonConvert.DeserializeObject<IEnumerable<TransactionsSystem>>(data);
+
+                    var MoneyInThisMonth = transactionsSystemData.Sum(t => t.AmountIn ?? 0);
+                    var MoneyOutThisMonth = transactionsSystemData.Sum(x => x.AmountOut ?? 0);
+                    var BalanceThisMonth = MoneyInThisMonth - MoneyOutThisMonth;
+
+                    ViewBag.MoneyInThisMonth = MoneyInThisMonth;
+                    ViewBag.MoneyOutThisMonth = MoneyOutThisMonth;
+                    ViewBag.BalanceThisMonth = BalanceThisMonth;
+                    //TempData["transactionsSystemData"] = data;
+
+                    return View(transactionsSystemData);
+                }
+
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
+                return View();
+            }  
+        }
 
 
 

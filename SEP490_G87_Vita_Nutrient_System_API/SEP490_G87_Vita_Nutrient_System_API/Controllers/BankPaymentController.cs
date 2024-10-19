@@ -27,7 +27,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult<Transaction>> APIGetAllRecentTransactions()
         {
 
-            List<Transaction> data = await repositories.GetAllRecentTransactions();
+            IEnumerable<Transaction> data = await repositories.GetAllRecentTransactions();
             return Ok(data);
         }
 
@@ -59,7 +59,25 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             else
             {
 
-                return BadRequest("False");
+                return BadRequest("Error");
+            }
+        }
+        
+        
+        [HttpGet("APIGetAllTransactionsSystem")]
+        public async Task<ActionResult<IEnumerable<TransactionsSystem>>> APIGetAllTransactionsSystem(int userMainId)
+        {
+
+            IEnumerable<TransactionsSystem> transactionsSystems = await repositories.GetAllTransactionsSystem(userMainId);
+
+            if (transactionsSystems.Count() > 0)
+            {
+
+                return Ok(transactionsSystems);
+            }
+            else
+            {
+                return BadRequest("Error");
             }
         }
 

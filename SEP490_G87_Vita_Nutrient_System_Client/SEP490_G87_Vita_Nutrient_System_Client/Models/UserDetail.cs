@@ -26,6 +26,4 @@ public partial class UserDetail
     public string? InforConfirmBad { get; set; }
 
     public bool? IsPremium { get; set; }
-
-    public virtual User User { get; set; } = null!;
 }
