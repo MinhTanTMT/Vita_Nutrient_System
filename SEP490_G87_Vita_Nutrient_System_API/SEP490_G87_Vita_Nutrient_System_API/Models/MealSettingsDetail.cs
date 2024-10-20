@@ -7,7 +7,7 @@ public partial class MealSettingsDetail
 {
     public int Id { get; set; }
 
-    public int UserId { get; set; }
+    public int MealSettingsId { get; set; }
 
     public short? SlotOfTheDayId { get; set; }
 
@@ -35,11 +35,11 @@ public partial class MealSettingsDetail
 
     public virtual DayOfTheWeek? DayOfTheWeek { get; set; }
 
+    public virtual MealSetting MealSettings { get; set; } = null!;
+
     public virtual NutritionTargetsDaily? NutritionTargetsDaily { get; set; }
 
     public virtual SlotOfTheDay? SlotOfTheDay { get; set; }
-
-    public virtual User User { get; set; } = null!;
 
     public virtual WantCooking? WantCooking { get; set; }
 }

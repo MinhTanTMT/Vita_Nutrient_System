@@ -420,39 +420,37 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<MealSettingsDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MealSett__3214EC07CD86DA11");
+            entity.HasKey(e => e.Id).HasName("PK__MealSett__3214EC07335095BE");
 
             entity.ToTable("MealSettingsDetails", "UserData");
-
-            entity.HasIndex(e => e.UserId, "UQ__MealSett__1788CC4DED8C0B5A").IsUnique();
 
             entity.Property(e => e.Size).HasMaxLength(50);
             entity.Property(e => e.TypeFavoriteFood).HasMaxLength(50);
 
             entity.HasOne(d => d.CookingDifficulty).WithMany(p => p.MealSettingsDetails)
                 .HasForeignKey(d => d.CookingDifficultyId)
-                .HasConstraintName("FK__MealSetti__Cooki__671F4F74");
+                .HasConstraintName("FK__MealSetti__Cooki__6EC0713C");
 
             entity.HasOne(d => d.DayOfTheWeek).WithMany(p => p.MealSettingsDetails)
                 .HasForeignKey(d => d.DayOfTheWeekId)
-                .HasConstraintName("FK__MealSetti__DayOf__65370702");
+                .HasConstraintName("FK__MealSetti__DayOf__6CD828CA");
+
+            entity.HasOne(d => d.MealSettings).WithMany(p => p.MealSettingsDetails)
+                .HasForeignKey(d => d.MealSettingsId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MealSetti__MealS__69FBBC1F");
 
             entity.HasOne(d => d.NutritionTargetsDaily).WithMany(p => p.MealSettingsDetails)
                 .HasForeignKey(d => d.NutritionTargetsDailyId)
-                .HasConstraintName("FK__MealSetti__Nutri__6442E2C9");
+                .HasConstraintName("FK__MealSetti__Nutri__6BE40491");
 
             entity.HasOne(d => d.SlotOfTheDay).WithMany(p => p.MealSettingsDetails)
                 .HasForeignKey(d => d.SlotOfTheDayId)
-                .HasConstraintName("FK__MealSetti__SlotO__634EBE90");
-
-            entity.HasOne(d => d.User).WithOne(p => p.MealSettingsDetail)
-                .HasForeignKey<MealSettingsDetail>(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MealSetti__UserI__625A9A57");
+                .HasConstraintName("FK__MealSetti__SlotO__6AEFE058");
 
             entity.HasOne(d => d.WantCooking).WithMany(p => p.MealSettingsDetails)
                 .HasForeignKey(d => d.WantCookingId)
-                .HasConstraintName("FK__MealSetti__WantC__662B2B3B");
+                .HasConstraintName("FK__MealSetti__WantC__6DCC4D03");
         });
 
         modelBuilder.Entity<Message>(entity =>
