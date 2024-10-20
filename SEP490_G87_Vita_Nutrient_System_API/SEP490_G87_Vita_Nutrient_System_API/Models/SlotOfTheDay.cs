@@ -22,4 +22,6 @@ public partial class SlotOfTheDay
     public virtual ICollection<MealOfTheDay> MealOfTheDaySlot4OfTheDays { get; set; } = new List<MealOfTheDay>();
 
     public virtual ICollection<MealOfTheDay> MealOfTheDaySlot5OfTheDays { get; set; } = new List<MealOfTheDay>();
+
+    public virtual ICollection<MealSettingsDetail> MealSettingsDetails { get; set; } = new List<MealSettingsDetail>();
 }

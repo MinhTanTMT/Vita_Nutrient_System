@@ -23,6 +23,10 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     public virtual DbSet<ConversationParticipant> ConversationParticipants { get; set; }
 
+    public virtual DbSet<CookingDifficulty> CookingDifficulties { get; set; }
+
+    public virtual DbSet<DayOfTheWeek> DayOfTheWeeks { get; set; }
+
     public virtual DbSet<ExerciseIntensity> ExerciseIntensities { get; set; }
 
     public virtual DbSet<ExpertPackage> ExpertPackages { get; set; }
@@ -42,6 +46,10 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
     public virtual DbSet<ListOfDisease> ListOfDiseases { get; set; }
 
     public virtual DbSet<MealOfTheDay> MealOfTheDays { get; set; }
+
+    public virtual DbSet<MealSetting> MealSettings { get; set; }
+
+    public virtual DbSet<MealSettingsDetail> MealSettingsDetails { get; set; }
 
     public virtual DbSet<Message> Messages { get; set; }
 
@@ -73,16 +81,11 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     public virtual DbSet<UserListManagement> UserListManagements { get; set; }
 
+    public virtual DbSet<WantCooking> WantCookings { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(config.GetConnectionString("value"));
-        }
-    }
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -155,6 +158,24 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
                 .HasConstraintName("FK__Conversat__UserI__06CD04F7");
         });
 
+        modelBuilder.Entity<CookingDifficulty>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__CookingD__3214EC076AA13725");
+
+            entity.ToTable("CookingDifficulty", "FoodData");
+
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<DayOfTheWeek>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__DayOfThe__3214EC07C347CEED");
+
+            entity.ToTable("DayOfTheWeek", "Business");
+
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<ExerciseIntensity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Exercise__3214EC07090D2F5D");
@@ -213,6 +234,10 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
                 .HasMaxLength(512)
                 .IsUnicode(false)
                 .HasColumnName("URLImage");
+
+            entity.HasOne(d => d.CookingDifficulty).WithMany(p => p.FoodLists)
+                .HasForeignKey(d => d.CookingDifficultyId)
+                .HasConstraintName("FK__FoodList__Cookin__59C55456");
 
             entity.HasOne(d => d.FoodType).WithMany(p => p.FoodLists)
                 .HasForeignKey(d => d.FoodTypeId)
@@ -373,6 +398,61 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.HasOne(d => d.Slot5OfTheDay).WithMany(p => p.MealOfTheDaySlot5OfTheDays)
                 .HasForeignKey(d => d.Slot5OfTheDayId)
                 .HasConstraintName("FK__MealOfThe__Slot5__6E01572D");
+        });
+
+        modelBuilder.Entity<MealSetting>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__MealSett__3214EC070F8F0A38");
+
+            entity.ToTable("MealSettings", "UserData");
+
+            entity.HasIndex(e => e.UserId, "UQ__MealSett__1788CC4D843F35AF").IsUnique();
+
+            entity.HasOne(d => d.DayOfTheWeekStart).WithMany(p => p.MealSettings)
+                .HasForeignKey(d => d.DayOfTheWeekStartId)
+                .HasConstraintName("FK__MealSetti__DayOf__5E8A0973");
+
+            entity.HasOne(d => d.User).WithOne(p => p.MealSetting)
+                .HasForeignKey<MealSetting>(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MealSetti__UserI__5D95E53A");
+        });
+
+        modelBuilder.Entity<MealSettingsDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__MealSett__3214EC07CD86DA11");
+
+            entity.ToTable("MealSettingsDetails", "UserData");
+
+            entity.HasIndex(e => e.UserId, "UQ__MealSett__1788CC4DED8C0B5A").IsUnique();
+
+            entity.Property(e => e.Size).HasMaxLength(50);
+            entity.Property(e => e.TypeFavoriteFood).HasMaxLength(50);
+
+            entity.HasOne(d => d.CookingDifficulty).WithMany(p => p.MealSettingsDetails)
+                .HasForeignKey(d => d.CookingDifficultyId)
+                .HasConstraintName("FK__MealSetti__Cooki__671F4F74");
+
+            entity.HasOne(d => d.DayOfTheWeek).WithMany(p => p.MealSettingsDetails)
+                .HasForeignKey(d => d.DayOfTheWeekId)
+                .HasConstraintName("FK__MealSetti__DayOf__65370702");
+
+            entity.HasOne(d => d.NutritionTargetsDaily).WithMany(p => p.MealSettingsDetails)
+                .HasForeignKey(d => d.NutritionTargetsDailyId)
+                .HasConstraintName("FK__MealSetti__Nutri__6442E2C9");
+
+            entity.HasOne(d => d.SlotOfTheDay).WithMany(p => p.MealSettingsDetails)
+                .HasForeignKey(d => d.SlotOfTheDayId)
+                .HasConstraintName("FK__MealSetti__SlotO__634EBE90");
+
+            entity.HasOne(d => d.User).WithOne(p => p.MealSettingsDetail)
+                .HasForeignKey<MealSettingsDetail>(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MealSetti__UserI__625A9A57");
+
+            entity.HasOne(d => d.WantCooking).WithMany(p => p.MealSettingsDetails)
+                .HasForeignKey(d => d.WantCookingId)
+                .HasConstraintName("FK__MealSetti__WantC__662B2B3B");
         });
 
         modelBuilder.Entity<Message>(entity =>
@@ -665,6 +745,15 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__UserListM__UserI__14270015");
+        });
+
+        modelBuilder.Entity<WantCooking>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__WantCook__3214EC07081EF694");
+
+            entity.ToTable("WantCooking", "UserData");
+
+            entity.Property(e => e.Name).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);

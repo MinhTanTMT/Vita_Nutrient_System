@@ -23,6 +23,14 @@ public partial class FoodList
 
     public bool? IsActive { get; set; }
 
+    public short? PreparationTime { get; set; }
+
+    public short? CookingTime { get; set; }
+
+    public short? CookingDifficultyId { get; set; }
+
+    public virtual CookingDifficulty? CookingDifficulty { get; set; }
+
     public virtual ICollection<FoodAndDisease> FoodAndDiseases { get; set; } = new List<FoodAndDisease>();
 
     public virtual ICollection<FoodSelection> FoodSelections { get; set; } = new List<FoodSelection>();
