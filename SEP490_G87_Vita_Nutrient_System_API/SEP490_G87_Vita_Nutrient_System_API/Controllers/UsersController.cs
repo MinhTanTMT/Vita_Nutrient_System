@@ -187,6 +187,60 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetNutritionistDetailInfo/{id}")]
+        public async Task<ActionResult<dynamic>> GetNutritionistDetailInfo(int id)
+        {
+
+            var nutritionist = repositories.GetNutritionistDetailsInfo(id);
+
+            if (nutritionist == null)
+            {
+                return BadRequest("Nutritionist not found!");
+            }
+
+            bool? nullableBool = null;
+            short? nullableShort = null;
+            int? nullableInt = null;
+            double? nullableDouble = null;
+
+            var result = new
+            {
+                Id = nutritionist.UserId,
+                FirstName = nutritionist.FirstName,
+                LastName = nutritionist.LastName,
+                Urlimage = nutritionist.Urlimage,
+                Dob = nutritionist.Dob,
+                Gender = nutritionist.Gender,
+                Address = nutritionist.Address,
+                Phone = nutritionist.Phone,
+                Role = new { RoleId = nutritionist.Role, RoleName = nutritionist.RoleNavigation.RoleName },
+                IsActive = nutritionist.IsActive,
+                Account = nutritionist.Account,
+                DetailsInformation = nutritionist.UserDetail is null ?
+                new
+                {
+                    Description = String.Empty,
+                    Height = nullableShort,
+                    Weight = nullableShort,
+                    Age = nullableShort,
+                    Rate = nullableDouble,
+                    NumberRate = nullableInt
+                }
+                :
+                new
+                {
+                    Description = nutritionist.NutritionistDetail.DescribeYourself,
+                    Height = nutritionist.NutritionistDetail.Height,
+                    Weight = nutritionist.NutritionistDetail.Weight,
+                    Age = nutritionist.NutritionistDetail.Age,
+                    Rate = nutritionist.NutritionistDetail.Rate,
+                    NumberRate = nutritionist.NutritionistDetail.NumberRate
+                }
+            };
+
+            return Ok(result);
+        }
+
         [HttpPost("UpdateUserStatus")]
         public async Task<ActionResult<dynamic>> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
         {

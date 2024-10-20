@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 
@@ -113,14 +114,30 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return _context.Users.Where(u => u.Role == roleId);
         }
 
-        public User GetUserDetailsInfo(int id)
+        public User? GetUserDetailsInfo(int id)
         {
             var user = _context.Users
                 .Include(u => u.RoleNavigation)
                 .Include(u => u.UserDetail)
                 .FirstOrDefault(u => u.UserId == id);
 
-            return user;
+            if (user.Role != (int)UserRole.USERPREMIUM && user.Role != (int)UserRole.USER)
+                return null;
+
+                return user;
+        }
+
+        public User? GetNutritionistDetailsInfo(int id)
+        {
+            var nutritionist = _context.Users
+                .Include(u => u.RoleNavigation)
+                .Include(u => u.NutritionistDetail)
+                .FirstOrDefault(u => u.UserId == id);
+
+            if (nutritionist.Role != (int)UserRole.NUTRITIONIST)
+                return null;
+
+            return nutritionist;
         }
 
         public void UpdateUser(User user)
@@ -129,7 +146,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.SaveChanges();
         }
 
-
+        
 
         ////////////////////////////////////////////////////////////
         /// Tùng
