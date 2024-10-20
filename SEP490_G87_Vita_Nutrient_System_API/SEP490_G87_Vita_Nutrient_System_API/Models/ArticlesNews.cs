@@ -17,5 +17,7 @@ public partial class ArticlesNews
 
     public bool? IsActive { get; set; }
 
+    public DateTime? DateCreated { get; set; }
+
     public virtual User User { get; set; } = null!;
 }

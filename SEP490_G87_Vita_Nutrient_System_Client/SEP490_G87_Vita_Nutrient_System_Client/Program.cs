@@ -48,7 +48,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             app.UseSession();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Admin}/{action=AdminDashboard}/{id?}");
 
             app.Run();
         }
