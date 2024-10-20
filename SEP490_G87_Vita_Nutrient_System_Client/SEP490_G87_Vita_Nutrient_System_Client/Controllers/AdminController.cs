@@ -295,6 +295,57 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        [HttpGet("admin/nutritionistmanagement/listnutritionist")]
+        public async Task<IActionResult> ListNutritionist()
+        {
+            try
+            {
+                //get nutritionists
+                HttpResponseMessage response =
+                    await client.GetAsync(client.BaseAddress + "/Users/GetUserByRole/" + (int)UserRoles.NUTRITIONIST);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    List<dynamic> nutritionistData = JsonConvert.DeserializeObject<List<dynamic>>(data);
+
+                    var nutritionists = nutritionistData.Select(
+                        ud => new User
+                        {
+                            UserId = ud.id,
+                            FirstName = ud.firstName,
+                            LastName = ud.lastName,
+                            Urlimage = ud.urlimage,
+                            Dob = ud.dob,
+                            Gender = ud.gender ?? false,
+                            Address = ud.address,
+                            Phone = ud.phone,
+                            UserRole = new UserRole
+                            {
+                                RoleId = ud.role.roleId,
+                                RoleName = ud.role.roleName,
+                            },
+                            IsActive = ud.isActive,
+                            Account = ud.account,
+                        }).ToList();
+
+                    ViewBag.listNutritionists = nutritionists;
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get list nutritionists! Please try again!";
+                }
+
+                return View("~/Views/Admin/NutritionistManagement/ListNutritionist.cshtml");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/Admin/NutritionistManagement/ListNutritionist.cshtml");
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> UpdateUserStatus(int userId, int status)
         {

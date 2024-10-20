@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Admin\NutritionistManagement\" />
     <Folder Include="Views\Nutritionist\" />
   </ItemGroup>
 
