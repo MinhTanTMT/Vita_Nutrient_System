@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -199,6 +200,36 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserStatus(int userId, int status)
+        {
+            try
+            {
+                var data = new
+                {
+                    userId = userId,
+                    status = status == 1
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Users/UpdateUserStatus", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Cannot update user status! Please try again!";
+                }
+            }
+            catch(Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await UserDetail(userId);
+        }
 
         ////////////////////////////////////////////////////////////
         /// Tùng

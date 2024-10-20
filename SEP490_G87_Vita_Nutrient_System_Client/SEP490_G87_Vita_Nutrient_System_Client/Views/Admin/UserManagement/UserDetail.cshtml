@@ -44,19 +44,23 @@
                     </a>
 
                     </br></br>
-
-                    @if (user.IsActive is not null && user.IsActive == true)
-                    {
-                        <a type="button" class="btn btn-gradient-danger btn-fw" href="/">
-                            Disable
-                        </a>
-                    }
-                    else
-                    {
-                        <a type="button" class="btn btn-gradient-success btn-fw" href="/">
-                            Enable
-                        </a>
-                    }
+                    <form asp-controller="Admin" asp-action="UpdateUserStatus" method="post">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        @if (user.IsActive is not null && user.IsActive == true)
+                        {
+                            <input type="hidden" name="status" value="0" />
+                            <button type="submit" class="btn btn-gradient-danger btn-fw">
+                                Disable
+                            </button>
+                        }
+                        else
+                        {
+                            <input type="hidden" name="status" value="1" />
+                            <button type="submit" class="btn btn-gradient-success btn-fw">
+                                Enable
+                            </button>
+                        }
+                    </form>
                 </div>
             </div>
 
@@ -132,7 +136,7 @@
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="radio" disabled class="form-check-input" name="user_status" id="user_status_inactive" value="0" @((bool)user.IsActive ? "checked" : "")> Inactive <i class="input-helper"></i>
+                                    <input type="radio" disabled class="form-check-input" name="user_status" id="user_status_inactive" value="0" @((bool)user.IsActive ? "" : "checked")> Inactive <i class="input-helper"></i>
                                 </label>
                             </div>
                         </div>
