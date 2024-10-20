@@ -168,15 +168,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         UserDetail = new UserDetail
                         {
                             UserId = userData.id,
-                            DescribeYourself = userData.description,
-                            Height = userData.height,
-                            Weight = userData.weight,
-                            Age = userData.age,
-                            WantImprove = userData.wantImprove,
-                            UnderlyingDisease = userData.underlyingDisease,
-                            InforConfirmGood = userData.inforConfirmGood,
-                            InforConfirmBad = userData.inforConfirmBad,
-                            IsPremium = userData.isPremium
+                            DescribeYourself = userData.detailsInformation.description,
+                            Height = userData.detailsInformation.height,
+                            Weight = userData.detailsInformation.weight,
+                            Age = userData.detailsInformation.age,
+                            WantImprove = userData.detailsInformation.wantImprove,
+                            UnderlyingDisease = userData.detailsInformation.underlyingDisease,
+                            InforConfirmGood = userData.detailsInformation.inforConfirmGood,
+                            InforConfirmBad = userData.detailsInformation.inforConfirmBad,
+                            IsPremium = userData.detailsInformation.isPremium
                         },
                         IsActive = userData.isActive,
                         Account = userData.account,

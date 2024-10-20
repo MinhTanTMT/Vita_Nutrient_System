@@ -1,12 +1,25 @@
-﻿.row {
+﻿.hr{
+    width: 99%;
+    margin: auto;
+    height: 1px;
+    background: gray;
+    margin: 8px 0;
+}
+
+.row {
     margin: 0;
     width: 100%;
     padding: 10px 20px;
 }
 
+.profile-wrapper.card{
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
 .avatar {
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     overflow: hidden;
     background-color: beige;
     border-radius: 50%;
@@ -17,4 +30,31 @@
         height: 100%;
         margin: auto;
         padding-top: 12px;
+    }
+
+.full-name{
+    font-size: 32px;
+    font-weight: 700;
+    align-content: end;
+}
+
+    .full-name p {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+.action{
+    align-content: center;
+    text-align: end;
+}
+
+.profile-body .form-group.gender, .profile-body .form-group.status{
+    width: fit-content;
+    margin-bottom: 1rem;
+    align-content: center;
+}
+
+    .profile-body .form-group .form-check{
+        display: inline-block;
+        margin: 0 10px;
     }
