@@ -39,8 +39,6 @@ public partial class User
 
     public virtual MealSetting? MealSetting { get; set; }
 
-    public virtual MealSettingsDetail? MealSettingsDetail { get; set; }
-
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public virtual ICollection<Msg> Msgs { get; set; } = new List<Msg>();

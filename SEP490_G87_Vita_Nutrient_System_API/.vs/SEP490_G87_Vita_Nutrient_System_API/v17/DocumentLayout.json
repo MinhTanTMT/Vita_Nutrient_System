@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Models\\User.cs",
               "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Models\\User.cs",
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Models\\User.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAwwDYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACoAAAAAAAAAAAAowDMAAABHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-20T14:19:56.188Z",
               "EditorCaption": ""
@@ -51,8 +51,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\BankPaymentController.cs",
               "ViewState": "AgIAABQAAAAAAAAAAAAQwB8AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-19T10:50:53.474Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-19T10:50:53.474Z"
             },
             {
               "$type": "Document",
@@ -64,8 +63,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-19T07:46:08.161Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-19T07:46:08.161Z"
             },
             {
               "$type": "Document",
@@ -77,8 +75,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Models\\Sep490G87VitaNutrientSystemContext.cs",
               "ViewState": "AgIAAG0AAAAAAAAAAAAkwHMAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-19T07:05:42.773Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-19T07:05:42.773Z"
             }
           ]
         }

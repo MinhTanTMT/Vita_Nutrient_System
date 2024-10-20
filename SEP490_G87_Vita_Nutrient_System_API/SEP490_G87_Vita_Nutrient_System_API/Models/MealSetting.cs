@@ -15,5 +15,7 @@ public partial class MealSetting
 
     public virtual DayOfTheWeek? DayOfTheWeekStart { get; set; }
 
+    public virtual ICollection<MealSettingsDetail> MealSettingsDetails { get; set; } = new List<MealSettingsDetail>();
+
     public virtual User User { get; set; } = null!;
 }
