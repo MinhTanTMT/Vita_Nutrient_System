@@ -73,7 +73,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
                     if (((string)u.roleName).Equals("Admin"))
                     {
-                        return RedirectToAction("Admin", "Dashboard");
+                        return RedirectToAction("Admin", "AdminDashboard");
                     }
                     else if (((string)u.roleName).Equals("Nutritionist"))
                     {

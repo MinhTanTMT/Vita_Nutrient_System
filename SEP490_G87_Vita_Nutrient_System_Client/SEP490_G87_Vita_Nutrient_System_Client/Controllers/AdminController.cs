@@ -147,11 +147,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Sơn
         ////////////////////////////////////////////////////////////
         ///
-        [HttpGet("admin/dashboard")]
-        public async Task<IActionResult> Dashboard()
-        {
-            return View();
-        }
 
         [HttpGet("admin/usermanagement/listuser")]
         public async Task<IActionResult> ListUser()
