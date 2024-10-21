@@ -113,6 +113,7 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.Property(e => e.Content).HasMaxLength(500);
             entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.HeaderImage).HasMaxLength(255);
             entity.Property(e => e.NameCreater).HasMaxLength(50);
             entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");

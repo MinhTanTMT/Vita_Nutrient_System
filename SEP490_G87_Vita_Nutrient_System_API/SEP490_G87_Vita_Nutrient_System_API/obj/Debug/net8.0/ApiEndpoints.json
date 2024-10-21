@@ -52,12 +52,22 @@
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
-    "Method": "APIGetAllTransactionsSystem",
-    "RelativePath": "api/BankPayment/APIGetAllTransactionsSystem",
+    "Method": "APIGetAllTransactionsSystemOfMonth",
+    "RelativePath": "api/BankPayment/APIGetAllTransactionsSystemOfMonth",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
       {
         "Name": "userMainId",
         "Type": "System.Int32",
