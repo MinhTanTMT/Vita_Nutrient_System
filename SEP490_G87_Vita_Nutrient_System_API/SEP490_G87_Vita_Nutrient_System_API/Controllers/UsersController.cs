@@ -131,10 +131,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetUserDetailInfo/{id}")]
+        [HttpGet("GetUserDetail/{id}")]
         public async Task<ActionResult<dynamic>> GetUserDetailInfo(int id)
         {
-
             var user = repositories.GetUserDetailsInfo(id);
 
             if(user == null)
@@ -187,10 +186,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetNutritionistDetailInfo/{id}")]
-        public async Task<ActionResult<dynamic>> GetNutritionistDetailInfo(int id)
+        [HttpGet("GetNutritionistDetail/{id}")]
+        public async Task<ActionResult<dynamic>> GetNutritionistDetail(int id)
         {
-
             var nutritionist = repositories.GetNutritionistDetailsInfo(id);
 
             if (nutritionist == null)
@@ -237,6 +235,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                     NumberRate = nutritionist.NutritionistDetail.NumberRate
                 }
             };
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetNutritionistPackages/{id}")]
+        public async Task<ActionResult<List<dynamic>>> GetNutritionistPackages(int id)
+        {
+            List<ExpertPackage> packages = repositories.GetNutritionistPackages(id).ToList();
+
+            var result = packages.Select(p => new
+            {
+                Id = p.Id,
+                NutritionistDetailsId = p.NutritionistDetailsId,
+                Name = p.Name,
+                Describe = p.Describe,
+                Price = p.Price,
+                Duration = p.Duration
+            }).ToList();
 
             return Ok(result);
         }

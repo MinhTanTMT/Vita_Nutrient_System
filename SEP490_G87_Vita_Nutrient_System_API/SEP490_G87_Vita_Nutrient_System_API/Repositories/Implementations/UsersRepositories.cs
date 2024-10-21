@@ -146,7 +146,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.SaveChanges();
         }
 
-        
+        public IQueryable<ExpertPackage> GetNutritionistPackages(int id)
+        {
+            return _context.ExpertPackages.Where(p => p.NutritionistDetailsId == id);
+        }
+
+
 
         ////////////////////////////////////////////////////////////
         /// Tùng
