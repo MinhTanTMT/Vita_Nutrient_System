@@ -10,8 +10,8 @@ using static System.Net.WebRequestMethods;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
-	public class AdminController : Controller
-	{
+    public class AdminController : Controller
+    {
         ////////////////////////////////////////////////////////////
         /// Tân
         ////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         ViewBag.LinkQRImage = linkQRImage;
                         return View();
                     }
-                    
+
                 }
                 ViewBag.AlertMessage = "Error";
                 return View();
@@ -91,9 +91,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                //https://localhost:7045/api/BankPayment/APIGetAllTransactionsSystemOfMonth?month=10&year=2023&userMainId=1
+
+
                 int month = DateTime.Now.Month;
                 int year = DateTime.Now.Year;
+                Decimal[][] graphData;
                 HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetAllTransactionsSystemOfMonth?month={month}&year={year}&userMainId=1");
 
                 if (res.StatusCode == System.Net.HttpStatusCode.OK)
@@ -106,34 +108,39 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var MoneyOutThisMonth = transactionsSystemData.Sum(x => x.AmountOut ?? 0);
                     var BalanceThisMonth = MoneyInThisMonth - MoneyOutThisMonth;
 
-                    
 
-                    for (int getMonth = 1; getMonth <= 12; getMonth++)
+                    HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetAllTransactionsSystemForGraphData?year={year}&userMainId=1");
+
+                    if (res.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetAllTransactionsSystemOfMonth?month={getMonth}&year={year}&userMainId=1");
+                        HttpContent content2 = res2.Content;
+                        string data2 = await content2.ReadAsStringAsync();
+                        graphData = JsonConvert.DeserializeObject<Decimal[][]>(data2);
 
 
+                        ViewBag.GraphDataString0 = JsonConvert.SerializeObject(graphData[0]);
+                        ViewBag.GraphDataString1 = JsonConvert.SerializeObject(graphData[1]);
+                        ViewBag.GraphDataString2 = JsonConvert.SerializeObject(graphData[2]); 
+                        ViewBag.GraphDataString3 = JsonConvert.SerializeObject((graphData.SelectMany(row => row).Max()/100)*111); 
                     }
-
-
 
                     ViewBag.MoneyInThisMonth = MoneyInThisMonth;
                     ViewBag.MoneyOutThisMonth = MoneyOutThisMonth;
                     ViewBag.BalanceThisMonth = BalanceThisMonth;
-                    //TempData["transactionsSystemData"] = data;
-
+                    
                     return View(transactionsSystemData);
                 }
 
+
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
-                return View();
+                return View(null);
 
             }
             catch (Exception ex)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
                 return View();
-            }  
+            }
         }
 
 
