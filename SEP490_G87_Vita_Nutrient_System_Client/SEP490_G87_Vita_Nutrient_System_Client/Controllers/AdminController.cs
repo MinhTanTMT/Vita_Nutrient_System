@@ -302,7 +302,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet("admin/nutritionistmanagement/listnutritionist")]
-        public async Task<IActionResult> ListNutritionist()
+        public async Task<IActionResult> ListNutritionist(int page = 1, int pageSize = 10)
         {
             try
             {
@@ -336,7 +336,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                             Account = ud.account,
                         }).ToList();
 
-                    ViewBag.listNutritionists = nutritionists;
+                    // Pagination logic
+                    int totalNutritionists = nutritionists.Count();
+                    var paginatedNutritionists = nutritionists.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    ViewBag.listNutritionists = paginatedNutritionists;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = (int)Math.Ceiling(totalNutritionists / (double)pageSize);
                 }
                 else
                 {
