@@ -149,7 +149,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ///
 
         [HttpGet("admin/usermanagement/listuser")]
-        public async Task<IActionResult> ListUser()
+        public async Task<IActionResult> ListUser(int page = 1, int pageSize = 10)
         {
             try
             {
@@ -215,7 +215,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     users = users.Concat( premiumUsers ).ToList();
 
-                    ViewBag.listUsers = users;
+                    // Pagination logic
+                    int totalUsers = users.Count();
+                    var paginatedUsers = users.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    ViewBag.listUsers = paginatedUsers;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
                 }
                 else
                 {

@@ -3,6 +3,8 @@
 *@
 @{
     List<User> listUsers = ViewBag.listUsers;
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
 }
 
 <div class="row" style="width: 100%;">
@@ -57,6 +59,30 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination controls -->
+                    <nav aria-label="Page navigation example" style="padding: 50px 0 0 0;">
+                        <ul class="pagination justify-content-center">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListUser", new { page = currentPage - 1 })">Previous</a>
+                                </li>
+                            }
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("ListUser", new { page = i })">@i</a>
+                                </li>
+                            }
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListUser", new { page = currentPage + 1 })">Next</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
                 }
             </div>
         </div>
