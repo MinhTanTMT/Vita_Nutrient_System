@@ -15,6 +15,8 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
     {
     }
 
+    public virtual DbSet<ArticleImage> ArticleImages { get; set; }
+
     public virtual DbSet<ArticlesNews> ArticlesNews { get; set; }
 
     public virtual DbSet<BankInformation> BankInformations { get; set; }
@@ -89,6 +91,20 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ArticleImage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ArticleI__3214EC07F7E6125D");
+
+            entity.ToTable("ArticleImages", "Business");
+
+            entity.Property(e => e.ImagePath).HasMaxLength(255);
+
+            entity.HasOne(d => d.Article).WithMany(p => p.ArticleImages)
+                .HasForeignKey(d => d.ArticleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ArticleIm__Artic__719CDDE7");
+        });
+
         modelBuilder.Entity<ArticlesNews>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Articles__3214EC074497A950");

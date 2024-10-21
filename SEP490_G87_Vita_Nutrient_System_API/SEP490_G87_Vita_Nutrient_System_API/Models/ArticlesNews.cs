@@ -19,5 +19,7 @@ public partial class ArticlesNews
 
     public DateTime? DateCreated { get; set; }
 
+    public virtual ICollection<ArticleImage> ArticleImages { get; set; } = new List<ArticleImage>();
+
     public virtual User User { get; set; } = null!;
 }
