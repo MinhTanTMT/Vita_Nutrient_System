@@ -378,6 +378,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         },
                         NutritionistDetail = new NutritionistDetail
                         {
+                            Id = userData.detailsInformation.id,
                             NutritionistId = userData.id,
                             DescribeYourself = userData.detailsInformation.description,
                             Height = userData.detailsInformation.height,
@@ -391,6 +392,31 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     };
 
                     ViewBag.nutritionist = nutritionist;
+
+                    //get nutritionist expert packages
+                    HttpResponseMessage response1 =
+                        await client.GetAsync(client.BaseAddress + "/Users/GetNutritionistPackages/" + nutritionist.NutritionistDetail.Id);
+
+                    if (response1.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        HttpContent content1 = response1.Content;
+                        string data1 = await content1.ReadAsStringAsync();
+                        List<dynamic> packagesData = JsonConvert.DeserializeObject<List<dynamic>>(data1);
+
+                        List<ExpertPackage> packages = packagesData.Select(
+                            p => new ExpertPackage
+                            {
+                                Id = p.id,
+                                NutritionistDetailsId = p.nutritionistDetailsId,
+                                Name = p.name,
+                                Describe = p.describe,
+                                Price = p.price,
+                                Duration = p.duration
+                            })
+                            .ToList();
+
+                        ViewBag.packages = packages;
+                    }
 
                     return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
                 }

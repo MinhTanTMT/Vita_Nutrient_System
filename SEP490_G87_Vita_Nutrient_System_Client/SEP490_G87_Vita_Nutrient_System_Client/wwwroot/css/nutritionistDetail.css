@@ -51,3 +51,14 @@
         display: inline-block;
         margin: 0 10px;
     }
+
+.packages-body{
+    text-align: center;
+}
+
+    .packages-body table{
+        width: 95%;
+        margin: auto;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }

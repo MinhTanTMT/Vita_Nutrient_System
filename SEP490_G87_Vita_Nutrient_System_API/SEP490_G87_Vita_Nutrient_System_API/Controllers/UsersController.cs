@@ -214,9 +214,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 Role = new { RoleId = nutritionist.Role, RoleName = nutritionist.RoleNavigation.RoleName },
                 IsActive = nutritionist.IsActive,
                 Account = nutritionist.Account,
-                DetailsInformation = nutritionist.UserDetail is null ?
+                DetailsInformation = nutritionist.NutritionistDetail is null ?
                 new
                 {
+                    Id = 0,
                     Description = String.Empty,
                     Height = nullableShort,
                     Weight = nullableShort,
@@ -227,6 +228,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 :
                 new
                 {
+                    Id = nutritionist.NutritionistDetail.Id,
                     Description = nutritionist.NutritionistDetail.DescribeYourself,
                     Height = nutritionist.NutritionistDetail.Height,
                     Weight = nutritionist.NutritionistDetail.Weight,

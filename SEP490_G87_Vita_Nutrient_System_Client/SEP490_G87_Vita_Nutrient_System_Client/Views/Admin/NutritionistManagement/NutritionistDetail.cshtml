@@ -3,6 +3,7 @@
 *@
 @{
     User nutritionist = ViewBag.nutritionist;
+    List<ExpertPackage> packages = ViewBag.packages;
 }
 <link rel="stylesheet" href="~/css/nutritionistDetail.css">
 
@@ -126,7 +127,36 @@
                 <h2 class="title">Expert packages</h2>
 
                 <div class="packages-body">
-
+                    @if (packages is null || packages.Count == 0)
+                    {
+                        <h3>There is no packages!</h3>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> Name </th>
+                                    <th> Description </th>
+                                    <th> Price </th>
+                                    <th> Duration </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(int i = 0; i < packages.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@(i+1)</td>
+                                        <td> @packages[i].Name </td>
+                                        <td> @packages[i].Describe </td>
+                                        <td> @packages[i].Price </td>
+                                        <td> @packages[i].Duration </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
                 </div>
             </div>
         </div>
