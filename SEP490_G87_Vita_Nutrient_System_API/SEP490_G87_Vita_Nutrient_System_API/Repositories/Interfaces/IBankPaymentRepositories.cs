@@ -18,6 +18,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<string> GetQRPayImage(int? idBankInformation, decimal amount, string content);
         Task<dynamic> CheckQRPaySuccessfulByContent(string accountNumber, int limit, string content, decimal amountIn);
         Task<IEnumerable<TransactionsSystem>> GetAllTransactionsSystemOfMonth(int month, int year, int userMainId);
+        Task<Decimal[][]> GetAllTransactionsSystemForGraphData(int year, int userMainId);
 
     }
 }

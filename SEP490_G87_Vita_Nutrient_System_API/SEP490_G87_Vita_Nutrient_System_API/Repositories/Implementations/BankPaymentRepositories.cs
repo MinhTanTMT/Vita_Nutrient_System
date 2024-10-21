@@ -333,8 +333,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         }
 
-
-
         public async Task<IEnumerable<TransactionsSystem>> GetAllTransactionsSystemOfMonth(int month, int year, int userMainId)
         {
 
@@ -342,6 +340,47 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 IEnumerable<TransactionsSystem> transactionsSystem = _context.TransactionsSystems.Where(x => ((x.PayeeId == userMainId) || (x.UserPayId == userMainId)) && x.TransactionDate.Value.Month == month && x.TransactionDate.Value.Year == year).ToList();
                 return transactionsSystem;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public async Task<Decimal[][]> GetAllTransactionsSystemForGraphData(int year, int userMainId)
+        {
+            Decimal[][] graphData = new Decimal[3][];
+            graphData[0] = new Decimal[12];
+            graphData[1] = new Decimal[12];
+            graphData[2] = new Decimal[12];
+
+            try
+            {
+                IEnumerable<TransactionsSystem> transactionsSystem = _context.TransactionsSystems.Where(x => ((x.PayeeId == userMainId) || (x.UserPayId == userMainId)) && x.TransactionDate.Value.Year == year).ToList();
+
+                for (int getMonth = 0; getMonth < 12; getMonth++)
+                {
+                    IEnumerable<TransactionsSystem> dataSelectFromRoot = transactionsSystem.Where(x => x.TransactionDate.Value.Month == (getMonth + 1));
+
+                    if (dataSelectFromRoot.Count() > 0)
+                    {
+                        Decimal MoneyInThisMonth = dataSelectFromRoot.Sum(t => t.AmountIn ?? 0);
+                        Decimal MoneyOutThisMonth = dataSelectFromRoot.Sum(x => x.AmountOut ?? 0);
+                        Decimal BalanceThisMonth = MoneyInThisMonth - MoneyOutThisMonth;
+
+                        graphData[0][getMonth] = MoneyInThisMonth;
+                        graphData[1][getMonth] = MoneyOutThisMonth;
+                        graphData[2][getMonth] = BalanceThisMonth;
+                    }
+                    else
+                    {
+                        graphData[0][getMonth] = 0;
+                        graphData[1][getMonth] = 0;
+                        graphData[2][getMonth] = 0;
+                    }
+                }
+                return graphData;
             }
             catch (Exception ex)
             {

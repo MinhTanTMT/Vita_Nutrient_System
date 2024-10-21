@@ -189,6 +189,8 @@ public partial class IngredientDetails100g
 
     public double? Serin { get; set; }
 
+    public virtual KeyNote? KeyNote { get; set; }
+
     public virtual ICollection<ScaleAmount> ScaleAmounts { get; set; } = new List<ScaleAmount>();
 
     public virtual TypeOfCalculation TypeOfCalculation { get; set; } = null!;

@@ -344,6 +344,10 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.Property(e => e.VitaminK).HasColumnName("Vitamin_K");
             entity.Property(e => e.VitaminPp).HasColumnName("Vitamin_PP");
 
+            entity.HasOne(d => d.KeyNote).WithMany(p => p.IngredientDetails100gs)
+                .HasForeignKey(d => d.KeyNoteId)
+                .HasConstraintName("FK_IngredientDetails100g_KeyNote");
+
             entity.HasOne(d => d.TypeOfCalculation).WithMany(p => p.IngredientDetails100gs)
                 .HasForeignKey(d => d.TypeOfCalculationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -441,6 +445,7 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.ToTable("MealSettingsDetails", "UserData");
 
+            entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Size).HasMaxLength(50);
             entity.Property(e => e.TypeFavoriteFood).HasMaxLength(50);
 

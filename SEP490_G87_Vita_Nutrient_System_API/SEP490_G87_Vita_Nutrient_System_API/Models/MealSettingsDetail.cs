@@ -31,6 +31,8 @@ public partial class MealSettingsDetail
 
     public short? CookingDifficultyId { get; set; }
 
+    public string? Name { get; set; }
+
     public virtual CookingDifficulty? CookingDifficulty { get; set; }
 
     public virtual DayOfTheWeek? DayOfTheWeek { get; set; }

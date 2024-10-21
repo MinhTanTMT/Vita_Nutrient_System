@@ -52,6 +52,27 @@
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
+    "Method": "APIGetAllTransactionsSystemForGraphData",
+    "RelativePath": "api/BankPayment/APIGetAllTransactionsSystemForGraphData",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "userMainId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
     "Method": "APIGetAllTransactionsSystemOfMonth",
     "RelativePath": "api/BankPayment/APIGetAllTransactionsSystemOfMonth",
     "HttpMethod": "GET",
@@ -121,6 +142,16 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
+    "Method": "APISendMail",
+    "RelativePath": "api/BankPayment/APISendMail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.BankPaymentController",
