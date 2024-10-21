@@ -5,6 +5,7 @@
     List<User> listUsers = ViewBag.listUsers;
     int currentPage = ViewBag.CurrentPage;
     int totalPages = ViewBag.TotalPages;
+    string searchQuery = ViewBag.SearchQuery;
 }
 
 <div class="row" style="width: 100%;">
@@ -12,6 +13,19 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">List Users</h4>
+
+                <!-- Search form -->
+                <form method="get" action="@Url.Action("ListUser", "Admin")" style="padding: 8px 10px;">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
+                        <div class="input-group-append">
+                            <button class="btn btn-success btn-fw" type="submit">
+                                <i class="mdi mdi-magnify"></i>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
 
                 @if (listUsers == null || listUsers.Count == 0)
                 {

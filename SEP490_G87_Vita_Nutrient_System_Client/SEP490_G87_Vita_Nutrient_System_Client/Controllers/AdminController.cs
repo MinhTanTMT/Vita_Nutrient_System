@@ -149,7 +149,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ///
 
         [HttpGet("admin/usermanagement/listuser")]
-        public async Task<IActionResult> ListUser(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> ListUser(int page = 1, int pageSize = 10, string searchQuery = "")
         {
             try
             {
@@ -214,6 +214,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         ).ToList();
 
                     users = users.Concat( premiumUsers ).ToList();
+
+                    // Search logic
+                    if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        users = users.Where(u =>
+                            (u.FirstName + " " + u.LastName).ToLower().Contains(searchQuery.ToLower())
+                        ).ToList();
+                    }
 
                     // Pagination logic
                     int totalUsers = users.Count();
