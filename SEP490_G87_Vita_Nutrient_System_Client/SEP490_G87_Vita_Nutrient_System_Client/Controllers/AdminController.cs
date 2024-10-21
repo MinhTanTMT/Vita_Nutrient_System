@@ -91,7 +91,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetAllTransactionsSystem?userMainId=1");
+                //https://localhost:7045/api/BankPayment/APIGetAllTransactionsSystemOfMonth?month=10&year=2023&userMainId=1
+                int month = DateTime.Now.Month;
+                int year = DateTime.Now.Year;
+                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetAllTransactionsSystemOfMonth?month={month}&year={year}&userMainId=1");
 
                 if (res.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -102,6 +105,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var MoneyInThisMonth = transactionsSystemData.Sum(t => t.AmountIn ?? 0);
                     var MoneyOutThisMonth = transactionsSystemData.Sum(x => x.AmountOut ?? 0);
                     var BalanceThisMonth = MoneyInThisMonth - MoneyOutThisMonth;
+
+                    
+
+                    for (int getMonth = 1; getMonth <= 12; getMonth++)
+                    {
+                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetAllTransactionsSystemOfMonth?month={getMonth}&year={year}&userMainId=1");
+
+
+                    }
+
+
 
                     ViewBag.MoneyInThisMonth = MoneyInThisMonth;
                     ViewBag.MoneyOutThisMonth = MoneyOutThisMonth;

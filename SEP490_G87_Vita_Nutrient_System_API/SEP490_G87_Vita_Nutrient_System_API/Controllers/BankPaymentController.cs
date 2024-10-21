@@ -64,11 +64,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
         
         
-        [HttpGet("APIGetAllTransactionsSystem")]
-        public async Task<ActionResult<IEnumerable<TransactionsSystem>>> APIGetAllTransactionsSystem(int userMainId)
+        [HttpGet("APIGetAllTransactionsSystemOfMonth")]
+        public async Task<ActionResult<IEnumerable<TransactionsSystem>>> APIGetAllTransactionsSystemOfMonth(int month, int year, int userMainId)
         {
-
-            IEnumerable<TransactionsSystem> transactionsSystems = await repositories.GetAllTransactionsSystem(userMainId);
+            IEnumerable<TransactionsSystem> transactionsSystems = await repositories.GetAllTransactionsSystemOfMonth( month, year, userMainId);
 
             if (transactionsSystems.Count() > 0)
             {
