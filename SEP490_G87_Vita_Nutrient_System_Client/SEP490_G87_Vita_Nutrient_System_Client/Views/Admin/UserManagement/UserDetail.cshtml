@@ -94,12 +94,12 @@
                         <div class="form-group gender">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_male" value="1" checked> Male <i class="input-helper"></i>
+                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(user.Gender is null ? "checked" : (bool)user.Gender ? "checked" : "")> Male <i class="input-helper"></i>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_female" value="0"> Female <i class="input-helper"></i>
+                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(user.Gender is null ? "" : (bool)user.Gender ? "" : "checked")> Female<i class="input-helper"></i>
                                 </label>
                             </div>
                         </div>

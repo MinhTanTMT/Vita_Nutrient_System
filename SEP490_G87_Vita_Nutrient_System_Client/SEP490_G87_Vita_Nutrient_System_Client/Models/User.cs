@@ -29,6 +29,7 @@ public partial class User
 
 	public string Account { get; set; } = null!;
     public virtual UserDetail? UserDetail { get; set; }
+    public virtual NutritionistDetail? NutritionistDetail { get; set; }
     public virtual UserRole? UserRole { get; set; }
 
 }

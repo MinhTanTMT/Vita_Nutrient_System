@@ -238,7 +238,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 //get user
                 HttpResponseMessage response =
-                    await client.GetAsync(client.BaseAddress + "/Users/GetUserDetailInfo/" + userId);
+                    await client.GetAsync(client.BaseAddress + "/Users/GetUserDetail/" + userId);
 
                 if(response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -346,7 +346,68 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet("admin/nutritionistmanagement/nutritionistdetail/{nutritionistId}")]
+        public async Task<IActionResult> NutritionistDetail(int nutritionistId)
+        {
+            try
+            {
+                //get nutritionist
+                HttpResponseMessage response =
+                    await client.GetAsync(client.BaseAddress + "/Users/GetNutritionistDetail/" + nutritionistId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                    User nutritionist = new()
+                    {
+                        UserId = userData.id,
+                        FirstName = userData.firstName,
+                        LastName = userData.lastName,
+                        Urlimage = userData.urlimage,
+                        Dob = userData.dob,
+                        Gender = userData.gender ?? false,
+                        Address = userData.address,
+                        Phone = userData.phone,
+                        UserRole = new UserRole
+                        {
+                            RoleId = userData.role.roleId,
+                            RoleName = userData.role.roleName,
+                        },
+                        NutritionistDetail = new NutritionistDetail
+                        {
+                            NutritionistId = userData.id,
+                            DescribeYourself = userData.detailsInformation.description,
+                            Height = userData.detailsInformation.height,
+                            Weight = userData.detailsInformation.weight,
+                            Age = userData.detailsInformation.age,
+                            Rate = userData.detailsInformation.rate,
+                            NumberRate = userData.detailsInformation.numberRate,
+                        },
+                        IsActive = userData.isActive,
+                        Account = userData.account,
+                    };
+
+                    ViewBag.nutritionist = nutritionist;
+
+                    return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get nutritionist detail information! Please try again!";
+                    return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
+                }
+            }
+            catch (Exception)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
+            }
+        }
+
+            [HttpPost]
         public async Task<IActionResult> UpdateUserStatus(int userId, int status)
         {
             try
