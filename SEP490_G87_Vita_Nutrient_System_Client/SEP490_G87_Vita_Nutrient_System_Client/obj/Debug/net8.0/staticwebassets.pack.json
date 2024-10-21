@@ -257,6 +257,14 @@
       "PackagePath": "staticwebassets\\images\\logo.svg"
     },
     {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\paybank\\logo-bank2.jpg",
+      "PackagePath": "staticwebassets\\images\\paybank\\logo-bank2.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\paybank\\logo-mbbank.jpg",
+      "PackagePath": "staticwebassets\\images\\paybank\\logo-mbbank.jpg"
+    },
+    {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\sprites\\blue.png",
       "PackagePath": "staticwebassets\\images\\sprites\\blue.png"
     },

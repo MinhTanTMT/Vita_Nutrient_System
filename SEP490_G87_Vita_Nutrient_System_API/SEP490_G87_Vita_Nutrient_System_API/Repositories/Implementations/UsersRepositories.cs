@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 
@@ -80,7 +81,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-
         ////////////////////////////////////////////////////////////
         /// Dũng
         ////////////////////////////////////////////////////////////
@@ -104,10 +104,49 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Sơn
         ////////////////////////////////////////////////////////////
         ///
+        public IQueryable<User> GetAllUsers()
+        {
+            return _context.Users;
+        }
 
+        public IQueryable<User> GetUsersByRole(int roleId)
+        {
+            return _context.Users.Where(u => u.Role == roleId);
+        }
 
+        public User? GetUserDetailsInfo(int id)
+        {
+            var user = _context.Users
+                .Include(u => u.RoleNavigation)
+                .Include(u => u.UserDetail)
+                .FirstOrDefault(u => u.UserId == id);
 
+            if (user.Role != (int)UserRole.USERPREMIUM && user.Role != (int)UserRole.USER)
+                return null;
 
+                return user;
+        }
+
+        public User? GetNutritionistDetailsInfo(int id)
+        {
+            var nutritionist = _context.Users
+                .Include(u => u.RoleNavigation)
+                .Include(u => u.NutritionistDetail)
+                .FirstOrDefault(u => u.UserId == id);
+
+            if (nutritionist.Role != (int)UserRole.NUTRITIONIST)
+                return null;
+
+            return nutritionist;
+        }
+
+        public void UpdateUser(User user)
+        {
+            _context.Entry<User>(user).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        
 
         ////////////////////////////////////////////////////////////
         /// Tùng
