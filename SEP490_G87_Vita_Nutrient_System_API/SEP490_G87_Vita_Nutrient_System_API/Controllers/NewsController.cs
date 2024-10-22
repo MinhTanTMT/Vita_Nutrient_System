@@ -41,14 +41,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateArticle([FromBody] ArticlesNewsDTO articleDto)
         {
-            if (articleDto == null)
+            if (articleDto == null || !ModelState.IsValid)
             {
-                return BadRequest("Article data is required.");
+                return BadRequest("Dữ liệu bài viết không hợp lệ.");
+            }
+
+            if (articleDto.UserId == 0)
+            {
+                return BadRequest("UserId không hợp lệ.");
             }
 
             await _newsRepositories.CreateArticleAsync(articleDto);
             return CreatedAtAction(nameof(GetArticleById), new { id = articleDto.Id }, articleDto);
         }
+
+
 
         // PUT: api/news/{id}
         [HttpPut("{id}")]
@@ -59,9 +66,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return BadRequest("Article ID mismatch.");
             }
 
-            await _newsRepositories.UpdateArticleAsync(articleDto);
+            try
+            {
+                await _newsRepositories.UpdateArticleAsync(articleDto);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Không tìm thấy bài viết.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi cập nhật bài viết: {ex.Message}");
+            }
+
             return NoContent();
         }
+
 
         // DELETE: api/news/{id}
         [HttpDelete("{id}")]

@@ -1,6 +1,6 @@
-﻿namespace SEP490_G87_Vita_Nutrient_System_API.Dtos
+﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
-    public class ArticlesNewsDTO
+    public class ArticlesNews
     {
         public int Id { get; set; }
 
@@ -17,6 +17,6 @@
         public DateTime? DateCreated { get; set; }
 
         public string? HeaderImage { get; set; }
-        
+
     }
 }
