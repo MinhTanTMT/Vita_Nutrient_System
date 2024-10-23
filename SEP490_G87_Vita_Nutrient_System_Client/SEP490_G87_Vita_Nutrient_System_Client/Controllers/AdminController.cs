@@ -170,7 +170,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ///
 
         [HttpGet("admin/usermanagement/listuser")]
-        public async Task<IActionResult> ListUser()
+        public async Task<IActionResult> ListUser(int page = 1, int pageSize = 10, string searchQuery = "")
         {
             try
             {
@@ -236,7 +236,21 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     users = users.Concat( premiumUsers ).ToList();
 
-                    ViewBag.listUsers = users;
+                    // Search logic
+                    if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        users = users.Where(u =>
+                            (u.FirstName + " " + u.LastName).ToLower().Contains(searchQuery.ToLower())
+                        ).ToList();
+                    }
+
+                    // Pagination logic
+                    int totalUsers = users.Count();
+                    var paginatedUsers = users.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    ViewBag.listUsers = paginatedUsers;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
                 }
                 else
                 {
@@ -259,7 +273,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 //get user
                 HttpResponseMessage response =
-                    await client.GetAsync(client.BaseAddress + "/Users/GetUserDetailInfo/" + userId);
+                    await client.GetAsync(client.BaseAddress + "/Users/GetUserDetail/" + userId);
 
                 if(response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -317,7 +331,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet("admin/nutritionistmanagement/listnutritionist")]
-        public async Task<IActionResult> ListNutritionist()
+        public async Task<IActionResult> ListNutritionist(int page = 1, int pageSize = 10, string searchQuery = "")
         {
             try
             {
@@ -351,7 +365,21 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                             Account = ud.account,
                         }).ToList();
 
-                    ViewBag.listNutritionists = nutritionists;
+                    // Search logic
+                    if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        nutritionists = nutritionists.Where(u =>
+                            (u.FirstName + " " + u.LastName).ToLower().Contains(searchQuery.ToLower())
+                        ).ToList();
+                    }
+
+                    // Pagination logic
+                    int totalNutritionists = nutritionists.Count();
+                    var paginatedNutritionists = nutritionists.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    ViewBag.listNutritionists = paginatedNutritionists;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = (int)Math.Ceiling(totalNutritionists / (double)pageSize);
                 }
                 else
                 {
@@ -367,7 +395,94 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet("admin/nutritionistmanagement/nutritionistdetail/{nutritionistId}")]
+        public async Task<IActionResult> NutritionistDetail(int nutritionistId)
+        {
+            try
+            {
+                //get nutritionist
+                HttpResponseMessage response =
+                    await client.GetAsync(client.BaseAddress + "/Users/GetNutritionistDetail/" + nutritionistId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                    User nutritionist = new()
+                    {
+                        UserId = userData.id,
+                        FirstName = userData.firstName,
+                        LastName = userData.lastName,
+                        Urlimage = userData.urlimage,
+                        Dob = userData.dob,
+                        Gender = userData.gender ?? false,
+                        Address = userData.address,
+                        Phone = userData.phone,
+                        UserRole = new UserRole
+                        {
+                            RoleId = userData.role.roleId,
+                            RoleName = userData.role.roleName,
+                        },
+                        NutritionistDetail = new NutritionistDetail
+                        {
+                            Id = userData.detailsInformation.id,
+                            NutritionistId = userData.id,
+                            DescribeYourself = userData.detailsInformation.description,
+                            Height = userData.detailsInformation.height,
+                            Weight = userData.detailsInformation.weight,
+                            Age = userData.detailsInformation.age,
+                            Rate = userData.detailsInformation.rate,
+                            NumberRate = userData.detailsInformation.numberRate,
+                        },
+                        IsActive = userData.isActive,
+                        Account = userData.account,
+                    };
+
+                    ViewBag.nutritionist = nutritionist;
+
+                    //get nutritionist expert packages
+                    HttpResponseMessage response1 =
+                        await client.GetAsync(client.BaseAddress + "/Users/GetNutritionistPackages/" + nutritionist.NutritionistDetail.Id);
+
+                    if (response1.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        HttpContent content1 = response1.Content;
+                        string data1 = await content1.ReadAsStringAsync();
+                        List<dynamic> packagesData = JsonConvert.DeserializeObject<List<dynamic>>(data1);
+
+                        List<ExpertPackage> packages = packagesData.Select(
+                            p => new ExpertPackage
+                            {
+                                Id = p.id,
+                                NutritionistDetailsId = p.nutritionistDetailsId,
+                                Name = p.name,
+                                Describe = p.describe,
+                                Price = p.price,
+                                Duration = p.duration
+                            })
+                            .ToList();
+
+                        ViewBag.packages = packages;
+                    }
+
+                    return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get nutritionist detail information! Please try again!";
+                    return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
+                }
+            }
+            catch (Exception)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
+            }
+        }
+
+            [HttpPost]
         public async Task<IActionResult> UpdateUserStatus(int userId, int status)
         {
             try

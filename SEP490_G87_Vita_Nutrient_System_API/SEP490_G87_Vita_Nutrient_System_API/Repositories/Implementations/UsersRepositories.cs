@@ -107,12 +107,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         ///
         public IQueryable<User> GetAllUsers()
         {
-            return _context.Users;
+            return _context.Users.Include(u => u.RoleNavigation);
         }
 
         public IQueryable<User> GetUsersByRole(int roleId)
         {
-            return _context.Users.Where(u => u.Role == roleId);
+            return _context.Users.Include(u => u.RoleNavigation).Where(u => u.Role == roleId);
         }
 
         public User? GetUserDetailsInfo(int id)
@@ -147,7 +147,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.SaveChanges();
         }
 
-        
+        public IQueryable<ExpertPackage> GetNutritionistPackages(int id)
+        {
+            return _context.ExpertPackages.Where(p => p.NutritionistDetailsId == id);
+        }
+
+
 
         ////////////////////////////////////////////////////////////
         /// Tùng
