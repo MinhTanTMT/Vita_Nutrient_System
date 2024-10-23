@@ -99,36 +99,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APISendMail")]
         public async Task<ActionResult<dynamic>> APISendMail()
         {
-            Random random = new Random();
-            int otp;
-
-            otp = random.Next(100000, 1000000);
-
-            var fromAddress = new MailAddress("minhtantmt2k2@gmail.com");//mail dung de gui ma otp
-            var tpAddress = new MailAddress("tantmhe161872@fpt.edu.vn"); //mail dung dc nhan ma otp
-            const string frompass = "wwkp yrds qxvc pcvt";
-            const string subject = "OPT code";
-            string body = otp.ToString();
-
-            var smtp = new SmtpClient
-            {
-                Host = "smtp.gmail.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(fromAddress.Address, frompass),
-                Timeout = 290009
-            };
-            using (var message = new MailMessage(fromAddress, tpAddress)
-            {
-                Subject = subject,
-                Body = body,
-            })
-            {
-                smtp.Send(message);
-            }
-            return Ok();
+            return Ok(repositories.SendMail());
         }
     }
 }

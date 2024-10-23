@@ -2,6 +2,6 @@
 {
     public class IMealRepositories
     {
-        dynamic GetListMeal()
+
     }
 }
