@@ -5,6 +5,14 @@
       "PackagePath": "staticwebassets\\SEP490_G87_Vita_Nutrient_System_Client.bundle.scp.css"
     },
     {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\listUser.css",
+      "PackagePath": "staticwebassets\\css\\listUser.css"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\nutritionistDetail.css",
+      "PackagePath": "staticwebassets\\css\\nutritionistDetail.css"
+    },
+    {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
@@ -115,6 +123,10 @@
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\dashboard\\img_4.jpg",
       "PackagePath": "staticwebassets\\images\\dashboard\\img_4.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\default_avatar.png",
+      "PackagePath": "staticwebassets\\images\\default_avatar.png"
     },
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\faces-clipart\\pic-1.png",

@@ -1,11 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Linq;
+using NuGet.Configuration;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -16,12 +20,82 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
 
+        private static Random random = new Random();
+        public async Task<int> GetRandomFoodId(List<int> idFoodListSystem, List<int> selectedIds)
+        {
+            // Tạo một danh sách các phần tử chưa được chọn
+            List<int> availableIds = new List<int>(idFoodListSystem);
+            availableIds.RemoveAll(id => selectedIds.Contains(id)); // Xóa các id đã chọn
+
+            if (availableIds.Count == 0)
+            {
+                throw new InvalidOperationException("Không còn id nào để chọn.");
+            }
+
+            int randomIndex = random.Next(availableIds.Count);
+            return availableIds[randomIndex];
+        }
+
+        public async Task<dynamic> GetTheListOfDishesByMealSettingsDetails(int MealSettingsDetailsId)
+        {
+
+            List<int> idFoodListSystem = await _context.FoodLists.Select(x => x.FoodListId).ToListAsync();
+            MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
+            List<FoodListDTO> collectionOfDishes = new List<FoodListDTO>();
+
+            bool foragingLoop = true;
+            int loopCount = 0;
+            while (foragingLoop)
+            {
+                List<int> selectedIds = new List<int>();
+                loopCount++;
+                foreach (int idGet in idFoodListSystem)
+                {
+                    int randomId = await GetRandomFoodId(idFoodListSystem, selectedIds);
+                    selectedIds.Add(randomId);
+                    if (collectionOfDishes.Count() == 0)
+                    {
+                        FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
+                        if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                        {
+                            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay.txt", DateTime.Now + "");
+                            collectionOfDishes.Add(foodObtained);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (await CheckForUserMealSettingsDetails(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
+                        {
+                            FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
+                            if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                            {
+                                collectionOfDishes.Add(foodObtained);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
+                {
+                    foragingLoop = false;
+                }
+                if (loopCount == (mealSettingsDetail.NumberOfDishes ?? 1))
+                {
+                    foragingLoop = false;
+                }
+            }
+
+            return collectionOfDishes;
+        }
+
         public async Task<bool> CheckForUserMealSettingsDetails(FoodListDTO dataFood, int MealSettingsDetailsId)
         {
             MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
 
             string[] result = await SplitAndProcessFirst(dataFood.KeyNote.KeyList);
 
+            
             foreach (var item in result)
             {
 
@@ -53,13 +127,60 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     }
                 }
             }
-            
+
+            if (mealSettingsDetail.CookingDifficultyId != dataFood.CookingDifficultyId) return false;
+            if (mealSettingsDetail.TimeAvailable < (dataFood.PreparationTime + dataFood.CookingTime)) return false;
+
+            double calorieTolerance;
+            double carbTolerance;
+            double fatTolerance;
+            double proteinTolerance;
+            double fiberTolerance;
+            double sodiumTolerance;
+            double cholesterolTolerance;
+
+            if (mealSettingsDetail.NutritionFocus ?? true)
+            {
+                calorieTolerance = 0.1;
+                carbTolerance = 0.0;
+                fatTolerance = 0.0;
+                proteinTolerance = 0.0;
+                fiberTolerance = 0.0;
+                sodiumTolerance = 0.0;
+                cholesterolTolerance = 0.0;
+            }
+            else
+            {
+                calorieTolerance = 0.1; // 10%
+                carbTolerance = 0.15; // 15%
+                fatTolerance = 0.1; // 10%
+                proteinTolerance = 0.1; // 10%
+                fiberTolerance = 0.15; // 15%
+                sodiumTolerance = 0.1; // 10%
+                cholesterolTolerance = 0.1; // 10%
+            }
+
             NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
+            if (dataFood.ingredientDetails100gReduceDTO.Energy < nutritionTargetsDaily.Calories * (1 - calorieTolerance) || dataFood.ingredientDetails100gReduceDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
+            if (dataFood.ingredientDetails100gReduceDTO.Carbohydrate < nutritionTargetsDaily.CarbsMin * (1 - carbTolerance) || dataFood.ingredientDetails100gReduceDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
+            if (dataFood.ingredientDetails100gReduceDTO.Fat < nutritionTargetsDaily.FatsMin * (1 - fatTolerance) || dataFood.ingredientDetails100gReduceDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
+            if (dataFood.ingredientDetails100gReduceDTO.Protein < nutritionTargetsDaily.ProteinMin * (1 - proteinTolerance) || dataFood.ingredientDetails100gReduceDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
+            if (dataFood.ingredientDetails100gReduceDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
 
+            double targetSodium = 2300;
+            double targetCholesterol = 300;
+            if (nutritionTargetsDaily.LimitDailySodium ?? false) { }
+            else
+            {
+                if (dataFood.ingredientDetails100gReduceDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
+            }
+            if (nutritionTargetsDaily.LimitDailyCholesterol ?? false) { }
+            else
+            {  
+                if (dataFood.ingredientDetails100gReduceDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
+            }
 
-            // code sau
-
-
+            
             return true;
         }
 
@@ -135,7 +256,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     TypeOfCalculationId = -1,
                     Energy = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Energy),
                     Protein = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Protein),
-                    Fat = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Energy),
+                    Fat = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Fat),
                     Carbohydrate = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Carbohydrate),
                     Fiber = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Fiber),
                     Sodium = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Sodium),
