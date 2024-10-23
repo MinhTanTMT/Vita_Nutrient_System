@@ -19,7 +19,7 @@ public partial class FoodSelectionDTO
 
     public bool? IsLike { get; set; }
 
-    public virtual FoodListDTO FoodList { get; set; } = null!;
+    //public virtual FoodListDTO FoodList { get; set; } = null!;
 
     //public virtual RecurringSetting? Recurring { get; set; }
 

@@ -189,9 +189,9 @@ public partial class IngredientDetails100gDTO
 
     public double? Serin { get; set; }
 
-    public virtual KeyNoteDTO? KeyNote { get; set; }
+    //public virtual KeyNoteDTO? KeyNote { get; set; }
 
-    public virtual ICollection<ScaleAmountDTO> ScaleAmounts { get; set; } = new List<ScaleAmountDTO>();
+    //public virtual ICollection<ScaleAmountDTO> ScaleAmounts { get; set; } = new List<ScaleAmountDTO>();
 
-    public virtual TypeOfCalculationDTO TypeOfCalculationDTO { get; set; } = null!;
+    //public virtual TypeOfCalculationDTO TypeOfCalculationDTO { get; set; } = null!;
 }

@@ -9,7 +9,4 @@ public partial class KeyNoteDTO
 
     public string? KeyList { get; set; }
 
-    public virtual ICollection<FoodListDTO> FoodLists { get; set; } = new List<FoodListDTO>();
-
-    public virtual ICollection<IngredientDetails100gDTO> IngredientDetails100gs { get; set; } = new List<IngredientDetails100gDTO>();
 }

@@ -7,6 +7,9 @@ using SEP490_G87_Vita_Nutrient_System_API.Mapper;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
@@ -27,49 +30,89 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-
         [HttpGet("APGenerateMealController")]
         public async Task<IActionResult> APIGenerateMealController()
         {
 
-            //List<FoodList> foodLists;
 
-            var result = _context.FoodLists
-            .GroupJoin(
-                _context.ScaleAmounts,
-                fl => fl.FoodListId,
-                sa => sa.FoodListId,
-                (fl, saList) => new
-                {
-                    FoodListId = fl.FoodListId,
-                    FoodListName = fl.Name,
-                    ScaleAmounts = saList.Select(sa => new
-                    {
-                        sa.FoodListId,
-                        sa.IngredientDetailsId,
-                        sa.ScaleAmount1,
-                        IngredientDetails = sa.FoodList.Name // Truy cập IngredientDetails100g
-                    }).ToList()
-                })
-            .ToList().Select(data => new FoodListDTO
+            return Ok(0);
+        }
+
+
+
+
+        ///// <summary>
+        ///// test Check Split
+        ///// </summary>
+        ///// <returns></returns>
+                [HttpGet("APGenerateMealController")]
+        public async Task<IActionResult> APIGenerateMealController()
+        {
+
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            MealSettingsDetailDTO mealSettingsDetail = new MealSettingsDetailDTO()
             {
-                FoodListId = data.FoodListId,
-                Name = data.FoodListName,
-                ScaleAmounts = data.ScaleAmounts
-            .Select(sa => mapper.Map<ScaleAmountDTO>(sa))
-            .ToList()
-            }).ToList(); ;
+                Size = "Bữa lớn",
+                WantCookingId = 1,
+                TypeFavoriteFood = "2"
+            };
 
 
 
 
-            //if (foodLists == null)
-            //{
-            //    return NotFound(); // Response with status code: 404
-            //}
-            //List<FoodListDTO> foodListsDTOs = foodLists.Select(p => mapper.Map<FoodList, FoodListDTO>(p)).ToList();
+            string[] result = await generateMealRepositories.SplitAndProcessFirst("#WantCooking=1#SlotOfTheDay:1;2;#Size=Bữa lớn");
 
-            return Ok(result);
+            string checkKQ = "Null";
+
+            foreach (var item in result)
+            {
+
+                if (item.Contains("="))
+                {
+                    Dictionary<string, string> dataProcess1 = await generateMealRepositories.SplitAndProcess1(item);
+
+                    if (generateMealRepositories.IsNumeric(dataProcess1.Values.FirstOrDefault().ToString()))
+                    {
+                        if (dataProcess1.Keys.FirstOrDefault().Equals("WantCooking"))
+                        {
+                            if (dataProcess1.Values.FirstOrDefault().Equals(mealSettingsDetail.WantCookingId.ToString()))
+                            {
+                                checkKQ += "OK2" + mealSettingsDetail.WantCookingId;
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (dataProcess1.Keys.FirstOrDefault().Equals("Size"))
+                        {
+
+                            //return Ok(dataProcess1.Keys.FirstOrDefault().Equals("Size"));
+
+
+                            if (dataProcess1.Values.FirstOrDefault().Equals(mealSettingsDetail.Size))
+                            {
+                                checkKQ += "OK1" + mealSettingsDetail.Size;
+                            }
+                        }
+                    }
+                }
+                if (item.Contains(":"))
+                {
+                    Dictionary<string, int[]> dataProcess2 = await generateMealRepositories.SplitAndProcess2(item);
+                    if (dataProcess2.Keys.FirstOrDefault().Equals("SlotOfTheDay"))
+                    {
+                        if (dataProcess2.Values.FirstOrDefault().Contains(Int32.Parse(mealSettingsDetail.TypeFavoriteFood)))
+                        {
+                            checkKQ += "OK3" + mealSettingsDetail.TypeFavoriteFood;
+                        };
+                    }
+                }
+            }
+
+            return Ok(checkKQ);
+
         }
 
     }

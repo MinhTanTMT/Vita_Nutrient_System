@@ -29,11 +29,15 @@ public partial class FoodListDTO
     public short? CookingTime { get; set; }
 
     public short? CookingDifficultyId { get; set; }
-    public virtual CookingDifficultyDTO? CookingDifficulty { get; set; }
 
-    public virtual ICollection<FoodAndDiseaseDTO> FoodAndDiseases { get; set; } = new List<FoodAndDiseaseDTO>();
+    public virtual IngredientDetails100gReduceDTO ingredientDetails100gReduceDTO { get; set; } = null!;
+    public virtual ScaleAmountDTO ScaleAmounts { get; set; } = null!;
 
-    public virtual ICollection<FoodSelectionDTO> FoodSelections { get; set; } = new List<FoodSelectionDTO>();
+    //public virtual CookingDifficultyDTO? CookingDifficulty { get; set; }
+
+    //public virtual ICollection<FoodAndDiseaseDTO> FoodAndDiseases { get; set; } = new List<FoodAndDiseaseDTO>();
+
+    //public virtual ICollection<FoodSelectionDTO> FoodSelections { get; set; } = new List<FoodSelectionDTO>();
 
     //public virtual FoodType FoodType { get; set; } = null!;
 
@@ -41,7 +45,7 @@ public partial class FoodListDTO
 
     //public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
 
-    public virtual ICollection<ScaleAmountDTO> ScaleAmounts { get; set; } = new List<ScaleAmountDTO>();
+    //public virtual ICollection<ScaleAmountDTO> ScaleAmounts { get; set; } = new List<ScaleAmountDTO>();
 
 
 }

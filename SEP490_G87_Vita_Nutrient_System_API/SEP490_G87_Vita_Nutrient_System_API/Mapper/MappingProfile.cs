@@ -10,7 +10,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
         public MappingProfile()
         {
             CreateMap<FoodList, FoodListDTO>();
-            CreateMap<CookingDifficulty, CookingDifficultyDTO>();
+            CreateMap<KeyNote, KeyNoteDTO>();
+            CreateMap<FoodType, FoodTypeDTO>();
+            CreateMap<ScaleAmount, ScaleAmountDTO>();
             CreateMap<IngredientDetails100g, IngredientDetails100gDTO>();
         }
 

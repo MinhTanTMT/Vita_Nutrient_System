@@ -13,5 +13,4 @@ public partial class FoodAndDiseaseDTO {
 
     public bool? IsGoodOrBad { get; set; }
 
-    public virtual FoodListDTO FoodList { get; set; } = null!;
 }

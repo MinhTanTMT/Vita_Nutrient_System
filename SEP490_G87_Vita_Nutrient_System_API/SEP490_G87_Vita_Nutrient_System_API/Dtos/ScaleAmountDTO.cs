@@ -11,7 +11,7 @@ public partial class ScaleAmountDTO
 
     public double? ScaleAmount1 { get; set; }
 
-    public virtual IngredientDetails100gDTO FoodList { get; set; } = null!;
+    //public virtual IngredientDetails100gDTO FoodList { get; set; } = null!;
 
-    public virtual FoodListDTO IngredientDetails { get; set; } = null!;
+    //public virtual FoodListDTO IngredientDetails { get; set; } = null!;
 }
