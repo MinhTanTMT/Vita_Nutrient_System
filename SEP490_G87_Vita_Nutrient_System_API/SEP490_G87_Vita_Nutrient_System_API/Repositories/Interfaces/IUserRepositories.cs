@@ -1,4 +1,5 @@
-﻿using SEP490_G87_Vita_Nutrient_System_API.Models;
+﻿using SEP490_G87_Vita_Nutrient_System_API.DTO.User;
+using SEP490_G87_Vita_Nutrient_System_API.Models;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
 {
@@ -14,6 +15,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         bool CheckExitAccountUser(string account);
         dynamic GetUserRegister(User user);
         dynamic GetUserById(int id);
+        dynamic ChangePassword(ChangePasswordDTO model);
 
 
 

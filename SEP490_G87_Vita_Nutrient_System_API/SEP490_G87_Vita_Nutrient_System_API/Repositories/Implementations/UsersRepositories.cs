@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+using SEP490_G87_Vita_Nutrient_System_API.DTO.User;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 
@@ -81,7 +81,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
-
         ////////////////////////////////////////////////////////////
         /// Dũng
         ////////////////////////////////////////////////////////////
@@ -158,7 +157,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
+        public dynamic ChangePassword(ChangePasswordDTO model)
+        {
+            var user = _context.Users.FirstOrDefault(t => t.Account == model.Account);
+            if(user == null)
+            {
+                throw new ApplicationException("Account does not exist");
+            }
+            if(model.CurrentPassword != user.Password)
+            {
+                throw new ApplicationException("Your current password is not match!");
+            }
+            if(model.NewPassword != model.ConfirmPassword)
+            {
+                throw new ApplicationException("Your new password and confirm password is not match!");
+            }
+            user.Password = model.NewPassword;
+            _context.Update(user);
+            _context.SaveChanges();
 
+            return user;
+        }
 
     }
 }
