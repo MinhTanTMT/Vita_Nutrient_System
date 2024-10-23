@@ -39,7 +39,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public async Task<dynamic> GetTheListOfDishesByMealSettingsDetails(int MealSettingsDetailsId)
         {
 
+            //loc luon kieu thuc an nay 
+            //loc luon check benh
+            // loc luon block mon an
             List<int> idFoodListSystem = await _context.FoodLists.Select(x => x.FoodListId).ToListAsync();
+
+
+
             MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
             List<FoodListDTO> collectionOfDishes = new List<FoodListDTO>();
 
@@ -85,6 +91,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     foragingLoop = false;
                 }
             }
+
+
+            
+
+
+
 
             return collectionOfDishes;
         }
