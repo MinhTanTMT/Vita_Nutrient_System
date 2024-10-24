@@ -15,8 +15,6 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
     {
     }
 
-    /*public virtual DbSet<ArticleImage> ArticleImages { get; set; }*/
-
     public virtual DbSet<ArticlesNews> ArticlesNews { get; set; }
 
     public virtual DbSet<BankInformation> BankInformations { get; set; }
@@ -86,27 +84,11 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
     public virtual DbSet<WantCooking> WantCookings { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var ConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("value");
-        optionsBuilder.UseSqlServer(ConnectionString);
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        /*modelBuilder.Entity<ArticleImage>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__ArticleI__3214EC07F7E6125D");
-
-            entity.ToTable("ArticleImages", "Business");
-
-            entity.Property(e => e.ImagePath).HasMaxLength(255);
-
-            entity.HasOne(d => d.Article).WithMany(p => p.ArticleImages)
-                .HasForeignKey(d => d.ArticleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ArticleIm__Artic__719CDDE7");
-        });*/
-
         modelBuilder.Entity<ArticlesNews>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Articles__3214EC074497A950");
@@ -617,7 +599,7 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<ScaleAmount>(entity =>
         {
-            entity.HasKey(e => new { e.FoodListId, e.IngredientDetailsId }).HasName("PK__ScaleAmo__8F2BA49ADDA01A2A");
+            entity.HasKey(e => new { e.FoodListId, e.IngredientDetailsId }).HasName("PK__ScaleAmo__8F2BA49A1C1CDB9C");
 
             entity.ToTable("ScaleAmount", "FoodData");
 
@@ -626,12 +608,12 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.HasOne(d => d.FoodList).WithMany(p => p.ScaleAmounts)
                 .HasForeignKey(d => d.FoodListId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ScaleAmou__FoodL__19DFD96B");
+                .HasConstraintName("FK__ScaleAmou__FoodL__756D6ECB");
 
             entity.HasOne(d => d.IngredientDetails).WithMany(p => p.ScaleAmounts)
                 .HasForeignKey(d => d.IngredientDetailsId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ScaleAmou__Ingre__1AD3FDA4");
+                .HasConstraintName("FK__ScaleAmou__Ingre__76619304");
         });
 
         modelBuilder.Entity<SlotOfTheDay>(entity =>
