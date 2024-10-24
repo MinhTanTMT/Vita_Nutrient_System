@@ -23,117 +23,181 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         private static Random random = new Random();
 
-        public async Task<IEnumerable<int>> FilterTheTypeDiseaseBlockList(NutritionTargetsDaily nutritionTargetsDaily)
+        public async Task<bool> CheckOfFilterTheTypeDiseaseBlockListAvoidIngredient(FoodList FoodSystemInput, NutritionTargetsDaily nutritionTargetsDaily ,int idUser)
         {
-            IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant).ToListAsync();
 
-            List<int> idFoodListSystem = new List<int>();
+            if(FoodSystemInput.FoodTypeId != nutritionTargetsDaily.FoodTypeIdWant) return false;
 
-            foreach (var item in idFoodListSystemFilterDishType)
+            FoodSelection foodSelection = await _context.FoodSelections.FirstOrDefaultAsync(x => x.FoodListId == FoodSystemInput.FoodListId && x.UserId == idUser);
+            if (foodSelection != null)
             {
-                FoodSelection foodSelection = await _context.FoodSelections.FirstOrDefaultAsync(x => x.FoodListId == item.FoodListId && x.UserId == nutritionTargetsDaily.UserId);
-                if (foodSelection == null || (!foodSelection.IsBlock ?? false))
-                {
-                    UserDetail userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == nutritionTargetsDaily.UserId);
-                    if (userDetail != null && userDetail.UnderlyingDisease != null)
-                    {
-                        int[] idListDiseaseOfUser = await SplitAndProcess3(userDetail.UnderlyingDisease);
-                        foreach (var item1 in idListDiseaseOfUser)
-                        {
-                            FoodAndDisease foodAndDisease = await _context.FoodAndDiseases.FirstOrDefaultAsync(x => x.FoodListId == item.FoodListId && x.ListOfDiseasesId == item1);
-                            if (foodAndDisease == null || (foodAndDisease.IsGoodOrBad ?? true))
-                            {
-                                idFoodListSystem.Add(item.FoodListId);
-                            }
+                if (foodSelection.IsBlock ?? false) return false;
+            }
 
-                        }
+            UserDetail userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == idUser);
+            if (userDetail == null) return false;
+
+            if(userDetail.UnderlyingDisease != null)
+            {
+                int[] allDiseaseOfUser = await SplitAndProcess3(userDetail.UnderlyingDisease);
+                foreach (var itemIdDisease in allDiseaseOfUser)
+                {
+                    FoodAndDisease foodAndDisease = await _context.FoodAndDiseases.FirstOrDefaultAsync(x => x.FoodListId == FoodSystemInput.FoodListId && x.ListOfDiseasesId == itemIdDisease);
+                    if(foodAndDisease != null)
+                    {
+                        if(!(foodAndDisease.IsGoodOrBad ?? true)) return false;
                     }
                 }
             }
-            return idFoodListSystem;
+
+            int[] allAvoidIngredient = await SplitAndProcess3(nutritionTargetsDaily.AvoidIngredient ?? "-1");
+            foreach (var item in allAvoidIngredient)
+            {
+                ScaleAmount scaleAmount = await _context.ScaleAmounts.FirstOrDefaultAsync(x => x.IngredientDetailsId == item && x.FoodListId == FoodSystemInput.FoodListId);
+                if (scaleAmount != null) return false;
+            }
+            return true;
         }
 
 
-        public async Task<dynamic> GetTheListOfDishesByMealSettingsDetails(int MealSettingsDetailsId)
+        public async Task<IEnumerable<int>> FilterTheTypeDiseaseBlockListAvoidIngredient(NutritionTargetsDaily nutritionTargetsDaily, int idUser)
+        {
+            IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant).ToListAsync();
+
+            List<int> idFoodListSystemCollection = new List<int>();
+
+            foreach (var item in idFoodListSystemFilterDishType)
+            {
+                if (await CheckOfFilterTheTypeDiseaseBlockListAvoidIngredient(item, nutritionTargetsDaily, idUser))
+                {
+                    idFoodListSystemCollection.Add(item.FoodListId);
+                }
+            }
+            return idFoodListSystemCollection;
+        }
+
+
+        public async Task<IEnumerable<FoodListDTO>> GetTheListOfDishesByMealSettingsDetails(int MealSettingsDetailsId)
         {
 
-            //loc luon kieu thuc an nay
-
-
-            // loc luon block mon an
-
-
-            //loc luon check benh
-
-
             MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
-            NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
 
-
-
-
-
-            IEnumerable<int> idFoodListSystem = await FilterTheTypeDiseaseBlockList(nutritionTargetsDaily);
-
-
-            //List<int> idFoodListSystem = _context.FoodLists
-            //.Include(x => x.FoodSelections)
-            //.Include(x => x.FoodAndDiseases)
-            //.Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant
-            //    && (x.FoodSelections.FirstOrDefault(y => y.UserId == 1 && y.FoodListId == 1) == null
-            //        || x.FoodSelections.FirstOrDefault(y => y.UserId == 1 && y.FoodListId == 1).IsBlock == false)
-            //    && (x.FoodAndDiseases.FirstOrDefault(z => z.ListOfDiseasesId == 1 && z.FoodListId == 1) == null
-            //        || x.FoodAndDiseases.FirstOrDefault(z => z.ListOfDiseasesId == 1 && z.FoodListId == 1).IsGoodOrBad == true))
-            //.Select(x => x.FoodListId)
-            //.ToList();
-
-
-            List<FoodListDTO> collectionOfDishes = new List<FoodListDTO>();
-
-            bool foragingLoop = true;
-            int loopCount = 0;
-            while (foragingLoop)
+            if(mealSettingsDetail != null)
             {
-                List<int> selectedIds = new List<int>();
-                loopCount++;
-                foreach (int idGet in idFoodListSystem)
+                NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
+                int idUser;
+
+                if (mealSettingsDetail != null)
                 {
-                    int randomId = await GetRandomFoodId(idFoodListSystem, selectedIds);
-                    selectedIds.Add(randomId);
-                    if (collectionOfDishes.Count() == 0)
+                    nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
+                    MealSetting mealSettings = await _context.MealSettings.FindAsync(mealSettingsDetail.MealSettingsId);
+                    if (mealSettings != null)
                     {
-                        FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
-                        if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
-                        {
-                            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay.txt", DateTime.Now + "");
-                            collectionOfDishes.Add(foodObtained);
-                            break;
-                        }
+                        idUser = mealSettings.UserId;
                     }
                     else
                     {
-                        if (await CheckForUserMealSettingsDetails(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+
+                IEnumerable<int> idFoodListSystem = await FilterTheTypeDiseaseBlockListAvoidIngredient(nutritionTargetsDaily, idUser);
+                List<FoodListDTO> collectionOfDishes = new List<FoodListDTO>();
+
+                bool foragingLoop = true;
+                int loopCount = 0;
+
+                while (foragingLoop)
+                {
+                    List<int> selectedIds = new List<int>();
+                    loopCount++;
+                    foreach (int idGet in idFoodListSystem)
+                    {
+                        int randomId = await GetRandomFoodId(idFoodListSystem, selectedIds);
+                        selectedIds.Add(randomId);
+                        if (collectionOfDishes.Count() == 0)
                         {
                             FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
-                            if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+
+                            if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
                             {
                                 collectionOfDishes.Add(foodObtained);
                                 break;
                             }
+                            else if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                            {
+                                collectionOfDishes.Add(foodObtained);
+                                break;
+                            }
+
+                        }
+                        else
+                        {
+                            if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
+                            {
+                                FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
+                                if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
+                                {
+                                    collectionOfDishes.Add(foodObtained);
+                                    break;
+                                }
+                                else if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                                {
+                                    collectionOfDishes.Add(foodObtained);
+                                    break;
+                                }
+
+                            }else if (await CheckForUserMealSettingsDetails(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
+                            {
+                                FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
+
+                                if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
+                                {
+                                    collectionOfDishes.Add(foodObtained);
+                                    break;
+                                } 
+                                else if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                                {
+                                    collectionOfDishes.Add(foodObtained);
+                                    break;
+                                }
+                            }
                         }
                     }
+                    if (collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
+                    {
+                        FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(collectionOfDishes);
+                        if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                        {
+                            foragingLoop = false;
+                        }
+                        else
+                        {
+                            collectionOfDishes.Clear();
+                        }
+                    }
+                    if (loopCount == (mealSettingsDetail.NumberOfDishes ?? 1)*5)
+                    {
+                        foragingLoop = false;
+                    }
                 }
-                if (collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
-                {
-                    foragingLoop = false;
-                }
-                if (loopCount == (mealSettingsDetail.NumberOfDishes ?? 1))
-                {
-                    foragingLoop = false;
-                }
+                return collectionOfDishes;
             }
-            return collectionOfDishes;
+            else
+            {
+                return null;
+            }
+
+            
         }
+
+
+
+
 
         public async Task<int> GetRandomFoodId(IEnumerable<int> idFoodListSystem, List<int> selectedIds)
         {
@@ -149,6 +213,102 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             int randomIndex = random.Next(availableIds.Count);
             return availableIds[randomIndex];
         }
+
+
+
+        public async Task<bool> CheckForUserMealSettingsDetailsIsSmallerThanNeeded(FoodListDTO dataFood, int MealSettingsDetailsId)
+        {
+            MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
+
+            string[] result = await SplitAndProcessFirst(dataFood.KeyNote.KeyList);
+
+            foreach (var item in result)
+            {
+
+                if (item.Contains("="))
+                {
+                    Dictionary<string, string> dataProcess1 = await SplitAndProcess1(item);
+
+                    if (IsNumeric(dataProcess1.Values.FirstOrDefault().ToString()))
+                    {
+                        if (dataProcess1.Keys.FirstOrDefault().Equals("WantCooking"))
+                        {
+                            if (!dataProcess1.Values.FirstOrDefault().Equals(mealSettingsDetail.WantCookingId.ToString())) return false;
+                        }
+                    }
+                    else
+                    {
+                        if (dataProcess1.Keys.FirstOrDefault().Equals("Size"))
+                        {
+                            if (!dataProcess1.Values.FirstOrDefault().Equals(mealSettingsDetail.Size)) return false;
+                        }
+                    }
+                }
+                if (item.Contains(":"))
+                {
+                    Dictionary<string, int[]> dataProcess2 = await SplitAndProcess2(item);
+                    if (dataProcess2.Keys.FirstOrDefault().Equals("SlotOfTheDay"))
+                    {
+                        if (!dataProcess2.Values.FirstOrDefault().Contains(Int32.Parse(mealSettingsDetail.TypeFavoriteFood))) return false;
+                    }
+                }
+            }
+
+            if (mealSettingsDetail.CookingDifficultyId != dataFood.CookingDifficultyId) return false;
+            if (mealSettingsDetail.TimeAvailable < (dataFood.PreparationTime + dataFood.CookingTime)) return false;
+
+            double calorieTolerance;
+            double carbTolerance;
+            double fatTolerance;
+            double proteinTolerance;
+            double fiberTolerance;
+            double sodiumTolerance;
+            double cholesterolTolerance;
+
+            if (mealSettingsDetail.NutritionFocus ?? true)
+            {
+                calorieTolerance = 0.1;
+                carbTolerance = 0.0;
+                fatTolerance = 0.0;
+                proteinTolerance = 0.0;
+                fiberTolerance = 0.0;
+                sodiumTolerance = 0.0;
+                cholesterolTolerance = 0.0;
+            }
+            else
+            {
+                calorieTolerance = 0.1; // 10%
+                carbTolerance = 0.15; // 15%
+                fatTolerance = 0.1; // 10%
+                proteinTolerance = 0.1; // 10%
+                fiberTolerance = 0.15; // 15%
+                sodiumTolerance = 0.1; // 10%
+                cholesterolTolerance = 0.1; // 10%
+            }
+
+            NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
+            if (dataFood.ingredientDetails100gReduceDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
+            if (dataFood.ingredientDetails100gReduceDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
+            if (dataFood.ingredientDetails100gReduceDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
+            if (dataFood.ingredientDetails100gReduceDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
+            if (dataFood.ingredientDetails100gReduceDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
+
+
+            double targetSodium = 2300;
+            double targetCholesterol = 300;
+            if (nutritionTargetsDaily.LimitDailySodium ?? false) { }
+            else
+            {
+                if (dataFood.ingredientDetails100gReduceDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
+            }
+            if (nutritionTargetsDaily.LimitDailyCholesterol ?? false) { }
+            else
+            {
+                if (dataFood.ingredientDetails100gReduceDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
+            }
+            return true;
+        }
+
 
 
         public async Task<bool> CheckForUserMealSettingsDetails(FoodListDTO dataFood, int MealSettingsDetailsId)
@@ -241,8 +401,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 if (dataFood.ingredientDetails100gReduceDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
             }
-
-
             return true;
         }
 
@@ -348,6 +506,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<IEnumerable<FoodListDTO>> TakeAllTheIngredientsOfTheDish(int idFoodListId)
         {
+
             IEnumerable<FoodListDTO> dataFood = (from scaleAmounts in _context.ScaleAmounts
                                                  join foodLists in _context.FoodLists
             on scaleAmounts.FoodListId equals foodLists.FoodListId
