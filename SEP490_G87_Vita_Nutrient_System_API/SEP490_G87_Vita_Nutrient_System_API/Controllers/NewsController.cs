@@ -52,7 +52,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
 
             await _newsRepositories.CreateArticleAsync(articleDto);
-            return CreatedAtAction(nameof(GetArticleById), new { id = articleDto.Id }, articleDto);
+            return Ok();
         }
 
 
@@ -79,7 +79,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return StatusCode(500, $"Lỗi khi cập nhật bài viết: {ex.Message}");
             }
 
-            return NoContent();
+            return Ok();
         }
 
 
@@ -88,7 +88,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult> DeleteArticle(int id)
         {
             await _newsRepositories.DeleteArticleAsync(id);
-            return NoContent();
+            return Ok();
         }
     }
 }
+    

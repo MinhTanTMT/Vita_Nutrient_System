@@ -10,4 +10,6 @@ public partial class KeyNote
     public string? KeyList { get; set; }
 
     public virtual ICollection<FoodList> FoodLists { get; set; } = new List<FoodList>();
+
+    public virtual ICollection<IngredientDetails100g> IngredientDetails100gs { get; set; } = new List<IngredientDetails100g>();
 }

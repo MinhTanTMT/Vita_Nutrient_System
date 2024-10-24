@@ -1,148 +1,235 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
     public class NewsController : Controller
     {
-        private readonly HttpClient _client;
-        private readonly string _newsApiUrl;
+        private readonly HttpClient client = null;
 
         public NewsController(IConfiguration configuration)
         {
-            var uriBase = configuration.GetValue<string>("myUri");
-            _client = new HttpClient
-            {
-                BaseAddress = new Uri(uriBase)
-            };
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _newsApiUrl = "api/news";
+            Uri URIBase = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<Uri>("myUri");
+            client = new HttpClient();
+            client.BaseAddress = URIBase;
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
-        // GET: /News
+        // GET: List of all articles
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var response = await _client.GetAsync(_newsApiUrl);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var articles = JsonConvert.DeserializeObject<IEnumerable<ArticlesNews>>(jsonData);
-                return View(articles);
+                var response = await client.GetAsync("api/news");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var articles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+                    return View(articles);
+                }
+
+                ModelState.AddModelError(string.Empty, "Error retrieving data from server.");
             }
-            ModelState.AddModelError(string.Empty, "Lỗi khi lấy danh sách bài viết.");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+            }
             return View(new List<ArticlesNews>());
         }
 
-        // GET: /News/Details/{id}
+        // GET: Details of a single article
+        [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var response = await _client.GetAsync($"{_newsApiUrl}/{id}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var article = JsonConvert.DeserializeObject<ArticlesNews>(jsonData);
-                return View(article);
+                var response = await client.GetAsync($"api/news/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
+                    return View(article);
+                }
+
+                return NotFound();
             }
-            ModelState.AddModelError(string.Empty, "Không tìm thấy bài viết.");
-            return NotFound();
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+                return View();
+            }
         }
 
-        // GET: /News/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: /News/Create
+        // POST: Create a new article
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Create(ArticlesNews article)
         {
             if (!ModelState.IsValid)
             {
-                return View(article);
+                return Redirect("Error"); // Trả về view nếu dữ liệu không hợp lệ
             }
 
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(article), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync(_newsApiUrl, jsonContent);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                // Sau khi tạo mới thành công, chuyển hướng về trang Index
-                return RedirectToAction(nameof(Index));
+               /* int userId = int.Parse(User.FindFirst("UserId")?.Value);*/
+                int userId = 1; // Giả sử UserId là 1
+                ArticlesNews createData = new ArticlesNews()
+                {
+                    UserId = userId,
+                    NameCreater = article.NameCreater,
+                    Title = article.Title,
+                    Content = article.Content,
+                    IsActive = article.IsActive,
+                    DateCreated = article.DateCreated,
+                    HeaderImage = article.HeaderImage,
+                };
+
+                // Gửi yêu cầu POST đến API để tạo bài viết
+                HttpResponseMessage response = await client.PostAsJsonAsync(client.BaseAddress + "/news", createData);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
             }
-            // Nếu có lỗi khi tạo mới, hiển thị lỗi trên giao diện
-            var errorContent = await response.Content.ReadAsStringAsync();
-            ModelState.AddModelError(string.Empty, $"Lỗi khi tạo bài viết: {errorContent}");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+            }
+
             return View(article);
         }
 
-        // GET: /News/Edit/{id}
+        // GET: Edit an article by id
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _client.GetAsync($"{_newsApiUrl}/{id}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var article = JsonConvert.DeserializeObject<ArticlesNews>(jsonData);
-                return View(article);
+                // Gửi yêu cầu GET để lấy dữ liệu bài viết qua id
+                HttpResponseMessage response = await client.GetAsync(client.BaseAddress + $"/news/{id}");
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
+                    return View(article);
+                }
+
+                return RedirectToAction("Error"); // Chuyển hướng đến trang lỗi nếu không thành công
             }
-            ModelState.AddModelError(string.Empty, "Không tìm thấy bài viết.");
-            return NotFound();
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+                return RedirectToAction("Error");
+            }
         }
 
-        // POST: /News/Edit/{id}
+        // POST: Update an article
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ArticlesNews article)
+        public async Task<IActionResult> Edit(ArticlesNews article)
         {
-            if (id != article.Id || !ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return View(article);
+                return View(article); // Trả về view nếu model không hợp lệ
             }
 
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(article), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync($"{_newsApiUrl}/{id}", jsonContent);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction(nameof(Index));
+                int userId = 1; // Giả sử UserId là 1
+                ArticlesNews modifyData = new ArticlesNews()
+                {
+                    Id = article.Id,
+                    UserId = userId,
+                    NameCreater = article.NameCreater,
+                    Title = article.Title,
+                    Content = article.Content,
+                    IsActive = article.IsActive,
+                    DateCreated = article.DateCreated,
+                    HeaderImage = article.HeaderImage,
+                };
+
+                // Gửi yêu cầu PUT để cập nhật bài modifyData
+                HttpResponseMessage response = await client.PutAsJsonAsync(client.BaseAddress + $"/news/{article.Id}", modifyData);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
 
-            var errorContent = await response.Content.ReadAsStringAsync();
-            ModelState.AddModelError(string.Empty, $"Lỗi khi cập nhật bài viết: {errorContent}");
-            return View(article);
+            return View(article); // Trả về view nếu có lỗi
         }
 
-        // GET: /News/Delete/{id}
+        // GET: Delete an article by id (hiển thị để xác nhận xóa)
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _client.GetAsync($"{_newsApiUrl}/{id}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var article = JsonConvert.DeserializeObject<ArticlesNews>(jsonData);
-                return View(article);
+                // Lấy bài viết qua id để hiển thị
+                HttpResponseMessage response = await client.GetAsync(client.BaseAddress + $"/news/{id}");
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
+                    return View(article); // Hiển thị bài viết để xác nhận xóa
+                }
+
+                return RedirectToAction("Error");
             }
-            ModelState.AddModelError(string.Empty, "Không tìm thấy bài viết.");
-            return NotFound();
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+                return RedirectToAction("Error");
+            }
         }
 
-        // POST: /News/Delete/{id}
+        // POST: Delete the article (xác nhận xóa)
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var response = await _client.DeleteAsync($"{_newsApiUrl}/{id}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction(nameof(Index));
+                // Gửi yêu cầu DELETE để xóa bài viết
+                HttpResponseMessage response = await client.DeleteAsync(client.BaseAddress + $"/news/{id}");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
 
-            var errorContent = await response.Content.ReadAsStringAsync();
-            ModelState.AddModelError(string.Empty, $"Lỗi khi xóa bài viết: {errorContent}");
-            return View();
+            return RedirectToAction("Error");
         }
     }
 }

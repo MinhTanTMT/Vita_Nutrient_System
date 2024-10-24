@@ -31,12 +31,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     IsActive = article.IsActive,
                     DateCreated = article.DateCreated,
                     HeaderImage = article.HeaderImage
-                    /*ArticleImages = article.ArticleImages.Select(img => new ArticleImageDTO
-                    {
-                        Id = img.Id,
-                        ArticleId = img.ArticleId,
-                        ImagePath = img.ImagePath
-                    }).ToList()*/
                 })
                 .ToListAsync();
         }
@@ -44,7 +38,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public async Task<ArticlesNewsDTO> GetArticleByIdAsync(int id)
         {
             var article = await _context.ArticlesNews
-                .Include(a => a.ArticleImages)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (article == null) return null;
@@ -59,12 +52,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 IsActive = article.IsActive,
                 DateCreated = article.DateCreated,
                 HeaderImage = article.HeaderImage
-                /*ArticleImages = article.ArticleImages.Select(img => new ArticleImageDTO
-                {
-                    Id = img.Id,
-                    ArticleId = img.ArticleId,
-                    ImagePath = img.ImagePath
-                }).ToList()*/
             };
         }
 
@@ -98,7 +85,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task UpdateArticleAsync(ArticlesNewsDTO articleDto)
         {
-            var article = await _context.ArticlesNews.Include(a => a.ArticleImages)
+            var article = await _context.ArticlesNews
                 .FirstOrDefaultAsync(a => a.Id == articleDto.Id);
 
             if (article == null)
@@ -114,17 +101,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             article.IsActive = articleDto.IsActive;
             article.DateCreated = articleDto.DateCreated;
             article.HeaderImage = articleDto.HeaderImage;
-
-            /*// Cập nhật danh sách hình ảnh
-            article.ArticleImages.Clear();
-            foreach (var imgDto in articleDto.ArticleImages)
-            {
-                article.ArticleImages.Add(new ArticleImage
-                {
-                    ImagePath = imgDto.ImagePath,
-                    ArticleId = articleDto.Id
-                });
-            }*/
 
             await _context.SaveChangesAsync();
         }

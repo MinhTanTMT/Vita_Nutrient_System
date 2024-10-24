@@ -18,6 +18,12 @@
         </div>
 
         <div class="form-group">
+            <label asp-for="DateCreated" class="control-label">Ngày cập nhật</label>
+            <input asp-for="DateCreated" class="form-control" type="date" />
+            <span asp-validation-for="DateCreated" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
             <label asp-for="IsActive" class="control-label">Trạng thái</label>
             <select asp-for="IsActive" class="form-control">
                 <option value="true">Hoạt động</option>
