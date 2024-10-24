@@ -1,3 +1,341 @@
-﻿
-<h1>Chao mung den trang nutifood</h1>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vita Nutrient System - Homepage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
+    <style>
+        /* Content Wrapper */
+        .content-wrapper {
+            padding: 0 !important;
+            margin: 0 !important;
+            background-color: transparent;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        /* Container */
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Mỗi section chính (Header, Benefits, News) được sắp xếp dọc */
+        .section {
+            margin: 20px 0;
+        }
+
+        /* Title Section Above Header */
+        .title-section {
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeInDown 1s ease;
+        }
+
+            .title-section h1 {
+                font-size: 2.5rem;
+                color: #002f6c;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .title-section .keywords {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .title-section .keyword-item {
+                font-size: 1.2rem;
+                color: #002f6c;
+                display: flex;
+                align-items: center;
+            }
+
+                .title-section .keyword-item i {
+                    color: #f0b90b;
+                    margin-right: 5px;
+                }
+
+        .benefit-item h3,
+        .news-item h3,
+        .news-item p,
+        .header-item h3 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+
+        /* Header Section */
+        .header {
+            background-color: #002f6c;
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .header-item {
+            text-align: center;
+        }
+
+            .header-item i {
+                font-size: 2rem;
+                color: #f0b90b;
+            }
+
+            .header-item h2 {
+                margin: 10px 0;
+                font-size: 1.2rem;
+            }
+
+            .header-item a {
+                color: white;
+                text-decoration: underline;
+                transition: color 0.3s ease;
+            }
+
+                .header-item a:hover {
+                    color: #f0b90b;
+                }
+
+        /* Benefits Section */
+        .benefits {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+            .benefits h2 {
+                color: #287233;
+                margin-bottom: 30px;
+                font-size: 2.5rem;
+                animation: fadeInUp 1s ease;
+                font-family: 'Roboto', sans-serif;
+            }
+
+
+        .benefit-grid {
+            display: flex;
+            justify-content: space-around;
+            margin: 0 auto;
+            max-width: 1200px;
+            gap: 20px;
+        }
+
+        .benefit-item {
+            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 30%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .benefit-item:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            }
+
+            .benefit-item i {
+                font-size: 3rem;
+                color: #287233;
+            }
+
+            .benefit-item h3 {
+                margin-top: 15px;
+                font-size: 1.5rem;
+            }
+
+        /* News Section */
+        .news-section {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+            .news-section h2 {
+                color: #287233;
+                margin-bottom: 30px;
+                font-size: 2.5rem;
+                animation: fadeInUp 1s ease;
+                font-family: 'Roboto', sans-serif;
+            }
+
+        .news-grid {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .news-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 30%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .news-item:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            }
+
+            .news-item img {
+                max-width: 100%;
+                border-radius: 10px;
+            }
+
+            .news-item h3 {
+                margin-top: 10px;
+                font-size: 1.2rem;
+                color: #287233;
+            }
+
+            .news-item p {
+                margin-top: 5px;
+                font-size: 1rem;
+                color: #555;
+            }
+
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #287233;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn:hover {
+                background-color: #1d5826;
+            }
+
+        /* Button Xem tất cả tin tức */
+        .btn-view-all {
+            margin-top: 30px;
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #287233;
+            color: white;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-view-all:hover {
+                background-color: #1d5826;
+            }
+
+    </style>
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Title Section Above Header -->
+        <div class="title-section">
+            <h1>HỆ THỐNG GỢI Ý MÓN ĂN VITA NUTRIENT</h1>
+            <div class="keywords">
+                <div class="keyword-item">
+                    <i class="fas fa-star"></i>
+                    Cá nhân hóa
+                </div>
+                <div class="keyword-item">
+                    <i class="fas fa-star"></i>
+                    Dinh dưỡng
+                </div>
+                <div class="keyword-item">
+                    <i class="fas fa-star"></i>
+                    Tiện lợi
+                </div>
+                <div class="keyword-item">
+                    <i class="fas fa-star"></i>
+                    Đề xuất
+                </div>
+            </div>
+        </div>
+
+        <!-- Header Section -->
+        <div class="section header">
+            <div class="header-item">
+                <i class="fas fa-stethoscope"></i>
+                <h3>KIỂM TRA TÌNH TRẠNG DINH DƯỠNG</h3>
+                <a href="#">Khám phá ngay</a>
+            </div>
+            <div class="header-item">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>ĐẶT LỊCH TƯ VẤN</h3>
+                <a href="#">Đặt lịch ngay</a>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="section benefits">
+            <h2>LỢI ÍCH CỦA CHÚNG TÔI</h2>
+            <div class="benefit-grid">
+                <div class="benefit-item">
+                    <i class="fas fa-user-md"></i>
+                    <h3>Lời khuyên từ chuyên gia</h3>
+
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Công cụ kiểm tra nhanh chóng</h3>
+
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <h3>Các kế hoạch dinh dưỡng cá nhân hóa</h3>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- News Section -->
+        <div class="section news-section">
+            <h2>TIN TỨC NỔI BẬT</h2>
+            <div class="news-grid">
+                <div class="news-item">
+                    <img src="your-image-url.jpg">
+                    <h3>Thực phẩm tốt cho đại tràng</h3>
+                    <p>16 thực phẩm tốt cho đại tràng khỏe mạnh nên có trong thực đơn.</p>
+                    <a href="#" class="btn">Khám phá thêm</a>
+                </div>
+                <div class="news-item">
+                    <img src="your-image-url.jpg">
+                    <h3>Thực phẩm tốt cho tiêu hóa</h3>
+                    <p>20 thực phẩm tốt cho tiêu hóa nên có trong thực đơn mỗi ngày.</p>
+                    <a href="#" class="btn">Khám phá thêm</a>
+                </div>
+                <div class="news-item">
+                    <img src="your-image-url.jpg">
+                    <h3>Thiếu máu lên não không nên ăn gì?</h3>
+                    <p>Thiếu máu lên não không nên ăn gì để tránh bệnh nặng thêm.</p>
+                    <a href="#" class="btn">Khám phá thêm</a>
+                </div>
+            </div>
+
+            <!-- Button to view all news -->
+            <a href="#" class="btn-view-all">Xem tất cả tin tức</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

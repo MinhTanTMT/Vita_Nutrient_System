@@ -1,0 +1,210 @@
+﻿@model IEnumerable<SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNews>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<div class="container">
+    <h1 class="page-title">Danh sách bài viết</h1>
+    <p>
+        <a asp-action="Create" class="btn btn-primary btn-lg">Tạo bài viết mới</a>
+    </p>
+
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Hình ảnh đầu bài</th>
+                <th>Tiêu đề</th>
+                <th>Người tạo</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in Model)
+            {
+                <tr>
+                    <td>@article.Id</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(article.HeaderImage))
+                        {
+                            <img src="@article.HeaderImage" alt="Header Image" class="article-image" />
+                        }
+                        else
+                        {
+                            <span>Không có hình ảnh</span>
+                        }
+                    </td>
+                    <td>@article.Title</td>
+                    <td>@article.NameCreater</td>
+                    <td>
+                        <span class="badge @(article.IsActive == true ? "badge-active" : "badge-inactive")">
+                            @(article.IsActive == true ? "Hoạt động" : "Không hoạt động")
+                        </span>
+                    </td>
+                    <td>@article.DateCreated?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@article.Id"><i class="fas fa-eye"></i> Chi tiết</a>
+                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@article.Id"><i class="fas fa-edit"></i> Chỉnh sửa</a>
+                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@article.Id"><i class="fas fa-trash"></i> Xóa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    /* Content Wrapper */
+    .content-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        background-color: transparent;
+        width: 100%;
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    /* Custom Table Styling */
+    .custom-table {
+        font-family: 'Roboto', sans-serif;
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+        .custom-table th, .custom-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .custom-table thead th {
+            background-color: #4CAF50;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .custom-table tr:nth-child(even) {
+            background-color: #f3f3f3;
+        }
+
+        .custom-table tr:hover {
+            background-color: #e8f5e9;
+        }
+
+    /* Page Title Styling */
+    .page-title {
+        font-size: 50px;
+        margin-bottom: 30px;
+        color: #4CAF50;
+        font-weight: bold;
+        text-align: center;
+        font-family: 'Roboto', sans-serif;
+    }
+    
+    /* Create Button Styling */
+    .create-button {
+        display: block;
+        margin: 0 auto 20px auto;
+        background-color: #4CAF50;
+        color: #fff;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 12px 24px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+        font-family: 'Roboto', sans-serif;
+    }
+
+        .create-button:hover {
+            background-color: #45a049;
+        }
+
+    /* Article Image Styling */
+    .article-image {
+        width: 150px; /* Adjust width as needed */
+        height: 100px; /* Adjust height as needed */
+        object-fit: cover;
+        border-radius: 0 !important; 
+        border: 2px solid #ddd;
+        transition: transform 0.3s ease;
+    }
+
+        .article-image:hover {
+            transform: scale(1.1);
+        }
+
+
+    /* Badge Styling */
+    .badge {
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .badge-active {
+        background-color: #4CAF50;
+    }
+
+    .badge-inactive {
+        background-color: #f44336;
+    }
+
+    /* Button Styling */
+    .btn {
+        margin-right: 8px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .btn-sm {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .btn-primary {
+        background-color: #1E88E5;
+        border-color: #1E88E5;
+        color: #fff;
+    }
+
+        .btn-primary:hover {
+            background-color: #1565C0;
+        }
+
+    .btn-warning {
+        background-color: #FFC107;
+        border-color: #FFC107;
+        color: #fff;
+    }
+
+        .btn-warning:hover {
+            background-color: #FFA000;
+        }
+
+    .btn-danger {
+        background-color: #f44336;
+        border-color: #f44336;
+        color: #fff;
+    }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+</style>
