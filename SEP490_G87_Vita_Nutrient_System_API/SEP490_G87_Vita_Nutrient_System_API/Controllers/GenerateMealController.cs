@@ -36,7 +36,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
 
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(1));
+            //return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(1));
 
 
             //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
@@ -44,6 +44,28 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
             //return Ok(await generateMealRepositories.CheckForUserMealSettingsDetails(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(1)), 1));
+
+            //MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(1);
+            //NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
+
+            //List<int> idFoodListSystem = await _context.FoodLists.Include(x => x.FoodSelections).Include(x => x.FoodAndDiseases).Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant && x.FoodSelections.FirstOrDefault(y => y.UserId == 1 && y.FoodListId == 1).IsBlock == true).Select(x => x.FoodListId).ToListAsync();
+            //List<int> idFoodListSystem = _context.FoodLists.Include(x => x.FoodSelections).Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant && x.FoodSelections.FirstOrDefault(y => y.UserId == 1 && y.FoodListId == 1).IsBlock == false && x.FoodAndDiseases.FirstOrDefault(x => x.ListOfDiseasesId == 1 && x.FoodListId == 1).IsGoodOrBad == true).Select(x => x.FoodListId).ToList();
+
+
+
+            //var mealSettingsDetail = _context.MealSettingsDetails.Include(x => x.MealSettings).FirstOrDefaultAsync(x => x.Id == 1).Select(x => new
+            //{
+            //    x.MealSettingsId,
+            //    x.MealSettings.UserId,
+            //    x.Id
+            //});
+
+            var mealSettingsDetail = _context.MealSettingsDetails.Include(x => x.MealSettings).FirstOrDefaultAsync(x => x.Id == 1);
+
+
+            //return Ok(await generateMealRepositories.FilterTheTypeDiseaseBlockList(nutritionTargetsDaily));
+
+            return Ok(mealSettingsDetail);
 
         }
 

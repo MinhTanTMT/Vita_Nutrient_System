@@ -35,9 +35,9 @@ public partial class FoodListDTO
 
     //public virtual CookingDifficultyDTO? CookingDifficulty { get; set; }
 
-    //public virtual ICollection<FoodAndDiseaseDTO> FoodAndDiseases { get; set; } = new List<FoodAndDiseaseDTO>();
+    public virtual ICollection<FoodAndDiseaseDTO> FoodAndDiseases { get; set; } = new List<FoodAndDiseaseDTO>();
 
-    //public virtual ICollection<FoodSelectionDTO> FoodSelections { get; set; } = new List<FoodSelectionDTO>();
+    public virtual ICollection<FoodSelectionDTO> FoodSelections { get; set; } = new List<FoodSelectionDTO>();
 
     //public virtual FoodType FoodType { get; set; } = null!;
 
