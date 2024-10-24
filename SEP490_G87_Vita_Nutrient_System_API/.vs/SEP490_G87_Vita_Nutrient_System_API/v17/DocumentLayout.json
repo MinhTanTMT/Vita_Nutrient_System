@@ -51,8 +51,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
               "ViewState": "AgIAAC8AAAAAAAAAAAAswDcAAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T01:05:59.069Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-24T01:05:59.069Z"
             },
             {
               "$type": "Document",
@@ -64,8 +63,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Dtos\\FoodListDTO.cs",
               "ViewState": "AgIAABkAAAAAAAAAAAAYwCQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T01:15:52.349Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-24T01:15:52.349Z"
             },
             {
               "$type": "Document",
@@ -77,8 +75,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
               "ViewState": "AgIAADsAAAAAAAAAAAAwwEAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T00:36:35.375Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-24T00:36:35.375Z"
             }
           ]
         }

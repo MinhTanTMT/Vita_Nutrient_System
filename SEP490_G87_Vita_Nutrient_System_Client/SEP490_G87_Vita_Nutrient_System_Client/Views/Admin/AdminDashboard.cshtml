@@ -3,6 +3,7 @@
     IEnumerable<TransactionsSystem> transactionsSystem = jsonTransactionsSystemData != null
         ? JsonConvert.DeserializeObject<IEnumerable<TransactionsSystem>>(jsonTransactionsSystemData.ToString()) : new List<TransactionsSystem>();
 } *@
+
 @using Newtonsoft.Json
 @model IEnumerable<TransactionsSystem>
 
