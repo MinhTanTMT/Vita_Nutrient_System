@@ -1,338 +1,839 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vita Nutrient System - Homepage</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+@* @{
+    var jsonTransactionsSystemData = TempData["transactionsSystemData"];
+    IEnumerable<TransactionsSystem> transactionsSystem = jsonTransactionsSystemData != null
+        ? JsonConvert.DeserializeObject<IEnumerable<TransactionsSystem>>(jsonTransactionsSystemData.ToString()) : new List<TransactionsSystem>();
+} *@
 
-    <style>
-        /* Content Wrapper */
-        .content-wrapper {
-            padding: 0 !important;
-            margin: 0 !important;
-            background-color: transparent;
-            width: 100%;
-        }
+@using Newtonsoft.Json
+@model IEnumerable<TransactionsSystem>
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            font-size: 20px;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        }
-
-        /* Container */
-        .container {
-            max-width: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Mỗi section chính (Header, Benefits, News) được sắp xếp dọc */
-        .section {
-            margin: 20px 0;
-        }
-
-        /* Title Section Above Header */
-        .title-section {
-            text-align: center;
-            margin-top: 20px;
-            animation: fadeInDown 1s ease;
-        }
-
-            .title-section h1 {
-                font-size: 2.5rem;
-                color: #002f6c;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-
-            .title-section .keywords {
-                display: flex;
-                justify-content: center;
-                gap: 20px;
-            }
-
-            .title-section .keyword-item {
-                font-size: 1.2rem;
-                color: #002f6c;
-                display: flex;
-                align-items: center;
-            }
-
-                .title-section .keyword-item i {
-                    color: #f0b90b;
-                    margin-right: 5px;
-                }
-
-        .benefit-item h3,
-        .news-item h3,
-        .news-item p,
-        .header-item h3 {
-            font-family: 'Roboto', sans-serif;
-        }
-
-
-        /* Header Section */
-        .header {
-            background-color: #002f6c;
-            color: white;
-            padding: 20px 0;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .header-item {
-            text-align: center;
-        }
-
-            .header-item i {
-                font-size: 2rem;
-                color: #f0b90b;
-            }
-
-            .header-item h2 {
-                margin: 10px 0;
-                font-size: 1.2rem;
-            }
-
-            .header-item a {
-                color: white;
-                text-decoration: underline;
-                transition: color 0.3s ease;
-            }
-
-                .header-item a:hover {
-                    color: #f0b90b;
-                }
-
-        /* Benefits Section */
-        .benefits {
-            text-align: center;
-            padding: 10px 0;
-        }
-
-            .benefits h2 {
-                color: #287233;
-                margin-bottom: 30px;
-                font-size: 2.5rem;
-                animation: fadeInUp 1s ease;
-                font-family: 'Roboto', sans-serif;
-            }
-
-
-        .benefit-grid {
-            display: flex;
-            justify-content: space-around;
-            margin: 0 auto;
-            max-width: 1200px;
-            gap: 20px;
-        }
-
-        .benefit-item {
-            text-align: center;
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 30%;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-            .benefit-item:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            }
-
-            .benefit-item i {
-                font-size: 3rem;
-                color: #287233;
-            }
-
-            .benefit-item h3 {
-                margin-top: 15px;
-                font-size: 1.5rem;
-            }
-
-        /* News Section */
-        .news-section {
-            text-align: center;
-            padding: 10px 0;
-        }
-
-            .news-section h2 {
-                color: #287233;
-                margin-bottom: 30px;
-                font-size: 2.5rem;
-                animation: fadeInUp 1s ease;
-                font-family: 'Roboto', sans-serif;
-            }
-
-        .news-grid {
-            display: flex;
-            justify-content: space-around;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .news-item {
-            background-color: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 30%;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-            .news-item:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            }
-
-            .news-item img {
-                max-width: 100%;
-                border-radius: 10px;
-            }
-
-            .news-item h3 {
-                margin-top: 10px;
-                font-size: 1.2rem;
-                color: #287233;
-            }
-
-            .news-item p {
-                margin-top: 5px;
-                font-size: 1rem;
-                color: #555;
-            }
-
-        .btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #287233;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-            .btn:hover {
-                background-color: #1d5826;
-            }
-
-        /* Button Xem tất cả tin tức */
-        .btn-view-all {
-            margin-top: 30px;
-            display: inline-block;
-            padding: 15px 30px;
-            background-color: #287233;
-            color: white;
-            font-size: 1.1rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-            .btn-view-all:hover {
-                background-color: #1d5826;
-            }
-
-    </style>
-</head>
-<body>
-
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Title Section Above Header -->
-        <div class="title-section">
-            <h1>HỆ THỐNG GỢI Ý MÓN ĂN VITA NUTRIENT</h1>
-            <div class="keywords">
-                <div class="keyword-item">
-                    <i class="fas fa-star"></i>
-                    Cá nhân hóa
+<div class="content-wrapper">
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-home"></i>
+                </span> Dashboard
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="row">
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-danger card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="~/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">
+                        Tiền vào tháng này <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                        </h4>
+                    <h2 class="mb-5">@ViewBag.MoneyInThisMonth</h2>
+                        <h6 class="card-text">Increased by 60%</h6>
+                    </div>
                 </div>
-                <div class="keyword-item">
-                    <i class="fas fa-star"></i>
-                    Dinh dưỡng
+            </div>
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-info card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="~/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">
+                        Tiền ra tháng này <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+                        </h4>
+                    <h2 class="mb-5">@ViewBag.MoneyOutThisMonth</h2>
+                        <h6 class="card-text">Decreased by 10%</h6>
+                    </div>
                 </div>
-                <div class="keyword-item">
-                    <i class="fas fa-star"></i>
-                    Tiện lợi
-                </div>
-                <div class="keyword-item">
-                    <i class="fas fa-star"></i>
-                    Đề xuất
+            </div>
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-success card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="~/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">
+                        Balance tháng này <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                        </h4>
+                    <h2 class="mb-5">@ViewBag.BalanceThisMonth</h2>
+                        <h6 class="card-text">Increased by 5%</h6>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Header Section -->
-        <div class="section header">
-            <div class="header-item">
-                <i class="fas fa-stethoscope"></i>
-                <h3>KIỂM TRA TÌNH TRẠNG DINH DƯỠNG</h3>
-                <a href="#">Khám phá ngay</a>
-            </div>
-            <div class="header-item">
-                <i class="fas fa-calendar-alt"></i>
-                <h3>ĐẶT LỊCH TƯ VẤN</h3>
-                <a href="#">Đặt lịch ngay</a>
-            </div>
-        </div>
-
-        <!-- Benefits Section -->
-        <div class="section benefits">
-            <h2>LỢI ÍCH CỦA CHÚNG TÔI</h2>
-            <div class="benefit-grid">
-                <div class="benefit-item">
-                    <i class="fas fa-user-md"></i>
-                    <h3>Lời khuyên từ chuyên gia</h3>
-
+        <div class="row">
+            <div class="col-md-7 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="clearfix">
+                        <h4 class="card-title float-left">Dòng tiền hàng tháng</h4>
+                            <div id="visit-sale-chart-legend" class="rounded-legend legend-horizontal legend-top-right float-right"></div>
+                        </div>
+                        <canvas id="visit-sale-chart" class="mt-4"></canvas>
+                    </div>
                 </div>
-                <div class="benefit-item">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Công cụ kiểm tra nhanh chóng</h3>
-
-                </div>
-                <div class="benefit-item">
-                    <i class="fas fa-apple-alt"></i>
-                    <h3>Các kế hoạch dinh dưỡng cá nhân hóa</h3>
-
+            </div>
+            <div class="col-md-5 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Traffic Sources</h4>
+                        <canvas id="traffic-chart"></canvas>
+                        <div id="traffic-chart-legend" class="rounded-legend legend-vertical legend-bottom-left pt-4"></div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- News Section -->
-        <div class="section news-section">
-            <h2>TIN TỨC NỔI BẬT</h2>
-            <div class="news-grid">
-                <div class="news-item">
-                    <img src="your-image-url.jpg">
-                    <h3>Thực phẩm tốt cho đại tràng</h3>
-                    <p>16 thực phẩm tốt cho đại tràng khỏe mạnh nên có trong thực đơn.</p>
-                    <a href="#" class="btn">Khám phá thêm</a>
-                </div>
-                <div class="news-item">
-                    <img src="your-image-url.jpg">
-                    <h3>Thực phẩm tốt cho tiêu hóa</h3>
-                    <p>20 thực phẩm tốt cho tiêu hóa nên có trong thực đơn mỗi ngày.</p>
-                    <a href="#" class="btn">Khám phá thêm</a>
-                </div>
-                <div class="news-item">
-                    <img src="your-image-url.jpg">
-                    <h3>Thiếu máu lên não không nên ăn gì?</h3>
-                    <p>Thiếu máu lên não không nên ăn gì để tránh bệnh nặng thêm.</p>
-                    <a href="#" class="btn">Khám phá thêm</a>
+        <div class="row">
+            <div class="col-12 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                    <h4 class="card-title">Giao dịch gần đây</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                    <th> Apitransactions </th>
+                                    <th> AmountIn </th>
+                                    <th> Status </th>
+                                    <th> TransactionDate </th>
+                                    <th> TransactionContent </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var transaction in Model)
+                                    {
+                                    <tr>
+                                        <td>
+                                            @(transaction.Apitransactions != null ? transaction.Apitransactions : "PROGRESS")
+                                        </td>
+                                        <td> @(transaction.AmountIn != null ? transaction.AmountIn : "PROGRESS") </td>
+                                        <td>
+                                            <label class="badge badge-gradient-danger">
+                                                @(transaction.Status != null && transaction.Status == true ? "DONE" : "FAIL")
+                                        </label>
+                                        </td>
+                                        <td>
+                                            @(transaction.TransactionDate != null ? transaction.TransactionDate : "PROGRESS")
+                                        </td>
+                                        <td> @(transaction.TransactionContent != null ? transaction.TransactionContent : "PROGRESS") </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- Button to view all news -->
-            <a href="#" class="btn-view-all">Xem tất cả tin tức</a>
         </div>
-
+        <div class="row">
+            <div class="col-md-7 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Project Status</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th> # </th>
+                                        <th> Name </th>
+                                        <th> Due Date </th>
+                                        <th> Progress </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> 1 </td>
+                                        <td> Herman Beck </td>
+                                        <td> May 15, 2015 </td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> 2 </td>
+                                        <td> Messsy Adam </td>
+                                        <td> Jul 01, 2015 </td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> 3 </td>
+                                        <td> John Richards </td>
+                                        <td> Apr 12, 2015 </td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> 4 </td>
+                                        <td> Peter Meggik </td>
+                                        <td> May 15, 2015 </td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> 5 </td>
+                                        <td> Edward </td>
+                                        <td> May 03, 2015 </td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> 5 </td>
+                                        <td> Ronald </td>
+                                        <td> Jun 05, 2015 </td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-gradient-info" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-white">Todo</h4>
+                        <div class="add-items d-flex">
+                            <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?">
+                            <button class="add btn btn-gradient-primary font-weight-bold todo-list-add-btn" id="add-task">Add</button>
+                        </div>
+                        <div class="list-wrapper">
+                            <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Meeting with Alisa
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li class="completed">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox" checked> Call John
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Create invoice
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Print Statements
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li class="completed">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox" checked> Prepare for presentation
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Pick up kids from school
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+<script src="~/vendors/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<script src="~/vendors/chart.js/Chart.min.js"></script>
+<script src="~/js/jquery.cookie.js" type="text/javascript"></script>
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="~/js/off-canvas.js"></script>
+<script src="~/js/hoverable-collapse.js"></script>
+<script src="~/js/misc.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page -->
+@*<script src="~/js/dashboard.js"></script>*@
+
+
+<script>
+    // Gán ViewBag.GraphDataJson vào biến JavaScript // Sử dụng Html.Raw để không chuyển đổi ký tự đặc biệt
+
+    console.log(@ViewBag.GraphDataTest);  // Kiểm tra xem graphData có đúng không
+
+    console.log(@ViewBag.GraphDataJson);
+
+</script>
+
+
+
+<script type="text/javascript">
+    (function($) {
+  'use strict';
+  $(function() {
+
+    Chart.defaults.global.legend.labels.usePointStyle = true;
+    
+      var GraphDataString0 = @Html.Raw(ViewBag.GraphDataString0);
+      var GraphDataString1 = @Html.Raw(ViewBag.GraphDataString1);
+      var GraphDataString2 = @Html.Raw(ViewBag.GraphDataString2);
+      var GraphDataString3 = @Html.Raw(ViewBag.GraphDataString3);
+
+    
+    if ($("#serviceSaleProgress").length) {
+      var bar = new ProgressBar.Circle(serviceSaleProgress, {
+        color: 'url(#gradient)',
+        // This has to be the same size as the maximum width to
+        // prevent clipping
+        strokeWidth: 8,
+        trailWidth: 8,
+        easing: 'easeInOut',
+        duration: 1400,
+        text: {
+          autoStyleContainer: false
+        },
+        from: { color: '#aaa', width: 6 },
+        to: { color: '#57c7d4', width: 6 }
+      });
+
+      bar.animate(.65);  // Number from 0.0 to 1.0
+      bar.path.style.strokeLinecap = 'round';
+      let linearGradient = '<defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse"><stop offset="20%" stop-color="#da8cff"/><stop offset="50%" stop-color="#9a55ff"/></linearGradient></defs>';
+      bar.svg.insertAdjacentHTML('afterBegin', linearGradient);
+    }
+    if ($("#productSaleProgress").length) {
+      var bar = new ProgressBar.Circle(productSaleProgress, {
+        color: 'url(#productGradient)',
+        // This has to be the same size as the maximum width to
+        // prevent clipping
+        strokeWidth: 8,
+        trailWidth: 8,
+        easing: 'easeInOut',
+        duration: 1400,
+        text: {
+          autoStyleContainer: false
+        },
+        from: { color: '#aaa', width: 6 },
+        to: { color: '#57c7d4', width: 6 }
+      });
+
+      bar.animate(.6);  // Number from 0.0 to 1.0
+      bar.path.style.strokeLinecap = 'round';
+      let linearGradient = '<defs><linearGradient id="productGradient" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse"><stop offset="40%" stop-color="#36d7e8"/><stop offset="70%" stop-color="#b194fa"/></linearGradient></defs>';
+      bar.svg.insertAdjacentHTML('afterBegin', linearGradient);
+    }
+    if ($("#points-chart").length) {
+      var ctx = document.getElementById('points-chart').getContext("2d");
+
+      var gradientStrokeViolet = ctx.createLinearGradient(0, 0, 0, 181);
+      gradientStrokeViolet.addColorStop(0, 'rgba(218, 140, 255, 1)');
+      gradientStrokeViolet.addColorStop(1, 'rgba(154, 85, 255, 1)');
+
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: [1, 2, 3, 4, 5, 6, 7, 8],
+              datasets: [
+                {
+                  label: "North Zone",
+                  borderColor: gradientStrokeViolet,
+                  backgroundColor: gradientStrokeViolet,
+                  hoverBackgroundColor: gradientStrokeViolet,
+                  pointRadius: 0,
+                  fill: false,
+                  borderWidth: 1,
+                  fill: 'origin',
+                  data: [20, 40, 15, 35, 25, 50, 30, 20]
+                },
+                {
+                  label: "South Zone",
+                  borderColor: '#e9eaee',
+                  backgroundColor: '#e9eaee',
+                  hoverBackgroundColor: '#e9eaee',
+                  pointRadius: 0,
+                  fill: false,
+                  borderWidth: 1,
+                  fill: 'origin',
+                  data: [40, 30, 20, 10, 50, 15, 35, 20]
+                }
+            ]
+          },
+          options: {
+              legend: {
+                  display: false
+              },
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          display: false,
+                          min: 0,
+                          stepSize: 10
+                      },
+                      gridLines: {
+                        drawBorder: false,
+                        display: false
+                      }
+                  }],
+                  xAxes: [{
+                      gridLines: {
+                        display:false,
+                        drawBorder: false,
+                        color: 'rgba(0,0,0,1)',
+                        zeroLineColor: '#eeeeee'
+                      },
+                      ticks: {
+                          padding: 20,
+                          fontColor: "#9c9fa6",
+                          autoSkip: true,
+                      },
+                      barPercentage: 0.7
+                  }]
+                }
+              },
+              elements: {
+                point: {
+                  radius: 0
+                }
+              }
+            })
+    }
+    if ($("#events-chart").length) {
+      var ctx = document.getElementById('events-chart').getContext("2d");
+
+      var gradientStrokeBlue = ctx.createLinearGradient(0, 0, 0, 181);
+      gradientStrokeBlue.addColorStop(0, 'rgba(54, 215, 232, 1)');
+      gradientStrokeBlue.addColorStop(1, 'rgba(177, 148, 250, 1)');
+
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: [1, 2, 3, 4, 5, 6, 7, 8],
+              datasets: [
+                {
+                  label: "Domestic",
+                  borderColor: gradientStrokeBlue,
+                  backgroundColor: gradientStrokeBlue,
+                  hoverBackgroundColor: gradientStrokeBlue,
+                  pointRadius: 0,
+                  fill: false,
+                  borderWidth: 1,
+                  fill: 'origin',
+                  data: [20, 40, 15, 35, 25, 50, 30, 20]
+                },
+                {
+                  label: "International",
+                  borderColor: '#e9eaee',
+                  backgroundColor: '#e9eaee',
+                  hoverBackgroundColor: '#e9eaee',
+                  pointRadius: 0,
+                  fill: false,
+                  borderWidth: 1,
+                  fill: 'origin',
+                  data: [40, 30, 20, 10, 50, 15, 35, 20]
+                }
+            ]
+          },
+          options: {
+              legend: {
+                  display: false
+              },
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          display: false,
+                          min: 0,
+                          stepSize: 10
+                      },
+                      gridLines: {
+                        drawBorder: false,
+                        display: false
+                      }
+                  }],
+                  xAxes: [{
+                      gridLines: {
+                        display:false,
+                        drawBorder: false,
+                        color: 'rgba(0,0,0,1)',
+                        zeroLineColor: '#eeeeee'
+                      },
+                      ticks: {
+                          padding: 20,
+                          fontColor: "#9c9fa6",
+                          autoSkip: true,
+                      },
+                      barPercentage: 0.7
+                  }]
+                }
+              },
+              elements: {
+                point: {
+                  radius: 0
+                }
+              }
+            })
+    }
+    if ($("#visit-sale-chart").length) {
+      Chart.defaults.global.legend.labels.usePointStyle = true;
+      var ctx = document.getElementById('visit-sale-chart').getContext("2d");
+
+      var gradientStrokeViolet = ctx.createLinearGradient(0, 0, 0, 181);
+      gradientStrokeViolet.addColorStop(0, 'rgba(218, 140, 255, 1)');
+      gradientStrokeViolet.addColorStop(1, 'rgba(154, 85, 255, 1)');
+      var gradientLegendViolet = 'linear-gradient(to right, rgba(218, 140, 255, 1), rgba(154, 85, 255, 1))';
+      
+      var gradientStrokeBlue = ctx.createLinearGradient(0, 0, 0, 360);
+      gradientStrokeBlue.addColorStop(0, 'rgba(54, 215, 232, 1)');
+      gradientStrokeBlue.addColorStop(1, 'rgba(177, 148, 250, 1)');
+      var gradientLegendBlue = 'linear-gradient(to right, rgba(54, 215, 232, 1), rgba(177, 148, 250, 1))';
+
+      var gradientStrokeRed = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStrokeRed.addColorStop(0, 'rgba(255, 191, 150, 1)');
+      gradientStrokeRed.addColorStop(1, 'rgba(254, 112, 150, 1)');
+      var gradientLegendRed = 'linear-gradient(to right, rgba(255, 191, 150, 1), rgba(254, 112, 150, 1))';
+
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+            datasets: [
+              {
+                label: "MoneyIn",
+                borderColor: gradientStrokeViolet,
+                backgroundColor: gradientStrokeViolet,
+                hoverBackgroundColor: gradientStrokeViolet,
+                legendColor: gradientLegendViolet,
+                pointRadius: 0,
+                fill: false,
+                borderWidth: 1,
+                fill: 'origin',
+                data: GraphDataString0
+              },
+              {
+                label: "MoneyOut",
+                borderColor: gradientStrokeRed,
+                backgroundColor: gradientStrokeRed,
+                hoverBackgroundColor: gradientStrokeRed,
+                legendColor: gradientLegendRed,
+                pointRadius: 0,
+                fill: false,
+                borderWidth: 1,
+                fill: 'origin',
+                data: GraphDataString1
+              },
+              {
+                label: "Balance",
+                borderColor: gradientStrokeBlue,
+                backgroundColor: gradientStrokeBlue,
+                hoverBackgroundColor: gradientStrokeBlue,
+                legendColor: gradientLegendBlue,
+                pointRadius: 0,
+                fill: false,
+                borderWidth: 1,
+                fill: 'origin',
+                data: GraphDataString2
+              }
+          ]
+        },
+        options: {
+          responsive: true,
+          legend: false,
+          legendCallback: function(chart) {
+            var text = []; 
+            text.push('<ul>'); 
+            for (var i = 0; i < chart.data.datasets.length; i++) { 
+                text.push('<li><span class="legend-dots" style="background:' + 
+                           chart.data.datasets[i].legendColor + 
+                           '"></span>'); 
+                if (chart.data.datasets[i].label) { 
+                    text.push(chart.data.datasets[i].label); 
+                } 
+                text.push('</li>'); 
+            } 
+            text.push('</ul>'); 
+            return text.join('');
+          },
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      display: false,
+                      min: 0,
+                      stepSize: 20,
+                          max: GraphDataString3
+                  },
+                  gridLines: {
+                    drawBorder: false,
+                    color: 'rgba(235,237,242,1)',
+                    zeroLineColor: 'rgba(235,237,242,1)'
+                  }
+              }],
+              xAxes: [{
+                  gridLines: {
+                    display:false,
+                    drawBorder: false,
+                    color: 'rgba(0,0,0,1)',
+                    zeroLineColor: 'rgba(235,237,242,1)'
+                  },
+                  ticks: {
+                      padding: 20,
+                      fontColor: "#9c9fa6",
+                      autoSkip: true,
+                  },
+                  categoryPercentage: 0.5,
+                  barPercentage: 0.5
+              }]
+            }
+          },
+          elements: {
+            point: {
+              radius: 0
+            }
+          }
+      })
+      $("#visit-sale-chart-legend").html(myChart.generateLegend());
+    }
+    if ($("#visit-sale-chart-dark").length) {
+      Chart.defaults.global.legend.labels.usePointStyle = true;
+      var ctx = document.getElementById('visit-sale-chart-dark').getContext("2d");
+
+      var gradientStrokeViolet = ctx.createLinearGradient(0, 0, 0, 181);
+      gradientStrokeViolet.addColorStop(0, 'rgba(218, 140, 255, 1)');
+      gradientStrokeViolet.addColorStop(1, 'rgba(154, 85, 255, 1)');
+      var gradientLegendViolet = 'linear-gradient(to right, rgba(218, 140, 255, 1), rgba(154, 85, 255, 1))';
+      
+      var gradientStrokeBlue = ctx.createLinearGradient(0, 0, 0, 360);
+      gradientStrokeBlue.addColorStop(0, 'rgba(54, 215, 232, 1)');
+      gradientStrokeBlue.addColorStop(1, 'rgba(177, 148, 250, 1)');
+      var gradientLegendBlue = 'linear-gradient(to right, rgba(54, 215, 232, 1), rgba(177, 148, 250, 1))';
+
+      var gradientStrokeRed = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStrokeRed.addColorStop(0, 'rgba(255, 191, 150, 1)');
+      gradientStrokeRed.addColorStop(1, 'rgba(254, 112, 150, 1)');
+      var gradientLegendRed = 'linear-gradient(to right, rgba(255, 191, 150, 1), rgba(254, 112, 150, 1))';
+
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+            datasets: [
+              {
+                label: "MoneyIn",
+                borderColor: gradientStrokeViolet,
+                backgroundColor: gradientStrokeViolet,
+                hoverBackgroundColor: gradientStrokeViolet,
+                legendColor: gradientLegendViolet,
+                pointRadius: 0,
+                fill: false,
+                borderWidth: 1,
+                fill: 'origin',
+                data: GraphDataString0
+              },
+              {
+                label: "MoneyOut",
+                borderColor: gradientStrokeRed,
+                backgroundColor: gradientStrokeRed,
+                hoverBackgroundColor: gradientStrokeRed,
+                legendColor: gradientLegendRed,
+                pointRadius: 0,
+                fill: false,
+                borderWidth: 1,
+                fill: 'origin',
+                data: GraphDataString1
+              },
+              {
+                label: "Balance",
+                borderColor: gradientStrokeBlue,
+                backgroundColor: gradientStrokeBlue,
+                hoverBackgroundColor: gradientStrokeBlue,
+                legendColor: gradientLegendBlue,
+                pointRadius: 0,
+                fill: false,
+                borderWidth: 1,
+                fill: 'origin',
+                data: GraphDataString2
+              }
+          ]
+        },
+        options: {
+          responsive: true,
+          legend: false,
+          legendCallback: function(chart) {
+            var text = []; 
+            text.push('<ul>'); 
+            for (var i = 0; i < chart.data.datasets.length; i++) { 
+                text.push('<li><span class="legend-dots" style="background:' + 
+                           chart.data.datasets[i].legendColor + 
+                           '"></span>'); 
+                if (chart.data.datasets[i].label) { 
+                    text.push(chart.data.datasets[i].label); 
+                } 
+                text.push('</li>'); 
+            } 
+            text.push('</ul>'); 
+            return text.join('');
+          },
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      display: false,
+                      min: 0,
+                      stepSize: 20,
+                      max: GraphDataString3
+                  },
+                  gridLines: {
+                    drawBorder: false,
+                    color: '#322f2f',
+                    zeroLineColor: '#322f2f'
+                  }
+              }],
+              xAxes: [{
+                  gridLines: {
+                    display:false,
+                    drawBorder: false,
+                    color: 'rgba(0,0,0,1)',
+                    zeroLineColor: 'rgba(235,237,242,1)'
+                  },
+                  ticks: {
+                      padding: 20,
+                      fontColor: "#9c9fa6",
+                      autoSkip: true,
+                  },
+                  categoryPercentage: 0.5,
+                  barPercentage: 0.5
+              }]
+            }
+          },
+          elements: {
+            point: {
+              radius: 0
+            }
+          }
+      })
+      $("#visit-sale-chart-legend-dark").html(myChart.generateLegend());
+    }
+    if ($("#traffic-chart").length) {
+      var gradientStrokeBlue = ctx.createLinearGradient(0, 0, 0, 181);
+      gradientStrokeBlue.addColorStop(0, 'rgba(54, 215, 232, 1)');
+      gradientStrokeBlue.addColorStop(1, 'rgba(177, 148, 250, 1)');
+      var gradientLegendBlue = 'linear-gradient(to right, rgba(54, 215, 232, 1), rgba(177, 148, 250, 1))';
+
+      var gradientStrokeRed = ctx.createLinearGradient(0, 0, 0, 50);
+      gradientStrokeRed.addColorStop(0, 'rgba(255, 191, 150, 1)');
+      gradientStrokeRed.addColorStop(1, 'rgba(254, 112, 150, 1)');
+      var gradientLegendRed = 'linear-gradient(to right, rgba(255, 191, 150, 1), rgba(254, 112, 150, 1))';
+
+      var gradientStrokeGreen = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStrokeGreen.addColorStop(0, 'rgba(6, 185, 157, 1)');
+      gradientStrokeGreen.addColorStop(1, 'rgba(132, 217, 210, 1)');
+      var gradientLegendGreen = 'linear-gradient(to right, rgba(6, 185, 157, 1), rgba(132, 217, 210, 1))';      
+
+      var trafficChartData = {
+        datasets: [{
+          data: [30, 30, 40],
+          backgroundColor: [
+            gradientStrokeBlue,
+            gradientStrokeGreen,
+            gradientStrokeRed
+          ],
+          hoverBackgroundColor: [
+            gradientStrokeBlue,
+            gradientStrokeGreen,
+            gradientStrokeRed
+          ],
+          borderColor: [
+            gradientStrokeBlue,
+            gradientStrokeGreen,
+            gradientStrokeRed
+          ],
+          legendColor: [
+            gradientLegendBlue,
+            gradientLegendGreen,
+            gradientLegendRed
+          ]
+        }],
+    
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: [
+          'Search Engines',
+          'Direct Click',
+          'Bookmarks Click',
+        ]
+      };
+      var trafficChartOptions = {
+        responsive: true,
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        },
+        legend: false,
+        legendCallback: function(chart) {
+          var text = []; 
+          text.push('<ul>'); 
+          for (var i = 0; i < trafficChartData.datasets[0].data.length; i++) { 
+              text.push('<li><span class="legend-dots" style="background:' + 
+              trafficChartData.datasets[0].legendColor[i] + 
+                          '"></span>'); 
+              if (trafficChartData.labels[i]) { 
+                  text.push(trafficChartData.labels[i]); 
+              }
+              text.push('<span class="float-right">'+trafficChartData.datasets[0].data[i]+"%"+'</span>')
+              text.push('</li>'); 
+          } 
+          text.push('</ul>'); 
+          return text.join('');
+        }
+      };
+      var trafficChartCanvas = $("#traffic-chart").get(0).getContext("2d");
+      var trafficChart = new Chart(trafficChartCanvas, {
+        type: 'doughnut',
+        data: trafficChartData,
+        options: trafficChartOptions
+      });
+      $("#traffic-chart-legend").html(trafficChart.generateLegend());      
+    }
+    if ($("#inline-datepicker").length) {
+      $('#inline-datepicker').datepicker({
+        enableOnReadonly: true,
+        todayHighlight: true,
+      });
+    }
+  });
+})(jQuery);
+
+</script>
+
+<script src="~/js/todolist.js"></script>
+
+
+
+
