@@ -6,6 +6,7 @@ using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -21,32 +22,72 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
 
         private static Random random = new Random();
-        public async Task<int> GetRandomFoodId(List<int> idFoodListSystem, List<int> selectedIds)
+
+        public async Task<IEnumerable<int>> FilterTheTypeDiseaseBlockList(NutritionTargetsDaily nutritionTargetsDaily)
         {
-            // Tạo một danh sách các phần tử chưa được chọn
-            List<int> availableIds = new List<int>(idFoodListSystem);
-            availableIds.RemoveAll(id => selectedIds.Contains(id)); // Xóa các id đã chọn
+            IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant).ToListAsync();
 
-            if (availableIds.Count == 0)
+            List<int> idFoodListSystem = new List<int>();
+
+            foreach (var item in idFoodListSystemFilterDishType)
             {
-                throw new InvalidOperationException("Không còn id nào để chọn.");
-            }
+                FoodSelection foodSelection = await _context.FoodSelections.FirstOrDefaultAsync(x => x.FoodListId == item.FoodListId && x.UserId == nutritionTargetsDaily.UserId);
+                if (foodSelection == null || (!foodSelection.IsBlock ?? false))
+                {
+                    UserDetail userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == nutritionTargetsDaily.UserId);
+                    if (userDetail != null && userDetail.UnderlyingDisease != null)
+                    {
+                        int[] idListDiseaseOfUser = await SplitAndProcess3(userDetail.UnderlyingDisease);
+                        foreach (var item1 in idListDiseaseOfUser)
+                        {
+                            FoodAndDisease foodAndDisease = await _context.FoodAndDiseases.FirstOrDefaultAsync(x => x.FoodListId == item.FoodListId && x.ListOfDiseasesId == item1);
+                            if (foodAndDisease == null || (foodAndDisease.IsGoodOrBad ?? true))
+                            {
+                                idFoodListSystem.Add(item.FoodListId);
+                            }
 
-            int randomIndex = random.Next(availableIds.Count);
-            return availableIds[randomIndex];
+                        }
+                    }
+                }
+            }
+            return idFoodListSystem;
         }
+
 
         public async Task<dynamic> GetTheListOfDishesByMealSettingsDetails(int MealSettingsDetailsId)
         {
 
-            //loc luon kieu thuc an nay 
-            //loc luon check benh
-            // loc luon block mon an
-            List<int> idFoodListSystem = await _context.FoodLists.Select(x => x.FoodListId).ToListAsync();
+            //loc luon kieu thuc an nay
 
+
+            // loc luon block mon an
+
+
+            //loc luon check benh
 
 
             MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
+            NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
+
+
+
+
+
+            IEnumerable<int> idFoodListSystem = await FilterTheTypeDiseaseBlockList(nutritionTargetsDaily);
+
+
+            //List<int> idFoodListSystem = _context.FoodLists
+            //.Include(x => x.FoodSelections)
+            //.Include(x => x.FoodAndDiseases)
+            //.Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant
+            //    && (x.FoodSelections.FirstOrDefault(y => y.UserId == 1 && y.FoodListId == 1) == null
+            //        || x.FoodSelections.FirstOrDefault(y => y.UserId == 1 && y.FoodListId == 1).IsBlock == false)
+            //    && (x.FoodAndDiseases.FirstOrDefault(z => z.ListOfDiseasesId == 1 && z.FoodListId == 1) == null
+            //        || x.FoodAndDiseases.FirstOrDefault(z => z.ListOfDiseasesId == 1 && z.FoodListId == 1).IsGoodOrBad == true))
+            //.Select(x => x.FoodListId)
+            //.ToList();
+
+
             List<FoodListDTO> collectionOfDishes = new List<FoodListDTO>();
 
             bool foragingLoop = true;
@@ -82,7 +123,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         }
                     }
                 }
-                if(collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
+                if (collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
                 {
                     foragingLoop = false;
                 }
@@ -91,15 +132,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     foragingLoop = false;
                 }
             }
-
-
-            
-
-
-
-
             return collectionOfDishes;
         }
+
+        public async Task<int> GetRandomFoodId(IEnumerable<int> idFoodListSystem, List<int> selectedIds)
+        {
+            // Tạo một danh sách các phần tử chưa được chọn
+            List<int> availableIds = new List<int>(idFoodListSystem);
+            availableIds.RemoveAll(id => selectedIds.Contains(id)); // Xóa các id đã chọn
+
+            if (availableIds.Count == 0)
+            {
+                throw new InvalidOperationException("Không còn id nào để chọn.");
+            }
+
+            int randomIndex = random.Next(availableIds.Count);
+            return availableIds[randomIndex];
+        }
+
 
         public async Task<bool> CheckForUserMealSettingsDetails(FoodListDTO dataFood, int MealSettingsDetailsId)
         {
@@ -107,7 +157,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             string[] result = await SplitAndProcessFirst(dataFood.KeyNote.KeyList);
 
-            
+
             foreach (var item in result)
             {
 
@@ -188,11 +238,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             if (nutritionTargetsDaily.LimitDailyCholesterol ?? false) { }
             else
-            {  
+            {
                 if (dataFood.ingredientDetails100gReduceDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
             }
 
-            
+
             return true;
         }
 
@@ -225,6 +275,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return result;
         }
+
+        public async Task<int[]> SplitAndProcess3(string part)
+        {
+            int[] ints = part.Split(';').Select(s => { int number; return int.TryParse(s, out number) ? number : 0; }).ToArray();
+            return ints;
+        }
+
 
         private bool IsValidSize(string value, string size)
         {

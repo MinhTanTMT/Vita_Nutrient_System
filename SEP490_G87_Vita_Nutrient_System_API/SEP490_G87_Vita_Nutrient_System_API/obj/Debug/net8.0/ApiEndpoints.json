@@ -219,7 +219,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.CommonUserResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -231,8 +231,8 @@
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
-    "Method": "GetNutritionistDetailInfo",
-    "RelativePath": "api/Users/GetNutritionistDetailInfo/{id}",
+    "Method": "GetNutritionistDetail",
+    "RelativePath": "api/Users/GetNutritionistDetail/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -244,6 +244,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
+    "Method": "GetNutritionistPackages",
+    "RelativePath": "api/Users/GetNutritionistPackages/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.ExpertPackageResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
@@ -285,12 +311,22 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.CommonUserResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
-    "Method": "GetUserDetailInfo",
-    "RelativePath": "api/Users/GetUserDetailInfo/{id}",
+    "Method": "GetUserDetail",
+    "RelativePath": "api/Users/GetUserDetail/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -374,6 +410,16 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]
