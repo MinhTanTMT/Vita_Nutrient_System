@@ -116,6 +116,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
 
             //From ExpertPackage to ExpertPackageResponse
             CreateMap<ExpertPackage, ExpertPackageResponse>();
+
+            //From Food to FoodResponse
+            CreateMap<FoodList, FoodResponse>()
+            .ForMember(dest => dest.FoodId, opt => opt.MapFrom(src => src.FoodListId))
+            .ForMember(dest => dest.FoodType, opt => opt.MapFrom(src => src.FoodType));
+
+            CreateMap<FoodType, FoodTypeResponse>();
         }
     }
 }
