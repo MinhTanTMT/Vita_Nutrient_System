@@ -21,7 +21,5 @@ public partial class ArticlesNews
 
     public string? HeaderImage { get; set; }
 
-    public virtual ICollection<ArticleImage> ArticleImages { get; set; } = new List<ArticleImage>();
-
     public virtual User User { get; set; } = null!;
 }

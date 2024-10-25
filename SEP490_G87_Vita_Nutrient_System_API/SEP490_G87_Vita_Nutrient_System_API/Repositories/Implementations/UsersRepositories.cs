@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+using SEP490_G87_Vita_Nutrient_System_API.DTO.User;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
@@ -82,7 +82,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
-
         ////////////////////////////////////////////////////////////
         /// Dũng
         ////////////////////////////////////////////////////////////
@@ -108,12 +107,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         ///
         public IQueryable<User> GetAllUsers()
         {
-            return _context.Users;
+            return _context.Users.Include(u => u.RoleNavigation);
         }
 
         public IQueryable<User> GetUsersByRole(int roleId)
         {
-            return _context.Users.Where(u => u.Role == roleId);
+            return _context.Users.Include(u => u.RoleNavigation).Where(u => u.Role == roleId);
         }
 
         public User? GetUserDetailsInfo(int id)
@@ -148,13 +147,38 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.SaveChanges();
         }
 
-        
+        public IQueryable<ExpertPackage> GetNutritionistPackages(int id)
+        {
+            return _context.ExpertPackages.Where(p => p.NutritionistDetailsId == id);
+        }
+
+
 
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
+        public dynamic ChangePassword(ChangePasswordDTO model)
+        {
+            var user = _context.Users.FirstOrDefault(t => t.Account == model.Account);
+            if(user == null)
+            {
+                throw new ApplicationException("Account does not exist");
+            }
+            if(model.CurrentPassword != user.Password)
+            {
+                throw new ApplicationException("Your current password is not match!");
+            }
+            if(model.NewPassword != model.ConfirmPassword)
+            {
+                throw new ApplicationException("Your new password and confirm password is not match!");
+            }
+            user.Password = model.NewPassword;
+            _context.Update(user);
+            _context.SaveChanges();
 
+            return user;
+        }
 
     }
 }

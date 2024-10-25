@@ -1,4 +1,4 @@
-﻿@* @{
+@* @{
     var jsonTransactionsSystemData = TempData["transactionsSystemData"];
     IEnumerable<TransactionsSystem> transactionsSystem = jsonTransactionsSystemData != null
         ? JsonConvert.DeserializeObject<IEnumerable<TransactionsSystem>>(jsonTransactionsSystemData.ToString()) : new List<TransactionsSystem>();

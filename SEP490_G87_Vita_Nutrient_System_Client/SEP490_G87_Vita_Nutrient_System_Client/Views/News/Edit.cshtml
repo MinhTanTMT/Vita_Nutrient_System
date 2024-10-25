@@ -1,0 +1,172 @@
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNews
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<div class="container">
+    <h2 class="page-title">Chỉnh sửa bài viết</h2>
+
+    <form asp-action="Edit" class="edit-form">
+        <div class="form-group">
+            <label asp-for="Title" class="control-label">Tiêu đề</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="NameCreater" class="control-label">Người tạo</label>
+            <input asp-for="NameCreater" class="form-control" />
+            <span asp-validation-for="NameCreater" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DateCreated" class="control-label">Ngày cập nhật</label>
+            <input asp-for="DateCreated" class="form-control" type="date" />
+            <span asp-validation-for="DateCreated" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IsActive" class="control-label">Trạng thái</label>
+            <select asp-for="IsActive" class="form-control">
+                <option value="true">Hoạt động</option>
+                <option value="false">Không hoạt động</option>
+            </select>
+            <span asp-validation-for="IsActive" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="HeaderImage" class="control-label">Hình ảnh đầu bài</label>
+            <input asp-for="HeaderImage" class="form-control" />
+            <span asp-validation-for="HeaderImage" class="text-danger"></span>
+            @if (!string.IsNullOrEmpty(Model.HeaderImage))
+            {
+                <div class="current-image">
+                    <img src="@Model.HeaderImage" alt="Header Image" class="image-preview" />
+                    <p>Ảnh hiện tại</p>
+                </div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Content" class="control-label">Nội dung</label>
+            <textarea asp-for="Content" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+
+        <div class="form-group action-buttons">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Content Wrapper */
+    .content-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        background-color: transparent;
+        width: 100%;
+    }
+    /* Global Font Styling */
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Container Styling */
+    .container {
+        max-width: 1600px;
+        margin: 30px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Page Title Styling */
+    .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #4CAF50;
+        margin-bottom: 20px;
+        text-align: center;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Form Styling */
+    .edit-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .edit-form label {
+        font-weight: 500;
+        color: #555;
+    }
+
+    .edit-form .form-control {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        font-size: 16px;
+        color: #333;
+        box-shadow: none;
+        transition: border-color 0.3s ease-in-out;
+    }
+
+        .edit-form .form-control:focus {
+            border-color: #4CAF50;
+        }
+
+    /* Current Image Styling */
+    .current-image {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        border: 2px solid #ddd;
+    }
+
+    /* Action Buttons Styling */
+    .action-buttons {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .btn {
+        margin: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .btn-primary {
+        background-color: #1E88E5;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #1565C0;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
