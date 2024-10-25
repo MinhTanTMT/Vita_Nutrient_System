@@ -12,6 +12,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using System.Collections.Generic;
 using System;
+using Castle.Core.Configuration;
+using Humanizer;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
@@ -50,13 +52,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-        [HttpGet("APGenerateMealController")]
+        [HttpGet("APIGenerateMealController")]
         public async Task<IActionResult> APIGenerateMealController(int MealSettingsDetailsId)
         {
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
             return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(MealSettingsDetailsId));
-
         }
+
+
+        [HttpGet("APIChangeTheDishToSuitTheTarget")]
+        public async Task<IActionResult> APIChangeTheDishToSuitTheTarget(int[] idFoodOfListAlreadyExists, int MealSettingsDetailsId)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+
+            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(MealSettingsDetailsId));
+        }
+
+
 
     }
 }

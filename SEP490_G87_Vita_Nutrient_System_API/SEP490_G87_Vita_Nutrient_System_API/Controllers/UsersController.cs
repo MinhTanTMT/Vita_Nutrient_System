@@ -54,7 +54,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-
         [HttpPost("Register")]
         public async Task<ActionResult<User>> GetUserRegister(User user)
         {

@@ -26,7 +26,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password);
+            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password && u.IsActive == true);
             if (user == null)
             {
                 return null;

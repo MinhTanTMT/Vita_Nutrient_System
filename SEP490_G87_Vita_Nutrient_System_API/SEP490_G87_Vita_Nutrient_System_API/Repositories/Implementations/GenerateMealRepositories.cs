@@ -14,9 +14,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
-    public class GenerateMealRepositories
+    public class GenerateMealRepositories : IGenerateMealRepositories
     {
-
         public GenerateMealRepositories() { }
 
         Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
@@ -60,6 +59,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
+
         public async Task<IEnumerable<int>> FilterTheTypeDiseaseBlockListAvoidIngredient(NutritionTargetsDaily nutritionTargetsDaily, int idUser)
         {
             IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant).ToListAsync();
@@ -76,12 +76,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return idFoodListSystemCollection;
         }
 
-
         public async Task<IEnumerable<FoodListDTO>> GetTheListOfDishesByMealSettingsDetails(int MealSettingsDetailsId)
         {
-
             MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
-
             if(mealSettingsDetail != null)
             {
                 NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
@@ -107,7 +104,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                 IEnumerable<int> idFoodListSystem = await FilterTheTypeDiseaseBlockListAvoidIngredient(nutritionTargetsDaily, idUser);
                 List<FoodListDTO> collectionOfDishes = new List<FoodListDTO>();
-
                 bool foragingLoop = true;
                 int loopCount = 0;
 
@@ -133,7 +129,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 collectionOfDishes.Add(foodObtained);
                                 break;
                             }
-
                         }
                         else
                         {
@@ -154,7 +149,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             }else if (await CheckForUserMealSettingsDetails(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
                             {
                                 FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
-
                                 if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
                                 {
                                     collectionOfDishes.Add(foodObtained);
@@ -191,8 +185,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-
-            
         }
 
 
@@ -220,42 +212,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
 
-            string[] result = await SplitAndProcessFirst(dataFood.KeyNote.KeyList);
-
-            foreach (var item in result)
-            {
-
-                if (item.Contains("="))
-                {
-                    Dictionary<string, string> dataProcess1 = await SplitAndProcess1(item);
-
-                    if (IsNumeric(dataProcess1.Values.FirstOrDefault().ToString()))
-                    {
-                        if (dataProcess1.Keys.FirstOrDefault().Equals("WantCooking"))
-                        {
-                            if (!dataProcess1.Values.FirstOrDefault().Equals(mealSettingsDetail.WantCookingId.ToString())) return false;
-                        }
-                    }
-                    else
-                    {
-                        if (dataProcess1.Keys.FirstOrDefault().Equals("Size"))
-                        {
-                            if (!dataProcess1.Values.FirstOrDefault().Equals(mealSettingsDetail.Size)) return false;
-                        }
-                    }
-                }
-                if (item.Contains(":"))
-                {
-                    Dictionary<string, int[]> dataProcess2 = await SplitAndProcess2(item);
-                    if (dataProcess2.Keys.FirstOrDefault().Equals("SlotOfTheDay"))
-                    {
-                        if (!dataProcess2.Values.FirstOrDefault().Contains(Int32.Parse(mealSettingsDetail.TypeFavoriteFood))) return false;
-                    }
-                }
-            }
-
-            if (mealSettingsDetail.CookingDifficultyId != dataFood.CookingDifficultyId) return false;
-            if (mealSettingsDetail.TimeAvailable < (dataFood.PreparationTime + dataFood.CookingTime)) return false;
+            if (!await CheckKeyListAndData(dataFood, mealSettingsDetail)) return false;
 
             double calorieTolerance;
             double carbTolerance;
@@ -310,13 +267,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-
-        public async Task<bool> CheckForUserMealSettingsDetails(FoodListDTO dataFood, int MealSettingsDetailsId)
+        public async Task<bool> CheckKeyListAndData(FoodListDTO dataFood, MealSettingsDetail mealSettingsDetail)
         {
-            MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
-
             string[] result = await SplitAndProcessFirst(dataFood.KeyNote.KeyList);
-
 
             foreach (var item in result)
             {
@@ -352,6 +305,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (mealSettingsDetail.CookingDifficultyId != dataFood.CookingDifficultyId) return false;
             if (mealSettingsDetail.TimeAvailable < (dataFood.PreparationTime + dataFood.CookingTime)) return false;
+            return true;
+        }
+
+
+        public async Task<bool> CheckForUserMealSettingsDetails(FoodListDTO dataFood, int MealSettingsDetailsId)
+        {
+            MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
+
+            if (!await CheckKeyListAndData(dataFood, mealSettingsDetail)) return false;
 
             double calorieTolerance;
             double carbTolerance;
@@ -507,6 +469,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public async Task<IEnumerable<FoodListDTO>> TakeAllTheIngredientsOfTheDish(int idFoodListId)
         {
 
+            double averageCramCount = 100.0;
+
+
             IEnumerable<FoodListDTO> dataFood = (from scaleAmounts in _context.ScaleAmounts
                                                  join foodLists in _context.FoodLists
             on scaleAmounts.FoodListId equals foodLists.FoodListId
@@ -542,13 +507,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                                          Describe = ingredientDetails100gs.Describe,
                                                          Urlimage = ingredientDetails100gs.Urlimage,
                                                          TypeOfCalculationId = ingredientDetails100gs.TypeOfCalculationId,
-                                                         Energy = ingredientDetails100gs.Energy / 100.0 * scaleAmounts.ScaleAmount1,
-                                                         Protein = ingredientDetails100gs.Protein / 100.0 * scaleAmounts.ScaleAmount1,
-                                                         Fat = ingredientDetails100gs.Fat / 100.0 * scaleAmounts.ScaleAmount1,
-                                                         Carbohydrate = ingredientDetails100gs.Carbohydrate / 100.0 * scaleAmounts.ScaleAmount1,
-                                                         Fiber = ingredientDetails100gs.Fiber / 100.0 * scaleAmounts.ScaleAmount1,
-                                                         Sodium = ingredientDetails100gs.Sodium / 100.0 * scaleAmounts.ScaleAmount1,
-                                                         Cholesterol = ingredientDetails100gs.Cholesterol / 100.0 * scaleAmounts.ScaleAmount1
+                                                         Energy = ingredientDetails100gs.Energy / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Protein = ingredientDetails100gs.Protein / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Fat = ingredientDetails100gs.Fat / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Carbohydrate = ingredientDetails100gs.Carbohydrate / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Fiber = ingredientDetails100gs.Fiber / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Sodium = ingredientDetails100gs.Sodium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Cholesterol = ingredientDetails100gs.Cholesterol / averageCramCount * scaleAmounts.ScaleAmount1
                                                      },
                                                      ScaleAmounts = new ScaleAmountDTO
                                                      {
@@ -560,5 +525,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return dataFood;
 
         }
+
+
+
+        public async Task<bool> FillInDishIdInDailyDish(int idUser)
+        {
+
+            //GetTheListOfDishesByMealSettingsDetails(null, idUser);
+
+
+
+
+
+            return true;
+        }
+
     }
 }

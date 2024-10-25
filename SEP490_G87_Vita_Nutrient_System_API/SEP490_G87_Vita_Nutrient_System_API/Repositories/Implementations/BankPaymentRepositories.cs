@@ -193,7 +193,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 TransactionsSystem dataTransactionsSystem = await _context.TransactionsSystems.OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.TransactionContent.Equals(content) && x.AmountIn == amountIn);
                 if (dataTransactionsSystem != null && dataTransaction != null)
                 {
-                    Transaction contentCompare = dataTransaction.FirstOrDefault(x => x.transaction_content.Equals(dataTransactionsSystem.TransactionContent) && Decimal.Parse(x.amount_in) == dataTransactionsSystem.AmountIn);
+                    Transaction contentCompare = dataTransaction.FirstOrDefault(x => x.transaction_content.Contains(dataTransactionsSystem.TransactionContent) && Decimal.Parse(x.amount_in) == dataTransactionsSystem.AmountIn);
                     if (contentCompare != null)
                     {
                         TransactionsSystem intsertData = await _context.TransactionsSystems.FindAsync(dataTransactionsSystem.Id);

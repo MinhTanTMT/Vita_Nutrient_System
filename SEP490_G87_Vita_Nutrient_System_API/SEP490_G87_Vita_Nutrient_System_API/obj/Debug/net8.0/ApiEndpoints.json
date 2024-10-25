@@ -192,9 +192,113 @@
     "Order": 0,
     "Parameters": [
       {
+        "Name": "collectionOfDishes",
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Dtos.FoodListDTO, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
         "Name": "MealSettingsDetailsId",
         "Type": "System.Int32",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NewsController",
+    "Method": "GetAllArticles",
+    "RelativePath": "api/News",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SEP490_G87_Vita_Nutrient_System_API.Dtos.ArticlesNewsDTO, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NewsController",
+    "Method": "CreateArticle",
+    "RelativePath": "api/News",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "articleDto",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.ArticlesNewsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NewsController",
+    "Method": "GetArticleById",
+    "RelativePath": "api/News/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.ArticlesNewsDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NewsController",
+    "Method": "UpdateArticle",
+    "RelativePath": "api/News/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "articleDto",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.ArticlesNewsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NewsController",
+    "Method": "DeleteArticle",
+    "RelativePath": "api/News/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -235,7 +339,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.CommonUserResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -247,8 +351,8 @@
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
-    "Method": "GetNutritionistDetailInfo",
-    "RelativePath": "api/Users/GetNutritionistDetailInfo/{id}",
+    "Method": "GetNutritionistDetail",
+    "RelativePath": "api/Users/GetNutritionistDetail/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -260,6 +364,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
+    "Method": "GetNutritionistPackages",
+    "RelativePath": "api/Users/GetNutritionistPackages/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.ExpertPackageResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
@@ -301,12 +431,22 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.CommonUserResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
-    "Method": "GetUserDetailInfo",
-    "RelativePath": "api/Users/GetUserDetailInfo/{id}",
+    "Method": "GetUserDetail",
+    "RelativePath": "api/Users/GetUserDetail/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -390,6 +530,16 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]
