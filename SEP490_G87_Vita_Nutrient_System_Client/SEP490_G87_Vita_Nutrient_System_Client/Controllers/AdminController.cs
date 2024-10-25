@@ -479,8 +479,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-            [HttpPost]
-        public async Task<IActionResult> UpdateUserStatus(int userId, int status)
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserStatus(int userId, int status, string returnUrl)
         {
             try
             {
@@ -507,7 +507,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
 
-            return await UserDetail(userId);
+            return Redirect(returnUrl);
         }
 
         ////////////////////////////////////////////////////////////
