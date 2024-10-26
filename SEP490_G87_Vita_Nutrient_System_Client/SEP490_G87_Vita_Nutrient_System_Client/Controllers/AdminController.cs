@@ -89,7 +89,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             try
             {
 
-
                 int month = DateTime.Now.Month;
                 int year = DateTime.Now.Year;
                 Decimal[][] graphData;

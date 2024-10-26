@@ -185,16 +185,16 @@
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.GenerateMealController",
-    "Method": "APIGenerateMealController",
-    "RelativePath": "api/GenerateMeal/APGenerateMealController",
+    "Method": "APIChangeTheDishToSuitTheTarget",
+    "RelativePath": "api/GenerateMeal/APIChangeTheDishToSuitTheTarget",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "collectionOfDishes",
-        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Dtos.FoodListDTO, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "IsRequired": false
+        "Name": "idFoodOfListAlreadyExists",
+        "Type": "System.Int32[]",
+        "IsRequired": true
       },
       {
         "Name": "MealSettingsDetailsId",
@@ -202,6 +202,32 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.GenerateMealController",
+    "Method": "APIGenerateMealController",
+    "RelativePath": "api/GenerateMeal/APIGenerateMealController",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MealSettingsDetailsId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.GenerateMealController",
+    "Method": "APIRun",
+    "RelativePath": "api/GenerateMeal/APIRun",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

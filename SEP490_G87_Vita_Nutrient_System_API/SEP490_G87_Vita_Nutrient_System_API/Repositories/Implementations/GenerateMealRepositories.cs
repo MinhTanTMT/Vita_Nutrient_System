@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
@@ -75,6 +76,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return idFoodListSystemCollection;
         }
+
+
 
         public async Task<IEnumerable<FoodListDTO>> GetTheListOfDishesByMealSettingsDetails(int MealSettingsDetailsId)
         {
@@ -530,15 +533,96 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<bool> FillInDishIdInDailyDish(int idUser)
         {
+            MealSetting MealSettingDataOfUser = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == idUser);
+
+            if (MealSettingDataOfUser != null)
+            {    
+                if (MealSettingDataOfUser.DayOfTheWeekStartId == 8) // loai ko petium 1 bua moi ngay
+                {
+                    if (MealSettingDataOfUser.SameScheduleEveryDay ?? false) 
+                    {
+                        // chi quan tam den slot trong ngay
+                        List<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id).ToListAsync();
+
+                        // lấy cái danh sách đã có, có kiểm tra 
+
+                        if (MealSettingsDetailDataOfUser != null)
+                        {
+                            // voi mot cai MealSettingsDetailDataOfUser co 1 slot de dien vao,
+
+                            // h co 2 cai MealSettingsDetailDataOfUser cho 1 slot
+
+                            //MealOfTheDay 
+
+                            foreach (var item in MealSettingsDetailDataOfUser)
+                            {
+                                IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(item.Id);
+                                StringBuilder stringListId = new StringBuilder();
+                                foreach (var foodOfSlot in dataFoodOfSlot)
+                                {
+                                    stringListId.Append(foodOfSlot.FoodListId + "-;");
+                                }
+
+                                InsertDataIntoMealOfTheDayTable(item.SlotOfTheDayId ?? 5, MealSettingDataOfUser.UserId, DateTime.Now);
+                                // dang do tai day
+
+                            }
+                        }
+
+                        //DateOnly dateOnly = DateTime.Now.DayOfWeek;
+                        //DateTime date = DateTime.ParseExact("31/12/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                        //int dayOfYear = 298; // Ví dụ đây là số ngày trong năm cần chuyển đổi
+                        //int year = 2024; // Năm bạn muốn tính
+                        // Tạo một DateTime bắt đầu từ ngày đầu tiên của năm, sau đó thêm (dayOfYear - 1) ngày
+                        //DateTime date2 = new DateTime(year, 1, 1).AddDays(dayOfYear - 1);
+                        //Console.WriteLine(date.ToString("dd/MM/yyyy"));
+                        //File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay.txt", date.DayOfYear + "");  số ngày trong năm
+                        //File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay.txt", date.DayOfWeek + "");  thứ trong tuần
+
+
+                    }
+                    else
+                    {
+                        // lấy cái danh sách đã có, có kiểm tra 
+
+
+                    }
+                }
+                else // loai co petium nhieu nhat 7 bua moi ngay
+                {
+                    if (MealSettingDataOfUser.SameScheduleEveryDay ?? false)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+
 
             //GetTheListOfDishesByMealSettingsDetails(null, idUser);
 
+            // tạo một NutritionRoute dành cho loại thường và ko có thời hạn StartDate.Now và EndDate = null
+
+            // tạo một MealOfTheDay dành cho loại thường có ngày thực thi DateExecute
+
+
+            // tạo một NutritionRoute dành cho loại thường và ko có thời hạn
 
 
 
+            // tạo một NutritionRoute 
 
-            return true;
+
+
+            return false;
         }
 
+        private void InsertDataIntoMealOfTheDayTable(short slotId, int NutritionRouteId, DateTime DateExecute)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

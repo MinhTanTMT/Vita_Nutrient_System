@@ -70,6 +70,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
+        [HttpGet("APIRun")]
+        public async Task<IActionResult> APIRun()
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            await generateMealRepositories.FillInDishIdInDailyDish(1);
+
+            return Ok();
+        }
+
+
 
     }
 }
