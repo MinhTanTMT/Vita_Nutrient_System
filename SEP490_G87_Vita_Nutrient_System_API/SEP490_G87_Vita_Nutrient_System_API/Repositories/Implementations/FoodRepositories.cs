@@ -32,5 +32,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 .Where(f => f.FoodTypeId == typeId)
                 .ToList();
         }
+
+        public List<FoodType> GetFoodTypes()
+        {
+            return _context.FoodTypes.ToList();
+        }
     }
 }

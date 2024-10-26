@@ -45,5 +45,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             return repositories.GetFoodRecipe(foodId);
         }
+
+        [HttpGet("GetFoodTypes")]
+        public async Task<ActionResult<List<FoodTypeResponse>>> GetFoodTypes()
+        {
+            List<FoodType> types = repositories.GetFoodTypes();
+            return types.Select(t => _mapper.Map<FoodTypeResponse>(t)).ToList();
+        }
     }
 }
