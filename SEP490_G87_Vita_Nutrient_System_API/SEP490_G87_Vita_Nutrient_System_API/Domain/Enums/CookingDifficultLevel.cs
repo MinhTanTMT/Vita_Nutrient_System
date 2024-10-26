@@ -2,7 +2,7 @@
 {
     public enum CookingDifficultLevel
     {
-        SUPER_HARD = 1,
+        SUPERHARD = 1,
         HARD = 2,
         MEDIUM = 3,
         EASY = 4
