@@ -254,6 +254,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.AlertMessage = "Cannot get list users! Please try again!";
                 }
 
+                ViewBag.SearchQuery = searchQuery;
+
                 return View("~/Views/Admin/UserManagement/ListUser.cshtml");
             }
             catch (Exception ex)
@@ -382,6 +384,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     ViewBag.AlertMessage = "Cannot get list nutritionists! Please try again!";
                 }
+                
+                ViewBag.SearchQuery = searchQuery;
 
                 return View("~/Views/Admin/NutritionistManagement/ListNutritionist.cshtml");
             }

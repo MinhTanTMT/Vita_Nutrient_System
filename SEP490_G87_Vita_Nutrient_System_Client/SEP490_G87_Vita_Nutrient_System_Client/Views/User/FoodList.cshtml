@@ -4,11 +4,16 @@
 *@
 @{
     List<FoodList> foods = ViewBag.foods;
-    int currentPage = ViewBag.currentPage;
-    int totalPages = ViewBag.totalPages;
+    int currentPage = ViewBag.currentPage ?? 0;
+    int totalPages = ViewBag.totalPages ?? 0;
     string searchQuery = ViewBag.searchQuery;
-    int foodTypeId = ViewBag.foodTypeId;
+    List<FoodType> foodTypes = ViewBag.foodTypes;
+    int typeId = ViewBag.foodTypeId ?? 0;
+    FoodType foodType = ViewBag.foodType;
 }
+
+<link rel="stylesheet" href="~/css/foodlist.css">
+
 <div class="row" style="width: 100%;">
     <div class="col-12 grid-margin">
         <div class="card">
@@ -18,6 +23,7 @@
                 <!-- Search form -->
                 <form method="get" action="@Url.Action("FoodList", "User")" style="padding: 8px 10px;">
                     <div class="input-group mb-3">
+                        <input type="hidden" name="foodTypeId" value="@typeId" />
                         <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
                         <div class="input-group-append">
                             <button class="btn btn-success btn-fw" type="submit">
@@ -28,6 +34,18 @@
                     </div>
                 </form>
 
+                <div class="type-filter" style="margin-bottom: 50px; padding: 8px 10px;">
+                    <div class="dropdown" style="float: right;">
+                        <button id="typeFilterButton">@foodType.Name</button>
+                        <ul class="dropdown-menu dropdown-center">
+                            <li id="0" onclick="updateFoodType(0, 'All types')">All types</li>
+                            @foreach (FoodType ft in foodTypes)
+                            {
+                                <li id="@ft.FoodTypeId" onclick="updateFoodType(@ft.FoodTypeId, '@ft.Name')">@ft.Name</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
                 @if (foods == null || foods.Count == 0)
                 {
                     <h1>There is no food.</h1>
@@ -102,3 +120,5 @@
         </div>
     </div>
 </div>
+
+<script src="~/js/foodlist.js"></script>

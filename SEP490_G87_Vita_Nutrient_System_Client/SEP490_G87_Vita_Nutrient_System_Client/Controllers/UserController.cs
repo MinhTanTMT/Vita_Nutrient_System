@@ -79,8 +79,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                HttpResponseMessage response =
-                                    await client.GetAsync(client.BaseAddress + "/Food/GetFoods/");
+                HttpResponseMessage response = foodTypeId == 0?
+                                    await client.GetAsync(client.BaseAddress + "/Food/GetFoods/")
+                                    :
+                                    await client.GetAsync(client.BaseAddress + "/Food/GetFoods?foodTypeId=" + foodTypeId);
+
+                HttpResponseMessage response1 =
+                                    await client.GetAsync(client.BaseAddress + "/Food/GetFoodTypes");
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -112,7 +117,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.AlertMessage = "Cannot get list foods! Please try again!";
                 }
 
+                HttpContent content1 = response1.Content;
+                string data1 = await content1.ReadAsStringAsync();
+                List<FoodType> foodTypes = JsonConvert.DeserializeObject<List<FoodType>>(data1);
+                ViewBag.foodTypes = foodTypes;
+                FoodType ft = foodTypes.FirstOrDefault(f => f.FoodTypeId == foodTypeId);
+                ViewBag.foodType = ft ?? new FoodType { FoodTypeId = 0, Name = "All Types"};
                 ViewBag.foodTypeId = foodTypeId;
+                ViewBag.searchQuery = searchQuery;
 
                 return View("~/Views/User/FoodList.cshtml");
             }
