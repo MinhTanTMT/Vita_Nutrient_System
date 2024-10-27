@@ -44,7 +44,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             FoodListDTO item1 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
             FoodListDTO item2 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
-            FoodListDTO item3 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
+            FoodListDTO item3 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3));
             List<FoodListDTO> FoodListDTO = new List<FoodListDTO>();
             FoodListDTO.Add(item1);
             FoodListDTO.Add(item2);
@@ -61,7 +61,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             List<int> ints = new List<int>()
             {
-                2,1
+                4,4, 3
             };
 
             return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
@@ -76,7 +76,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             List<int> ints = new List<int>()
             {
-                4,4
+                4,4, 3
             };
             return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
         }
@@ -85,25 +85,29 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIRun")]
         public async Task<IActionResult> APIRun()
         {
-            //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            ////await generateMealRepositories.FillInDishIdInDailyDish(1);
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            //await generateMealRepositories.FillInDishIdInDailyDish(1);
 
-            //return Ok(await generateMealRepositories.FillInDishIdInDailyDish(1, DateTime.Now));
+
+
+            return Ok(await generateMealRepositories.FillInDishIdInDailyDish(1, DateTime.ParseExact("28/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)));
 
             //int dayOfYear = 298;
             //int year = 2024;
             //DateTime date2 = new DateTime(year, 1, 1).AddDays(dayOfYear - 1);
 
-            DataFoodListMealOfTheDay dataFoodListMealOfTheDay1 = new DataFoodListMealOfTheDay();
+            //DataFoodListMealOfTheDay dataFoodListMealOfTheDay1 = new DataFoodListMealOfTheDay();
 
-            List<DataFoodListMealOfTheDay> dataFoodListMealOfTheDay = new List<DataFoodListMealOfTheDay>();
+            //List<DataFoodListMealOfTheDay> dataFoodListMealOfTheDay = new List<DataFoodListMealOfTheDay>();
 
-            if(dataFoodListMealOfTheDay.Count == 0)
-            {
-                return BadRequest("K");
-            }
+            //if(dataFoodListMealOfTheDay.Count == 0)
+            //{
+            //    return BadRequest("K");
+            //}
 
-            return Ok("date2");
+            //return Ok("date2");
+
+
         }
 
 

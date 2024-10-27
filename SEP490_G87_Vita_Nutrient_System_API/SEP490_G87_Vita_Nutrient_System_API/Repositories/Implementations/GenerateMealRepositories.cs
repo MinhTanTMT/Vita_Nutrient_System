@@ -115,7 +115,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 if (listItemIdAlreadyExistsOfMealSettingsDetails != null)
                 {
                     IEnumerable<int> combinedAndFilteredList = listItemIdAlreadyExistsOfMealSettingsDetails.Where(item => idFoodListSystem.Contains(item)).ToList();
-
                     collectionOfDishes = await CreateAGettableFoodList(mealSettingsDetail, MealSettingsDetailsId, idFoodListSystem, combinedAndFilteredList);
                 }
                 else
@@ -144,7 +143,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     collectionOfDishes.Add(foodObtained);
                 }
             }
-   
+
+            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay.txt", collectionOfDishes.Count + "");
+
             bool foragingLoop = true;
             int loopCount = 0;
 
@@ -158,6 +159,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     selectedIds.Add(randomId);
                     if (collectionOfDishes.Count() == 0)
                     {
+                        File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay0.txt", collectionOfDishes.Count + "");
                         FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
 
                         if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
@@ -175,6 +177,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     {
                         if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
                         {
+                            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay1.txt", collectionOfDishes.Count + "");
                             FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
                             if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
                             {
@@ -190,6 +193,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         }
                         else if (await CheckForUserMealSettingsDetails(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
                         {
+                            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay2.txt", collectionOfDishes.Count + "");
                             FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
                             if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
                             {
@@ -201,9 +205,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 collectionOfDishes.Add(foodObtained);
                                 break;
                             }
+
+
                         }
                     }
                 }
+
+                File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay5.txt", collectionOfDishes.Count + "");
+
                 if (collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
                 {
                     FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(collectionOfDishes);
@@ -213,6 +222,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     }
                     else
                     {
+                        File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay3.txt", collectionOfDishes.Count + "");
                         collectionOfDishes.Clear();
                         if (combinedAndFilteredList != null)
                         {
@@ -228,8 +238,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 {
                     collectionOfDishes.Clear();
                     foragingLoop = false;
+                    File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay4.txt", collectionOfDishes.Count + "");
                 }
             }
+
+            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay6.txt", collectionOfDishes.Count + "");
             return collectionOfDishes;
         }
 
@@ -604,9 +617,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 if (mealSettingsDetailDayBefore != null && combinedAndFilteredList.Contains(itemMealSettingsDetai.Id))
                                 {
                                     stringListId.Append(await TakeDataIntoMealOfTheDayBefore(dataFoodListMealOfTheDay.FirstOrDefault(x => x.SettingDetail == itemMealSettingsDetai.Id)));
-
-
-
                                 }
                                 else
                                 {
@@ -690,32 +700,33 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             //MealSettingID se luon doc nhat trong mot danh sach string DataFoodListID
 
-
             List<int> listFoodCollection = new List<int>();
+            StringBuilder stringListId = new StringBuilder();
             foreach (var getId in dataFoodListMealOfTheDay.foodIdData)
             {
                 listFoodCollection.Add(getId.idFood);
             }
             IEnumerable<FoodListDTO> dataTake = await GetTheListOfDishesByMealSettingsDetails(listFoodCollection, dataFoodListMealOfTheDay.SettingDetail);
 
-            if (dataTake.Count() == 0)
+            MealSettingsDetail mealSetting = await _context.MealSettingsDetails.FindAsync(dataFoodListMealOfTheDay.SettingDetail);
+
+            if (dataTake != null && mealSetting != null)
             {
-
-
-
+                
+                stringListId.AppendLine($"SlotOfTheDay={mealSetting.SlotOfTheDayId};SettingDetail={mealSetting.Id}:");
+                foreach (var foodOfSlot in dataTake)
+                {
+                    stringListId.Append(foodOfSlot.FoodListId + "-;");
+                }
+                stringListId.AppendLine("#");
             }
             else
             {
-
-
+                return stringListId.ToString();
             }
 
 
-
-
-
-            return "";
-
+            return stringListId.ToString();
         }
 
 
