@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System;
 using Castle.Core.Configuration;
 using Humanizer;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
@@ -56,7 +57,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<IActionResult> APIGenerateMealController(int MealSettingsDetailsId)
         {
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(MealSettingsDetailsId));
+
+
+            List<int> ints = new List<int>()
+            {
+                2,1
+            };
+
+            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
+
         }
 
 
@@ -65,18 +74,36 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
-
-            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(MealSettingsDetailsId));
+            List<int> ints = new List<int>()
+            {
+                4,4
+            };
+            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
         }
 
 
         [HttpGet("APIRun")]
         public async Task<IActionResult> APIRun()
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            await generateMealRepositories.FillInDishIdInDailyDish(1);
+            //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            ////await generateMealRepositories.FillInDishIdInDailyDish(1);
 
-            return Ok();
+            //return Ok(await generateMealRepositories.FillInDishIdInDailyDish(1, DateTime.Now));
+
+            //int dayOfYear = 298;
+            //int year = 2024;
+            //DateTime date2 = new DateTime(year, 1, 1).AddDays(dayOfYear - 1);
+
+            DataFoodListMealOfTheDay dataFoodListMealOfTheDay1 = new DataFoodListMealOfTheDay();
+
+            List<DataFoodListMealOfTheDay> dataFoodListMealOfTheDay = new List<DataFoodListMealOfTheDay>();
+
+            if(dataFoodListMealOfTheDay.Count == 0)
+            {
+                return BadRequest("K");
+            }
+
+            return Ok("date2");
         }
 
 

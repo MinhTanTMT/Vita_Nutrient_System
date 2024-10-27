@@ -359,50 +359,20 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<MealOfTheDay>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MealOfTh__3214EC07B79ED122");
+            entity.HasKey(e => e.Id).HasName("PK__MealOfTh__3214EC07F5556AEE");
 
             entity.ToTable("MealOfTheDay", "Business");
 
-            entity.Property(e => e.Slot1FoodListId)
-                .HasMaxLength(512)
-                .IsUnicode(false);
-            entity.Property(e => e.Slot2FoodListId)
-                .HasMaxLength(512)
-                .IsUnicode(false);
-            entity.Property(e => e.Slot3FoodListId)
-                .HasMaxLength(512)
-                .IsUnicode(false);
-            entity.Property(e => e.Slot4FoodListId)
-                .HasMaxLength(512)
-                .IsUnicode(false);
-            entity.Property(e => e.Slot5FoodListId)
+            entity.HasIndex(e => new { e.NutritionRouteId, e.DateExecute }, "UQ__MealOfTh__641B4C6D9F1431EA").IsUnique();
+
+            entity.Property(e => e.DataFoodListId)
                 .HasMaxLength(512)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.NutritionRoute).WithMany(p => p.MealOfTheDays)
                 .HasForeignKey(d => d.NutritionRouteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MealOfThe__Nutri__693CA210");
-
-            entity.HasOne(d => d.Slot1OfTheDay).WithMany(p => p.MealOfTheDaySlot1OfTheDays)
-                .HasForeignKey(d => d.Slot1OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot1__6A30C649");
-
-            entity.HasOne(d => d.Slot2OfTheDay).WithMany(p => p.MealOfTheDaySlot2OfTheDays)
-                .HasForeignKey(d => d.Slot2OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot2__6B24EA82");
-
-            entity.HasOne(d => d.Slot3OfTheDay).WithMany(p => p.MealOfTheDaySlot3OfTheDays)
-                .HasForeignKey(d => d.Slot3OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot3__6C190EBB");
-
-            entity.HasOne(d => d.Slot4OfTheDay).WithMany(p => p.MealOfTheDaySlot4OfTheDays)
-                .HasForeignKey(d => d.Slot4OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot4__6D0D32F4");
-
-            entity.HasOne(d => d.Slot5OfTheDay).WithMany(p => p.MealOfTheDaySlot5OfTheDays)
-                .HasForeignKey(d => d.Slot5OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot5__6E01572D");
+                .HasConstraintName("FK__MealOfThe__Nutri__0D44F85C");
         });
 
         modelBuilder.Entity<MealSetting>(entity =>
