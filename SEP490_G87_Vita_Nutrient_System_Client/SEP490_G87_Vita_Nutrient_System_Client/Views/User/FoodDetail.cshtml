@@ -1,0 +1,108 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    FoodList food = ViewBag.food;
+    List<FoodRecipe> recipes = ViewBag.recipes;
+}
+
+<link rel="stylesheet" href="~/css/fooddetails.css">
+
+<div class="row" style="width: 100%;">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">
+                    @food.Name
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        @if (food.Urlimage == null || food.Urlimage.Length == 0)
+                        {
+                                <img src="~/images/foods/default_food.png" alt="default" style="border-radius: 5px; width: 100%;" />
+                        }
+                        else
+                        {
+                                <img src="~/images/@food.Urlimage" alt="@food.Name"
+                                     onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="border-radius: 5px; width: 100%;" />
+                        }
+                    </div>
+                    <div class="col-1"></div>
+                    <div class="food-info col-6">
+                        <label>Description: </label>
+                        <p>@food.Describe</p>
+                        <br />
+                        <label>Rate: </label>
+                        <p>@food.Rate</p>
+                        <br />
+                        <label>Number rate: </label>
+                        <p>@food.NumberRate</p>
+                        <br />
+                        <label>Type: </label>
+                        <p>@food.FoodType.Name</p>
+                        <br />
+                        <label>Preparation time: </label>
+                        <p>@food.PreparationTime (mins)</p>
+                        <br />
+                        <label>Cooking time: </label>
+                        <p>@food.CookingTime (mins)</p>
+                        <br />
+                        <label>Difficulty: </label>
+                        <p>@Enum.GetName(typeof(SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums.CookingDifficultyLevel), food.CookingDifficultyId)</p>
+                    </div>
+                </div>
+
+                <div class="hr">
+                    <div class="hr-content">The steps to cook</div>
+                </div>
+
+                <div class="card-body">
+                    <div class="food-recipes">
+
+                        @for(int i = 0; i < recipes.Count; i++)
+                        {
+                            FoodRecipe r = recipes[i];
+                            @if(i == recipes.Count - 1 && i != 0)
+                            {
+                                <div class="font-weight-bold p-5 text-decoration-underline">
+                                    Last Step
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="font-weight-bold p-5 text-decoration-underline">
+                                    Step @(i + 1)
+                                </div>
+                            }
+                            
+                            <div class="step-content row">
+                                <div class="col-4 step-img">
+                                    @if (r.Urlimage == null || r.Urlimage.Length == 0)
+                                    {
+                                        <img src="~/images/foods/default_food.png" alt="default" style="width: 200px; height: auto; border-radius: 5px;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/@r.Urlimage" alt="step @(i+1)"
+                                             onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 200px; height: auto; border-radius: 5px;" />
+                                    }
+                                </div>
+
+                                <div class="col-8 step-describe">
+                                    @r.Describe
+                                </div>
+                            </div>
+                        }
+
+                        <div style="font-size: 20px; font-weight: bold; text-align: center; margin-top: 50px; padding: 2px 0;">
+                            DONE! Enjoy your meal!
+                        </div>
+                        <div style="text-align: center; padding: 5px 0; font-size: 20px;"><i class="mdi mdi-heart"></i></div>
+                        <div style="width: 95%; height: 1px; background: #ccc; margin: 0px 10px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

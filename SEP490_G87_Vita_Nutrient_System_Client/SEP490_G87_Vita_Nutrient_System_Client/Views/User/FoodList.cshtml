@@ -84,7 +84,7 @@
                                         <td> @f.FoodType.Name </td>
                                         <td> @((CookingDifficultyLevel)f.CookingDifficultyId) </td>
                                         <td>
-                                            <a class="btn-link" asp-controller="User" asp-action="FoodDetail" asp-route-nutritionistId="@f.FoodId">View</a>
+                                            <a class="btn-link" asp-controller="User" asp-action="FoodDetails" asp-route-foodId="@f.FoodId">View</a>
                                         </td>
                                     </tr>
                                 }
@@ -98,19 +98,19 @@
                             @if (currentPage > 1)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("ListNutritionist", new { page = currentPage - 1 })">Previous</a>
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = currentPage - 1 })">Previous</a>
                                 </li>
                             }
                             @for (int i = 1; i <= totalPages; i++)
                             {
                                 <li class="page-item @(i == currentPage ? "active" : "")">
-                                    <a class="page-link" href="@Url.Action("ListNutritionist", new { page = i })">@i</a>
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = i })">@i</a>
                                 </li>
                             }
                             @if (currentPage < totalPages)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("ListNutritionist", new { page = currentPage + 1 })">Next</a>
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = currentPage + 1 })">Next</a>
                                 </li>
                             }
                         </ul>

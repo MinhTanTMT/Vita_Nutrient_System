@@ -135,7 +135,44 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        [HttpGet("foodDetails/{foodId}")]
+        public async Task<IActionResult> FoodDetails(int foodId)
+        {
+            try
+            {
+                HttpResponseMessage response = 
+                    await client.GetAsync(client.BaseAddress + "/Food/GetFoodById/" + foodId);
 
+                HttpResponseMessage response1 =
+                    await client.GetAsync(client.BaseAddress + "/Food/GetFoodRecipe/" + foodId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK
+                    && response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    FoodList food = JsonConvert.DeserializeObject<FoodList>(data);
+
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<FoodRecipe> recipes = JsonConvert.DeserializeObject<List<FoodRecipe>>(data1);
+
+                    ViewBag.food = food;
+                    ViewBag.recipes = recipes;
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get food details! Please try again!";
+                }
+
+                return View("~/Views/User/FoodDetail.cshtml");
+            }
+            catch(Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/User/FoodDetail.cshtml");
+            }
+        }
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
