@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using SEP490_G87_Vita_Nutrient_System_API.DTO.User;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
