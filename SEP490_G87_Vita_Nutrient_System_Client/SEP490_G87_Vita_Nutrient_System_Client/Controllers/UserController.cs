@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
+using System.Collections.Generic;
 using System.Net.Http.Headers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -54,31 +55,64 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             //int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
             // https://localhost:7045/api/GenerateMeal/APGenerateMealController?MealSettingsDetailsId=3
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APGenerateMealController?MealSettingsDetailsId=" + 1);
+
+            //https://localhost:7045/api/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-29T00%3A00%3A00&idUser=1
+
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-29T00%3A00%3A00&idUser=1");
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 HttpContent content = res.Content;
                 string data = await content.ReadAsStringAsync();
 
-                List<FoodList> rootObjectFoodList = JsonConvert.DeserializeObject<List<FoodList>>(data);
+                IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
 
-                //TempData["user"] = data;
+                if (rootObjectFoodList.Count() > 0)
+                {
+                    List<SlotBranch> slotBranchesData = new List<SlotBranch>();
 
-                ViewBag.FoodListCalo = rootObjectFoodList.Sum(x => x.ingredientDetails100gReduceDTO.energy);
+                    var numberSlot = rootObjectFoodList.Select(x => new
+                    {
+                        x.SlotOfTheDay,
+                        x.NameSlotOfTheDay
+                    }).Distinct().ToList();
 
-                return View(rootObjectFoodList);
+                    foreach (var item in numberSlot)
+                    {
+                        SlotBranch slotBranch = new SlotBranch()
+                        {
+                            SlotOfTheDay = item.SlotOfTheDay,
+                            NameSlotOfTheDay = item.NameSlotOfTheDay,
+                            foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray()
+                        };
+                        slotBranchesData.Add(slotBranch);
+                    }
+                    return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
+                }
+                else
+                {
+                    return RedirectToAction("Error");
+                }
             }
             return RedirectToAction("Error");
-
-            return View();
         }
 
 
-        ////////////////////////////////////////////////////////////
-        /// Dũng
-        ////////////////////////////////////////////////////////////
-        ///
+        [HttpPost]
+        public async Task<IActionResult> RefreshTheMeal()
+        {
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIRefreshTheMeal?myDay=2024-10-29T00%3A00%3A00&idUser=1");
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContent content = res.Content;
+                return Redirect("PlanUser");
+            }
+
+            return Redirect("");
+        }
 
 
 
@@ -86,30 +120,43 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-        ////////////////////////////////////////////////////////////
-        /// Chiến
-        ////////////////////////////////////////////////////////////
-        ///
+
+
+            ////////////////////////////////////////////////////////////
+            /// Dũng
+            ////////////////////////////////////////////////////////////
+            ///
 
 
 
 
 
-        ////////////////////////////////////////////////////////////
-        /// Sơn
-        ////////////////////////////////////////////////////////////
-        ///
+
+
+            ////////////////////////////////////////////////////////////
+            /// Chiến
+            ////////////////////////////////////////////////////////////
+            ///
 
 
 
 
 
-        ////////////////////////////////////////////////////////////
-        /// Tùng
-        ////////////////////////////////////////////////////////////
-        ///
+            ////////////////////////////////////////////////////////////
+            /// Sơn
+            ////////////////////////////////////////////////////////////
+            ///
 
 
 
-    }
+
+
+            ////////////////////////////////////////////////////////////
+            /// Tùng
+            ////////////////////////////////////////////////////////////
+            ///
+
+
+
+        }
 }

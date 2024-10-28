@@ -222,6 +222,68 @@
   },
   {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.GenerateMealController",
+    "Method": "APIListMealOfTheDay",
+    "RelativePath": "api/GenerateMeal/APIListMealOfTheDay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "myDay",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "idUser",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList.DataFoodListMealOfTheDay, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.GenerateMealController",
+    "Method": "APIRefreshTheMealy",
+    "RelativePath": "api/GenerateMeal/APIRefreshTheMeal",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "myDay",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "idUser",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList.DataFoodListMealOfTheDay, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.GenerateMealController",
     "Method": "APIRun",
     "RelativePath": "api/GenerateMeal/APIRun",
     "HttpMethod": "GET",

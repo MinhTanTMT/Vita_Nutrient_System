@@ -61,8 +61,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return true;
         }
 
-
-
         public async Task<IEnumerable<int>> FilterTheTypeDiseaseBlockListAvoidIngredient(NutritionTargetsDaily nutritionTargetsDaily, int idUser)
         {
             IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant).ToListAsync();
@@ -78,8 +76,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return idFoodListSystemCollection;
         }
-
-
 
         public async Task<IEnumerable<FoodListDTO>> GetTheListOfDishesByMealSettingsDetails(IEnumerable<int>? listItemIdAlreadyExistsOfMealSettingsDetails, int MealSettingsDetailsId)
         {
@@ -108,7 +104,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 {
                     return null;
                 }
-
 
                 IEnumerable<int> idFoodListSystem = await FilterTheTypeDiseaseBlockListAvoidIngredient(nutritionTargetsDaily, idUser);
 
@@ -144,8 +139,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 }
             }
 
-            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay.txt", collectionOfDishes.Count + "");
-
             bool foragingLoop = true;
             int loopCount = 0;
 
@@ -159,7 +152,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     selectedIds.Add(randomId);
                     if (collectionOfDishes.Count() == 0)
                     {
-                        File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay0.txt", collectionOfDishes.Count + "");
                         FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
 
                         if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
@@ -173,11 +165,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             break;
                         }
                     }
-                    else
+                    else if(collectionOfDishes.Count() < (mealSettingsDetail.NumberOfDishes ?? 1))
                     {
                         if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
                         {
-                            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay1.txt", collectionOfDishes.Count + "");
                             FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
                             if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
                             {
@@ -193,7 +184,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         }
                         else if (await CheckForUserMealSettingsDetails(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
                         {
-                            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay2.txt", collectionOfDishes.Count + "");
                             FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
                             if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
                             {
@@ -205,14 +195,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 collectionOfDishes.Add(foodObtained);
                                 break;
                             }
-
-
                         }
                     }
                 }
-
-                File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay5.txt", collectionOfDishes.Count + "");
-
                 if (collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
                 {
                     FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(collectionOfDishes);
@@ -222,7 +207,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     }
                     else
                     {
-                        File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay3.txt", collectionOfDishes.Count + "");
                         collectionOfDishes.Clear();
                         if (combinedAndFilteredList != null)
                         {
@@ -238,11 +222,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 {
                     collectionOfDishes.Clear();
                     foragingLoop = false;
-                    File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay4.txt", collectionOfDishes.Count + "");
                 }
             }
-
-            File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay6.txt", collectionOfDishes.Count + "");
             return collectionOfDishes;
         }
 
@@ -250,13 +231,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<int> GetRandomFoodId(IEnumerable<int> idFoodListSystem, List<int> selectedIds)
         {
-            // Tạo một danh sách các phần tử chưa được chọn
             List<int> availableIds = new List<int>(idFoodListSystem);
-            availableIds.RemoveAll(id => selectedIds.Contains(id)); // Xóa các id đã chọn
+            availableIds.RemoveAll(id => selectedIds.Contains(id));
 
             if (availableIds.Count == 0)
             {
-                throw new InvalidOperationException("Không còn id nào để chọn.");
+                throw new InvalidOperationException("Nope");
             }
 
             int randomIndex = random.Next(availableIds.Count);
@@ -424,8 +404,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-
-
         private bool IsValidSize(string value, string size)
         {
             if (int.TryParse(value, out int numericValue))
@@ -435,12 +413,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return value.Equals(size, StringComparison.OrdinalIgnoreCase);
         }
 
-
         public bool IsNumeric(string str)
         {
             return int.TryParse(str, out _);
         }
-
 
         public async Task<FoodListDTO> TotalAllTheIngredientsOfTheDish(IEnumerable<FoodListDTO> dataFood)
         {
@@ -551,12 +527,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
 
 
-        // gen cho ngay hom nay
-        // gen cho ca tuan
-
         public async Task<bool> FillInDishIdInDailyDish(int idUser, DateTime MyDay)
         {
-
             MealSetting MealSettingDataOfUser = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == idUser);
             int getNutritionRouteId;
             NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= MyDay && nr.EndDate >= MyDay && nr.UserId == idUser && nr.IsDone == false);
@@ -581,15 +553,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (MealSettingDataOfUser != null)
             {
-                if (MealSettingDataOfUser.SameScheduleEveryDay ?? false) // setting cua bua hom nay giong bua hom qua
+                if (MealSettingDataOfUser.SameScheduleEveryDay ?? false)
                 {
-                    // chi quan tam den slot trong ngay
                     IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == 8).ToListAsync();
 
-                    if (MealSettingsDetailDataOfUser != null)
+                    if (MealSettingsDetailDataOfUser.Count() > 0)
                     {
-                        // dien toan bo thay the vao cai danh sach cu // con cai genner lai cai mealsetting thi cai khac
-
                         StringBuilder stringListId = new StringBuilder();
                         DateTime TheDayBefore = new DateTime(DateTime.Now.Year, 1, 1).AddDays((MyDay.DayOfYear - 1) - 1);
                         MealOfTheDay mealSettingsDetailDayBefore = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.NutritionRouteId == getNutritionRouteId && x.DateExecute == DateOnly.FromDateTime(TheDayBefore));  
@@ -610,7 +579,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                         IEnumerable<int> combinedAndFilteredList = MealSettingsDetailDataOfUser.Where(item => dataFoodListMealOfTheDay.Select(x => x.SettingDetail).ToList().Contains(item.Id)).Select(x => x.Id).ToList();
 
-                        foreach (var itemMealSettingsDetai in MealSettingsDetailDataOfUser)  // suu tap 1 2 hoac nhieu cai settingdetail
+                        foreach (var itemMealSettingsDetai in MealSettingsDetailDataOfUser) 
                         {
                             if (itemMealSettingsDetai.SkipCreationProcess ?? false)
                             {
@@ -639,7 +608,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 }
                                 stringListId.AppendLine("#");
                             }
-
                         }
 
                         MealOfTheDay mealSettingsDetail = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.NutritionRouteId == getNutritionRouteId && x.DateExecute == DateOnly.FromDateTime(MyDay));
@@ -670,29 +638,99 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 }
                 else // loai co petium nhieu nhat 7 bua moi ngay
                 {
-                    IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId != 8).ToListAsync();
 
+                    DayOfWeek[] DOW = [DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Saturday];
+                    List<short> weekNumber = new List<short> { 1, 2, 3, 4, 5, 6, 7 };
 
-                    // cai dong nay phai tao 7 ngay cho moi lan dien cho setting
+                    foreach (short nbWk in weekNumber)
+                    {
+                        IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == nbWk).ToListAsync();
 
+                        if (MealSettingsDetailDataOfUser.Count() > 0)
+                        {
+                            StringBuilder stringListId = new StringBuilder();
+                            DateTime today = MyDay;
+                            DayOfWeek targetDay = DOW[nbWk-1];
+
+                            // Tính khoảng cách từ ngày hôm nay đến thứ bạn muốn
+                            int daysDifference = (7 + (targetDay - MyDay.DayOfWeek)) % 7;
+                            DateTime targetDate = today.AddDays(daysDifference);
+                            DateTime TheDayBefore = new DateTime(DateTime.Now.Year, 1, 1).AddDays((targetDate.DayOfYear - 7) - 1);
+                            MealOfTheDay mealSettingsDetailDayBefore = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.NutritionRouteId == getNutritionRouteId && x.DateExecute == DateOnly.FromDateTime(TheDayBefore));
+                            List<DataFoodListMealOfTheDay> dataFoodListMealOfTheDay = new List<DataFoodListMealOfTheDay>();
+                            
+                            string[] dataSplit;
+                            if (mealSettingsDetailDayBefore != null && mealSettingsDetailDayBefore.DataFoodListId != null)
+                            {
+                                dataSplit = await SplitAndProcessFirst(mealSettingsDetailDayBefore.DataFoodListId);
+                                foreach (var item in dataSplit)
+                                {
+                                    if (item.Length > 0)
+                                    {
+                                        dataFoodListMealOfTheDay.Add(await SplitAndProcessDataMealOfTheDay(item));
+                                    }
+                                }
+                            }
+
+                            IEnumerable<int> combinedAndFilteredList = MealSettingsDetailDataOfUser.Where(item => dataFoodListMealOfTheDay.Select(x => x.SettingDetail).ToList().Contains(item.Id)).Select(x => x.Id).ToList();
+
+                            foreach (var itemMealSettingsDetai in MealSettingsDetailDataOfUser)
+                            {
+                                if (itemMealSettingsDetai.SkipCreationProcess ?? false)
+                                {
+                                    if (mealSettingsDetailDayBefore != null && combinedAndFilteredList.Contains(itemMealSettingsDetai.Id))
+                                    {
+                                        stringListId.Append(await TakeDataIntoMealOfTheDayBefore(dataFoodListMealOfTheDay.FirstOrDefault(x => x.SettingDetail == itemMealSettingsDetai.Id)));
+                                    }
+                                    else
+                                    {
+                                        IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
+                                        stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                        foreach (var foodOfSlot in dataFoodOfSlot)
+                                        {
+                                            stringListId.Append(foodOfSlot.FoodListId + "-;");
+                                        }
+                                        stringListId.AppendLine("#");
+                                    }
+                                }
+                                else
+                                {
+                                    IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
+                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                    foreach (var foodOfSlot in dataFoodOfSlot)
+                                    {
+                                        stringListId.Append(foodOfSlot.FoodListId + "-;");
+                                    }
+                                    stringListId.AppendLine("#");
+                                }
+                            }
+
+                            MealOfTheDay mealSettingsDetail = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.NutritionRouteId == getNutritionRouteId && x.DateExecute == DateOnly.FromDateTime(targetDate));
+                            if (mealSettingsDetail != null)
+                            {
+                                mealSettingsDetail.DataFoodListId = stringListId.ToString();
+                                mealSettingsDetail.IsEditByUser = true;
+                                _context.SaveChanges();
+                            }
+                            else
+                            {
+                                MealOfTheDay NewSettingsDetail = new MealOfTheDay()
+                                {
+                                    NutritionRouteId = getNutritionRouteId,
+                                    DataFoodListId = stringListId.ToString(),
+                                    DateExecute = DateOnly.FromDateTime(targetDate),
+                                    IsEditByUser = true
+                                };
+                                _context.MealOfTheDays.Add(NewSettingsDetail);
+                                _context.SaveChanges();
+                            }
+                        }
+                    }
+                    return true;
                 }
             }
-
-
             return false;
         }
-
-            //GetTheListOfDishesByMealSettingsDetails(null, idUser);
-
-            // tạo một NutritionRoute dành cho loại thường và ko có thời hạn StartDate.Now và EndDate = null
-
-            // tạo một MealOfTheDay dành cho loại thường có ngày thực thi DateExecute
-
-
-            // tạo một NutritionRoute dành cho loại thường và ko có thời hạn
-
-
-            // tạo một NutritionRoute 
 
 
         public async Task<string> TakeDataIntoMealOfTheDayBefore(DataFoodListMealOfTheDay dataFoodListMealOfTheDay)
@@ -725,10 +763,33 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return stringListId.ToString();
             }
 
-
             return stringListId.ToString();
         }
 
+
+        public async Task<IEnumerable<DataFoodListMealOfTheDay>> ListMealOfTheDay(DateTime myDay, int idUser)
+        {
+
+            List<DataFoodListMealOfTheDay> dataFoodListMealOfTheDays = new List<DataFoodListMealOfTheDay>();
+
+            NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= myDay && nr.EndDate >= myDay && nr.UserId == idUser && nr.IsDone == false);
+            if (activeNutritionRoute != null)
+            {
+                MealOfTheDay mealOfTheDay = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.DateExecute == DateOnly.FromDateTime(myDay) && x.NutritionRouteId == activeNutritionRoute.Id);
+                if (mealOfTheDay != null)
+                {
+                    string[] arrayData = await SplitAndProcessFirst(mealOfTheDay.DataFoodListId ?? "");
+                    if (arrayData.Length > 0)
+                    {
+                        for (int i = 0; i < arrayData.Length - 1; i++)
+                        {
+                            dataFoodListMealOfTheDays.Add(await SplitAndProcessDataMealOfTheDay(arrayData[i]));
+                        }
+                    }
+                }
+            }
+            return dataFoodListMealOfTheDays;
+        }
 
 
         public async Task<DataFoodListMealOfTheDay> SplitAndProcessDataMealOfTheDay(string part)
@@ -746,7 +807,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         if (item.Contains("SlotOfTheDay"))
                         {
                             Dictionary<string, string> SlotOfTheDayData = await SplitAndProcess1(item);
-                            dataFoodListMealOfTheDay.SlotOfTheDay = Int32.Parse(SlotOfTheDayData.Values.FirstOrDefault());
+                            dataFoodListMealOfTheDay.SlotOfTheDay = short.Parse(SlotOfTheDayData.Values.FirstOrDefault());
+                            SlotOfTheDay slotOfTheDayInfo = await _context.SlotOfTheDays.FindAsync(dataFoodListMealOfTheDay.SlotOfTheDay);
+                            dataFoodListMealOfTheDay.NameSlotOfTheDay = slotOfTheDayInfo.Slot;
 
                         }
                         else if (item.Contains("SettingDetail"))
@@ -765,7 +828,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     {
                         string symbolStatus = item[^1].ToString();
                         int numberRemaining = await ParseNumeric(item.Substring(0, item.Length - 1)) ?? -1;
-                        foodIdDataList.Add(new FoodIdData { idFood = numberRemaining, statusSymbol = symbolStatus });
+                        FoodList FoodInfo = await _context.FoodLists.FindAsync(numberRemaining);
+                        foodIdDataList.Add(new FoodIdData { idFood = numberRemaining, statusSymbol = symbolStatus, Name = FoodInfo.Name, Urlimage = FoodInfo.Urlimage });
                     }
                 }
                 dataFoodListMealOfTheDay.foodIdData = foodIdDataList.ToArray();

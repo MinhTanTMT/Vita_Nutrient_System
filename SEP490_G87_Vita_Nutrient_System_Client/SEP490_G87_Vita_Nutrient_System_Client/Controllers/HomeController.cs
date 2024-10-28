@@ -81,12 +81,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else
                     {
-<<<<<<< Updated upstream
-                        return RedirectToAction("Plan", "User");
-=======
-                        return RedirectToAction("PlanUser", "User");
+
                         return RedirectToAction("Index", "Home");
->>>>>>> Stashed changes
                     }
 
                 }
