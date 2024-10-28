@@ -33,6 +33,10 @@ public partial class MealSettingsDetail
 
     public string? Name { get; set; }
 
+    public bool? IsActive { get; set; }
+
+    public short? OrderNumber { get; set; }
+
     public virtual CookingDifficulty? CookingDifficulty { get; set; }
 
     public virtual DayOfTheWeek? DayOfTheWeek { get; set; }

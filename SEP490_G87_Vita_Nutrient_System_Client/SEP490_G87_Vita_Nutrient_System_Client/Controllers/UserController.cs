@@ -54,12 +54,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             //int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            // https://localhost:7045/api/GenerateMeal/APGenerateMealController?MealSettingsDetailsId=3
+            //https://localhost:7045/api/GenerateMeal/APGenerateMealController?MealSettingsDetailsId=3
 
             //https://localhost:7045/api/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-29T00%3A00%3A00&idUser=1
 
-
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-29T00%3A00%3A00&idUser=1");
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1");
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -103,7 +102,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> RefreshTheMeal()
         {
 
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIRefreshTheMeal?myDay=2024-10-29T00%3A00%3A00&idUser=1");
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIRefreshTheMeal?myDay=2024-10-30T00%3A00%3A00&idUser=1");
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {

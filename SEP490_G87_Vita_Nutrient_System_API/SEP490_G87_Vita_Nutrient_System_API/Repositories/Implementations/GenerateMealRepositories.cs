@@ -794,48 +794,55 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<DataFoodListMealOfTheDay> SplitAndProcessDataMealOfTheDay(string part)
         {
-            DataFoodListMealOfTheDay dataFoodListMealOfTheDay = new DataFoodListMealOfTheDay();
-
-            string[] splitByEqualHaiCham = part.Split(':');
-            if (splitByEqualHaiCham.Length == 2)
+            try
             {
-                string[] splitByEqualFirstChamPhay = splitByEqualHaiCham[0].Split(';');
-                if (splitByEqualFirstChamPhay.Length == 2)
-                {
-                    foreach (var item in splitByEqualFirstChamPhay)
-                    {
-                        if (item.Contains("SlotOfTheDay"))
-                        {
-                            Dictionary<string, string> SlotOfTheDayData = await SplitAndProcess1(item);
-                            dataFoodListMealOfTheDay.SlotOfTheDay = short.Parse(SlotOfTheDayData.Values.FirstOrDefault());
-                            SlotOfTheDay slotOfTheDayInfo = await _context.SlotOfTheDays.FindAsync(dataFoodListMealOfTheDay.SlotOfTheDay);
-                            dataFoodListMealOfTheDay.NameSlotOfTheDay = slotOfTheDayInfo.Slot;
+                DataFoodListMealOfTheDay dataFoodListMealOfTheDay = new DataFoodListMealOfTheDay();
 
-                        }
-                        else if (item.Contains("SettingDetail"))
+                string[] splitByEqualHaiCham = part.Split(':');
+                if (splitByEqualHaiCham.Length == 2)
+                {
+                    string[] splitByEqualFirstChamPhay = splitByEqualHaiCham[0].Split(';');
+                    if (splitByEqualFirstChamPhay.Length == 2)
+                    {
+                        foreach (var item in splitByEqualFirstChamPhay)
                         {
-                            Dictionary<string, string> SettingDetailData = await SplitAndProcess1(item);
-                            dataFoodListMealOfTheDay.SettingDetail = Int32.Parse(SettingDetailData.Values.FirstOrDefault());
+                            if (item.Contains("SlotOfTheDay"))
+                            {
+                                Dictionary<string, string> SlotOfTheDayData = await SplitAndProcess1(item);
+                                dataFoodListMealOfTheDay.SlotOfTheDay = short.Parse(SlotOfTheDayData.Values.FirstOrDefault());
+                                SlotOfTheDay slotOfTheDayInfo = await _context.SlotOfTheDays.FindAsync(dataFoodListMealOfTheDay.SlotOfTheDay);
+                                dataFoodListMealOfTheDay.NameSlotOfTheDay = slotOfTheDayInfo.Slot;
+
+                            }
+                            else if (item.Contains("SettingDetail"))
+                            {
+                                Dictionary<string, string> SettingDetailData = await SplitAndProcess1(item);
+                                dataFoodListMealOfTheDay.SettingDetail = Int32.Parse(SettingDetailData.Values.FirstOrDefault());
+                            }
                         }
                     }
-                }
 
-                string[] splitByEqualSecondChamPhay = splitByEqualHaiCham[1].Split(';');
-                List<FoodIdData> foodIdDataList = new List<FoodIdData>();
-                foreach (var item in splitByEqualSecondChamPhay)
-                {
-                    if (item.Length > 0)
+                    string[] splitByEqualSecondChamPhay = splitByEqualHaiCham[1].Split(';');
+                    List<FoodIdData> foodIdDataList = new List<FoodIdData>();
+                    foreach (var item in splitByEqualSecondChamPhay)
                     {
-                        string symbolStatus = item[^1].ToString();
-                        int numberRemaining = await ParseNumeric(item.Substring(0, item.Length - 1)) ?? -1;
-                        FoodList FoodInfo = await _context.FoodLists.FindAsync(numberRemaining);
-                        foodIdDataList.Add(new FoodIdData { idFood = numberRemaining, statusSymbol = symbolStatus, Name = FoodInfo.Name, Urlimage = FoodInfo.Urlimage });
+                        if (item.Length > 0)
+                        {
+                            string symbolStatus = item[^1].ToString();
+                            int numberRemaining = await ParseNumeric(item.Substring(0, item.Length - 1)) ?? -1;
+                            FoodList FoodInfo = await _context.FoodLists.FindAsync(numberRemaining);
+                            foodIdDataList.Add(new FoodIdData { idFood = numberRemaining, statusSymbol = symbolStatus, Name = FoodInfo.Name, Urlimage = FoodInfo.Urlimage });
+                        }
                     }
-                }
-                dataFoodListMealOfTheDay.foodIdData = foodIdDataList.ToArray();
+                    dataFoodListMealOfTheDay.foodIdData = foodIdDataList.ToArray();
 
+                }
+                return dataFoodListMealOfTheDay;
+
+            } catch (Exception e)
+            {
+                return null;
             }
-            return dataFoodListMealOfTheDay;
         }
 
 
