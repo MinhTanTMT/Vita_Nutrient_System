@@ -32,7 +32,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var articles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+                    var articles = JsonConvert.DeserializeObject<List<ArticlesNewsDTO>>(data);
                     return View(articles);
                 }
 
@@ -42,7 +42,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
-            return View(new List<ArticlesNews>());
+            return View(new List<ArticlesNewsDTO>());
         }
 
         // GET: Details of a single article
@@ -56,7 +56,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
+                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
                     return View(article);
                 }
 
@@ -77,45 +77,72 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // POST: Create a new article
         [HttpPost]
-
-        public async Task<IActionResult> Create(ArticlesNews article)
+        public async Task<IActionResult> Create(ArticlesNewsDTO article, IFormFile HeaderImage)
         {
             if (!ModelState.IsValid)
             {
-                return Redirect("Error"); // Trả về view nếu dữ liệu không hợp lệ
+                return View(article);
             }
 
             try
             {
-               /* int userId = int.Parse(User.FindFirst("UserId")?.Value);*/
                 int userId = 1; // Giả sử UserId là 1
-                ArticlesNews createData = new ArticlesNews()
+
+                // Kiểm tra và xử lý tệp hình ảnh
+                if (HeaderImage != null && HeaderImage.Length > 0)
+                {
+                    var fileName = Path.GetFileName(HeaderImage.FileName);
+                    var filePath = Path.Combine("wwwroot/images/news", fileName);
+
+                    // Tạo thư mục "images/news" nếu chưa tồn tại
+                    if (!Directory.Exists("wwwroot/images/news"))
+                    {
+                        Directory.CreateDirectory("wwwroot/images/news");
+                    }
+
+                    // Lưu tệp ảnh vào thư mục
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await HeaderImage.CopyToAsync(stream);
+                    }
+
+                    // Lưu đường dẫn ảnh tương đối vào thuộc tính HeaderImage của article
+                    article.HeaderImage = "/images/news/" + fileName;
+                }
+
+                // Tạo dữ liệu DTO để gửi qua API mà không có ID tự tăng
+                var createData = new ArticlesNewsDTO()
                 {
                     UserId = userId,
                     NameCreater = article.NameCreater,
                     Title = article.Title,
                     Content = article.Content,
-                    IsActive = article.IsActive,
-                    DateCreated = article.DateCreated,
-                    HeaderImage = article.HeaderImage,
+                    IsActive = article.IsActive ?? true,
+                    DateCreated = article.DateCreated ?? DateTime.Now,
+                    HeaderImage = article.HeaderImage
                 };
 
-                // Gửi yêu cầu POST đến API để tạo bài viết
-                HttpResponseMessage response = await client.PostAsJsonAsync(client.BaseAddress + "/news", createData);
+                // Gửi yêu cầu POST đến API và xử lý phản hồi
+                HttpResponseMessage response = await client.PostAsJsonAsync("api/news", createData);
 
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index"); // Chuyển hướng về trang Index khi thành công
                 }
-
-                ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                else
+                {
+                    // Ghi lại thông tin lỗi từ API
+                    string errorDetails = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, "Lỗi từ API: " + errorDetails);
+                }
             }
             catch (Exception ex)
             {
+                // Xử lý lỗi bất ngờ
                 ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
 
-            return View(article);
+            return View(article); // Trả về view cùng dữ liệu khi có lỗi
         }
 
         // GET: Edit an article by id
@@ -129,7 +156,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
+                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
                     return View(article);
                 }
 
@@ -144,7 +171,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // POST: Update an article
         [HttpPost]
-        public async Task<IActionResult> Edit(ArticlesNews article)
+        public async Task<IActionResult> Edit(ArticlesNewsDTO article, IFormFile HeaderImage)
         {
             if (!ModelState.IsValid)
             {
@@ -154,7 +181,26 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             try
             {
                 int userId = 1; // Giả sử UserId là 1
-                ArticlesNews modifyData = new ArticlesNews()
+                // Xử lý file upload
+                if (HeaderImage != null && HeaderImage.Length > 0)
+                {
+                    var fileName = Path.GetFileName(HeaderImage.FileName);
+                    var filePath = Path.Combine("wwwroot/images/news", fileName);
+
+                    // Tạo thư mục "images" nếu chưa tồn tại
+                    if (!Directory.Exists("wwwroot/images/news"))
+                    {
+                        Directory.CreateDirectory("wwwroot/images/news");
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await HeaderImage.CopyToAsync(stream);
+                    }
+
+                    article.HeaderImage = "/images/news/" + fileName;
+                }
+                ArticlesNewsDTO modifyData = new ArticlesNewsDTO()
                 {
                     Id = article.Id,
                     UserId = userId,
@@ -195,7 +241,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
+                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
                     return View(article); // Hiển thị bài viết để xác nhận xóa
                 }
 
