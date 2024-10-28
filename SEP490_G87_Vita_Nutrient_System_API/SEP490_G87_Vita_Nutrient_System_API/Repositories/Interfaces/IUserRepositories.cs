@@ -22,7 +22,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         ////////////////////////////////////////////////////////////
         /// Dũng
         ////////////////////////////////////////////////////////////
-        ///
+        /// 123
 
 
 
@@ -42,9 +42,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         ////////////////////////////////////////////////////////////
         ///
 
-
-
-
+        IQueryable<User> GetAllUsers();
+        IQueryable<User> GetUsersByRole(int roleId);
+        User? GetUserDetailsInfo(int id);
+        void UpdateUser(User user);
+        User? GetNutritionistDetailsInfo(int id);
+        IQueryable<ExpertPackage> GetNutritionistPackages(int id);
 
         ////////////////////////////////////////////////////////////
         /// Tùng

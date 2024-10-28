@@ -1,0 +1,165 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    User nutritionist = ViewBag.nutritionist;
+    List<ExpertPackage> packages = ViewBag.packages;
+}
+<link rel="stylesheet" href="~/css/nutritionistDetail.css">
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card profile-wrapper">
+            <div class="row">
+                <div class="profile-left col-4">
+                    <div class="avatar">
+                        @if (nutritionist.Urlimage == null || nutritionist.Urlimage.Length == 0)
+                        {
+                            <img src="~/images/default_avatar.png" alt="avatar" style="width: 100%" />
+                        }
+                        else
+                        {
+                            <img src="@nutritionist.Urlimage" alt="avatar"
+                                 onerror="this.src='/images/default_avatar.png'; this.onerror=null; " />
+                        }
+                    </div>
+
+                    <div class="name">
+                        @nutritionist.FirstName @nutritionist.LastName
+                    </div>
+
+                    <div class="description">
+                        @if (nutritionist.NutritionistDetail is null
+                        || nutritionist.NutritionistDetail.DescribeYourself is null
+                        || nutritionist.NutritionistDetail.DescribeYourself.Length == 0)
+                        {
+                            <p>No description</p>
+                        }
+                        else
+                        {
+                            <p>@nutritionist.NutritionistDetail.DescribeYourself</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="profile-right col-8">
+                    <div class="basic-info">
+                        <div class="form-group row">
+                            <label for="user-account-input" class="col-sm-3 col-form-label">Account</label>
+                            <div class="col-sm-9">
+                                <input type="text" disabled class="form-control user-info-input" id="user-account-input" placeholder="User Account" value="@nutritionist.Account">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="user-firstname-input" class="col-sm-3 col-form-label">First name</label>
+                            <div class="col-sm-9">
+                                <input type="text" disabled class="form-control" id="user-firstname-input" placeholder="User Firstname" value="@nutritionist.FirstName">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Last name</label>
+                            <div class="col-sm-9">
+                                <input type="text" disabled class="form-control" id="user-lastname-input" placeholder="User Lastname" value="@nutritionist.LastName">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Gender</label>
+                            <div class="form-group gender">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(nutritionist.Gender is null? "checked" : (bool)nutritionist.Gender ? "checked" : "")> Male <i class="input-helper"></i>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(nutritionist.Gender is null ? "" : (bool)nutritionist.Gender ? "" : "checked")> Female <i class="input-helper"></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Date of birth</label>
+                            <div class="col-sm-9">
+                                <input type="text" disabled class="form-control" id="user-lastname-input" placeholder="User Date of birth" value="@nutritionist.Dob">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="user-address-input" class="col-sm-3 col-form-label">Address</label>
+                            <div class="col-sm-9">
+                                <input type="text" disabled class="form-control" id="user-address-input" placeholder="User Address" value="@nutritionist.Address">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="user-phone-input" class="col-sm-3 col-form-label">Phone number</label>
+                            <div class="col-sm-9">
+                                <input type="text" disabled class="form-control" id="user-phone-input" placeholder="User Phone number" value="@nutritionist.Phone">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Status</label>
+                            <div class="form-group status">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" disabled class="form-check-input" name="user_status" id="user_status_active" value="1" @((bool)nutritionist.IsActive ? "checked" : "")> Active <i class="input-helper"></i>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" disabled class="form-check-input" name="user_status" id="user_status_inactive" value="0" @((bool)nutritionist.IsActive ? "" : "checked")> Inactive <i class="input-helper"></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="packages-container">
+                <h2 class="title">Expert packages</h2>
+
+                <div class="packages-body">
+                    @if (packages is null || packages.Count == 0)
+                    {
+                        <h3>There is no packages!</h3>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> Name </th>
+                                    <th> Description </th>
+                                    <th> Price </th>
+                                    <th> Duration </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(int i = 0; i < packages.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@(i+1)</td>
+                                        <td> @packages[i].Name </td>
+                                        <td> @packages[i].Describe </td>
+                                        <td> @packages[i].Price </td>
+                                        <td> @packages[i].Duration </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

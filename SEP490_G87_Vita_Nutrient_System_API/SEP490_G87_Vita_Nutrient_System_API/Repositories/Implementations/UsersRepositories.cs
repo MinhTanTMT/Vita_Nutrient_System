@@ -1,7 +1,8 @@
-﻿ using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.DTO.User;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -12,6 +13,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public UsersRepositories()
         {
+
         }
 
         ////////////////////////////////////////////////////////////
@@ -80,9 +82,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
-
-
-
         ////////////////////////////////////////////////////////////
         /// Dũng
         ////////////////////////////////////////////////////////////
@@ -106,8 +105,52 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Sơn
         ////////////////////////////////////////////////////////////
         ///
+        public IQueryable<User> GetAllUsers()
+        {
+            return _context.Users.Include(u => u.RoleNavigation);
+        }
 
+        public IQueryable<User> GetUsersByRole(int roleId)
+        {
+            return _context.Users.Include(u => u.RoleNavigation).Where(u => u.Role == roleId);
+        }
 
+        public User? GetUserDetailsInfo(int id)
+        {
+            var user = _context.Users
+                .Include(u => u.RoleNavigation)
+                .Include(u => u.UserDetail)
+                .FirstOrDefault(u => u.UserId == id);
+
+            if (user.Role != (int)UserRole.USERPREMIUM && user.Role != (int)UserRole.USER)
+                return null;
+
+                return user;
+        }
+
+        public User? GetNutritionistDetailsInfo(int id)
+        {
+            var nutritionist = _context.Users
+                .Include(u => u.RoleNavigation)
+                .Include(u => u.NutritionistDetail)
+                .FirstOrDefault(u => u.UserId == id);
+
+            if (nutritionist.Role != (int)UserRole.NUTRITIONIST)
+                return null;
+
+            return nutritionist;
+        }
+
+        public void UpdateUser(User user)
+        {
+            _context.Entry<User>(user).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public IQueryable<ExpertPackage> GetNutritionistPackages(int id)
+        {
+            return _context.ExpertPackages.Where(p => p.NutritionistDetailsId == id);
+        }
 
 
 
@@ -115,7 +158,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
-
         public dynamic ChangePassword(ChangePasswordDTO model)
         {
             var user = _context.Users.FirstOrDefault(t => t.Account == model.Account);

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
+using UserRole = SEP490_G87_Vita_Nutrient_System_API.Domain.Enums.UserRole;
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
     [Route("api/[controller]")]
@@ -16,7 +14,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     {
 
         private IUserRepositories repositories = new UsersRepositories();
+        private readonly IMapper _mapper;
 
+        public UsersController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
 
         [HttpGet("Login")]
         public async Task<ActionResult<User>> APIGetUserLogin(string account, string password)
@@ -72,6 +75,92 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
 
             return Ok(dataReturn);
+        }
+
+        [HttpGet("GetAllUser")]
+        public async Task<ActionResult<List<CommonUserResponse>>> GetAllUsers()
+        {
+            var users = repositories.GetAllUsers();
+
+            var result = users.Select(
+                u => _mapper.Map<CommonUserResponse>(u)).ToList();
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetUserByRole/{roleId}")]
+        public async Task<ActionResult<List<CommonUserResponse>>> GetUsersByRole(int roleId)
+        {
+            //kiem tra xem roleId duoc truyen vao co hop le hay khong
+            if(!Enum.IsDefined(typeof(UserRole), roleId))
+            {
+                return BadRequest("Invalid role id!");
+            }
+
+            var users = repositories.GetUsersByRole(roleId);
+
+            var result = users.Select(
+                u => _mapper.Map<CommonUserResponse>(u)).ToList();
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetUserDetail/{id}")]
+        public async Task<ActionResult<dynamic>> GetUserDetail(int id)
+        {
+            User user = repositories.GetUserDetailsInfo(id);
+
+            if (user == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            UserDetailResponse result = _mapper.Map<UserDetailResponse>(user);
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetNutritionistDetail/{id}")]
+        public async Task<ActionResult<dynamic>> GetNutritionistDetail(int id)
+        {
+            var nutritionist = repositories.GetNutritionistDetailsInfo(id);
+
+            if (nutritionist == null)
+            {
+                return BadRequest("Nutritionist not found!");
+            }
+
+            var result = _mapper.Map<NutritionistDetailResponse>(nutritionist);
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetNutritionistPackages/{id}")]
+        public async Task<ActionResult<List<ExpertPackageResponse>>> GetNutritionistPackages(int id)
+        {
+            List<ExpertPackage> packages = repositories.GetNutritionistPackages(id).ToList();
+
+            var result = packages
+                .Select(p => _mapper.Map<ExpertPackageResponse>(p))
+                .ToList();
+
+            return Ok(result);
+        }
+
+        [HttpPost("UpdateUserStatus")]
+        public async Task<ActionResult<string>> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
+        {
+            User u = repositories.GetUserById(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if(u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.IsActive = request.Status;
+            repositories.UpdateUser(u);
+
+            return Ok("Update user status successfully!");
         }
     }
 }

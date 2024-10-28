@@ -1,0 +1,152 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    User user = ViewBag.user;
+}
+<link rel="stylesheet" href="~/css/listUser.css">
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card profile-wrapper">
+            <div class="profile-header row">
+                <div class="avatar col-3">
+                    @if(user.Urlimage == null || user.Urlimage.Length == 0)
+                    {
+                        <img src="~/images/default_avatar.png" alt="avatar" style="width: 100%"/>
+                    }
+                    else
+                    {
+                        <img src="@user.Urlimage" alt="avatar"
+                             onerror="this.src='/images/default_avatar.png'; this.onerror=null; " />
+                    }
+                </div>
+
+                <div class="full-name col-5">
+                    @user.FirstName @user.LastName
+                    <br>
+                    @if (user.UserDetail is null 
+                    || user.UserDetail.DescribeYourself is null 
+                    || user.UserDetail.DescribeYourself.Length == 0)
+                    {
+                        <p>No description</p>
+                    }
+                    else
+                    {
+                        <p>@user.UserDetail.DescribeYourself</p>
+                    }
+                </div>
+
+                <div class="action col-4">
+                    <a type="button" class="btn btn-gradient-info btn-fw" href="/">
+                        <i class="mdi mdi-border-color"></i>
+                        Edit
+                    </a>
+
+                    </br></br>
+                    <form asp-controller="Admin" asp-action="UpdateUserStatus" method="post">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        @if (user.IsActive is not null && user.IsActive == true)
+                        {
+                            <input type="hidden" name="status" value="0" />
+                            <button type="submit" class="btn btn-gradient-danger btn-fw">
+                                Disable
+                            </button>
+                        }
+                        else
+                        {
+                            <input type="hidden" name="status" value="1" />
+                            <button type="submit" class="btn btn-gradient-success btn-fw">
+                                Enable
+                            </button>
+                        }
+                    </form>
+                </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="profile-body">
+                <div class="basic-info">
+                    <div class="form-group row">
+                        <label for="user-account-input" class="col-sm-3 col-form-label">Account</label>
+                        <div class="col-sm-9">
+                            <input type="text" disabled class="form-control user-info-input" id="user-account-input" placeholder="User Account" value="@user.Account">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="user-firstname-input" class="col-sm-3 col-form-label">First name</label>
+                        <div class="col-sm-9">
+                            <input type="text" disabled class="form-control" id="user-firstname-input" placeholder="User Firstname" value="@user.FirstName">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="user-lastname-input" class="col-sm-3 col-form-label">Last name</label>
+                        <div class="col-sm-9">
+                            <input type="text" disabled class="form-control" id="user-lastname-input" placeholder="User Lastname" value="@user.LastName">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Gender</label>
+                        <div class="form-group gender">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(user.Gender is null ? "checked" : (bool)user.Gender ? "checked" : "")> Male <i class="input-helper"></i>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(user.Gender is null ? "" : (bool)user.Gender ? "" : "checked")> Female<i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="user-lastname-input" class="col-sm-3 col-form-label">Date of birth</label>
+                        <div class="col-sm-9">
+                            <input type="text" disabled class="form-control" id="user-lastname-input" placeholder="User Date of birth" value="@user.Dob">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="user-address-input" class="col-sm-3 col-form-label">Address</label>
+                        <div class="col-sm-9">
+                            <input type="text" disabled class="form-control" id="user-address-input" placeholder="User Address" value="@user.Address">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="user-phone-input" class="col-sm-3 col-form-label">Phone number</label>
+                        <div class="col-sm-9">
+                            <input type="text" disabled class="form-control" id="user-phone-input" placeholder="User Phone number" value="@user.Phone">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Status</label>
+                        <div class="form-group status">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" disabled class="form-check-input" name="user_status" id="user_status_active" value="1" @((bool)user.IsActive ? "checked" : "")> Active <i class="input-helper"></i>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" disabled class="form-check-input" name="user_status" id="user_status_inactive" value="0" @((bool)user.IsActive ? "" : "checked")> Inactive <i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-info">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

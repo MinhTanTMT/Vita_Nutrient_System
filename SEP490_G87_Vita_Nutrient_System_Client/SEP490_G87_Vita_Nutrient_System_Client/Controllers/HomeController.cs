@@ -44,48 +44,57 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string account, string password)
         {
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/Users/Login?account=" + account + "&password=" + password);
-
-            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                HttpContent content = res.Content;
-                string data = await content.ReadAsStringAsync();
-                dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
+                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/Users/Login?account=" + account + "&password=" + password);
 
-                importStringToSession("takeFullName", u.fullName, "string");
-                importStringToSession("imageUrl", u.urlimage, "URL");
+                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = res.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
 
-                var claims = new List<Claim>
+                    importStringToSession("takeFullName", u.fullName, "string");
+                    importStringToSession("imageUrl", u.urlimage, "URL");
+
+                    var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name,(string) u.account),
                     new Claim(ClaimTypes.Role,(string) u.roleName),
                     new Claim("UserId", (string)u.userId)
                 };
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = false,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
-                };
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = false,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                    };
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-                if (((string)u.roleName).Equals("Admin"))
-                {
-                    return RedirectToAction("AdminHome", "Admin");
-                }
-                else if (((string)u.roleName).Equals("Nutritionist"))
-                {
-                    return RedirectToAction("NutritionistHome", "Nutritionist");
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                    if (((string)u.roleName).Equals("Admin"))
+                    {
+                        return RedirectToAction("AdminDashboard", "Admin");
+                    }
+                    else if (((string)u.roleName).Equals("Nutritionist"))
+                    {
+                        return RedirectToAction("NutritionistHome", "Nutritionist");
+                    }
+                    else
+                    {
+                        /*return RedirectToAction("Plan", "User");*/
+                        return RedirectToAction("Index", "Home");
+                    }
+
                 }
                 else
                 {
-                    return RedirectToAction("Plan", "User");
+                    ViewBag.AlertMessage = "Incorrect account password entered.";
+                    return View();
                 }
-
             }
-            else
+            catch (Exception ex)
             {
-                ViewBag.AlertMessage = "Incorrect account password entered.";
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
                 return View();
             }
         }
@@ -205,6 +214,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [Authorize]
         public async Task<bool> checkExsitAsync(string account)
         {
+            
+
+
             HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + "/Users/checkExit?account=" + account);
             if (respone.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -221,6 +233,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Home");
+        }
+
+
+        public async Task<IActionResult> ToCopyTryCatch()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
+                return View();
+            }
+
             return RedirectToAction("Login", "Home");
         }
 

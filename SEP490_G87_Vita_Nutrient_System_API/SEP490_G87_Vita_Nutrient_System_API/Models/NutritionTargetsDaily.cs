@@ -43,5 +43,7 @@ public partial class NutritionTargetsDaily
 
     public virtual FoodType FoodTypeIdWantNavigation { get; set; } = null!;
 
+    public virtual ICollection<MealSettingsDetail> MealSettingsDetails { get; set; } = new List<MealSettingsDetail>();
+
     public virtual User User { get; set; } = null!;
 }

@@ -1,0 +1,104 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<User> listUsers = ViewBag.listUsers;
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    string searchQuery = ViewBag.SearchQuery;
+}
+
+<div class="row" style="width: 100%;">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">List Users</h4>
+
+                <!-- Search form -->
+                <form method="get" action="@Url.Action("ListUser", "Admin")" style="padding: 8px 10px;">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
+                        <div class="input-group-append">
+                            <button class="btn btn-success btn-fw" type="submit">
+                                <i class="mdi mdi-magnify"></i>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                @if (listUsers == null || listUsers.Count == 0)
+                {
+                    <h1>There is no users.</h1>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> Account </th>
+                                    <th> Full name </th>
+                                    <th> Address </th>
+                                    <th> Phone </th>
+                                    <th> Status </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(int i = 0; i < listUsers.Count; i++)
+                                {
+                                    User u = listUsers[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@u.Account</td>
+                                        <td>@u.FirstName @u.LastName</td>
+                                        <td> @u.Address </td>
+                                        <td> @u.Phone </td>
+                                        <td>
+                                            @if (u.IsActive == true)
+                                            {
+                                                <label class="badge badge-gradient-success">Active</label>
+                                            }
+                                            else
+                                            {
+                                                <label class="badge badge-gradient-danger">Inactive</label>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a class="btn-link" asp-controller="Admin" asp-action="UserDetail" asp-route-userId="@u.UserId">View</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination controls -->
+                    <nav aria-label="Page navigation example" style="padding: 50px 0 0 0;">
+                        <ul class="pagination justify-content-center">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListUser", new { page = currentPage - 1 })">Previous</a>
+                                </li>
+                            }
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("ListUser", new { page = i })">@i</a>
+                                </li>
+                            }
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListUser", new { page = currentPage + 1 })">Next</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            </div>
+        </div>
+    </div>
+</div>
