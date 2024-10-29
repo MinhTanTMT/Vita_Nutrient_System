@@ -3,6 +3,8 @@ using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using System.Drawing.Printing;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -125,7 +127,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (user.Role != (int)UserRole.USERPREMIUM && user.Role != (int)UserRole.USER)
                 return null;
 
-                return user;
+            return user;
         }
 
         public User? GetNutritionistDetailsInfo(int id)
@@ -161,15 +163,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public dynamic ChangePassword(ChangePasswordDTO model)
         {
             var user = _context.Users.FirstOrDefault(t => t.Account == model.Account);
-            if(user == null)
+            if (user == null)
             {
                 throw new ApplicationException("Account does not exist");
             }
-            if(model.CurrentPassword != user.Password)
+            if (model.CurrentPassword != user.Password)
             {
                 throw new ApplicationException("Your current password is not match!");
             }
-            if(model.NewPassword != model.ConfirmPassword)
+            if (model.NewPassword != model.ConfirmPassword)
             {
                 throw new ApplicationException("Your new password and confirm password is not match!");
             }
@@ -180,5 +182,73 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
+        public dynamic GetLikedFoods(GetLikeFoodDTO model)
+        {
+            var query = _context.FoodSelections
+                        .Where(fs => fs.UserId == model.UserId && (bool)fs.IsLike)
+                        .Join(_context.FoodLists, fs => fs.FoodListId, f => f.FoodListId, (fs, f) => f);
+
+            if(query == null)
+            {
+                throw new ApplicationException("Not found!");
+            }
+
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(f => f.Name.Contains(model.Search));
+            }
+
+            var paginatedFoods = query
+                .Skip((model.Page - 1) * model.PageSize)
+                .Take(model.PageSize)
+                .ToListAsync();
+            return paginatedFoods;
+        }
+
+        public async void UnlikeFood(int userId, int foodId)
+        {
+            var foodSelection = await _context.FoodSelections
+            .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId && (bool)fs.IsLike);
+
+            if (foodSelection == null) throw new ApplicationException("Not found!");
+
+            foodSelection.IsLike = false;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<FoodList>> GetBlockedFoods(GetLikeFoodDTO model)
+        {
+            var query = _context.FoodSelections
+                .Where(fs => fs.UserId == model.UserId && (bool)fs.IsBlock)
+                .Join(_context.FoodLists, fs => fs.FoodListId, f => f.FoodListId, (fs, f) => f);
+
+            if (query == null)
+            {
+                throw new ApplicationException("Not found!");
+            }
+
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(f => f.Name.Contains(model.Search));
+            }
+
+            var paginatedFoods = await query
+                .Skip((model.Page - 1) * model.PageSize)
+                .Take(model.PageSize)
+                .ToListAsync();
+
+            return paginatedFoods;
+        }
+
+        public async void UnblockFood(int userId, int foodId)
+        {
+            var foodSelection = await _context.FoodSelections
+                .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId && (bool)fs.IsBlock);
+
+            if (foodSelection == null) throw new ApplicationException("Not found!");
+
+            foodSelection.IsBlock = false;
+            await _context.SaveChangesAsync();
+        }
     }
 }
