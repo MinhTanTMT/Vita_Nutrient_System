@@ -9,5 +9,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         FoodList? GetFood(int foodId);
         List<Recipe> GetFoodRecipe(int foodId);
         List<FoodType> GetFoodTypes();
+        List<IngredientDetails100g> GetIngredientDetails();
+        IngredientDetails100g? GetIngredientDetail(int id);
     }
 }

@@ -37,5 +37,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.FoodTypes.ToList();
         }
+
+        public IngredientDetails100g? GetIngredientDetail(int id)
+        {
+            return _context.IngredientDetails100gs.FirstOrDefault(i => i.Id == id);
+        }
+
+        public List<IngredientDetails100g> GetIngredientDetails()
+        {
+            return _context.IngredientDetails100gs.ToList();
+        }
     }
 }
