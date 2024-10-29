@@ -515,9 +515,49 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet("admin/ingredientmanagement/ingredientlist")]
-        public async Task<IActionResult> IngredientsList()
+        public async Task<IActionResult> IngredientsList(int page = 1, int pageSize = 10, string searchQuery = "")
         {
-            return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
+            try
+            {
+                //get ingredients
+                HttpResponseMessage response =
+                    await client.GetAsync(client.BaseAddress + "/Ingredient/GetAllIngredients");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    List<IngredientDetails100g> ingredients = JsonConvert.DeserializeObject<List<IngredientDetails100g>>(data);
+
+                    // Search logic
+                    if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        ingredients = ingredients.Where(u =>
+                            (u.Name).ToLower().Contains(searchQuery.ToLower())
+                        ).ToList();
+                    }
+
+                    // Pagination logic
+                    int totalIngredients = ingredients.Count();
+                    var paginatedIngredients = ingredients.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    ViewBag.listIngredients = paginatedIngredients;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = (int)Math.Ceiling(totalIngredients / (double)pageSize);
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get list ingredients! Please try again!";
+                }
+
+                ViewBag.SearchQuery = searchQuery;
+                return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
+            }
+            catch(Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
+            }
         }
 
         ////////////////////////////////////////////////////////////

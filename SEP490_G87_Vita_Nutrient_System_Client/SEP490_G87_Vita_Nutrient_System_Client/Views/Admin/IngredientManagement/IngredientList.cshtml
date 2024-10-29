@@ -2,163 +2,153 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    List<IngredientDetails100g> listIngredients = ViewBag.listIngredients;
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    string searchQuery = ViewBag.SearchQuery;
 }
-<body>
-    <section class="faq-section py-3">
-        <div class="container">
 
-            <div class="w-lg-50 mx-auto">
-                <h6 class="mb-2">FAQ | Frequently Asked Questions</h6>
-                <h2 class="mb-5">Have a Questions</h2>
-                <div class="accordion accordion-flush" id="accordionExample">
+<div class="row" style="width: 100%;">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title" style="font-size: 1.5rem;">List Ingredients</h4>
 
-                    <!-- 1: coll1 -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <!--   data-bs-target="#coll1",  controls="coll1", id="coll1", aria-expanded="true"      -->
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#coll1" aria-expanded="true" aria-controls="coll1">
-                                <h5> What is Semantic HTML and how does it work?</h5>
+                <!-- Search form -->
+                <form method="get" action="@Url.Action("IngredientsList", "Admin")" style="padding: 8px 10px;">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
+                        <div class="input-group-append">
+                            <button class="btn btn-success btn-fw" type="submit">
+                                <i class="mdi mdi-magnify"></i>
+                                Search
                             </button>
-                        </h2>
-                        <!-- show : by default Always open -->
-                        <div id="coll1" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                Semantic HTML refers to a method of coding where HTML markup is used to emphasise the meaning or semantics of the existing content.
-                            </div>
                         </div>
                     </div>
+                </form>
 
-                    <!-- 2: coll2 -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <!--       collapsed,   aria-expanded="false"   -->
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#coll2" aria-expanded="false" aria-controls="coll2">
-                                <h5> What do you know about the Box Sizing property?</h5>
-                            </button>
-                        </h2>
-                        <div id="coll2" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                The Box Sizing property in CSS defines how developers should calculate the width and height of a box.
+                @if (listIngredients == null || listIngredients.Count == 0)
+                {
+                    <h1>There is no ingredient.</h1>
+                }
+                else
+                {
+                    <div class="row" style="background: #d1e7dd;margin: 0; font-weight: bold; padding: 1rem 1.25rem; border: 1px solid rgba(0, 0, 0, 0.125);">
+                        <div class="col-1">#</div>
+                        <div class="col-2 text-center">Image</div>
+                        <div class="col-2">Name</div>
+                        <div class="col-6">Description</div>
+                        <div class="col-1"></div>
+                    </div>
+                    @for (int i = 0; i < listIngredients.Count; i++)
+                    {
+                        IngredientDetails100g ingre = listIngredients[i];
+                        <div class="accordion-item">
+                            <div class="accordion-header" style="cursor: pointer;">
+                                <div class="row accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#coll_@ingre.Id" aria-expanded="true" aria-controls="coll_@ingre.Id" style="margin: 0;">
+                                    <div class="col-1">
+                                        @(i+1)
+                                    </div>
+                                    <div class="col-2">
+                                        @if (ingre.Urlimage == null || ingre.Urlimage.Length == 0)
+                                        {
+                                            <img src="~/images/foods/default_food.png" alt="default" style="width: 100%; height: auto; border-radius: 0;" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/@ingre.Urlimage" alt="@ingre.Name"
+                                                    onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 100%; height: auto; border-radius: 5px;" />
+                                        }
+                                    </div>
+                                    <div class="col-2">
+                                        @ingre.Name
+                                    </div>
+                                    <div class="col-6">
+                                        @ingre.Describe
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="coll_@ingre.Id" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <h4>Nutritional values:</h4>
+                                    @{
+                                        var properties = typeof(SEP490_G87_Vita_Nutrient_System_Client.Models.IngredientDetails100g)
+                                                                    .GetProperties()
+                                                                    .SkipWhile(p => p.Name != "Energy")
+                                                                    .Where(p => (p.GetValue(ingre) as double?) != 0);
 
-                                Content Box is when the default height and width get applied to the content of an element. The border and padding lie outside the box.
+                                        int a = 0;
 
-                                Padding Box is when the developer adds the dimensions to include the padding and content of the element. This adds a border outside the given box.
+                                        if(properties.Count() % 3 == 0){ a = properties.Count() / 3 - 1; }
+                                        else { a = properties.Count() / 3; }
 
-                                Border Box is when the box dimensions apply to the border, padding and content.
+                                        <div class="row">
+                                            <div class="col-4">
+                                                @for(int j = 0; j <= a; j++)
+                                                {
+                                                    var value = properties.ElementAt(j).GetValue(ingre) as double?;
+                                                    <p>@properties.ElementAt(j).Name: @value</p>
+                                                }
+                                            </div>
+
+                                            <div class="col-4">
+                                                @for (int k = a+1; k <= 2*a+1; k++)
+                                                {
+                                                    var value = properties.ElementAt(k).GetValue(ingre) as double?;
+                                                    <p>@properties.ElementAt(k).Name: @value</p>
+                                                }
+                                            </div>
+
+                                            <div class="col-4">
+                                                @for (int l = 2*a+2; l < properties.Count(); l++)
+                                                {
+                                                    var value = properties.ElementAt(l).GetValue(ingre) as double?;
+                                                    <p>@properties.ElementAt(l).Name: @value</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="d-flex" style="font-size: 25px;">
+                                        <a href="#" class="ms-auto" style="padding: 0px 5px; margin-right: 10px;">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </a>
+                                        <a href="#" style="padding: 0px 5px; margin-left: 10px;">
+                                            <i class="mdi mdi-delete"></i>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
 
-                    <!-- 3: coll3 -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#coll3" aria-expanded="false" aria-controls="coll3">
-                                <h5> Define the ways in which you can hide an element using CSS.</h5>
-                            </button>
-                        </h2>
-                        <div id="coll3" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                There are three ways to hide elements with CSS.
-
-                                display:none can hide the content so that it doesn’t get stored in the DOM.
-
-                                visibility:hidden adds an element to the DOM and occupies space. However, the user cannot see it.
-
-                                position:absolute makes the element appear outside the screen, not on the screen.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4: coll4 -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <!--   target="#coll4",  id="coll4"  -->
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#coll4" aria-expanded="false" aria-controls="coll4">
-                                <h5> What does Callback mean in JavaScript?</h5>
-                            </button>
-                        </h2>
-                        <div id="coll4" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                Callback is a JavaScript function that developers send as a parameter or argument to other functions. You can call this function whenever the function it is provided to gets called.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 5: coll5 -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <!--   target="#coll5",  id="coll5"  -->
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#coll5" aria-expanded="false" aria-controls="coll5">
-                                <h5> Differences between Undefined, Undeclared and Null in JavaScript.</h5>
-                            </button>
-                        </h2>
-                        <div id="coll5" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                Undefined refers to a situation where a variable is declared but no value has been assigned to the variable yet.<br />
-                                ex.
-                                let a;
-                                console.log(a); // Output: undefined
-
-                                <br />
-
-                                Null refers to the assignment of value to a variable that isn’t meant to contain any value.<br />
-                                ex. let b = null;
-                                console.log(b); // Output: null
-                                <br />
-
-                                Undeclared refers to variables that don’t exist in an application or program or haven’t been declared. <br />
-                                ex.
-                                console.log(c); // ReferenceError: c is not defined
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 6: coll6 -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <!--   target="#coll6",  id="coll6"  -->
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#coll6" aria-expanded="false" aria-controls="coll6">
-                                <h5> How to open your local website on localhost XAMPP from your mobile device?</h5>
-                            </button>
-                        </h2>
-                        <div id="coll6" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <h6> <b>Follow these Steps: </b> Access PC localhost (XAMPP Server) from mobile</h6><br />
-                                <ol>
-                                    <li> Connect PC and mobile Both Devices to the Same Network (wifi)</li>
-                                    <li>
-                                        Open XAMPP
-                                        <ul>
-                                            <li>Apache start config</li>
-                                            <li>MySQL start config</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        Find Your Computer’s Local IP Address
-                                        <ul>
-                                            <li>Run (Press Windows + R)</li>
-                                            <li>Open CMD: Type cmd and hit Enter</li>
-                                            <li>Type ipconfig</li>
-                                            <li>copy IPV4 adress 192.168. ... and your local server is running on port 3000</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        Open Your Local Website on Mobile Device
-                                        <ul>
-                                            <li>open mobile browser (chrome)</li>
-                                            <li>type ip address http://192.168.-.--:3000</li>
-                                        </ul>
-                                    </li>
-                                    <li> Test and Enjoy!</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                    <!-- Pagination controls -->
+                    <nav aria-label="Page navigation" style="padding: 50px 0 0 0;">
+                        <ul class="pagination justify-content-center">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("IngredientsList", new { page = currentPage - 1 })">Previous</a>
+                                </li>
+                            }
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("IngredientsList", new { page = i })">@i</a>
+                                </li>
+                            }
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("IngredientsList", new { page = currentPage + 1 })">Next</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
             </div>
-
         </div>
-    </section>
-</body>
+    </div>
+</div>
+
+ 
