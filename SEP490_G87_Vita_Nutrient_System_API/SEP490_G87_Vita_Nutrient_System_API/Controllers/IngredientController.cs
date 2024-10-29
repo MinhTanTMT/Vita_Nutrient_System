@@ -14,17 +14,32 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         private IFoodRepositories repositories = new FoodRepositories();
         private readonly IMapper _mapper;
 
-        public IngredientController(IMapper mapper)
-        {
-            _mapper = mapper;
-        }
+        public IngredientController(IMapper mapper) => _mapper = mapper;
 
         [HttpGet("GetAllIngredients")]
-        public async Task<ActionResult<List<IngredientDetails100g>>> GetAllIngredients()
+        public async Task<ActionResult<List<IngredientResponse>>> GetAllIngredients()
         {
             List<IngredientDetails100g> list = repositories.GetIngredientDetails();
 
-            return list;
+            List<IngredientResponse> result = list.Select(i => _mapper.Map<IngredientResponse>(i)).ToList();
+
+            return result;
+        }
+
+        [HttpGet("GetIngredient/{id}")]
+        public async Task<ActionResult<IngredientResponse>> GetIngredient(int id)
+        {
+            IngredientDetails100g ingredient = repositories.GetIngredientDetail(id);
+
+            if (ingredient is null) 
+            {
+                return BadRequest("Ingredient not found!");
+            }
+            else
+            {
+                IngredientResponse result = _mapper.Map<IngredientResponse>(ingredient);
+                return result;
+            }
         }
     }
 }

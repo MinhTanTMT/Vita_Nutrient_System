@@ -121,8 +121,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
             CreateMap<FoodList, FoodResponse>()
             .ForMember(dest => dest.FoodId, opt => opt.MapFrom(src => src.FoodListId))
             .ForMember(dest => dest.FoodType, opt => opt.MapFrom(src => src.FoodType));
-
             CreateMap<FoodType, FoodTypeResponse>();
+
+            //from IngredientDetails100g to IngredientResponse
+            CreateMap<IngredientDetails100g, IngredientResponse>();
         }
     }
 }

@@ -1,0 +1,141 @@
+﻿/* CSS variables */
+/* :root {
+  --primary-text: #4f8f70;
+  --secondary-text: #e9fff3;
+  --white-text-white: #ffffff;
+  --black-text-black: #000000;
+} */
+/* custom font */
+/* @font-face {
+  font-family: "Avenir";
+  src: url("../assets/font/AvenirLight.woff2") format("woff2"),
+    url("../assets/font/AvenirLight.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+} */
+
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+/* body {
+  background-color: var(--white-text-white);
+  color: var(--black-text-black);
+  font-family: sans-serif;
+  overflow-y: scroll;
+} */
+/* body::-webkit-scrollbar {
+  width: 8px;
+} */
+
+/* body::-webkit-scrollbar-track {
+  background-color: var(--secondary-text);
+  border-radius: 100px;
+} */
+
+/* body::-webkit-scrollbar-thumb {
+  background-color: var(--primary-text);
+  border-radius: 100px;
+} */
+
+.faq-section .accordion {
+    width: 100%;
+}
+
+.accordion-button:not(.collapsed) {
+    /* background-color: #c5e5d8;*/
+    background-color: var(--secondary-text);
+}
+
+    .accordion-button:not(.collapsed)::after {
+        background-image: none;
+        transform: none;
+    }
+
+.accordion-button:focus {
+    box-shadow: none;
+}
+
+.accordion-button:before {
+    content: "";
+    position: absolute;
+    /*   right: 0.75rem; */
+    right: 0.75rem;
+    top: 1.25rem;
+    height: 2px;
+    width: 1rem;
+    background-color: var(--primary-text);
+}
+
+.accordion-button.collapsed:after {
+    content: "";
+    position: absolute;
+    /*   right: 1.1875rem; */
+    right: 1.1875rem;
+    top: 0.8125rem;
+    height: 1.0625rem;
+    width: 0.125rem;
+    border-style: none;
+    background-color: var(--primary-text);
+}
+
+.faq-section .accordion-button h5 {
+    /*   color: #7dbc9e; */
+    color: var(--primary-text);
+    margin-right: 13px;
+}
+
+.accordion-body {
+    background-color: var(--secondary-text);
+}
+/* button:focus:not(:focus-visible) {
+    outline: 0;
+} */
+
+/* list */
+ul {
+    list-style-type: none;
+    list-style-type: disc; /* Default bullet points for ul */
+    margin-left: 20px;
+}
+
+    ul li {
+        margin-bottom: 5px;
+    }
+
+.accordion-body ol {
+    counter-reset: step-counter;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+    .accordion-body ol > li {
+        counter-increment: step-counter; /* Increment custom counter */
+        margin-bottom: 10px;
+    }
+
+        .accordion-body ol > li::before {
+            content: "Steps " counter(step-counter) ": "; /* Custom prefix */
+            font-weight: bold;
+        }
+
+@media screen and (min-width: 768px) {
+    /*   .faq-section .accordion {
+    width: 50%;
+    margin: 0 auto;
+  } */
+
+    .accordion-button:before {
+        right: 0.75rem;
+    }
+
+    .accordion-button.collapsed:after {
+        right: 1.1875rem;
+    }
+
+    .faq-section .accordion-button h5 {
+        margin-right: 0px;
+    }
+}

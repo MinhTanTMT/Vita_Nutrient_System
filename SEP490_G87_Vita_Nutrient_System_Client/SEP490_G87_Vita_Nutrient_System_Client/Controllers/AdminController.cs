@@ -514,6 +514,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return Redirect(returnUrl);
         }
 
+        [HttpGet("admin/ingredientmanagement/ingredientlist")]
+        public async Task<IActionResult> IngredientsList()
+        {
+            return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
+        }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
