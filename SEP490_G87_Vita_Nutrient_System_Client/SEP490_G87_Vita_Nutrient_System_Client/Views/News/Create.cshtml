@@ -40,7 +40,7 @@
 
         <div class="form-group">
             <label asp-for="Content" class="control-label">Nội dung</label>
-            <textarea asp-for="Content" class="form-control" rows="4"></textarea>
+            <textarea asp-for="Content" id="Content" class="form-control"></textarea>
             <span asp-validation-for="Content" class="text-danger"></span>
         </div>
 
@@ -50,6 +50,14 @@
         </div>
     </form>
 </div>
+<script src="https://cdn.ckeditor.com/ckeditor5/35.3.0/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#Content'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 
 
 <style>
@@ -82,8 +90,11 @@
 
     /* Form Styling */
     .create-form .form-group {
-        margin-bottom: 15px;
+        max-width: 80%;
+        margin: 0 auto;
+        margin-bottom: 20px;
     }
+
 
     .create-form label {
         font-weight: 500;
