@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
@@ -121,6 +122,47 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             _context.Add(nutritionTargets);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<User>> GetUsers(string? search, int page = 1, int pageSize = 10)
+        {
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(u => u.FirstName.Contains(search) || u.LastName.Contains(search));
+            }
+
+            var paginatedUsers = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return paginatedUsers;
+        }
+
+        public async Task<bool> UpdateUser(int userId, User updateUser)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null) return false;
+
+            user.FirstName = updateUser.FirstName;
+            user.LastName = updateUser.LastName;
+
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public async Task<bool> CheckFoodDiseaseRelation(int diseaseId, int foodId)
+        {
+            var relation = _context.FoodAndDiseases
+                .FirstOrDefault(fd => fd.ListOfDiseasesId == diseaseId && fd.FoodListId == foodId);
+
+            if (relation == null) return false;
+
+            return (bool)relation.IsGoodOrBad;
         }
     }
 
