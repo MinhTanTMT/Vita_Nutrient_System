@@ -100,8 +100,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             article.Content = articleDto.Content;
             article.IsActive = articleDto.IsActive;
             article.DateCreated = articleDto.DateCreated;
-            article.HeaderImage = articleDto.HeaderImage;
-
             // Chỉ cập nhật HeaderImage nếu có đường dẫn mới
             if (!string.IsNullOrEmpty(articleDto.HeaderImage))
             {

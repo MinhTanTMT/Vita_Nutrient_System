@@ -32,9 +32,15 @@
             <span asp-validation-for="IsActive" class="text-danger"></span>
         </div>
 
-        <!-- Upload hình ảnh mới -->
         <div class="form-group">
-            <label asp-for="HeaderImage" class="control-label">Hình ảnh đầu bài</label>
+            <label class="control-label">Hình ảnh đầu bài</label>
+            @if (!string.IsNullOrEmpty(Model.HeaderImage))
+            {
+                <div class="current-image">
+                    <img src="@Model.HeaderImage" alt="Current Header Image" class="image-preview" />
+                </div>
+            }
+            <label asp-for="HeaderImage" class="control-label mt-2">Thay đổi hình ảnh</label>
             <input asp-for="HeaderImage" type="file" class="form-control" />
             <span asp-validation-for="HeaderImage" class="text-danger"></span>
         </div>
@@ -52,9 +58,6 @@
         </div>
     </form>
 </div>
-
-
-
 
 <style>
     

@@ -173,6 +173,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ArticlesNewsDTO article, IFormFile HeaderImage)
         {
+            ModelState.Remove("HeaderImage");
             if (!ModelState.IsValid)
             {
                 return View(article); // Trả về view nếu model không hợp lệ
@@ -181,13 +182,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             try
             {
                 int userId = 1; // Giả sử UserId là 1
-                // Xử lý file upload
+
+                // Kiểm tra xem người dùng có chọn hình ảnh mới không
                 if (HeaderImage != null && HeaderImage.Length > 0)
                 {
                     var fileName = Path.GetFileName(HeaderImage.FileName);
                     var filePath = Path.Combine("wwwroot/images/news", fileName);
 
-                    // Tạo thư mục "images" nếu chưa tồn tại
+                    // Tạo thư mục "images/news" nếu chưa tồn tại
                     if (!Directory.Exists("wwwroot/images/news"))
                     {
                         Directory.CreateDirectory("wwwroot/images/news");
@@ -198,8 +200,16 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         await HeaderImage.CopyToAsync(stream);
                     }
 
+                    // Cập nhật đường dẫn hình ảnh mới
                     article.HeaderImage = "/images/news/" + fileName;
                 }
+                else
+                {
+                    // Giữ nguyên đường dẫn hình ảnh hiện tại nếu không có hình ảnh mới
+                    var existingArticle = await GetArticleById(article.Id); // Lấy bài viết hiện tại từ DB
+                    article.HeaderImage = existingArticle.HeaderImage;
+                }
+
                 ArticlesNewsDTO modifyData = new ArticlesNewsDTO()
                 {
                     Id = article.Id,
@@ -229,6 +239,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             return View(article); // Trả về view nếu có lỗi
         }
+
+        // Phương thức phụ để lấy bài viết hiện tại từ cơ sở dữ liệu
+        private async Task<ArticlesNewsDTO> GetArticleById(int id)
+        {
+            var response = await client.GetAsync($"api/news/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
+            }
+            return null;
+        }
+
 
         // GET: Delete an article by id (hiển thị để xác nhận xóa)
         [HttpGet]
