@@ -14,13 +14,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
         }
 
-        // Method to check if user exists and is logged in
         public async Task<UserDetail?> GetUserDetailsAsync(int userId)
         {
             return await _context.UserDetails.FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
-        // Method to validate and save user information
         public async Task<bool> SaveOrUpdateUserDetailsAsync(UserDetailsDTO userDetails)
         {
             var existingRecord = await _context.UserDetails
@@ -28,7 +26,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (existingRecord != null)
             {
-                // Update the existing record with new details
                 existingRecord.DescribeYourself = userDetails.DescribeYourself;
                 existingRecord.Height = userDetails.Height;
                 existingRecord.Weight = userDetails.Weight;
