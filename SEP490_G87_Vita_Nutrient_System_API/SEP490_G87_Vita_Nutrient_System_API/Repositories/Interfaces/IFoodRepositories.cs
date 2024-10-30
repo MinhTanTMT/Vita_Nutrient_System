@@ -18,5 +18,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         bool IsIngredientExisted(int id);
         List<KeyNote> GetKeynotes();
         KeyNote GetKeynote(int id);
+        List<TypeOfCalculation> GetTypesOfCalculation();
+        TypeOfCalculation GetTypeOfCalculation(short id);
     }
 }

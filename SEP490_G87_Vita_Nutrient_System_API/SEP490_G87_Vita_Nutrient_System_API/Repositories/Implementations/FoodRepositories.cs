@@ -92,5 +92,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.KeyNotes.Find(id);
         }
+
+        public List<TypeOfCalculation> GetTypesOfCalculation()
+        {
+            return _context.TypeOfCalculations.ToList();
+        }
+
+        public TypeOfCalculation GetTypeOfCalculation(short id)
+        {
+            return _context.TypeOfCalculations.Find(id);
+        }
     }
 }
