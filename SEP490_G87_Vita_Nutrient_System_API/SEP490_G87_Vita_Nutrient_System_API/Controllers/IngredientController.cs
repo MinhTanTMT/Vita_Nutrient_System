@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
@@ -31,7 +32,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             IngredientDetails100g ingredient = repositories.GetIngredientDetail(id);
 
-            if (ingredient is null) 
+            if (ingredient is null)
             {
                 return NotFound("Ingredient not found!");
             }
@@ -40,6 +41,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 IngredientResponse result = _mapper.Map<IngredientResponse>(ingredient);
                 return result;
             }
+        }
+
+        [HttpPost("AddIngredient")]
+        public async Task<ActionResult> AddIngredient([FromBody] AddIngredientRequest request)
+        {
+            IngredientDetails100g ingredient = _mapper.Map<IngredientDetails100g>(request);
+
+            repositories.AddIngredient(ingredient);
+
+            return Ok("Add ingredient successfully!");
         }
 
         [HttpDelete("RemoveIngredient/{id}")]

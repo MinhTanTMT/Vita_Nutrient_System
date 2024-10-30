@@ -2,6 +2,7 @@
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
 {
@@ -125,6 +126,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
 
             //from IngredientDetails100g to IngredientResponse
             CreateMap<IngredientDetails100g, IngredientResponse>();
+
+            //from AddIngredientRequest to IngredientDetails100g 
+            CreateMap<AddIngredientRequest, IngredientDetails100g>();
         }
     }
 }

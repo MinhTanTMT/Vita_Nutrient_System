@@ -12,5 +12,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         List<IngredientDetails100g> GetIngredientDetails();
         IngredientDetails100g? GetIngredientDetail(int id);
         void DeleteIngredientDetail(int id);
+        void AddIngredient(IngredientDetails100g ingredient);
     }
 }
