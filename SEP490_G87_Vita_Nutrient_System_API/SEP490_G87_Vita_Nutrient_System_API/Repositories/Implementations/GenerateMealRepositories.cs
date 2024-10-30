@@ -743,7 +743,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             StringBuilder stringListId = new StringBuilder();
             foreach (var getId in dataFoodListMealOfTheDay.foodIdData)
             {
-                listFoodCollection.Add(getId.FoodListId);
+                listFoodCollection.Add(getId.idFood);
             }
             IEnumerable<FoodListDTO> dataTake = await GetTheListOfDishesByMealSettingsDetails(listFoodCollection, dataFoodListMealOfTheDay.SettingDetail);
 
@@ -824,7 +824,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     }
 
                     string[] splitByEqualSecondChamPhay = splitByEqualHaiCham[1].Split(';');
-                    List<FoodListDTO> foodIdDataList = new List<FoodListDTO>();
+                    List<FoodIdData> foodIdDataList = new List<FoodIdData>();
                     foreach (var item in splitByEqualSecondChamPhay)
                     {
                         if (item.Length > 0)
@@ -834,9 +834,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             FoodList FoodInfo = await _context.FoodLists.FindAsync(numberRemaining);
                             if (FoodInfo != null)
                             {
+                                
                                 FoodListDTO foodListDTO = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(numberRemaining));
-                                foodIdDataList.Add(foodListDTO);
-                            }
+                                foodIdDataList.Add(new FoodIdData { idFood = numberRemaining, statusSymbol = symbolStatus, foodData = foodListDTO });
+
+                        }
                         }
                     }
                     dataFoodListMealOfTheDay.foodIdData = foodIdDataList.ToArray();

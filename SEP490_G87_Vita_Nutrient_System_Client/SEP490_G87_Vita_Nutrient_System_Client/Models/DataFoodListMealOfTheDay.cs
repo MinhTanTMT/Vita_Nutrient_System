@@ -1,15 +1,12 @@
 ﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
-
-
-
     public class SlotBranch
     {
         public short SlotOfTheDay { get; set; }
         public string? NameSlotOfTheDay { get; set; }
+        public float TotalCaloriesPerMeal { get; set; }
         public DataFoodListMealOfTheDay[] foodDataOfSlot { get; set; }
     }
-
 
     public class DataFoodListMealOfTheDay
     {
@@ -23,12 +20,9 @@
     {
         public int idFood { get; set; }
         public string statusSymbol { get; set; }
-
-        public string? Name { get; set; }
-
-        public string? Urlimage { get; set; }
-
+        public FoodList foodData { get; set; }
     }
+
 }
 
 

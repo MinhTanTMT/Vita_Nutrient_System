@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
@@ -83,21 +84,76 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         {
                             SlotOfTheDay = item.SlotOfTheDay,
                             NameSlotOfTheDay = item.NameSlotOfTheDay,
+                            TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.ingredientDetails100gReduceDTO.energy)), 2) ,
                             foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray()
                         };
                         slotBranchesData.Add(slotBranch);
                     }
 
 
-                    //HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1");
-                    //if (res2.StatusCode == System.Net.HttpStatusCode.OK)
+                    //IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
+                    //double totaAllCalories = 0;
+                    //double caloriesEaten = 0;
+                    //double caloriesRemaining = 0;
+
+                    //foreach (var item in rootObjectFoodList)
                     //{
-                    //    HttpContent content2 = res2.Content;
-                    //    string data2 = await content2.ReadAsStringAsync();
-                    //    FoodList DailyTargetTotalAll = JsonConvert.DeserializeObject<FoodList>(data2);
+                    //    foreach (var item1 in item.foodIdData)
+                    //    {
+                    //        if (item1.statusSymbol.Equals("-"))
+                    //        {
+                    //            totaAllCalories += item1.foodData.ingredientDetails100gReduceDTO.energy;
+                    //        }
+                    //        else if (item1.statusSymbol.Equals("+"))
+                    //        {
+                    //            caloriesEaten += item1.foodData.ingredientDetails100gReduceDTO.energy;
+                    //        }
+                    //        else if (item1.statusSymbol.Equals("!"))
+                    //        {
+                    //            caloriesRemaining += item1.foodData.ingredientDetails100gReduceDTO.energy;
+                    //        }
+                    //    }
                     //}
 
 
+                    double totaAllCalories = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "-")
+                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.energy);
+
+                    double caloriesEaten = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "+")
+                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.energy);
+
+                    double caloriesMissed = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "!")
+                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.energy);
+
+
+                    double allCarbohydrate = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "+")
+                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.carbohydrate);
+
+                    double allFat = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "!")
+                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.fat);
+
+                    double allProtein = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "!")
+                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.protein);
+
+
+                    ViewBag.totaAllCalories = Math.Round(totaAllCalories, 2);
+                    ViewBag.caloriesEaten = Math.Round(caloriesEaten, 2);
+                    ViewBag.caloriesMissed = Math.Round(caloriesMissed, 2);
+                    ViewBag.allCarbohydrate = Math.Round(allCarbohydrate, 2);
+                    ViewBag.allFat = Math.Round(allFat, 2);
+                    ViewBag.allProtein = Math.Round(allProtein, 2);
 
 
 
