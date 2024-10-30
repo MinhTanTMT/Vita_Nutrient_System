@@ -85,7 +85,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<IActionResult> APIRun()
         {
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("29/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
+            return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
 
         }
 
@@ -114,22 +114,25 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                     }
                     else
                     {
-                        return BadRequest(null);
+                        return BadRequest();
                     }
                 }
                 else
                 {
-                    return BadRequest(null);
+                    return BadRequest();
                 }
             }
         }
 
         [HttpGet("APIRefreshTheMeal")]
         public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APIRefreshTheMealy(DateTime myDay, int idUser)
-        //public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APIRefreshTheMealy()
         {
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
             return Ok(await generateMealRepositories.FillInDishIdInDailyDish(idUser, myDay));
         }
+        
+
+
+
     }
 }

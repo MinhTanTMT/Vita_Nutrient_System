@@ -54,12 +54,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             //int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            //https://localhost:7045/api/GenerateMeal/APGenerateMealController?MealSettingsDetailsId=3
+            //https://localhost:7045/api/GenerateMeal/APIDailyTargetTotal?myDay=2020-09-29T00%3A00%3A00&idUser=1
 
-            //https://localhost:7045/api/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-29T00%3A00%3A00&idUser=1
+            //https://localhost:7045/api/GenerateMeal/APIDailyTargetTotal?myDay=2020-09-29T00%3A00%3A00&idUser=1&status=-
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1");
-
+            
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 HttpContent content = res.Content;
@@ -87,6 +87,20 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         };
                         slotBranchesData.Add(slotBranch);
                     }
+
+
+                    //HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1");
+                    //if (res2.StatusCode == System.Net.HttpStatusCode.OK)
+                    //{
+                    //    HttpContent content2 = res2.Content;
+                    //    string data2 = await content2.ReadAsStringAsync();
+                    //    FoodList DailyTargetTotalAll = JsonConvert.DeserializeObject<FoodList>(data2);
+                    //}
+
+
+
+
+
                     return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
                 }
                 else

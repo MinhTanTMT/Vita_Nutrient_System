@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using NuGet.Configuration;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList;
@@ -742,7 +743,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             StringBuilder stringListId = new StringBuilder();
             foreach (var getId in dataFoodListMealOfTheDay.foodIdData)
             {
-                listFoodCollection.Add(getId.idFood);
+                listFoodCollection.Add(getId.FoodListId);
             }
             IEnumerable<FoodListDTO> dataTake = await GetTheListOfDishesByMealSettingsDetails(listFoodCollection, dataFoodListMealOfTheDay.SettingDetail);
 
@@ -784,6 +785,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         for (int i = 0; i < arrayData.Length - 1; i++)
                         {
                             dataFoodListMealOfTheDays.Add(await SplitAndProcessDataMealOfTheDay(arrayData[i]));
+                            
+
                         }
                     }
                 }
@@ -794,8 +797,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<DataFoodListMealOfTheDay> SplitAndProcessDataMealOfTheDay(string part)
         {
-            try
-            {
                 DataFoodListMealOfTheDay dataFoodListMealOfTheDay = new DataFoodListMealOfTheDay();
 
                 string[] splitByEqualHaiCham = part.Split(':');
@@ -823,7 +824,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     }
 
                     string[] splitByEqualSecondChamPhay = splitByEqualHaiCham[1].Split(';');
-                    List<FoodIdData> foodIdDataList = new List<FoodIdData>();
+                    List<FoodListDTO> foodIdDataList = new List<FoodListDTO>();
                     foreach (var item in splitByEqualSecondChamPhay)
                     {
                         if (item.Length > 0)
@@ -831,18 +832,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             string symbolStatus = item[^1].ToString();
                             int numberRemaining = await ParseNumeric(item.Substring(0, item.Length - 1)) ?? -1;
                             FoodList FoodInfo = await _context.FoodLists.FindAsync(numberRemaining);
-                            foodIdDataList.Add(new FoodIdData { idFood = numberRemaining, statusSymbol = symbolStatus, Name = FoodInfo.Name, Urlimage = FoodInfo.Urlimage });
+                            if (FoodInfo != null)
+                            {
+                                FoodListDTO foodListDTO = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(numberRemaining));
+                                foodIdDataList.Add(foodListDTO);
+                            }
                         }
                     }
                     dataFoodListMealOfTheDay.foodIdData = foodIdDataList.ToArray();
 
                 }
                 return dataFoodListMealOfTheDay;
-
-            } catch (Exception e)
-            {
-                return null;
-            }
         }
 
 
@@ -892,9 +892,48 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return ints;
         }
 
+        //public async Task<FoodListDTO> DailyTargetTotal(DateTime myDay, int idUser, string? status)
+        //{
+
+        //    IEnumerable<DataFoodListMealOfTheDay> listIdFood = await ListMealOfTheDay(myDay, idUser);
+
+        //    List<FoodListDTO> specifiedCollection = new List<FoodListDTO>();
+
+        //    foreach (var item in listIdFood)
+        //    {
+        //        foreach (var item1 in item.foodIdData)
+        //        {
+        //            if (status.IsNullOrEmpty())
+        //            {
+        //                specifiedCollection.Add(await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(item1.idFood)));
+        //            } 
+        //            else if (status.Equals(item1.statusSymbol))
+        //            {
+        //                specifiedCollection.Add(await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(item1.idFood)));
+        //            }
+        //        }
+        //    }
+
+
+        //    if(specifiedCollection.Count > 0)
+        //    {
+        //        FoodListDTO calculatedList = await TotalAllTheIngredientsOfTheDish(specifiedCollection);
+        //        calculatedList.FoodListId = -1;
+        //        calculatedList.Name = "DailyTargetTotal";
+        //        calculatedList.Describe = "DailyTargetTotal";
+        //        return calculatedList;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+
+        //}
 
     }
 }
+
+
 
 
 //DateOnly dateOnly = DateTime.Now.DayOfWeek;
