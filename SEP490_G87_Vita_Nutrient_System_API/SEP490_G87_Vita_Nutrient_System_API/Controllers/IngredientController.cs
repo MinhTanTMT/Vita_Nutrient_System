@@ -33,12 +33,28 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             if (ingredient is null) 
             {
-                return BadRequest("Ingredient not found!");
+                return NotFound("Ingredient not found!");
             }
             else
             {
                 IngredientResponse result = _mapper.Map<IngredientResponse>(ingredient);
                 return result;
+            }
+        }
+
+        [HttpDelete("RemoveIngredient/{id}")]
+        public async Task<ActionResult> RemoveIngredient(int id)
+        {
+            IngredientDetails100g ingredient = repositories.GetIngredientDetail(id);
+
+            if (ingredient is null)
+            {
+                return NotFound("Ingredient not found!");
+            }
+            else
+            {
+                repositories.DeleteIngredientDetail(id);
+                return Ok("Delete ingredient successfully!");
             }
         }
     }

@@ -40,12 +40,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public IngredientDetails100g? GetIngredientDetail(int id)
         {
-            return _context.IngredientDetails100gs.FirstOrDefault(i => i.Id == id);
+            return _context.IngredientDetails100gs.Find(id);
         }
 
         public List<IngredientDetails100g> GetIngredientDetails()
         {
             return _context.IngredientDetails100gs.ToList();
+        }
+        public void DeleteIngredientDetail(int id)
+        {
+            var scaleAmountRelated = _context.ScaleAmounts.Where(s => s.IngredientDetailsId == id).ToList();
+            _context.ScaleAmounts.RemoveRange(scaleAmountRelated);
+            IngredientDetails100g ingredient = GetIngredientDetail(id);
+            _context.IngredientDetails100gs.Remove(ingredient);
+            _context.SaveChanges();
         }
     }
 }
