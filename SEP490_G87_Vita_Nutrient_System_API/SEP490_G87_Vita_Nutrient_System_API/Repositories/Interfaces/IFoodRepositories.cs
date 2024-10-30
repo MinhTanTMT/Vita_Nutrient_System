@@ -1,4 +1,5 @@
-﻿using SEP490_G87_Vita_Nutrient_System_API.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_API.Models;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
 {
@@ -15,5 +16,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         void AddIngredient(IngredientDetails100g ingredient);
         void UpdateIngredient(IngredientDetails100g ingredient);
         bool IsIngredientExisted(int id);
+        List<KeyNote> GetKeynotes();
+        KeyNote GetKeynote(int id);
     }
 }

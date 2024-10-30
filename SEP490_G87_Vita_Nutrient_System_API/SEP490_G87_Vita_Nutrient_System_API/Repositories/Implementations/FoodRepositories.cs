@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -79,6 +81,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             return false;
+        }
+
+        public List<KeyNote> GetKeynotes()
+        {
+            return _context.KeyNotes.ToList();
+        }
+
+        public KeyNote GetKeynote(int id)
+        {
+            return _context.KeyNotes.Find(id);
         }
     }
 }

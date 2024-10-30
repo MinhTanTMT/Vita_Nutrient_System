@@ -132,6 +132,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
 
             //from UpdateIngredientRequest to IngredientDetails100g 
             CreateMap<UpdateIngredientRequest, IngredientDetails100g>();
+
+            //from KeyNote to KeyNoteResponse
+            CreateMap<KeyNote, KeyNoteResponse>();
         }
     }
 }
