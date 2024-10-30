@@ -9,6 +9,8 @@ using System.Security.Principal;
 using static System.Net.WebRequestMethods;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics.Metrics;
+using System;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -602,7 +604,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Cannot add ingredient! Please try again!";
+                    ViewBag.AlertMessage = "Add ingredient failed! Please try again!";
                 }
                 else
                 {
@@ -615,6 +617,178 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
 
             return await IngredientsList();
+        }
+
+        [HttpGet("admin/ingredientmanagement/updateingredient/{Id}")]
+        public async Task<IActionResult> UpdateIngredient(int Id)
+        {
+            try
+            {
+                //get ingredients
+                HttpResponseMessage response =
+                    await client.GetAsync(client.BaseAddress + "/Ingredient/GetIngredient/" + Id);
+
+                //get keynotes
+                HttpResponseMessage response1 =
+                    await client.GetAsync(client.BaseAddress + "/KeyNote/GetKeyNotes");
+                HttpContent content1 = response1.Content;
+                string data1 = await content1.ReadAsStringAsync();
+                List<KeyNote> keyNotes = JsonConvert.DeserializeObject<List<KeyNote>>(data1);
+
+                //get types of calculation
+                HttpResponseMessage response2 =
+                    await client.GetAsync(client.BaseAddress + "/TypeOfCalculation/GetTypesOfCalculation");
+                HttpContent content2 = response2.Content;
+                string data2 = await content2.ReadAsStringAsync();
+                List<TypeOfCalculation> typesOfCalculation = JsonConvert.DeserializeObject<List<TypeOfCalculation>>(data2);
+
+                ViewBag.keyNotes = keyNotes;
+                ViewBag.typesOfCalculation = typesOfCalculation;
+                
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    IngredientDetails100g ingredients = JsonConvert.DeserializeObject<IngredientDetails100g>(data);
+
+                    return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml", ingredients);
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get ingredient! Please try again!";
+                    return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml");
+                }
+            }
+            catch(Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml");
+            }
+        }
+
+        [HttpPost("admin/ingredientmanagement/updateingredient")]
+        public async Task<IActionResult> DoUpdateIngredient(IngredientDetails100g model)
+        {
+            try
+            {
+                var data = new
+                {
+                    id = model.Id,
+                    keyNoteId = model.KeyNoteId,
+                    name = model.Name,
+                    describe = model.Describe,
+                    urlimage = model.Urlimage,
+                    typeOfCalculationId = model.TypeOfCalculationId,
+                    energy = model.Energy,
+                    water = model.Water,
+                    protein = model.Protein,
+                    fat = model.Fat,
+                    carbohydrate = model.Carbohydrate,
+                    fiber = model.Fiber,
+                    ash = model.Ash,
+                    sugar = model.Sugar,
+                    galactose = model.Galactose,
+                    maltose = model.Maltose,
+                    lactose = model.Lactose,
+                    fructose = model.Fructose,
+                    glucose = model.Glucose,
+                    sucrose = model.Sucrose,
+                    calcium = model.Calcium,
+                    iron = model.Iron,
+                    magnesium = model.Magnesium,
+                    manganese = model.Manganese,
+                    phosphorous = model.Phosphorous,
+                    potassium = model.Potassium,
+                    sodium = model.Sodium,
+                    zinc = model.Zinc,
+                    copper = model.Copper,
+                    selenium = model.Selenium,
+                    vitaminC = model.VitaminC,
+                    vitaminB1 = model.VitaminB1,
+                    vitaminB2 = model.VitaminB2,
+                    vitaminPp = model.VitaminPp,
+                    vitaminB5 = model.VitaminB5,
+                    vitaminB6 = model.VitaminB6,
+                    folat = model.Folat,
+                    vitaminB9 = model.VitaminB9,
+                    vitaminH = model.VitaminH,
+                    vitaminB12 = model.VitaminB12,
+                    vitaminA = model.VitaminA,
+                    vitaminD = model.VitaminD,
+                    vitaminE = model.VitaminE,
+                    vitaminK = model.VitaminK,
+                    betaCaroten = model.BetaCaroten,
+                    alphaCaroten = model.AlphaCaroten,
+                    betaCryptoxanthin = model.BetaCryptoxanthin,
+                    lycopen = model.Lycopen,
+                    luteinVsZeaxanthin = model.LuteinVsZeaxanthin,
+                    purin = model.Purin,
+                    totalIsoflavone = model.TotalIsoflavone,
+                    daidzein = model.Daidzein,
+                    genistein = model.Genistein,
+                    glycetin = model.Glycetin,
+                    totalSaturatedFattyAcid = model.TotalSaturatedFattyAcid,
+                    palmiticC160 = model.PalmiticC160,
+                    margaricC170 = model.MargaricC170,
+                    stearicC180 = model.StearicC180,
+                    arachidicC200 = model.ArachidicC200,
+                    behenicC220 = model.BehenicC220,
+                    lignocericC240 = model.LignocericC240,
+                    totalMonounsaturatedFattyAcid = model.TotalMonounsaturatedFattyAcid,
+                    myristoleicC141 = model.MyristoleicC141,
+                    palmitoleicC161 = model.PalmitoleicC161,
+                    oleicC181 = model.OleicC181,
+                    totalPolyunsaturatedFattyAcid = model.TotalPolyunsaturatedFattyAcid,
+                    linoleicC182N6 = model.LinoleicC182N6,
+                    linolenicC182N3 = model.LinolenicC182N3,
+                    arachidonicC204 = model.ArachidonicC204,
+                    eicosapentaenoicC205N3 = model.EicosapentaenoicC205N3,
+                    docosahexaenoicC226N3 = model.DocosahexaenoicC226N3,
+                    totalTransFattyAcid = model.TotalTransFattyAcid,
+                    cholesterol = model.Cholesterol,
+                    phytosterol = model.Phytosterol,
+                    lysin = model.Lysin,
+                    methionin = model.Methionin,
+                    tryptophan = model.Tryptophan,
+                    phenylalanin = model.Phenylalanin,
+                    threonin = model.Threonin,
+                    valin = model.Valin,
+                    leucin = model.Leucin,
+                    isoleucin = model.Isoleucin,
+                    arginin = model.Arginin,
+                    histidin = model.Histidin,
+                    cystin = model.Cystin,
+                    tyrosin = model.Tyrosin,
+                    alanin = model.Alanin,
+                    acidAspartic = model.AcidAspartic,
+                    acidGlutamic = model.AcidGlutamic,
+                    glycin = model.Glycin,
+                    prolin = model.Prolin,
+                    serin = model.Serin
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PutAsync(client.BaseAddress + "/Ingredient/UpdateIngredient", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update ingredient failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update ingredient successfully!";
+                }
+            }
+            catch(Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml", model);
         }
 
         [HttpGet("admin/ingredientmanagement/deleteingredient/{Id}")]

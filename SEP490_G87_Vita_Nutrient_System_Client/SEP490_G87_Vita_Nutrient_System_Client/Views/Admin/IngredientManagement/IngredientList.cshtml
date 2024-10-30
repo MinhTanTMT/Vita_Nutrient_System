@@ -87,40 +87,19 @@
                                                     || (value is short && (short)value != 0);
                                         });
 
-                                        int a = 0;
-
-                                        if(properties.Count() % 3 == 0){ a = properties.Count() / 3 - 1; }
-                                        else { a = properties.Count() / 3; }
-
-                                        <div class="row">
-                                            <div class="col-4">
-                                                @for(int j = 0; j <= a; j++)
-                                                {
-                                                    var value = properties.ElementAt(j).GetValue(ingre);
-                                                    <p>@properties.ElementAt(j).Name: @value</p>
-                                                }
-                                            </div>
-
-                                            <div class="col-4">
-                                                @for (int k = a+1; k <= 2*a+1; k++)
-                                                {
-                                                    var value = properties.ElementAt(k).GetValue(ingre);
-                                                    <p>@properties.ElementAt(k).Name: @value</p>
-                                                }
-                                            </div>
-
-                                            <div class="col-4">
-                                                @for (int l = 2*a+2; l < properties.Count(); l++)
-                                                {
-                                                    var value = properties.ElementAt(l).GetValue(ingre);
-                                                    <p>@properties.ElementAt(l).Name: @value</p>
-                                                }
-                                            </div>
+                                        <div class="d-flex flex-wrap" style="gap: 10px;">
+                                            @foreach(var p in properties)
+                                            {
+                                                <div style="flex: 1 1 30%; box-sizing: border-box;">
+                                                    @{var value = p.GetValue(ingre);}
+                                                    <p>@p.Name: @value</p>
+                                                </div>
+                                            }
                                         </div>
                                     }
 
                                     <div class="d-flex" style="font-size: 25px;">
-                                        <a href="#" class="ms-auto" style="padding: 0px 5px; margin-right: 10px;">
+                                        <a asp-controller="Admin" asp-action="UpdateIngredient" asp-route-Id="@ingre.Id" class="ms-auto" style="padding: 0px 5px; margin-right: 10px;">
                                             <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a asp-controller="Admin" asp-action="DeleteIngredient" asp-route-Id="@ingre.Id" style="padding: 0px 5px; margin-left: 10px;" onclick="return confirmDelete();">
