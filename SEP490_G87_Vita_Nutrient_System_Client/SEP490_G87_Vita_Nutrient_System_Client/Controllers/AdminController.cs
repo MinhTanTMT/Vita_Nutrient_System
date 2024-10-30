@@ -7,6 +7,8 @@ using System.Text;
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Principal;
 using static System.Net.WebRequestMethods;
+using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -523,6 +525,20 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response =
                     await client.GetAsync(client.BaseAddress + "/Ingredient/GetAllIngredients");
 
+                //get keynotes
+                HttpResponseMessage response1 =
+                    await client.GetAsync(client.BaseAddress + "/KeyNote/GetKeyNotes");
+                HttpContent content1 = response1.Content;
+                string data1 = await content1.ReadAsStringAsync();
+                List<KeyNote> keyNotes = JsonConvert.DeserializeObject<List<KeyNote>>(data1);
+
+                //get types of calculation
+                HttpResponseMessage response2 =
+                    await client.GetAsync(client.BaseAddress + "/TypeOfCalculation/GetTypesOfCalculation");
+                HttpContent content2 = response2.Content;
+                string data2 = await content2.ReadAsStringAsync();
+                List<TypeOfCalculation> typesOfCalculation = JsonConvert.DeserializeObject<List<TypeOfCalculation>>(data2);
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
@@ -551,6 +567,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
 
                 ViewBag.SearchQuery = searchQuery;
+                ViewBag.listKeynotes = keyNotes;
+                ViewBag.listTypesOfCalculation = typesOfCalculation;
+
                 return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
             }
             catch(Exception e)
@@ -558,6 +577,44 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddIngredient(string in_name, string in_desc, string in_imgurl, int keynoteId, short typeOfCalculationId)
+        {
+            try
+            {
+                var data = new
+                {
+                    keyNoteId = keynoteId,
+                    name = in_name,
+                    describe = in_desc,
+                    urlimage = in_imgurl,
+                    typeOfCalculationId = typeOfCalculationId
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Ingredient/AddIngredient", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Cannot add ingredient! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Add ingredient successfully!";
+                }
+            }
+            catch(Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await IngredientsList();
         }
 
         [HttpGet("admin/ingredientmanagement/deleteingredient/{Id}")]
