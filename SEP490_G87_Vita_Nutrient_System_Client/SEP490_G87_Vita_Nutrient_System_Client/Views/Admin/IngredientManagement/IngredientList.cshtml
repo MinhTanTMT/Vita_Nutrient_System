@@ -77,9 +77,15 @@
                                     <h4>Nutritional values:</h4>
                                     @{
                                         var properties = typeof(SEP490_G87_Vita_Nutrient_System_Client.Models.IngredientDetails100g)
-                                                                    .GetProperties()
-                                                                    .SkipWhile(p => p.Name != "Energy")
-                                                                    .Where(p => (p.GetValue(ingre) as double?) != 0);
+                                        .GetProperties()
+                                        .SkipWhile(p => p.Name != "Energy")
+                                        .Where(p =>
+                                        {
+                                            var value = p.GetValue(ingre);
+                                            return value == null || (value is int && (int)value != 0)
+                                                    || (value is double && (double)value != 0)
+                                                    || (value is short && (short)value != 0);
+                                        });
 
                                         int a = 0;
 
@@ -90,7 +96,7 @@
                                             <div class="col-4">
                                                 @for(int j = 0; j <= a; j++)
                                                 {
-                                                    var value = properties.ElementAt(j).GetValue(ingre) as double?;
+                                                    var value = properties.ElementAt(j).GetValue(ingre);
                                                     <p>@properties.ElementAt(j).Name: @value</p>
                                                 }
                                             </div>
@@ -98,7 +104,7 @@
                                             <div class="col-4">
                                                 @for (int k = a+1; k <= 2*a+1; k++)
                                                 {
-                                                    var value = properties.ElementAt(k).GetValue(ingre) as double?;
+                                                    var value = properties.ElementAt(k).GetValue(ingre);
                                                     <p>@properties.ElementAt(k).Name: @value</p>
                                                 }
                                             </div>
@@ -106,7 +112,7 @@
                                             <div class="col-4">
                                                 @for (int l = 2*a+2; l < properties.Count(); l++)
                                                 {
-                                                    var value = properties.ElementAt(l).GetValue(ingre) as double?;
+                                                    var value = properties.ElementAt(l).GetValue(ingre);
                                                     <p>@properties.ElementAt(l).Name: @value</p>
                                                 }
                                             </div>
