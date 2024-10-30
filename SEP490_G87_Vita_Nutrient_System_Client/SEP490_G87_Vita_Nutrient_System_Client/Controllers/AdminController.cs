@@ -560,6 +560,26 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        [HttpGet("admin/ingredientmanagement/deleteingredient/{Id}")]
+        public async Task<IActionResult> DeleteIngredient(int Id)
+        {
+            try
+            {
+                HttpResponseMessage response = 
+                    await client.DeleteAsync(client.BaseAddress + "/Ingredient/RemoveIngredient/" + Id);
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Cannot delete ingredient! Please try again!";
+                }
+            }
+            catch(Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await IngredientsList();
+        }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
