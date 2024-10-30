@@ -53,6 +53,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Add ingredient successfully!");
         }
 
+        [HttpPut("UpdateIngredient")]
+        public async Task<ActionResult> UpdateIngredient([FromBody] UpdateIngredientRequest request)
+        {
+            if (!repositories.IsIngredientExisted(request.Id))
+            {
+                return NotFound("Ingredient not found!");
+            }
+            else
+            {
+                IngredientDetails100g ingredient = _mapper.Map<IngredientDetails100g>(request);
+                repositories.UpdateIngredient(ingredient);
+                return Ok("Update ingredient successfully!");
+            }
+        }
+
         [HttpDelete("RemoveIngredient/{id}")]
         public async Task<ActionResult> RemoveIngredient(int id)
         {

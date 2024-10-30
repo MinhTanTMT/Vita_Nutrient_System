@@ -61,5 +61,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.IngredientDetails100gs.Add(ingredient);
             _context.SaveChanges();
         }
+
+        public void UpdateIngredient(IngredientDetails100g ingredient)
+        {
+            _context.Entry<IngredientDetails100g>(ingredient).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public bool IsIngredientExisted(int id)
+        {
+            var ingradient = _context.IngredientDetails100gs.Find(id);
+
+            if(ingradient != null)
+            {
+                _context.Entry<IngredientDetails100g>(ingradient).State = EntityState.Detached;
+                return true;
+            }
+
+            return false;
+        }
     }
 }
