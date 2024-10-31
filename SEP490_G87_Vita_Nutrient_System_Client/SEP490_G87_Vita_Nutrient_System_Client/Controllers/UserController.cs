@@ -90,72 +90,38 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         slotBranchesData.Add(slotBranch);
                     }
 
+                    List<FoodList> foodListTotaAll = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Select(item1 => item1.foodData)
+                        .ToList();
 
-                    //IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
-                    //double totaAllCalories = 0;
-                    //double caloriesEaten = 0;
-                    //double caloriesRemaining = 0;
-
-                    //foreach (var item in rootObjectFoodList)
-                    //{
-                    //    foreach (var item1 in item.foodIdData)
-                    //    {
-                    //        if (item1.statusSymbol.Equals("-"))
-                    //        {
-                    //            totaAllCalories += item1.foodData.ingredientDetails100gReduceDTO.energy;
-                    //        }
-                    //        else if (item1.statusSymbol.Equals("+"))
-                    //        {
-                    //            caloriesEaten += item1.foodData.ingredientDetails100gReduceDTO.energy;
-                    //        }
-                    //        else if (item1.statusSymbol.Equals("!"))
-                    //        {
-                    //            caloriesRemaining += item1.foodData.ingredientDetails100gReduceDTO.energy;
-                    //        }
-                    //    }
-                    //}
-
-
-                    double totaAllCalories = rootObjectFoodList
+                    List<FoodList> foodListNotEaten = rootObjectFoodList
                         .SelectMany(item => item.foodIdData)
                         .Where(item1 => item1.statusSymbol == "-")
-                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.energy);
+                        .Select(item1 => item1.foodData)
+                        .ToList();
 
-                    double caloriesEaten = rootObjectFoodList
+                    List<FoodList> foodListEaten = rootObjectFoodList
                         .SelectMany(item => item.foodIdData)
                         .Where(item1 => item1.statusSymbol == "+")
-                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.energy);
+                        .Select(item1 => item1.foodData)
+                        .ToList();
 
-                    double caloriesMissed = rootObjectFoodList
+                    List<FoodList> foodListMissed = rootObjectFoodList
                         .SelectMany(item => item.foodIdData)
                         .Where(item1 => item1.statusSymbol == "!")
-                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.energy);
+                        .Select(item1 => item1.foodData)
+                        .ToList();
 
+                    List<FoodList> nullData = new List<FoodList> { new FoodList { 
+                        ingredientDetails100gReduceDTO = new Ingredientdetails100greducedto {  },
+                        keyNote = new Keynote { } ,
+                        scaleAmounts = new Scaleamounts {  } } };
 
-                    double allCarbohydrate = rootObjectFoodList
-                        .SelectMany(item => item.foodIdData)
-                        .Where(item1 => item1.statusSymbol == "+")
-                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.carbohydrate);
-
-                    double allFat = rootObjectFoodList
-                        .SelectMany(item => item.foodIdData)
-                        .Where(item1 => item1.statusSymbol == "!")
-                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.fat);
-
-                    double allProtein = rootObjectFoodList
-                        .SelectMany(item => item.foodIdData)
-                        .Where(item1 => item1.statusSymbol == "!")
-                        .Sum(item1 => item1.foodData.ingredientDetails100gReduceDTO.protein);
-
-
-                    ViewBag.totaAllCalories = Math.Round(totaAllCalories, 2);
-                    ViewBag.caloriesEaten = Math.Round(caloriesEaten, 2);
-                    ViewBag.caloriesMissed = Math.Round(caloriesMissed, 2);
-                    ViewBag.allCarbohydrate = Math.Round(allCarbohydrate, 2);
-                    ViewBag.allFat = Math.Round(allFat, 2);
-                    ViewBag.allProtein = Math.Round(allProtein, 2);
-
-
+                    ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListTotaAll) : TotalAllTheIngredientsOfTheDish(nullData);
+                    ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListNotEaten) : TotalAllTheIngredientsOfTheDish(nullData);
+                    ViewBag.foodListEatenCalculated = foodListEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListEaten) : TotalAllTheIngredientsOfTheDish(nullData);
+                    ViewBag.foodListMissedCalculated = foodListMissed.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListMissed) : TotalAllTheIngredientsOfTheDish(nullData);
 
                     return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
                 }
@@ -166,6 +132,57 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             return RedirectToAction("Error");
         }
+
+
+        public FoodList TotalAllTheIngredientsOfTheDish(IEnumerable<FoodList> dataFood)
+        {
+            FoodList totalfoodListDTO = new FoodList()
+            {
+                foodListId = dataFood.First().foodListId,
+                name = dataFood.First().name,
+                describe = dataFood.First().describe,
+                rate = dataFood.First().rate,
+                numberRate = dataFood.First().numberRate,
+                urlimage = dataFood.First().urlimage,
+                foodTypeId = dataFood.First().foodTypeId,
+                keyNoteId = dataFood.First().keyNoteId,
+                isActive = dataFood.First().isActive,
+                preparationTime = dataFood.First().preparationTime,
+                cookingTime = dataFood.First().cookingTime,
+                cookingDifficultyId = dataFood.First().cookingDifficultyId,
+                ingredientDetails100gReduceDTO = new Ingredientdetails100greducedto()
+                {
+                    id = -1,
+                    keyNoteId = -1,
+                    name = "SummaryOfTheEntireList",
+                    describe = "SummaryOfTheEntireList",
+                    urlimage = "SummaryOfTheEntireList",
+                    typeOfCalculationId = -1,
+                    energy = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.energy),
+                    protein = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.protein),
+                    fat = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.fat),
+                    carbohydrate = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.carbohydrate),
+                    fiber = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.fiber),
+                    sodium = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.sodium),
+                    cholesterol = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.cholesterol)
+                },
+                keyNote = new Keynote
+                {
+                    id = dataFood.First().keyNote.id,
+                    keyList = dataFood.First().keyNote.keyList
+                },
+                scaleAmounts = new Scaleamounts
+                {
+                    foodListId = dataFood.First().foodListId,
+                    ingredientDetailsId = -1,
+                    scaleAmount1 = -1
+                }
+            };
+            return totalfoodListDTO;
+        }
+
+
+
 
 
         [HttpPost]
