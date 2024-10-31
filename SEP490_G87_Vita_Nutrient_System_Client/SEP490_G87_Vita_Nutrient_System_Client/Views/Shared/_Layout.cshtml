@@ -254,12 +254,6 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Index", "News")">
-                                        <span class="menu-title">News</span>
-                                        <i class="mdi mdi-newspaper menu-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("ListUser", "Admin")">
                                         <span class="menu-title">User Management</span>
                                         <i class="mdi mdi-account-circle menu-icon"></i>
@@ -277,25 +271,10 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-
-                            }
-                            else if (role.Equals("User"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
-                                        <span class="menu-title">Today's meal plan</span>
-                                        <i class="mdi mdi-food-variant menu-icon"></i>
-                                    </a>
-                                </li>
                             }
                             else if (role.Equals("UserPremium"))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
-                                        <span class="menu-title">Today's meal plan</span>
-                                        <i class="mdi mdi-food-variant menu-icon"></i>
-                                    </a>
-                                </li>
+
                             }
                             else
                             {

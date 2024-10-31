@@ -84,7 +84,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         {
                             SlotOfTheDay = item.SlotOfTheDay,
                             NameSlotOfTheDay = item.NameSlotOfTheDay,
-                            TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.ingredientDetails100gReduceDTO.energy)), 2) ,
+                            TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2) ,
                             foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray()
                         };
                         slotBranchesData.Add(slotBranch);
@@ -114,9 +114,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         .ToList();
 
                     List<FoodList> nullData = new List<FoodList> { new FoodList { 
-                        ingredientDetails100gReduceDTO = new Ingredientdetails100greducedto {  },
-                        keyNote = new Keynote { } ,
-                        scaleAmounts = new Scaleamounts {  } } };
+                        IngredientDetails100gReduceDTO = new Ingredientdetails100greducedto {  },
+                        KeyNote = new KeyNote { } ,
+                        ScaleAmounts = new ScaleAmounts {  } } };
 
                     ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListTotaAll) : TotalAllTheIngredientsOfTheDish(nullData);
                     ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListNotEaten) : TotalAllTheIngredientsOfTheDish(nullData);
@@ -138,44 +138,44 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             FoodList totalfoodListDTO = new FoodList()
             {
-                foodListId = dataFood.First().foodListId,
-                name = dataFood.First().name,
-                describe = dataFood.First().describe,
-                rate = dataFood.First().rate,
-                numberRate = dataFood.First().numberRate,
-                urlimage = dataFood.First().urlimage,
-                foodTypeId = dataFood.First().foodTypeId,
-                keyNoteId = dataFood.First().keyNoteId,
-                isActive = dataFood.First().isActive,
-                preparationTime = dataFood.First().preparationTime,
-                cookingTime = dataFood.First().cookingTime,
-                cookingDifficultyId = dataFood.First().cookingDifficultyId,
-                ingredientDetails100gReduceDTO = new Ingredientdetails100greducedto()
+                FoodListId = dataFood.First().FoodListId,
+                Name = dataFood.First().Name,
+                Describe = dataFood.First().Describe,
+                Rate = dataFood.First().Rate,
+                NumberRate = dataFood.First().NumberRate,
+                Urlimage = dataFood.First().Urlimage,
+                FoodTypeId = dataFood.First().FoodTypeId,
+                KeyNoteId = dataFood.First().KeyNoteId,
+                IsActive = dataFood.First().IsActive,
+                PreparationTime = dataFood.First().PreparationTime,
+                CookingTime = dataFood.First().CookingTime,
+                CookingDifficultyId = dataFood.First().CookingDifficultyId,
+                IngredientDetails100gReduceDTO = new Ingredientdetails100greducedto()
                 {
-                    id = -1,
-                    keyNoteId = -1,
-                    name = "SummaryOfTheEntireList",
-                    describe = "SummaryOfTheEntireList",
-                    urlimage = "SummaryOfTheEntireList",
-                    typeOfCalculationId = -1,
-                    energy = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.energy),
-                    protein = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.protein),
-                    fat = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.fat),
-                    carbohydrate = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.carbohydrate),
-                    fiber = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.fiber),
-                    sodium = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.sodium),
-                    cholesterol = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.cholesterol)
+                    Id = -1,
+                    KeyNoteId = -1,
+                    Name = "SummaryOfTheEntireList",
+                    Describe = "SummaryOfTheEntireList",
+                    Urlimage = "SummaryOfTheEntireList",
+                    TypeOfCalculationId = -1,
+                    Energy = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Energy),
+                    Protein = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Protein),
+                    Fat = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Fat),
+                    Carbohydrate = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Carbohydrate),
+                    Fiber = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Fiber),
+                    Sodium = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Sodium),
+                    Cholesterol = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Cholesterol)
                 },
-                keyNote = new Keynote
+                KeyNote = new KeyNote
                 {
-                    id = dataFood.First().keyNote.id,
-                    keyList = dataFood.First().keyNote.keyList
+                    Id = dataFood.First().KeyNote.Id,
+                    KeyList = dataFood.First().KeyNote.KeyList
                 },
-                scaleAmounts = new Scaleamounts
+                ScaleAmounts = new ScaleAmounts
                 {
-                    foodListId = dataFood.First().foodListId,
-                    ingredientDetailsId = -1,
-                    scaleAmount1 = -1
+                    FoodListId = dataFood.First().FoodListId,
+                    IngredientDetailsId = -1,
+                    ScaleAmount = -1
                 }
             };
             return totalfoodListDTO;
@@ -250,7 +250,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     List<FoodList> foods = JsonConvert.DeserializeObject<List<FoodList>>(data);
 
                     //remove foods that are not active
-                    foods.RemoveAll(f => f.isActive == false);
+                    foods.RemoveAll(f => f.IsActive == false);
 
             ////////////////////////////////////////////////////////////
             /// Sơn
@@ -261,7 +261,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     if (!string.IsNullOrEmpty(searchQuery))
                     {
                         foods = foods.Where(u =>
-                            u.name.ToLower().Contains(searchQuery.ToLower())
+                            u.Name.ToLower().Contains(searchQuery.ToLower())
                         ).ToList();
                     }
 

@@ -13,45 +13,45 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
-                    @food.name
+                    @food.Name
                 </div>
 
-                @* <div class="row">
+                <div class="row">
                     <div class="col-4">
-                        @if (food.urlimage == null || food.urlimage.Length == 0)
+                        @if (food.Urlimage == null || food.Urlimage.Length == 0)
                         {
                                 <img src="~/images/foods/default_food.png" alt="default" style="border-radius: 5px; width: 100%;" />
                         }
                         else
                         {
-                                <img src="~/images/@food.urlimage" alt="@food.name"
+                                <img src="~/images/@food.Urlimage" alt="@food.Name"
                                      onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="border-radius: 5px; width: 100%;" />
                         }
                     </div>
                     <div class="col-1"></div>
                     <div class="food-info col-6">
                         <label>Description: </label>
-                        <p>@food.describe</p>
+                        <p>@food.Describe</p>
                         <br />
                         <label>Rate: </label>
-                        <p>@food.rate</p>
+                        <p>@food.Rate</p>
                         <br />
                         <label>Number rate: </label>
-                        <p>@food.numberRate</p>
+                        <p>@food.NumberRate</p>
                         <br />
                         <label>Type: </label>
-                        <p>@food.foodTypeId.Name</p>
+                        <p>@food.FoodType.Name</p>
                         <br />
                         <label>Preparation time: </label>
-                        <p>@food.preparationTime (mins)</p>
+                        <p>@food.PreparationTime (mins)</p>
                         <br />
                         <label>Cooking time: </label>
-                        <p>@food.cookingTime (mins)</p>
+                        <p>@food.CookingTime (mins)</p>
                         <br />
                         <label>Difficulty: </label>
                         <p>@Enum.GetName(typeof(SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums.CookingDifficultyLevel), food.CookingDifficultyId)</p>
                     </div>
-                </div> *@
+                </div>
 
                 <div class="hr">
                     <div class="hr-content">The steps to cook</div>

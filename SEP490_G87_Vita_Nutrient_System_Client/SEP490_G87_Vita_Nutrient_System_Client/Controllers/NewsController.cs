@@ -25,12 +25,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            if (!User.IsInRole("Admin"))
-            {
-                // Nếu người dùng không có quyền Admin, điều hướng đến IndexForUsers
-                return RedirectToAction("IndexForUsers");
-            }
-
             try
             {
                 var response = await client.GetAsync("api/news");
@@ -51,35 +45,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View(new List<ArticlesNewsDTO>());
         }
 
-
-        // GET: List of all articles for users
-        [HttpGet]
-        public async Task<IActionResult> IndexForUsers()
-        {
-            try
-            {
-                var response = await client.GetAsync("api/news");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var articles = JsonConvert.DeserializeObject<List<ArticlesNewsDTO>>(data);
-                    return View(articles); // Sử dụng View riêng cho user
-                }
-
-                ModelState.AddModelError(string.Empty, "Error retrieving data from server.");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-            }
-            return View(new List<ArticlesNewsDTO>());
-        }
-
-
         // GET: Details of a single article
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int id)
         {
             try
@@ -102,34 +69,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        
-        // GET: Details of a single article for users
         [HttpGet]
-        public async Task<IActionResult> DetailsForUsers(int id)
-        {
-            try
-            {
-                var response = await client.GetAsync($"api/news/{id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
-                    return View(article); // Sử dụng View riêng cho user
-                }
-
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-                return View();
-            }
-        }
-
-
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -137,7 +77,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // POST: Create a new article
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ArticlesNewsDTO article, IFormFile HeaderImage)
         {
             if (!ModelState.IsValid)
@@ -147,8 +86,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             try
             {
-                /*int userId = 1; // Giả sử UserId là 1*/
-                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+                int userId = 1; // Giả sử UserId là 1
 
                 // Kiểm tra và xử lý tệp hình ảnh
                 if (HeaderImage != null && HeaderImage.Length > 0)
@@ -209,7 +147,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // GET: Edit an article by id
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             try
@@ -234,7 +171,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // POST: Update an article
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(ArticlesNewsDTO article, IFormFile HeaderImage)
         {
             ModelState.Remove("HeaderImage");
@@ -245,8 +181,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             try
             {
-                /*int userId = 1; // Giả sử UserId là 1*/
-                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+                int userId = 1; // Giả sử UserId là 1
 
                 // Kiểm tra xem người dùng có chọn hình ảnh mới không
                 if (HeaderImage != null && HeaderImage.Length > 0)
@@ -320,7 +255,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // GET: Delete an article by id (hiển thị để xác nhận xóa)
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -345,7 +279,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // POST: Delete the article (xác nhận xóa)
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
