@@ -19,7 +19,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Tân
         ////////////////////////////////////////////////////////////
         ///
-        private readonly SEP490_G87_VitaNutrientSystemContext _context = new SEP490_G87_VitaNutrientSystemContext();
+        private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
         private readonly HttpClient clientBank = null;
         private readonly HttpClient clientQRBank = null;
         private readonly string KeyBank;
