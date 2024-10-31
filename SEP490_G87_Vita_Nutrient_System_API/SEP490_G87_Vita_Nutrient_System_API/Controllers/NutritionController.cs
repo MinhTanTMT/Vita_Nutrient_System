@@ -38,12 +38,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(paginatedUsers);
         }
 
+
         [HttpPut("user/{userId}")]
         public async Task<IActionResult> UpdateUser(int userId, [FromBody] User updateUser)
         {
             await _nutritionRepo.UpdateUser(userId, updateUser);
             return NoContent();
         }
+
 
         [HttpGet("food-disease/{diseaseId}/{foodId}")]
         public async Task<IActionResult> CheckFoodDiseaseRelation(int diseaseId, int foodId)

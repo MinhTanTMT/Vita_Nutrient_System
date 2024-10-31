@@ -250,7 +250,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     List<FoodList> foods = JsonConvert.DeserializeObject<List<FoodList>>(data);
 
                     //remove foods that are not active
-                    foods.RemoveAll(f => f.IsActive == false);
+                    foods.RemoveAll(f => f.isActive == false);
 
             ////////////////////////////////////////////////////////////
             /// Sơn
@@ -261,7 +261,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     if (!string.IsNullOrEmpty(searchQuery))
                     {
                         foods = foods.Where(u =>
-                            u.Name.ToLower().Contains(searchQuery.ToLower())
+                            u.name.ToLower().Contains(searchQuery.ToLower())
                         ).ToList();
                     }
 

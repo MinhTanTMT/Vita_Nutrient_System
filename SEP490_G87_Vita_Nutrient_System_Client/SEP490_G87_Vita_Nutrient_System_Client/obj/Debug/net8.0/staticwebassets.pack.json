@@ -5,6 +5,22 @@
       "PackagePath": "staticwebassets\\SEP490_G87_Vita_Nutrient_System_Client.bundle.scp.css"
     },
     {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\editingredient.css",
+      "PackagePath": "staticwebassets\\css\\editingredient.css"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\fooddetails.css",
+      "PackagePath": "staticwebassets\\css\\fooddetails.css"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\foodlist.css",
+      "PackagePath": "staticwebassets\\css\\foodlist.css"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\ingredientlist.css",
+      "PackagePath": "staticwebassets\\css\\ingredientlist.css"
+    },
+    {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\listUser.css",
       "PackagePath": "staticwebassets\\css\\listUser.css"
     },
@@ -31,6 +47,10 @@
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\style3.css",
       "PackagePath": "staticwebassets\\css\\style3.css"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\toast.css",
+      "PackagePath": "staticwebassets\\css\\toast.css"
     },
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\favicon.ico",
@@ -297,6 +317,30 @@
       "PackagePath": "staticwebassets\\images\\food_7.png"
     },
     {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\foods\\default_food.png",
+      "PackagePath": "staticwebassets\\images\\foods\\default_food.png"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\foods\\food_1.jpg",
+      "PackagePath": "staticwebassets\\images\\foods\\food_1.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\foods\\food_3.jpg",
+      "PackagePath": "staticwebassets\\images\\foods\\food_3.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\foods\\food_4.jpg",
+      "PackagePath": "staticwebassets\\images\\foods\\food_4.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\foods\\food_5.jpg",
+      "PackagePath": "staticwebassets\\images\\foods\\food_5.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\foods\\food_6.jpg",
+      "PackagePath": "staticwebassets\\images\\foods\\food_6.jpg"
+    },
+    {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\heart-gym-remove-bg.png",
       "PackagePath": "staticwebassets\\images\\heart-gym-remove-bg.png"
     },
@@ -305,12 +349,80 @@
       "PackagePath": "staticwebassets\\images\\heart-gym.png"
     },
     {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\can-tay.jpg",
+      "PackagePath": "staticwebassets\\images\\ingredients\\can-tay.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\dau-phu.jpg",
+      "PackagePath": "staticwebassets\\images\\ingredients\\dau-phu.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\hanh-la.jpg",
+      "PackagePath": "staticwebassets\\images\\ingredients\\hanh-la.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\rau-muong.png",
+      "PackagePath": "staticwebassets\\images\\ingredients\\rau-muong.png"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\thit-bo.jpg",
+      "PackagePath": "staticwebassets\\images\\ingredients\\thit-bo.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\thit-ga.jpg",
+      "PackagePath": "staticwebassets\\images\\ingredients\\thit-ga.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\toi.jpg",
+      "PackagePath": "staticwebassets\\images\\ingredients\\toi.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\trung.png",
+      "PackagePath": "staticwebassets\\images\\ingredients\\trung.png"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\ingredients\\xuc-xich.jpg",
+      "PackagePath": "staticwebassets\\images\\ingredients\\xuc-xich.jpg"
+    },
+    {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\logo-mini.svg",
       "PackagePath": "staticwebassets\\images\\logo-mini.svg"
     },
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\logo.svg",
       "PackagePath": "staticwebassets\\images\\logo.svg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\news\\10.png",
+      "PackagePath": "staticwebassets\\images\\news\\10.png"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\news\\11.jpg",
+      "PackagePath": "staticwebassets\\images\\news\\11.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\news\\5.1.jpg",
+      "PackagePath": "staticwebassets\\images\\news\\5.1.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\news\\6.1.jpg",
+      "PackagePath": "staticwebassets\\images\\news\\6.1.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\news\\7.1.jpg",
+      "PackagePath": "staticwebassets\\images\\news\\7.1.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\news\\8.1.jpg",
+      "PackagePath": "staticwebassets\\images\\news\\8.1.jpg"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\news\\photobyTHONG.com-6.JPG",
+      "PackagePath": "staticwebassets\\images\\news\\photobyTHONG.com-6.JPG"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\news\\—Pngtree—3d vietnam flag paint texture_16211827.png",
+      "PackagePath": "staticwebassets\\images\\news\\—Pngtree—3d vietnam flag paint texture_16211827.png"
     },
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\images\\paybank\\logo-bank2.jpg",
@@ -361,8 +473,16 @@
       "PackagePath": "staticwebassets\\js\\file-upload.js"
     },
     {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\js\\foodlist.js",
+      "PackagePath": "staticwebassets\\js\\foodlist.js"
+    },
+    {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\js\\hoverable-collapse.js",
       "PackagePath": "staticwebassets\\js\\hoverable-collapse.js"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\js\\ingredientlist.js",
+      "PackagePath": "staticwebassets\\js\\ingredientlist.js"
     },
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\js\\jquery.cookie.js",
@@ -383,6 +503,10 @@
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\js\\toast.js",
+      "PackagePath": "staticwebassets\\js\\toast.js"
     },
     {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\js\\todo.js",

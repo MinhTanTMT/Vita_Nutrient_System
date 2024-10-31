@@ -174,6 +174,104 @@
     ]
   },
   {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.FoodController",
+    "Method": "GetFood",
+    "RelativePath": "api/Food/GetFoodById/{foodId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "foodId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.FoodResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.FoodController",
+    "Method": "GetFoodRecipe",
+    "RelativePath": "api/Food/GetFoodRecipe/{foodId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "foodId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Models.Recipe, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.FoodController",
+    "Method": "GetFoods",
+    "RelativePath": "api/Food/GetFoods",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "foodTypeId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.FoodResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.FoodController",
+    "Method": "GetFoodTypes",
+    "RelativePath": "api/Food/GetFoodTypes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.FoodTypeResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.GenerateMealController",
     "Method": "APCheckGenerateMealController",
     "RelativePath": "api/GenerateMeal/APCheckGenerateMealController",
@@ -293,6 +391,271 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.IngredientController",
+    "Method": "AddIngredient",
+    "RelativePath": "api/Ingredient/AddIngredient",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels.AddIngredientRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.IngredientController",
+    "Method": "GetAllIngredients",
+    "RelativePath": "api/Ingredient/GetAllIngredients",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.IngredientResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.IngredientController",
+    "Method": "GetIngredient",
+    "RelativePath": "api/Ingredient/GetIngredient/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.IngredientResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.IngredientController",
+    "Method": "RemoveIngredient",
+    "RelativePath": "api/Ingredient/RemoveIngredient/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.IngredientController",
+    "Method": "UpdateIngredient",
+    "RelativePath": "api/Ingredient/UpdateIngredient",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels.UpdateIngredientRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.KeyNoteController",
+    "Method": "GetKeyNotes",
+    "RelativePath": "api/KeyNote/GetKeyNote/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.KeyNoteResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.KeyNoteController",
+    "Method": "GetKeyNotes",
+    "RelativePath": "api/KeyNote/GetKeyNotes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.KeyNoteResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.MealSettingsController",
+    "Method": "AddMealSetting",
+    "RelativePath": "api/MealSettings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newMealSetting",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.MealSettingsCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.MealSettingsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.MealSettingsController",
+    "Method": "UpdateMealSetting",
+    "RelativePath": "api/MealSettings/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedMealSetting",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.MealSettingsUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.MealSettingsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.MealSettingsController",
+    "Method": "DeleteMealSetting",
+    "RelativePath": "api/MealSettings/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.MealSettingsController",
+    "Method": "GetMealSettingById",
+    "RelativePath": "api/MealSettings/{mealSettingsId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mealSettingsId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.MealSettingsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.MealSettingsController",
+    "Method": "GetAllMealSettings",
+    "RelativePath": "api/MealSettings/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SEP490_G87_Vita_Nutrient_System_API.Dtos.MealSettingsDto, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NewsController",
     "Method": "GetAllArticles",
     "RelativePath": "api/News",
@@ -385,6 +748,235 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NutritionController",
+    "Method": "CalculateNutritionNeeds",
+    "RelativePath": "api/Nutrition/CalculateNutritionNeeds",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userDetails",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.UserDetailsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NutritionController",
+    "Method": "CheckFoodDiseaseRelation",
+    "RelativePath": "api/Nutrition/food-disease/{diseaseId}/{foodId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "diseaseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "foodId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NutritionController",
+    "Method": "UpdateUser",
+    "RelativePath": "api/Nutrition/user/{userId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateUser",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.NutritionController",
+    "Method": "GetUsers",
+    "RelativePath": "api/Nutrition/users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.TypeOfCalculationController",
+    "Method": "GetTypeOfCalculation",
+    "RelativePath": "api/TypeOfCalculation/GetTypeOfCalculation/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int16",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.TypeOfCalculationResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.TypeOfCalculationController",
+    "Method": "GetTypesOfCalculation",
+    "RelativePath": "api/TypeOfCalculation/GetTypesOfCalculation",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.TypeOfCalculationResponse, SEP490_G87_Vita_Nutrient_System_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
+    "Method": "GetBlockedFoods",
+    "RelativePath": "api/Users/{userId}/blocked-foods",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "SEP490_G87_Vita_Nutrient_System_API.Dtos.GetLikeFoodDTO",
+        "IsRequired": true
+      },
+      {
+        "Name": "userId",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
+    "Method": "GetLikedFoods",
+    "RelativePath": "api/Users/{userId}/liked-foods",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "UserId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "userId",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
+    "Method": "UnblockFood",
+    "RelativePath": "api/Users/{userId}/unblock-food/{foodId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "foodId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEP490_G87_Vita_Nutrient_System_API.Controllers.UsersController",
+    "Method": "UnlikeFood",
+    "RelativePath": "api/Users/{userId}/unlike-food/{foodId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "foodId",
         "Type": "System.Int32",
         "IsRequired": true
       }

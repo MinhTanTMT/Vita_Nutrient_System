@@ -26,6 +26,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5TdGF0aXN0aWNzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/Admin/IngredientManagement/EditIngredient.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5ncmVkaWVudE1hbmFnZW1lbnRcRWRpdEluZ3JlZGllbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/Admin/IngredientManagement/IngredientList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5ncmVkaWVudE1hbmFnZW1lbnRcSW5ncmVkaWVudExpc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/Admin/NutritionistManagement/ListNutritionist.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTnV0cml0aW9uaXN0TWFuYWdlbWVudFxMaXN0TnV0cml0aW9uaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -88,6 +96,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/Test/MyTest.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdFxNeVRlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/User/FoodDetail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxGb29kRGV0YWlsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/User/FoodList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxGb29kTGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/User/PlanUser.cshtml]
