@@ -5,11 +5,25 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
 {
     public interface IMealsRepositories
     {
-        ////////////////////////////////////////////////////////////
+
+
+
+        Task<IEnumerable<MealSettingsDto>> GetAllMealSettingsAsync(int userId);
+        Task<MealSettingsDto> GetMealSettingByIdAsync(int mealSettingsId);
+
+        Task<MealSettingsDto> AddMealSettingAsync(MealSettingsCreateDto newMealSetting);
+        Task<MealSettingsDto> UpdateMealSettingAsync(int id, MealSettingsUpdateDto updatedMealSetting);
+
+        Task DeleteMealSettingAsync(int id);
+
+         ////////////////////////////////////////////////////////////
         /// Chiến
         ////////////////////////////////////////////////////////////
         ///
         Task<MealSettingsDetail> AddMealToListAsync(int mealId);
+
+
+
         Task AddMealSettingsDetailAsync(MealSettingsDetail mealSettingsDetail);
         Task<MealSettingsDetail?> EditMealSettingsDetailAsync(int id, CreateMealSettingsDetailDto model);
 

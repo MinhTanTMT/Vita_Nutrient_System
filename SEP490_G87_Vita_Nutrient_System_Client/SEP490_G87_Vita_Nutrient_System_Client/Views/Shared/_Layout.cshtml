@@ -276,6 +276,15 @@
                             {
 
                             }
+                            else if (role.Equals("User"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("MealSettingsDetailToList", "Meal")">
+                                        <span class="menu-title">Ingredient Management</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                            }
                             else
                             {
 

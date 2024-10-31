@@ -6,7 +6,7 @@ using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
-    public class MealsRepositories : IMealRepositories
+    public class MealsRepositories : IMealsRepositories
     {
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
 
