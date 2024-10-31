@@ -54,6 +54,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     string data = await content.ReadAsStringAsync();
                     dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
 
+                    HttpContext.Session.SetString("UserId", (string)u.userId);
+
                     importStringToSession("takeFullName", u.fullName, "string");
                     importStringToSession("imageUrl", u.urlimage, "URL");
 

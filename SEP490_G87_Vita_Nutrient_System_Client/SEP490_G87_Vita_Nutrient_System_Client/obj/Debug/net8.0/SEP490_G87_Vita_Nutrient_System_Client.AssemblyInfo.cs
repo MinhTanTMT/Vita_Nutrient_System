@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SEP490_G87_Vita_Nutrient_System_Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+16e602c7b6c76f54cf7d08bc9b8da99175e714fd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+998206c746c30df7650f13c08da77f254ff22248")]
 [assembly: System.Reflection.AssemblyProductAttribute("SEP490_G87_Vita_Nutrient_System_Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SEP490_G87_Vita_Nutrient_System_Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

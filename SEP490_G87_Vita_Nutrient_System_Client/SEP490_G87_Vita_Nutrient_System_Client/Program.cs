@@ -9,7 +9,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDistributedMemoryCache(); // Sử dụng bộ nhớ trong để lưu trữ session (yêu cầu)
-
+                                                          
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -27,7 +27,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
                     options.LoginPath = "/Home/Login";
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Session timeout
                 });
-
 
             builder.Services.AddAuthorization();
 
@@ -48,7 +47,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             app.UseSession();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Admin}/{action=QRCodePaymentPage}/{id?}");
+                pattern: "{controller=Home}/{action=Login}/{id?}");
 
             app.Run();
         }
