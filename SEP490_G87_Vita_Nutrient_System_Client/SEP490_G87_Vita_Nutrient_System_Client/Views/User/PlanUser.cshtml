@@ -173,13 +173,13 @@
                                             <input type="checkbox" class="h-6 w-6"
                                             @(item3.statusSymbol.Equals("+") ? "checked" : "")
                                             @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
-                                            <img src="~/images/@item3.foodData.urlimage"
+                                            <img src="~/images/@item3.foodData.Urlimage"
                                                  alt="meal"
                                                  class="rounded-lg w-18 h-16" />
                                         </div>
                                         <div class="flex flex-col">
-                                            <span class="text-lg font-medium"> @item3.foodData.name </span>
-                                            <span>@Math.Round(item3.foodData.ingredientDetails100gReduceDTO.energy, 2) Calo</span>
+                                            <span class="text-lg font-medium"> @item3.foodData.Name </span>
+                                            <span>@Math.Round(item3.foodData.IngredientDetails100gReduceDTO.Energy, 2) Calo</span>
                                         </div>
                                         <button><i class="fa-solid fa-ellipsis-vertical" onclick="openMenu();"></i></button>
                                     </li>
