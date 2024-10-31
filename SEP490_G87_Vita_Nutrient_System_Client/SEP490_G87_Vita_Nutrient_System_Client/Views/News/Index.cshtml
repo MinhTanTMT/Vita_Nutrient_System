@@ -1,5 +1,5 @@
-﻿@model IEnumerable<SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNewsDTO>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+﻿    @model IEnumerable<SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNewsDTO>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
 <div class="container">
     <h1 class="page-title">Danh sách bài viết</h1>
@@ -46,6 +46,7 @@
                         <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@article.Id"><i class="fas fa-eye"></i> Chi tiết</a>
                         <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@article.Id"><i class="fas fa-edit"></i> Chỉnh sửa</a>
                         <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@article.Id"><i class="fas fa-trash"></i> Xóa</a>
+                        @* <a class="btn btn-info btn-sm" asp-action="IndexForUsers"><i class="fas fa-users"></i> Xem Dành Cho Người Dùng</a> *@
                     </td>
                 </tr>
             }

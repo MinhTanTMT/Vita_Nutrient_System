@@ -8,7 +8,7 @@
         <div class="col-sm-6">
             <strong>Người tạo:</strong> @Model.NameCreater
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-6 text-right">
             <strong>Trạng thái:</strong>
             <span class="badge @(Model.IsActive == true ? "badge-active" : "badge-inactive")">
                 @(Model.IsActive == true ? "Hoạt động" : "Không hoạt động")
@@ -58,6 +58,7 @@
 
     /* Page Title Styling */
     .page-title {
+        font-family: 'Roboto', sans-serif;
         font-size: 24px;
         font-weight: 700;
         color: #333;
@@ -67,6 +68,7 @@
 
     /* Details Row Styling */
     .details-row {
+        font-family: 'Roboto', sans-serif;
         margin-bottom: 20px;
     }
 
@@ -74,20 +76,33 @@
             margin-bottom: 10px;
         }
 
+    .text-right {
+        text-align: right;
+    }
+
     /* Details List Styling */
     .details-list dt {
+        font-family: 'Roboto', sans-serif;
         font-weight: 500;
         color: #555;
     }
 
     .details-list dd {
+        font-family: 'Roboto', sans-serif;
         margin-bottom: 15px;
         font-weight: 400;
         color: #333;
     }
 
+    .details-list img {
+        display: block;
+        margin: 0 auto; /* Căn giữa ảnh */
+        max-width: 100%; /* Đảm bảo ảnh không vượt quá kích thước khung */
+    }
+
     /* Badge Styling */
     .badge {
+        font-family: 'Roboto', sans-serif;
         padding: 8px 12px;
         border-radius: 12px;
         font-size: 14px;
@@ -136,4 +151,5 @@
         .btn-secondary:hover {
             background-color: #5a6268;
         }
+
 </style>
