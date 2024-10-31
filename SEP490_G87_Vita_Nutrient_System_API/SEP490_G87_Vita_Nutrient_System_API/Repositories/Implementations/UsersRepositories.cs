@@ -182,7 +182,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
-        public dynamic GetLikedFoods(GetLikeFoodDTO model)
+        public async Task<List<FoodList>> GetLikedFoods(GetLikeFoodDTO model)
         {
             var query = _context.FoodSelections
                         .Where(fs => fs.UserId == model.UserId && (bool)fs.IsLike)
@@ -198,21 +198,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 query = query.Where(f => f.Name.Contains(model.Search));
             }
 
-            var paginatedFoods = query
+            var paginatedFoods = await query
                 .Skip((model.Page - 1) * model.PageSize)
                 .Take(model.PageSize)
                 .ToListAsync();
             return paginatedFoods;
         }
 
-        public async void UnlikeFood(int userId, int foodId)
+        public async void LikeOrUnlikeFood(int userId, int foodId)
         {
             var foodSelection = await _context.FoodSelections
             .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId && (bool)fs.IsLike);
 
             if (foodSelection == null) throw new ApplicationException("Not found!");
 
-            foodSelection.IsLike = false;
+            if(foodSelection.IsLike == null)
+            {
+                foodSelection.IsLike = true;
+            }
+
+            foodSelection.IsLike = !foodSelection.IsLike;
             await _context.SaveChangesAsync();
         }
 

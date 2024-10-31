@@ -48,7 +48,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("food-disease/{diseaseId}/{foodId}")]
         public async Task<IActionResult> CheckFoodDiseaseRelation(int diseaseId, int foodId)
         {
-            var isGoodOrBad = _nutritionRepo.CheckFoodDiseaseRelation(diseaseId, foodId);
+            var isGoodOrBad = await _nutritionRepo.CheckFoodDiseaseRelation(diseaseId, foodId);
 
             return Ok(isGoodOrBad);
         }
