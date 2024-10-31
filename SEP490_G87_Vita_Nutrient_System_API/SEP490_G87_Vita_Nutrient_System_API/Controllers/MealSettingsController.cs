@@ -14,7 +14,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     [Route("api/[controller]")]
     public class MealSettingsController : ControllerBase
     {
-        private readonly IMealRepositories _mealRepository = new MealsRepositories();
+        private readonly IMealsRepositories _mealRepository = new MealsRepositories();
 
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IEnumerable<MealSettingsDto>>> GetAllMealSettings(int userId)
