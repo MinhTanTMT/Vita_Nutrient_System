@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
@@ -160,6 +163,47 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             repositories.UpdateUser(u);
 
             return Ok("Update user status successfully!");
+        }
+
+        [HttpGet("{userId}/liked-foods")]
+        public async Task<ActionResult<dynamic>> GetLikedFoods([FromQuery] GetLikeFoodDTO model)
+        {
+
+            return Ok(repositories.GetLikedFoods(model));
+        }
+
+        [HttpPost("{userId}/unlike-food/{foodId}")]
+        public async Task<IActionResult> UnlikeFood(int userId, int foodId)
+        {
+            User u = repositories.GetUserById(userId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+            repositories.UnlikeFood(userId, foodId);
+            return NoContent();
+        }
+
+        [HttpGet("{userId}/unblock-food/{foodId}")]
+        public async Task<IActionResult> UnblockFood(int userId, int foodId)
+        {
+            User u = repositories.GetUserById(userId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+            repositories.UnblockFood(userId, foodId);
+            return NoContent();
+        }
+
+        [HttpGet("{userId}/blocked-foods")]
+        public async Task<IActionResult> GetBlockedFoods(GetLikeFoodDTO model)
+        {
+            var paginatedFoods = repositories.GetBlockedFoods(model);
+
+            return Ok(paginatedFoods);
         }
     }
 }
