@@ -801,6 +801,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     ViewBag.AlertMessage = "Cannot delete ingredient! Please try again!";
                 }
+                else
+                {
+                    ViewBag.SuccessMessage = "Delete ingredient successfully!";
+                }
             }
             catch(Exception e)
             {

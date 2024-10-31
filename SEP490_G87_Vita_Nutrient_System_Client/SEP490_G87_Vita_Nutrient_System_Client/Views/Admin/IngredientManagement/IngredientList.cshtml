@@ -11,13 +11,15 @@
 }
 
 <link rel="stylesheet" href="~/css/ingredientlist.css" />
+<link rel="stylesheet" href="~/css/toast.css" />
 
 <div class="row" style="width: 100%;">
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title" style="font-size: 1.5rem;">List Ingredients</h4>
-
+                <input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
+                <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
                 <!-- Search form -->
                 <form method="get" action="@Url.Action("IngredientsList", "Admin")" style="padding: 8px 10px;">
                     <div class="input-group mb-3">
@@ -82,9 +84,9 @@
                                         .Where(p =>
                                         {
                                             var value = p.GetValue(ingre);
-                                            return value == null || (value is int && (int)value != 0)
+                                            return value != null && ((value is int && (int)value != 0)
                                                     || (value is double && (double)value != 0)
-                                                    || (value is short && (short)value != 0);
+                                                    || (value is short && (short)value != 0));
                                         });
 
                                         <div class="d-flex flex-wrap" style="gap: 10px;">
@@ -185,5 +187,7 @@
         </div>
     </div>
 </div>
+<div id="toast"></div>
 
 <script src="~/js/ingredientlist.js"></script>
+<script src="~/js/toast.js"></script>
