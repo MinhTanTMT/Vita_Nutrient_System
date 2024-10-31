@@ -783,12 +783,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.SuccessMessage = "Update ingredient successfully!";
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
-
-            return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml", model);
+            return await UpdateIngredient(model.Id);
         }
 
         [HttpGet("admin/ingredientmanagement/deleteingredient/{Id}")]
