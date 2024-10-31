@@ -23,6 +23,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Models
         public DateTime? DateCreated { get; set; }
 
         public string? HeaderImage { get; set; }
-       
+
+        public double? Rate { get; set; }
+
+        public int? NumberRate { get; set; }
+
     }
 }
