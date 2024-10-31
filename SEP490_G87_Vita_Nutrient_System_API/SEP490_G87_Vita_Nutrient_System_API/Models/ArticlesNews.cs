@@ -21,5 +21,11 @@ public partial class ArticlesNews
 
     public string? HeaderImage { get; set; }
 
+    public double? Rate { get; set; }
+
+    public int? NumberRate { get; set; }
+
+    public virtual ICollection<NewsEvaluation> NewsEvaluations { get; set; } = new List<NewsEvaluation>();
+
     public virtual User User { get; set; } = null!;
 }
