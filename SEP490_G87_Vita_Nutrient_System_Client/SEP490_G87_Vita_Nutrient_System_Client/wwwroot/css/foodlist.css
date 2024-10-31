@@ -1,0 +1,120 @@
+﻿ul, li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav > ul {
+    display: flex;
+    justify-content: center;
+    column-gap: 2rem;
+}
+
+.dropdown {
+    position: relative;
+}
+
+    .dropdown > button {
+        border: 2px solid #0d41e1;
+        color: #0d41e1;
+        border-radius: 5px;
+        padding: .5rem 1rem;
+        background: transparent;
+        cursor: pointer;
+    }
+
+        .dropdown > button:hover,
+        .dropdown.dropdown-menu-visible > button {
+            background: #0d41e1;
+            color: #fff;
+        }
+
+.dropdown-menu {
+    display: block !important;
+    position: absolute;
+    background: #FFFFFA;
+    border-radius: 5px;
+    bottom: 0;
+    left: 0;
+    /* start at the bottom and add a little extra */
+    transform: translateY(calc(100% + .75rem));
+    box-shadow: 0 5px 15px rgba(0,0,0,.2);
+    min-width: 150px;
+    z-index: 1050;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+    .dropdown-menu ul {
+        padding: .5rem 0;
+    }
+
+    .dropdown-menu li a {
+        font-size: .85rem;
+        position: relative;
+        padding: .5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        text-decoration: none;
+        color: inherit;
+        overflow: hidden;
+    }
+
+.dropdown.dropdown-menu-visible .dropdown-menu {
+    height: unset;
+    opacity: 1;
+}
+
+.dropdown-right {
+    left: unset;
+    right: 0;
+}
+
+.dropdown-center {
+    left: 50%;
+    transform: translate(-50%, calc(100% + .75rem));
+}
+
+.dropdown-menu li {
+    position: relative;
+    padding: 2px;
+}
+
+.dropdown-menu li:hover {
+    cursor: pointer;
+    background: #ccc;
+}
+
+    /*.dropdown-menu li:not(:last-of-type)::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 85%;
+        height: 1px;
+        background: #ccc;
+        transform: translateX(calc(15% / 2));
+    }*/
+
+    .dropdown-menu li a:hover {
+        color: #0d41e1;
+    }
+
+    .dropdown-menu li a::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: .2rem;
+        background: #0d41e1;
+        transition: all ease-in 200ms;
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    .dropdown-menu li a:hover::before {
+        transform: translateX(0);
+        opacity: 1;
+    }

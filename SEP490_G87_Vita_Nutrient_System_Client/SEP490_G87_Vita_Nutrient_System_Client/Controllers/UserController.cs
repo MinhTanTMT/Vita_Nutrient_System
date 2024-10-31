@@ -226,21 +226,118 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
+        [HttpGet("foodsList")]
+        public async Task<IActionResult> FoodList(
+            string searchQuery = "", 
+            int foodTypeId = 0,
+            int page = 1, 
+            int pageSize = 10)
+        {
+            try
+            {
+                HttpResponseMessage response = foodTypeId == 0?
+                                    await client.GetAsync(client.BaseAddress + "/Food/GetFoods/")
+                                    :
+                                    await client.GetAsync(client.BaseAddress + "/Food/GetFoods?foodTypeId=" + foodTypeId);
 
+                HttpResponseMessage response1 =
+                                    await client.GetAsync(client.BaseAddress + "/Food/GetFoodTypes");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    List<FoodList> foods = JsonConvert.DeserializeObject<List<FoodList>>(data);
+
+                    //remove foods that are not active
+                    foods.RemoveAll(f => f.IsActive == false);
 
             ////////////////////////////////////////////////////////////
             /// Sơn
             ////////////////////////////////////////////////////////////
             ///
 
+                    // Search logic
+                    if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        foods = foods.Where(u =>
+                            u.Name.ToLower().Contains(searchQuery.ToLower())
+                        ).ToList();
+                    }
 
+                    // Pagination logic
+                    int totalFoods = foods.Count();
+                    var paginatedFoods = foods.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
+                    ViewBag.foods = foods;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = (int)Math.Ceiling(totalFoods / (double)pageSize);
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get list foods! Please try again!";
+                }
 
+                HttpContent content1 = response1.Content;
+                string data1 = await content1.ReadAsStringAsync();
+                List<FoodType> foodTypes = JsonConvert.DeserializeObject<List<FoodType>>(data1);
+                ViewBag.foodTypes = foodTypes;
+                FoodType ft = foodTypes.FirstOrDefault(f => f.FoodTypeId == foodTypeId);
+                ViewBag.foodType = ft ?? new FoodType { FoodTypeId = 0, Name = "All Types"};
+                ViewBag.foodTypeId = foodTypeId;
+                ViewBag.searchQuery = searchQuery;
 
-            ////////////////////////////////////////////////////////////
-            /// Tùng
-            ////////////////////////////////////////////////////////////
-            ///
+                return View("~/Views/User/FoodList.cshtml");
+            }
+            catch(Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/User/FoodList.cshtml");
+            }
+        }
+
+        [HttpGet("foodDetails/{foodId}")]
+        public async Task<IActionResult> FoodDetails(int foodId)
+        {
+            try
+            {
+                HttpResponseMessage response = 
+                    await client.GetAsync(client.BaseAddress + "/Food/GetFoodById/" + foodId);
+
+                HttpResponseMessage response1 =
+                    await client.GetAsync(client.BaseAddress + "/Food/GetFoodRecipe/" + foodId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK
+                    && response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    FoodList food = JsonConvert.DeserializeObject<FoodList>(data);
+
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<FoodRecipe> recipes = JsonConvert.DeserializeObject<List<FoodRecipe>>(data1);
+
+                    ViewBag.food = food;
+                    ViewBag.recipes = recipes;
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get food details! Please try again!";
+                }
+
+                return View("~/Views/User/FoodDetail.cshtml");
+            }
+            catch(Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/User/FoodDetail.cshtml");
+            }
+        }
+        ////////////////////////////////////////////////////////////
+        /// Tùng
+        ////////////////////////////////////////////////////////////
+        ///
 
 
 

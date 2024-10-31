@@ -40,6 +40,27 @@
                             <p>@nutritionist.NutritionistDetail.DescribeYourself</p>
                         }
                     </div>
+
+                    <div class="admin-set-status">
+                        <form asp-controller="Admin" asp-action="UpdateUserStatus" method="post">
+                            <input type="hidden" name="userId" value="@nutritionist.UserId" />
+                            <input type="hidden" name="returnUrl" value="@Url.Action("NutritionistDetail", "Admin")" />
+                            @if (nutritionist.IsActive is not null && nutritionist.IsActive == true)
+                            {
+                                <input type="hidden" name="status" value="0" />
+                                <button type="submit" class="btn btn-gradient-danger btn-fw">
+                                    Disable
+                                </button>
+                            }
+                            else
+                            {
+                                <input type="hidden" name="status" value="1" />
+                                <button type="submit" class="btn btn-gradient-success btn-fw">
+                                    Enable
+                                </button>
+                            }
+                        </form>
+                    </div>
                 </div>
 
                 <div class="profile-right col-8">

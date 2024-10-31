@@ -1,3 +1,4 @@
+
 ﻿using System;
 using System.Collections.Generic;
 
@@ -53,5 +54,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Models
         public int id { get; set; }
         public string keyList { get; set; }
     }
+
 
 }
