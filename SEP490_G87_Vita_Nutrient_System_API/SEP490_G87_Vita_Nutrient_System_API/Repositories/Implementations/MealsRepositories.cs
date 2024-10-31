@@ -8,7 +8,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
     public class MealsRepositories : IMealsRepositories
     {
-        private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
+        private readonly SEP490_G87_VitaNutrientSystemContext _context = new SEP490_G87_VitaNutrientSystemContext();
 
         public MealsRepositories()
         {
@@ -261,17 +261,29 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return await _context.MealSettings.FirstOrDefaultAsync(ms => ms.UserId == userId);
         }
 
-        public async Task<List<MealSettingsDetail>> GetAllMealSettingByUserIdAsync(int userId)
+        public async Task<List<CreateMealSettingsDetailDto>> GetAllMealSettingByUserIdAsync(int userId)
         {
             var mealSetting = await _context.MealSettings.FirstOrDefaultAsync(ms => ms.UserId == userId);
             if (mealSetting != null)
             {
                 return await _context.MealSettingsDetails
                                      .Where(msd => msd.MealSettingsId == mealSetting.Id)
-                                     .ToListAsync();
+                                     .Select(d => new CreateMealSettingsDetailDto
+                                     {
+                                         Id = d.Id,
+                                         MealSettingsId = d.MealSettingsId,
+                                         SlotOfTheDayId = d.SlotOfTheDayId,
+                                         DayOfTheWeekId = d.DayOfTheWeekId,
+                                         CookingDifficultyId = d.CookingDifficultyId,
+                                         Size = d.Size,
+                                         NutritionFocus = d.NutritionFocus,
+                                         TypeFavoriteFood = d.TypeFavoriteFood,
+                                         // Thêm các trường khác nếu cần
+                                     }).ToListAsync();
             }
-            return new List<MealSettingsDetail>();
+            return new List<CreateMealSettingsDetailDto>();
         }
+
 
         public async Task<List<MealSettingsDetail>> GetAllMealSettingBySelectedAsync(int userId)
         {

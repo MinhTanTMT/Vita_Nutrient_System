@@ -22,7 +22,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
     {
         public GenerateMealRepositories() { }
 
-        Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
+        SEP490_G87_VitaNutrientSystemContext _context = new SEP490_G87_VitaNutrientSystemContext();
 
         private static Random random = new Random();
 

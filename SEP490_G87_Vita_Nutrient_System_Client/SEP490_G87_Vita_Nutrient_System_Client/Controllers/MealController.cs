@@ -115,11 +115,7 @@ using System.Net.Http;
         [HttpGet]
         public async Task<IActionResult> MealSettingsDetailToList()
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                ViewBag.ErrorMessage = "Không tìm thấy UserId.";
-            }
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
              List<CreateMealSettingsDetail> activeMeals = new List<CreateMealSettingsDetail>();
             List<CookingDifficulty> cookingDifficulties = new List<CookingDifficulty>();
             List<WantCooking> wantCookings = new List<WantCooking>();
@@ -198,11 +194,7 @@ using System.Net.Http;
         [HttpPost]
         public async Task<IActionResult> UpdateDayOfTheWeek([FromBody] DayOfTheWeekDto dto)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Json(new { success = false, message = "Không tìm thấy UserId." });
-            }
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
             try
             {
@@ -238,11 +230,7 @@ using System.Net.Http;
         [HttpPost]
         public async Task<IActionResult> UpdateSameScheduleEveryDay(bool SameScheduleEveryDay)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Json(new { success = false, message = "Không tìm thấy UserId." });
-            }
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
             try
             {
@@ -315,8 +303,8 @@ using System.Net.Http;
         [HttpGet]
         public async Task<IActionResult> CreateMealSettingsDetailAsync(short dayOfTheWeekId)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            if (userId == null)
             {
                 ViewBag.ErrorMessage = "Không tìm thấy UserId.";
                 return RedirectToAction("MealSettingsDetailToList");
@@ -357,9 +345,9 @@ using System.Net.Http;
             List<WantCooking> wantCookings = new List<WantCooking>();
             List<SlotOfTheDay> slotOfTheDays = new List<SlotOfTheDay>();
 
-            var userId = HttpContext.Session.GetString("UserId"); 
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            if (string.IsNullOrEmpty(userId))
+            if (userId == null )
             {
                 ViewBag.ErrorMessage = "Không tìm thấy UserId.";
                 return View();
