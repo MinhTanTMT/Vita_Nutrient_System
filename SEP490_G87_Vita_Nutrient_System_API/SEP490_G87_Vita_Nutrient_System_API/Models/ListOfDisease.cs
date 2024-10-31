@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SEP490_G87_Vita_Nutrient_System_API.Models;
-
-public partial class ListOfDisease
+namespace SEP490_G87_Vita_Nutrient_System_API.Models
 {
-    public int Id { get; set; }
+    public partial class ListOfDisease
+    {
+        public ListOfDisease()
+        {
+            FoodAndDiseases = new HashSet<FoodAndDisease>();
+        }
 
-    public string? Name { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Describe { get; set; }
 
-    public string? Describe { get; set; }
-
-    public virtual ICollection<FoodAndDisease> FoodAndDiseases { get; set; } = new List<FoodAndDisease>();
+        public virtual ICollection<FoodAndDisease> FoodAndDiseases { get; set; }
+    }
 }

@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SEP490_G87_Vita_Nutrient_System_API.Models;
-
-public partial class TypeOfCalculation
+namespace SEP490_G87_Vita_Nutrient_System_API.Models
 {
-    public short TypeId { get; set; }
+    public partial class TypeOfCalculation
+    {
+        public TypeOfCalculation()
+        {
+            IngredientDetails100gs = new HashSet<IngredientDetails100g>();
+        }
 
-    public string? CalculationForm { get; set; }
+        public short TypeId { get; set; }
+        public string? CalculationForm { get; set; }
 
-    public virtual ICollection<IngredientDetails100g> IngredientDetails100gs { get; set; } = new List<IngredientDetails100g>();
+        public virtual ICollection<IngredientDetails100g> IngredientDetails100gs { get; set; }
+    }
 }

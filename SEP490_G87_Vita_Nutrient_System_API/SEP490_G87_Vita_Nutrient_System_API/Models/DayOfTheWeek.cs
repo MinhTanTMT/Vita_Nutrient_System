@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SEP490_G87_Vita_Nutrient_System_API.Models;
-
-public partial class DayOfTheWeek
+namespace SEP490_G87_Vita_Nutrient_System_API.Models
 {
-    public short Id { get; set; }
+    public partial class DayOfTheWeek
+    {
+        public DayOfTheWeek()
+        {
+            MealSettings = new HashSet<MealSetting>();
+            MealSettingsDetails = new HashSet<MealSettingsDetail>();
+        }
 
-    public string? Name { get; set; }
+        public short Id { get; set; }
+        public string? Name { get; set; }
 
-    public virtual ICollection<MealSetting> MealSettings { get; set; } = new List<MealSetting>();
-
-    public virtual ICollection<MealSettingsDetail> MealSettingsDetails { get; set; } = new List<MealSettingsDetail>();
+        public virtual ICollection<MealSetting> MealSettings { get; set; }
+        public virtual ICollection<MealSettingsDetail> MealSettingsDetails { get; set; }
+    }
 }

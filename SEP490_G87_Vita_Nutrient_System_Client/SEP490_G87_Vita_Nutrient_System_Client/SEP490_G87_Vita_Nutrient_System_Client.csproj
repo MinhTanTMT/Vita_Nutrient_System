@@ -14,4 +14,11 @@
     <Folder Include="Views\Nutritionist\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\css\MealSettingsDetailToList.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

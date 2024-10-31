@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SEP490_G87_Vita_Nutrient_System_API.Models;
-
-public partial class Role
+namespace SEP490_G87_Vita_Nutrient_System_API.Models
 {
-    public short RoleId { get; set; }
+    public partial class Role
+    {
+        public Role()
+        {
+            Users = new HashSet<User>();
+        }
 
-    public string? RoleName { get; set; }
+        public short RoleId { get; set; }
+        public string? RoleName { get; set; }
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+        public virtual ICollection<User> Users { get; set; }
+    }
 }

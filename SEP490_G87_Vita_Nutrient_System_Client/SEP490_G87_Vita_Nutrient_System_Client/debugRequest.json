@@ -1,0 +1,19 @@
+{
+  "Id": 0,
+  "MealSettingsId": 10,
+  "SlotOfTheDayId": 1,
+  "NutritionTargetsDailyId": 1,
+  "DayOfTheWeekId": 1,
+  "SkipCreationProcess": true,
+  "Size": "Bữa nhỏ",
+  "NutritionFocus": true,
+  "NumberOfDishes": 0,
+  "TypeFavoriteFood": "1",
+  "WantCookingId": 1,
+  "TimeAvailable": 5,
+  "CookingDifficultyId": 1,
+  "Name": "Test1",
+  "CookingDifficulty": null,
+  "SlotOfTheDay": null,
+  "WantCooking": null
+}

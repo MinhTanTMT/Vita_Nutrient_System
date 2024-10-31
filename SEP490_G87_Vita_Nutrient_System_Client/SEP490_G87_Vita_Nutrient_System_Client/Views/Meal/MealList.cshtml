@@ -1,0 +1,65 @@
+﻿@model List<CreateMealSettingsDetail>
+
+<div class="container">
+    <div class="modal-header">
+        <h5 class="modal-title">Danh sách  bữa ăn</h5>
+    </div>
+
+    <div class="modal-body">
+        <div class="meal-list">
+            @{
+                var sortedMeals = Model.OrderBy(m => m.SlotOfTheDayId).ToList();
+
+                var groupedMeals = sortedMeals.GroupBy(m => m.SlotOfTheDayId);
+            }
+
+            @foreach (var group in groupedMeals)
+            {
+                <h1>
+                    @group.First().SlotOfTheDay
+                </h1>
+
+                @foreach (var meal in group)
+                {
+                    <div class="meal-item d-flex align-items-center justify-content-between">
+                        <div class="meal-info">
+                            <h6>@meal.Name</h6>
+                            <p>
+                                <i class="fa fa-utensils"></i> <span>@meal.Size</span> &nbsp;
+                                <i class="fa fa-leaf"></i> <span>@meal.CookingDifficulty</span> &nbsp;
+                                <i class="fa fa-clock"></i> <span>@meal.SlotOfTheDay</span> &nbsp;
+                                <span>@meal.WantCooking</span>
+                            </p>
+                        </div>
+                        <div class="meal-actions d-flex">
+                            <form asp-action="AddMealToList" asp-controller="Meal" method="post">
+                                <input type="hidden" name="mealId" value="@meal.Id" />
+                                <button type="submit" class="btn btn-light add-meal-btn">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </form>
+                            <a href="@Url.Action("EditMealSettingsDetail", "Meal", new { id = meal.Id })" class="btn btn-light edit-meal-btn">
+                                <i class="fa fa-pencil-alt"></i>
+                            </a>
+
+                            <form action="@Url.Action("DeleteMealSettingsDetail", "Meal", new { dayOfTheWeekId = ViewBag.DayOfTheWeekId })" method="post" style="display: inline;">
+                                <input type="hidden" name="id" value="@meal.Id" />
+                                <button type="submit" class="btn btn-light delete-meal-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa bữa ăn này?');">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <a href="@Url.Action("CreateMealSettingsDetail", "Meal", new { dayOfTheWeekId = ViewBag.DayOfTheWeekId })" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Tạo bữa ăn mới
+        </a>
+        <a href="@Url.Action("MealSettingsDetailToList", "Meal")" class="btn btn-secondary">Trở Lại</a>
+    </div>
+
+</div>
