@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Breakfast</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-pink-100 text-gray-900 font-sans">
+
+    <div class="container mx-auto p-6">
+        <!-- Header Section -->
+        <div class="flex items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Plan Breakfast</h1>
+            <div class="ml-4 flex items-center space-x-2 text-gray-500">
+                <span class="text-sm">Normal</span>
+                <span>|</span>
+                <span class="text-sm">Simple</span>
+                <span>|</span>
+                <span class="text-sm">Breakfast</span>
+                <a href="#" class="text-blue-500 underline ml-2">Edit</a>
+            </div>
+            <div class="ml-auto text-orange-500 font-bold text-lg">458 Calories</div>
+        </div>
+
+        <!-- Meal Section -->
+        <div class="space-y-4 mb-8">
+            <button class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg">
+                <span class="flex-grow text-left">Entire meal</span>
+            </button>
+            <button class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg">
+                <img src="path/to/image" alt="Egg White Avocado & Tomato Scramble" class="w-10 h-10 rounded mr-4">
+                <span class="flex-grow text-left">Egg White Avocado & Tomato Scramble</span>
+                <span>1 serving</span>
+            </button>
+            <button class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg">
+                <img src="path/to/image" alt="Kale, Spinach, and Pear Smoothie" class="w-10 h-10 rounded mr-4">
+                <span class="flex-grow text-left">Kale, Spinach, and Pear Smoothie</span>
+                <span>1 serving</span>
+            </button>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="flex space-x-4 mb-4">
+            <button class="text-orange-500 font-semibold">Suggestions</button>
+            <button class="text-gray-500">Recent</button>
+            <button class="text-gray-500">Collections</button>
+            <button class="text-gray-500">Pantry</button>
+        </div>
+
+        <!-- Suggestions Section -->
+        <div class="grid grid-cols-4 gap-4">
+            <!-- Item 1 -->
+            <div class="bg-gray-700 text-white p-4 rounded-lg flex flex-col items-start">
+                <img src="path/to/image" alt="Tropical Green Fusion Smoothie" class="w-full h-24 object-cover rounded mb-2">
+                <h3 class="text-white font-semibold">Tropical Green Fusion Smoothie</h3>
+                <p class="text-sm text-gray-300">1 serving</p>
+                <div class="flex items-center justify-between w-full mt-2">
+                    <span class="text-orange-400 text-sm">220 Calories</span>
+                    <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm">Pick</button>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="bg-gray-700 text-white p-4 rounded-lg flex flex-col items-start">
+                <img src="path/to/image" alt="Zucchini Hash" class="w-full h-24 object-cover rounded mb-2">
+                <h3 class="text-white font-semibold">Zucchini Hash</h3>
+                <p class="text-sm text-gray-300">1 serving</p>
+                <div class="flex items-center justify-between w-full mt-2">
+                    <span class="text-orange-400 text-sm">218 Calories</span>
+                    <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm">Pick</button>
+                </div>
+            </div>
+
+            <!-- Repeat the above block for more items -->
+        </div>
+
+        <!-- Show More Button -->
+        <div class="flex justify-center mt-6">
+            <button class="text-gray-500 text-sm flex items-center">
+                <i class="fas fa-angle-down mr-1"></i> Show More
+            </button>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

@@ -60,7 +60,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             int userId = 1;
 
-            if (myDay != null)
+            if (userId == 1)
             {
                 HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
 
@@ -88,7 +88,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                                 SlotOfTheDay = item.SlotOfTheDay,
                                 NameSlotOfTheDay = item.NameSlotOfTheDay,
                                 TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2),
-                                foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray()
+                                foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.OrderSettingDetail).ToArray()
                             };
                             slotBranchesData.Add(slotBranch);
                         }
@@ -135,6 +135,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         return RedirectToAction("Error");
                     }
                 }
+      
             }
 
             return RedirectToAction("Error");
@@ -190,8 +191,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-
-
         [HttpPost]
         public async Task<IActionResult> RefreshTheMeal()
         {
@@ -208,6 +207,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> ChangeAnotherDish()
+        {
+
+
+
+            return View();
+        }
 
 
 
@@ -215,10 +222,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-            ////////////////////////////////////////////////////////////
-            /// Dũng
-            ////////////////////////////////////////////////////////////
-            ///
+
+
+        ////////////////////////////////////////////////////////////
+        /// Dũng
+        ////////////////////////////////////////////////////////////
+        ///
 
 
 
@@ -226,10 +235,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-            ////////////////////////////////////////////////////////////
-            /// Chiến
-            ////////////////////////////////////////////////////////////
-            ///
+        ////////////////////////////////////////////////////////////
+        /// Chiến
+        ////////////////////////////////////////////////////////////
+        ///
 
 
 

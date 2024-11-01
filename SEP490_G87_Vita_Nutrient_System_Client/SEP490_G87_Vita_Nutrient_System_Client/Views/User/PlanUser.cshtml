@@ -105,7 +105,6 @@
         </script>
 
 
-
         <div class="flex space-x-6 relative min-h-screen">
             <!-- Left: Meals -->
             <div class="flex-1 space-y-6">
@@ -157,35 +156,7 @@
                                     <i class="fa-solid fa-backward"></i>
                                 </button>
 
-                                <div class="relative inline-block">
-                                    <!-- Nút ba chấm để mở popup -->
-                                    <button onclick="toggleMenu(@index)" class="focus:outline-none">
-                                        <i class="fa-solid fa-ellipsis-vertical text-gray-500 hover:text-gray-300"></i>
-                                    </button>
-
-                                    <!-- Popup menu -->
-                                    <div id="popupMenu-@index" class="absolute right-0 mt-2 bg-gray-800 text-white rounded-lg shadow-lg w-40 hidden z-10">
-                                        <ul class="py-1">
-                                            <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                                <i class="fa fa-plus-square mr-2"></i> Add food
-                                            </li>
-                                            <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                                <i class="fa fa-pen mr-2"></i> Create note
-                                            </li>
-                                            <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                                <i class="fa fa-copy mr-2"></i> Copy foods
-                                            </li>
-                                            <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                                <i class="fa fa-times mr-2"></i> Clear foods
-                                            </li>
-                                            <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                                <i class="fa fa-edit mr-2"></i> Edit meal settings
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-
+                               
                                 <script>
                                     function toggleMenu() {
                                         var menu = document.getElementById("popupMenu");
@@ -207,45 +178,99 @@
 
                         @foreach (var item2 in item.foodDataOfSlot)
                         {
-                            <p style="margin-bottom: 10px;">---------</p>
+                            <p style="margin-bottom: 10px;"> </p>
 
-                            @foreach (var item3 in item2.foodIdData)
+                            <div class="relative inline-block">
+                                <!-- Nút ba chấm để mở popup -->
+                                <button onclick="toggleMenu(@index)" class="focus:outline-none">
+                                    <i class="fa-solid fa-ellipsis-vertical text-gray-500 hover:text-gray-300"></i>
+                                </button>
+
+                                <!-- Popup menu -->
+                                <div id="popupMenu-@index" class="absolute right-0 mt-2 bg-gray-800 text-white rounded-lg shadow-lg w-40 hidden z-10">
+                                    <ul class="py-1">
+                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center" onclick="event.preventDefault(); document.getElementById('ChanceFoodTheMeal').submit();">
+                                            <i class="fa fa-plus-square mr-2"></i> Chance Food
+                                        </li>
+                                        <form asp-controller="User" asp-action="ChangeAnotherDish" method="get" id="ChanceFoodTheMeal" style="display:none;">
+                                            <input name="" value="@item.NameSlotOfTheDay"></input>
+                                            <input name="" value="@item.NameSlotOfTheDay"></input>
+                                            <button type="submit">refreshTheMeal</button>
+                                        </form>
+
+
+                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
+                                            <i class="fa fa-pen mr-2"></i> Create note
+                                        </li>
+                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
+                                            <i class="fa fa-copy mr-2"></i> Copy foods
+                                        </li>
+                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
+                                            <i class="fa fa-times mr-2"></i> Clear foods
+                                        </li>
+                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
+                                            <i class="fa fa-edit mr-2"></i> Edit meal settings
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            @if (item2.foodIdData.Length == 0)
                             {
-                                <ul class="space-y-2 ml-4">
-                                    <li class="flex items-center space-x-2 gap-4">
-
-                                        <input onclick="toggleMenuCheckFoodEaten('@item.SlotOfTheDay', '@item2.SettingDetail', '@item3.idFood', '@item3.statusSymbol', '@ViewBag.userId', '@ViewBag.myDay' , '@item3.positionFood')" type="checkbox" class="h-6 w-6"
-                                        @(item3.statusSymbol.Equals("+") ? "checked" : "")
-                                        @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
-
-                                        <div class="flex items-center gap-3" onclick="document.getElementById('GetMealDetail').submit();">
-                                            <img src="~/images/@item3.foodData.Urlimage"
-                                                 alt="meal"
-                                                 class="rounded-lg w-18 h-16" />
-                                        </div>
-                                        <div class="flex flex-col" onclick="document.getElementById('GetMealDetail').submit();">
-                                            <span class="text-lg font-medium"> @item3.foodData.Name </span>
-                                            <span>@Math.Round(item3.foodData.IngredientDetails100gReduceDTO.Energy, 2) Calo</span>
-                                        </div>
-                                        <button><i class="fa-solid fa-ellipsis-vertical" onclick="openMenu();"></i></button>
-                                    </li>
-                                </ul>
-
-                                <form asp-controller="Meal" asp-action="MealDetail/@item3.idFood" method="post" id="GetMealDetail" style="display:none;">
-                                    <button type="submit">GetMealDetail</button>
-                                </form>
-
-                                <script>
-                                    // Hàm sự kiện riêng cho nút fa-ellipsis-vertical
-                                    function openMenu() {
-                                        event.stopPropagation(); // Ngăn sự kiện lan lên div cha
-                                        // Thực hiện hành động riêng, ví dụ mở menu hoặc hiển thị thông báo
-                                        alert("Menu opened!");
-                                    }
-                                </script>
-
-                                <p style="margin-bottom: 3px;" />
+                                <p style="
+                                margin-bottom: 10px;
+                                color: #FF6B6B;
+                                font-weight: bold;
+                                font-size: 1.1em;
+                                text-align: center;
+                                background-color: #FFEAEA;
+                                padding: 10px;
+                                border-radius: 8px;">
+                                Không tìm được món phù hợp
+                                </p>
                             }
+                            else
+                            {
+                                @foreach (var item3 in item2.foodIdData)
+                                {
+                                    <ul class="space-y-2 ml-4">
+                                        <li class="flex items-center space-x-2 gap-4">
+
+                                            <input onclick="toggleMenuCheckFoodEaten('@item.SlotOfTheDay', '@item2.SettingDetail', '@item3.idFood', '@item3.statusSymbol', '@ViewBag.userId', '@ViewBag.myDay' , '@item3.positionFood', '@item2.OrderSettingDetail')" type="checkbox" class="h-6 w-6"
+                                            @(item3.statusSymbol.Equals("+") ? "checked" : "")
+                                            @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
+
+                                            <div class="flex items-center gap-3" onclick="document.getElementById('GetMealDetail').submit();">
+                                                <img src="~/images/@item3.foodData.Urlimage"
+                                                     alt="meal"
+                                                     class="rounded-lg w-18 h-16" />
+                                            </div>
+                                            <div class="flex flex-col" onclick="document.getElementById('GetMealDetail').submit();">
+                                                <span class="text-lg font-medium"> @item3.foodData.Name </span>
+                                                <span>@Math.Round(item3.foodData.IngredientDetails100gReduceDTO.Energy, 2) Calo</span>
+                                            </div>
+                                            @*                                         <button><i class="fa-solid fa-ellipsis-vertical" onclick="openMenuChangeAnotherDish();"></i></button> *@
+                                        </li>
+                                    </ul>
+
+                                    <form asp-controller="Meal" asp-action="MealDetail/@item3.idFood" method="post" id="GetMealDetail" style="display:none;">
+                                        <button type="submit">GetMealDetail</button>
+                                    </form>
+
+                                    <script>
+                                        // Hàm sự kiện riêng cho nút fa-ellipsis-vertical
+                                        function openMenuChangeAnotherDish() {
+                                            event.stopPropagation(); // Ngăn sự kiện lan lên div cha
+                                            // Thực hiện hành động riêng, ví dụ mở menu hoặc hiển thị thông báo
+                                            alert("Menu opened!");
+                                        }
+                                    </script>
+
+                                    <p style="margin-bottom: 3px;" />
+                                }
+                            }
+
+                            
                         }
                     </div>
                     index++;
@@ -255,7 +280,7 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <script>
 
-                function toggleMenuCheckFoodEaten(slotOfTheDay, settingDetail, idFood, statusSymbol, userId, myDay, positionFood) {
+                function toggleMenuCheckFoodEaten(slotOfTheDay, settingDetail, idFood, statusSymbol, userId, myDay, positionFood, orderNumber) {
 
                     var data = {
                         userId: parseInt(userId),
@@ -264,7 +289,8 @@
                         settingDetail: parseInt(settingDetail),
                         idFood: parseInt(idFood),
                         statusSymbol: statusSymbol,
-                        positionFood: parseInt(positionFood)
+                        positionFood: parseInt(positionFood),
+                        orderNumber: parseInt(orderNumber)
                     };
 
                     console.log(data);
@@ -290,13 +316,12 @@
                     const date = new Date(dateString);
 
                     const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng từ 0-11, nên cộng 1
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); 
                     const day = String(date.getDate()).padStart(2, '0');
                     const hours = String(date.getHours()).padStart(2, '0');
                     const minutes = String(date.getMinutes()).padStart(2, '0');
                     const seconds = String(date.getSeconds()).padStart(2, '0');
 
-                    // Tạo chuỗi ISO mà không điều chỉnh theo múi giờ
                     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
                 }
 

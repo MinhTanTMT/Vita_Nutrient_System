@@ -12,6 +12,7 @@
     {
         public short SlotOfTheDay { get; set; }
         public int SettingDetail { get; set; }
+        public int OrderSettingDetail { get; set; }
         public string? NameSlotOfTheDay { get; set; }
         public FoodIdData[] foodIdData { get; set; }
     }

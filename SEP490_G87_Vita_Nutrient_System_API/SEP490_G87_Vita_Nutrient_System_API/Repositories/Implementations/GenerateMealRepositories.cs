@@ -556,7 +556,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 if (MealSettingDataOfUser.SameScheduleEveryDay ?? false)
                 {
-                    IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == 8).ToListAsync();
+                    IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == 8 & x.IsActive == true).ToListAsync();
 
                     if (MealSettingsDetailDataOfUser.Count() > 0)
                     {
@@ -591,7 +591,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 else
                                 {
                                     IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
-                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                     foreach (var foodOfSlot in dataFoodOfSlot)
                                     {
                                         stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -602,7 +602,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             else
                             {
                                 IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
-                                stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                 foreach (var foodOfSlot in dataFoodOfSlot)
                                 {
                                     stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -645,7 +645,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                     foreach (short nbWk in weekNumber)
                     {
-                        IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == nbWk).ToListAsync();
+                        IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == nbWk & x.IsActive == true).ToListAsync();
 
                         if (MealSettingsDetailDataOfUser.Count() > 0)
                         {
@@ -653,7 +653,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             DateTime today = MyDay;
                             DayOfWeek targetDay = DOW[nbWk-1];
 
-                            // Tính khoảng cách từ ngày hôm nay đến thứ bạn muốn
                             int daysDifference = (7 + (targetDay - MyDay.DayOfWeek)) % 7;
                             DateTime targetDate = today.AddDays(daysDifference);
                             DateTime TheDayBefore = new DateTime(DateTime.Now.Year, 1, 1).AddDays((targetDate.DayOfYear - 7) - 1);
@@ -686,7 +685,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                     else
                                     {
                                         IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
-                                        stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                        stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                         foreach (var foodOfSlot in dataFoodOfSlot)
                                         {
                                             stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -697,7 +696,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 else
                                 {
                                     IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
-                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                     foreach (var foodOfSlot in dataFoodOfSlot)
                                     {
                                         stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -752,7 +751,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (dataTake != null && mealSetting != null)
             {
                 
-                stringListId.AppendLine($"SlotOfTheDay={mealSetting.SlotOfTheDayId};SettingDetail={mealSetting.Id}:");
+                stringListId.AppendLine($"SlotOfTheDay={mealSetting.SlotOfTheDayId};SettingDetail={mealSetting.Id};OrderNumber={mealSetting.OrderNumber}:");
                 foreach (var foodOfSlot in dataTake)
                 {
                     stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -803,7 +802,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (splitByEqualHaiCham.Length == 2)
             {
                 string[] splitByEqualFirstChamPhay = splitByEqualHaiCham[0].Split(';');
-                if (splitByEqualFirstChamPhay.Length == 2)
+                if (splitByEqualFirstChamPhay.Length == 3)
                 {
                     foreach (var item in splitByEqualFirstChamPhay)
                     {
@@ -819,6 +818,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         {
                             Dictionary<string, string> SettingDetailData = await SplitAndProcess1(item);
                             dataFoodListMealOfTheDay.SettingDetail = Int32.Parse(SettingDetailData.Values.FirstOrDefault());
+                        }
+                        else if (item.Contains("OrderNumber"))
+                        {
+                            Dictionary<string, string> SettingDetailData = await SplitAndProcess1(item);
+                            dataFoodListMealOfTheDay.OrderSettingDetail = Int32.Parse(SettingDetailData.Values.FirstOrDefault());
                         }
                     }
                 }
@@ -913,12 +917,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     {
                         for (int i = 0; i < arrayData.Length;  i++)
                         { 
-                            if (arrayData[i].Contains($"SlotOfTheDay={dataprocess.SlotOfTheDay};SettingDetail={dataprocess.SettingDetail}:"))
+                            if (arrayData[i].Contains($"SlotOfTheDay={dataprocess.SlotOfTheDay};SettingDetail={dataprocess.SettingDetail};OrderNumber={dataprocess.OrderNumber}:"))
                             {   
                                 StringBuilder stringListIdOfSlot = new StringBuilder();
                                 DataFoodListMealOfTheDay dataFoodListMealOfTheDays = await SplitAndProcessDataMealOfTheDay(arrayData[i]);
 
-                                stringListIdOfSlot.AppendLine($"SlotOfTheDay={dataFoodListMealOfTheDays.SlotOfTheDay};SettingDetail={dataFoodListMealOfTheDays.SettingDetail}:");
+                                stringListIdOfSlot.AppendLine($"SlotOfTheDay={dataFoodListMealOfTheDays.SlotOfTheDay};SettingDetail={dataFoodListMealOfTheDays.SettingDetail};OrderNumber={dataFoodListMealOfTheDays.OrderSettingDetail}:");
                                 foreach (var foodOfSlot in dataFoodListMealOfTheDays.foodIdData)
                                 {
                                     if (foodOfSlot.idFood == dataprocess.IdFood && foodOfSlot.statusSymbol.Equals(dataprocess.StatusSymbol) && foodOfSlot.positionFood == dataprocess.PositionFood)

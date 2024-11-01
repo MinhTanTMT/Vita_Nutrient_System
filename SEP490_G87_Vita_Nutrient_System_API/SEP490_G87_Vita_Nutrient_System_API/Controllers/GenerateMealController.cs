@@ -145,10 +145,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             if (model.StatusSymbol.Equals("-"))
             {
-                return Ok(await generateMealRepositories.CompleteTheDish(model, "+"));
+                return Ok(await generateMealRepositories.CompleteTheDish(model, "+", null));
             }else if (model.StatusSymbol.Equals("+"))
             {
-                return Ok(await generateMealRepositories.CompleteTheDish(model, "-"));
+                return Ok(await generateMealRepositories.CompleteTheDish(model, "-", null));
             }else
             {
                 return BadRequest();

@@ -9,6 +9,6 @@
         public int IdFood { get; set; }
         public string StatusSymbol { get; set; }
         public int PositionFood { get; set; }
-
+        public int OrderNumber { get; set; }
     }
 }
