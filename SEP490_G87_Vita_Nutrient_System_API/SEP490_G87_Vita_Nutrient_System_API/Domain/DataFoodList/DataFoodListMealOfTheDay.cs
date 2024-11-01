@@ -17,6 +17,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList
     {
         public int idFood { get; set; }
         public string statusSymbol { get; set; }
+
+        public int positionFood { get; set; }
         public FoodListDTO foodData { get; set; }
     }
 

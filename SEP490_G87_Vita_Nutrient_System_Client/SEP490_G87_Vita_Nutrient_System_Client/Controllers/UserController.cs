@@ -48,88 +48,95 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        //[HttpGet, Authorize(Roles = "User, UserPremium, Admin")]
-
         [HttpGet]
         public async Task<IActionResult> PlanUserAsync()
         {
+
+            DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
             //int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            //https://localhost:7045/api/GenerateMeal/APIDailyTargetTotal?myDay=2020-09-29T00%3A00%3A00&idUser=1
+            // /GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1
 
-            //https://localhost:7045/api/GenerateMeal/APIDailyTargetTotal?myDay=2020-09-29T00%3A00%3A00&idUser=1&status=-
+            int userId = 1;
 
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1");
-            
-            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            if (myDay != null)
             {
-                HttpContent content = res.Content;
-                string data = await content.ReadAsStringAsync();
+                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
 
-                IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
-
-                if (rootObjectFoodList.Count() > 0)
+                if (res.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    List<SlotBranch> slotBranchesData = new List<SlotBranch>();
+                    HttpContent content = res.Content;
+                    string data = await content.ReadAsStringAsync();
 
-                    var numberSlot = rootObjectFoodList.Select(x => new
-                    {
-                        x.SlotOfTheDay,
-                        x.NameSlotOfTheDay
-                    }).Distinct().ToList();
+                    IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
 
-                    foreach (var item in numberSlot)
+                    if (rootObjectFoodList.Count() > 0)
                     {
-                        SlotBranch slotBranch = new SlotBranch()
+                        List<SlotBranch> slotBranchesData = new List<SlotBranch>();
+
+                        var numberSlot = rootObjectFoodList.Select(x => new
                         {
-                            SlotOfTheDay = item.SlotOfTheDay,
-                            NameSlotOfTheDay = item.NameSlotOfTheDay,
-                            TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2) ,
-                            foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray()
-                        };
-                        slotBranchesData.Add(slotBranch);
-                    }
+                            x.SlotOfTheDay,
+                            x.NameSlotOfTheDay
+                        }).Distinct().ToList();
 
-                    List<FoodList> foodListTotaAll = rootObjectFoodList
-                        .SelectMany(item => item.foodIdData)
-                        .Select(item1 => item1.foodData)
-                        .ToList();
+                        foreach (var item in numberSlot)
+                        {
+                            SlotBranch slotBranch = new SlotBranch()
+                            {
+                                SlotOfTheDay = item.SlotOfTheDay,
+                                NameSlotOfTheDay = item.NameSlotOfTheDay,
+                                TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2),
+                                foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray()
+                            };
+                            slotBranchesData.Add(slotBranch);
+                        }
 
-                    List<FoodList> foodListNotEaten = rootObjectFoodList
-                        .SelectMany(item => item.foodIdData)
-                        .Where(item1 => item1.statusSymbol == "-")
-                        .Select(item1 => item1.foodData)
-                        .ToList();
+                        List<FoodList> foodListTotaAll = rootObjectFoodList
+                            .SelectMany(item => item.foodIdData)
+                            .Select(item1 => item1.foodData)
+                            .ToList();
 
-                    List<FoodList> foodListEaten = rootObjectFoodList
-                        .SelectMany(item => item.foodIdData)
-                        .Where(item1 => item1.statusSymbol == "+")
-                        .Select(item1 => item1.foodData)
-                        .ToList();
+                        List<FoodList> foodListNotEaten = rootObjectFoodList
+                            .SelectMany(item => item.foodIdData)
+                            .Where(item1 => item1.statusSymbol == "-")
+                            .Select(item1 => item1.foodData)
+                            .ToList();
 
-                    List<FoodList> foodListMissed = rootObjectFoodList
-                        .SelectMany(item => item.foodIdData)
-                        .Where(item1 => item1.statusSymbol == "!")
-                        .Select(item1 => item1.foodData)
-                        .ToList();
+                        List<FoodList> foodListEaten = rootObjectFoodList
+                            .SelectMany(item => item.foodIdData)
+                            .Where(item1 => item1.statusSymbol == "+")
+                            .Select(item1 => item1.foodData)
+                            .ToList();
 
-                    List<FoodList> nullData = new List<FoodList> { new FoodList { 
+                        List<FoodList> foodListMissed = rootObjectFoodList
+                            .SelectMany(item => item.foodIdData)
+                            .Where(item1 => item1.statusSymbol == "!")
+                            .Select(item1 => item1.foodData)
+                            .ToList();
+
+                        List<FoodList> nullData = new List<FoodList> { new FoodList {
                         IngredientDetails100gReduceDTO = new Ingredientdetails100greducedto {  },
                         KeyNote = new KeyNote { } ,
                         ScaleAmounts = new ScaleAmounts {  } } };
 
-                    ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListTotaAll) : TotalAllTheIngredientsOfTheDish(nullData);
-                    ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListNotEaten) : TotalAllTheIngredientsOfTheDish(nullData);
-                    ViewBag.foodListEatenCalculated = foodListEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListEaten) : TotalAllTheIngredientsOfTheDish(nullData);
-                    ViewBag.foodListMissedCalculated = foodListMissed.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListMissed) : TotalAllTheIngredientsOfTheDish(nullData);
+                        ViewBag.myDay = myDay;
+                        ViewBag.userId = userId;
+                        ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListTotaAll) : TotalAllTheIngredientsOfTheDish(nullData);
+                        ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListNotEaten) : TotalAllTheIngredientsOfTheDish(nullData);
+                        ViewBag.foodListEatenCalculated = foodListEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListEaten) : TotalAllTheIngredientsOfTheDish(nullData);
+                        ViewBag.foodListMissedCalculated = foodListMissed.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListMissed) : TotalAllTheIngredientsOfTheDish(nullData);
 
-                    return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
-                }
-                else
-                {
-                    return RedirectToAction("Error");
+                        return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
+                    }
+                    else
+                    {
+                        return RedirectToAction("Error");
+                    }
                 }
             }
+
             return RedirectToAction("Error");
         }
 

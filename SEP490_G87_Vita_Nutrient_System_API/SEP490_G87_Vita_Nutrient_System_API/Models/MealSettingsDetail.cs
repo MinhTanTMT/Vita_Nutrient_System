@@ -37,8 +37,6 @@ public partial class MealSettingsDetail
 
     public short? OrderNumber { get; set; }
 
-    public int? Calo { get; set; }
-
     public virtual CookingDifficulty? CookingDifficulty { get; set; }
 
     public virtual DayOfTheWeek? DayOfTheWeek { get; set; }

@@ -130,7 +130,30 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
             return Ok(await generateMealRepositories.FillInDishIdInDailyDish(idUser, myDay));
         }
-        
+
+
+        [HttpPost("APICompleteTheDish")]
+        public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APICompleteTheDish([FromBody] FoodStatusUpdateModel model)
+        {
+            
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            if (model.StatusSymbol.Equals("-"))
+            {
+                return Ok(await generateMealRepositories.CompleteTheDish(model, "+"));
+            }else if (model.StatusSymbol.Equals("+"))
+            {
+                return Ok(await generateMealRepositories.CompleteTheDish(model, "-"));
+            }else
+            {
+                return BadRequest();
+            }  
+        }
 
 
 
