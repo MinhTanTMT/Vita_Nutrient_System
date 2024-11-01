@@ -169,7 +169,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult<dynamic>> GetLikedFoods([FromQuery] GetLikeFoodDTO model)
         {
 
-            return Ok(repositories.GetLikedFoods(model));
+            return Ok(await repositories.GetLikedFoods(model));
         }
 
         [HttpPost("{userId}/unlike-food/{foodId}")]
@@ -181,7 +181,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             {
                 return BadRequest("User not found!");
             }
-            repositories.UnlikeFood(userId, foodId);
+            repositories.LikeOrUnlikeFood(userId, foodId);
             return NoContent();
         }
 
@@ -199,9 +199,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("{userId}/blocked-foods")]
-        public async Task<IActionResult> GetBlockedFoods(GetLikeFoodDTO model)
+        public async Task<IActionResult> GetBlockedFoods([FromQuery]GetLikeFoodDTO model)
         {
-            var paginatedFoods = repositories.GetBlockedFoods(model);
+            var paginatedFoods = await repositories.GetBlockedFoods(model);
 
             return Ok(paginatedFoods);
         }

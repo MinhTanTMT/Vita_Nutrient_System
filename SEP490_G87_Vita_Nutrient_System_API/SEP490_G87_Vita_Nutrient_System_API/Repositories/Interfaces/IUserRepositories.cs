@@ -16,8 +16,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         dynamic GetUserRegister(User user);
         dynamic GetUserById(int id);
         dynamic ChangePassword(ChangePasswordDTO model);
-        dynamic GetLikedFoods(GetLikeFoodDTO model);
-        void UnlikeFood(int userId, int foodId);
+        Task<List<FoodList>> GetLikedFoods(GetLikeFoodDTO model);
+        void LikeOrUnlikeFood(int userId, int foodId);
         void UnblockFood(int userId, int foodId);
         Task<List<FoodList>> GetBlockedFoods(GetLikeFoodDTO model);
 

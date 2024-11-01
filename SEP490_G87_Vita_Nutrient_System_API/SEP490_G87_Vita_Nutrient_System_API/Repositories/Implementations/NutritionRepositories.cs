@@ -162,6 +162,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (relation == null) return false;
 
+            if(relation.IsGoodOrBad == null)
+            {
+                relation.IsGoodOrBad = false;
+            }
+
             return (bool)relation.IsGoodOrBad;
         }
     }
