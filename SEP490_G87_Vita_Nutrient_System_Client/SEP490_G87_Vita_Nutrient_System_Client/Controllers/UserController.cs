@@ -29,7 +29,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [HttpGet, Authorize(Roles = "User, UserPremium")]
-        public async Task<IActionResult> ProfileUserAsync()
+        public async Task<IActionResult> cAsync()
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
@@ -339,7 +339,40 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
 
+        ////////////////////////////////////////////////////////////
+        /// Chiến
+        ////////////////////////////////////////////////////////////
+        ///
+        [HttpGet("UserPhysicalStatistics")]
+        public async Task<IActionResult> GetUserPhysicalStatistics()
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
+            HttpResponseMessage userRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserById/{userId}");
+            HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserDetail/{userId}");
 
+            if (userRes.IsSuccessStatusCode && userDetailsRes.IsSuccessStatusCode)
+            {
+                var user = JsonConvert.DeserializeObject<User>(await userRes.Content.ReadAsStringAsync());
+                var userDetails = JsonConvert.DeserializeObject<UserDetail>(await userDetailsRes.Content.ReadAsStringAsync());
+
+                var model = new UserPhysicalStatistics
+                {
+                    UserId = user.UserId,
+                    Gender = user.Gender, // Lấy từ User
+                    Height = userDetails?.Height,
+                    Weight = userDetails?.Weight,
+                    Age = userDetails?.Age,
+                    DescribeYourself = userDetails?.DescribeYourself,
+                    IsPremium = userDetails?.IsPremium
+                };
+
+                return View("UserPhysicalStatistics", model);
+            }
+
+            return View("Error");
         }
+
+
+    }
 }

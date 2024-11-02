@@ -61,7 +61,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                     return NotFound(new { message = "MealSettingsDetail không tìm thấy." });
                 }
 
-                return Ok(new { message = "Bữa ăn đã được thêm vào danh sách và sắp xếp thứ tự thành công.", mealSettingsDetail });
+                return Ok(new { message = "Bữa ăn đã được thêm vào danh sách và sắp xếp thứ tự thành công." });
             }
             catch (InvalidOperationException ex)
             {

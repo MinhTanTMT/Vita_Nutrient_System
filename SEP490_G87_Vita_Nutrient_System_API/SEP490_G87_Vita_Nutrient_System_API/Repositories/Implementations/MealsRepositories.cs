@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
+using static SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels.UserDetailResponse;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
     public class MealsRepositories : IMealsRepositories
     {
-        private readonly SEP490_G87_VitaNutrientSystemContext _context = new SEP490_G87_VitaNutrientSystemContext();
+        private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
 
         public MealsRepositories()
         {
@@ -152,35 +153,349 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         ///
 
         ///// Create 
+        /*  public async Task<MealSettingsDetail> AddMealToListAsync(int mealId)
+          {
+              var mealSettingsDetail = await FindMealSettingsDetailByIdAsync(mealId);
+              if (mealSettingsDetail == null)
+              {
+                  return null;
+              }
+
+
+              // Lấy UserId của MealSettings
+              var mealSettingUser = await _context.MealSettings.FirstOrDefaultAsync(m => m.Id == mealSettingsDetail.MealSettingsId);
+              if (mealSettingUser == null)
+              {
+                  throw new InvalidOperationException("User không tồn tại cho MealSettings.");
+              }
+              // Lấy giá trị Calories từ bảng UserDetail
+              var userDetail = await _context.UserDetails.FirstOrDefaultAsync(u => u.UserId == mealSettingUser.UserId);
+              if (userDetail == null || userDetail.Calo == null)
+              {
+                  throw new InvalidOperationException("Không tìm thấy Calories trong UserDetail.");
+              }
+
+              var newNutritionTarget = new NutritionTargetsDaily
+              {
+                  UserId = mealSettingUser.UserId,
+                  Calories = (short)userDetail.Calo,
+                  FoodTypeIdWant = 1,
+                  ExerciseIntensityId = 1,
+                  IsActive = true
+              };
+
+              _context.NutritionTargetsDailies.Add(newNutritionTarget);
+              await _context.SaveChangesAsync();
+
+              // Gán NutritionTargetsDailyId cho MealSettingsDetail
+              mealSettingsDetail.NutritionTargetsDailyId = newNutritionTarget.Id;
+
+
+              var mealSettingUserId = await _context.MealSettings.FirstOrDefaultAsync(m => m.Id == mealSettingsDetail.MealSettingsId);
+              mealSettingsDetail.IsActive = true;
+              var existingMeals = await GetAllMealSettingBySelectedAsync(mealSettingUserId.UserId);
+
+              bool isMealAlreadyAdded = existingMeals.Any(m => m.Id == mealSettingsDetail.Id && (m.IsActive ?? false));
+              if (isMealAlreadyAdded)
+              {
+                  throw new InvalidOperationException("Bữa ăn đã có trong danh sách.");
+              }
+
+              var maxOrderNumber = existingMeals
+                  .Where(m => m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId && (m.IsActive ?? false) && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId)
+                  .Max(m => (int?)m.OrderNumber) ?? 0;
+
+              mealSettingsDetail.OrderNumber = (short?)(maxOrderNumber + 1);
+
+              _context.MealSettingsDetails.Update(mealSettingsDetail);
+              await _context.SaveChangesAsync();
+
+              return mealSettingsDetail;
+          }*/
+        private void CalculateMacrosAndFiber(NutritionTargetsDaily nutritionTarget, double totalCalories)
+        {
+            nutritionTarget.CarbsMax = (short)(totalCalories / 4);      // 4 calo mỗi gram cho carbs
+            nutritionTarget.ProteinMax = (short)(totalCalories / 4);    // 4 calo mỗi gram cho protein
+            nutritionTarget.FatsMax = (short)(totalCalories / 9);       // 9 calo mỗi gram cho chất béo
+            nutritionTarget.MinimumFiber = (short)Math.Round((totalCalories / 1000) * 14); // Chất xơ tối thiểu
+        }
+        private async Task DistributeCaloriesForSameSlotMealsAsync(int index,short? slotOfTheDayId, MealSettingsDetail mealSettingsDetail, List<MealSettingsDetail> activeMeals, int userId, double totalCaloriesSlot)
+         {
+            // Lấy tất cả các bữa có cùng SlotOfTheDayId và thêm bữa mới
+            var sameSlotMeals = activeMeals
+                .Where(m => m.SlotOfTheDayId == slotOfTheDayId && m.NutritionTargetsDaily.IsActive == true)
+                .ToList();
+            if(mealSettingsDetail.SlotOfTheDayId == slotOfTheDayId && index==1)
+            {
+                sameSlotMeals.Add(mealSettingsDetail);
+            }
+
+
+            // Sắp xếp sameSlotMeals theo thứ tự ưu tiên: Bữa lớn, Bữa vừa, Bữa nhỏ
+            // Nhóm các bữa theo loại Size (Bữa lớn, Bữa vừa, Bữa nhỏ)
+            var groupedMeals = sameSlotMeals
+                .GroupBy(m => m.Size)
+                .OrderBy(g => g.Key == "Bữa lớn" ? 1 : g.Key == "Bữa vừa" ? 2 : 3)
+                .ToList();
+
+            // Xác định phần trăm calo dựa trên số lượng bữa
+            double[] caloriePercentagesSlot;
+            switch (groupedMeals.Count)
+            {
+                case 1:
+                    caloriePercentagesSlot = new double[] { 1.0 };
+                    break;
+                case 2:
+                    caloriePercentagesSlot = new double[] { 0.7, 0.3 };
+                    break;
+                case 3:
+                    caloriePercentagesSlot = new double[] { 0.5, 0.3, 0.2 };
+                    break;
+                default:
+                    caloriePercentagesSlot = new double[] { 0 };
+                    break;
+            }
+            double allocatedCalories = 0;
+
+                for (int i = 0; i < groupedMeals.Count; i++)
+                {
+                    var group = groupedMeals[i];
+                    double caloriesForGroup = totalCaloriesSlot * caloriePercentagesSlot[i];
+
+                    // Phân bổ calo đồng đều cho các bữa trong nhóm
+                    double caloriesPerMeal = caloriesForGroup / group.Count();
+                    foreach (var meal in group)
+                    {
+                        if (meal.NutritionTargetsDailyId.HasValue) // Kiểm tra nếu đã có NutritionTargetsDailyId
+                        {
+                            var existingNutritionTarget = await _context.NutritionTargetsDailies
+                                .FirstOrDefaultAsync(nt => nt.Id == meal.NutritionTargetsDailyId);
+
+                            if (existingNutritionTarget != null)
+                            {
+                                existingNutritionTarget.IsActive = true;
+                                existingNutritionTarget.Calories = (short?)Math.Round(caloriesPerMeal);
+                                CalculateMacrosAndFiber(existingNutritionTarget, caloriesPerMeal);
+                                _context.NutritionTargetsDailies.Update(existingNutritionTarget);
+                            }
+                        }
+                        else
+                        {
+                            // Tạo mới NutritionTargetsDaily nếu chưa có
+                            var newNutritionTarget = new NutritionTargetsDaily
+                            {
+                                UserId = userId,
+                                Calories = (short)Math.Round(caloriesPerMeal),
+                                FoodTypeIdWant = 1,
+                                ExerciseIntensityId = 1,
+                                IsActive = true,
+                                CarbsMin = 0,
+                                ProteinMin = 0,
+                                FatsMin = 0,
+                                CarbsMax = (short)(caloriesPerMeal / 4),
+                                ProteinMax = (short)(caloriesPerMeal / 4),
+                                FatsMax = (short)(caloriesPerMeal / 9),
+                                MinimumFiber = (short)Math.Round((caloriesPerMeal / 1000) * 14)
+                            };
+                            _context.NutritionTargetsDailies.Add(newNutritionTarget);
+                            await _context.SaveChangesAsync();
+
+                            meal.NutritionTargetsDailyId = newNutritionTarget.Id;
+                            meal.NutritionTargetsDaily = newNutritionTarget;
+                        }
+                    }
+
+                    allocatedCalories += caloriesForGroup;
+            }
+            // Tính sai số giữa tổng lượng calo mục tiêu và lượng calo đã phân bổ
+            double calorieDifference = totalCaloriesSlot - allocatedCalories;
+
+            // Điều chỉnh sai số vào bữa đầu tiên nếu có chênh lệch
+            if (calorieDifference != 0 && sameSlotMeals.Count > 0)
+            {
+                var firstMeal = sameSlotMeals[0];
+                if (firstMeal.NutritionTargetsDaily != null)
+                {
+                    firstMeal.NutritionTargetsDaily.Calories += (short)Math.Round(calorieDifference);
+                    CalculateMacrosAndFiber(firstMeal.NutritionTargetsDaily, firstMeal.NutritionTargetsDaily.Calories ?? 0);
+                    _context.NutritionTargetsDailies.Update(firstMeal.NutritionTargetsDaily);
+                }
+            }
+            await _context.SaveChangesAsync();
+            
+        }
+
+        private async Task DistributeCaloriesForSlots(int index,List<MealSettingsDetail> activeMeals, MealSettingsDetail mealSettingsDetail, int userId, double totalCalories)
+        {
+            // Thêm mealSettingsDetail vào danh sách activeMeals
+            if(index == 1)
+            {
+                activeMeals.Add(mealSettingsDetail);
+            }
+            
+            var slotPriority = new List<int> { 2, 4, 1, 5, 3 };
+            activeMeals = activeMeals
+                .OrderBy(m => slotPriority.IndexOf(m.SlotOfTheDayId ?? 0))
+                .ToList();
+
+            // Nhóm các bữa ăn theo SlotOfTheDayId
+            var groupedMeals = activeMeals
+                .Where(m => m.IsActive == true)
+                .GroupBy(m => m.SlotOfTheDayId)
+                .OrderBy(g => slotPriority.IndexOf(g.Key ?? 0))
+                .ToList();
+
+            // Xác định phần trăm calo dựa trên số lượng nhóm bữa ăn trong ngày
+            double[] caloriePercentages;
+            switch (groupedMeals.Count)
+            {
+                case 1:
+                    caloriePercentages = new double[] { 1.0 };
+                    break;
+                case 2:
+                    caloriePercentages = new double[] { 0.6, 0.4 };
+                    break;
+                case 3:
+                    caloriePercentages = new double[] { 0.35, 0.35, 0.3 };
+                    break;
+                case 4:
+                    caloriePercentages = new double[] { 0.35, 0.3, 0.2, 0.15 };
+                    break;
+                case 5:
+                    caloriePercentages = new double[] { 0.3, 0.25, 0.2, 0.15, 0.1 };
+                    break;
+                default:
+                    throw new InvalidOperationException("Quá nhiều nhóm bữa ăn cho một ngày.");
+            }
+
+            double allocatedCalories = 0;
+
+            for (int i = 0; i < groupedMeals.Count && i < caloriePercentages.Length; i++)
+            {
+                var slotGroup = groupedMeals[i];
+                double caloriesForSlot = totalCalories * caloriePercentages[i];
+
+                // Kiểm tra số lượng bữa trong cùng SlotOfTheDayId
+                var sameSlotMeals = slotGroup.ToList();
+
+                // Nếu slot có nhiều bữa, gọi hàm DistributeCaloriesForSameSlotMealsAsync để phân bổ
+                if (sameSlotMeals.Count > 1)
+                {  if(mealSettingsDetail.IsActive == false)
+                    {
+                        await DistributeCaloriesForSameSlotMealsAsync(2, slotGroup.Key, mealSettingsDetail, sameSlotMeals, userId, caloriesForSlot);
+                    }
+                   else
+                    {
+                        await DistributeCaloriesForSameSlotMealsAsync(1, slotGroup.Key, mealSettingsDetail, sameSlotMeals, userId, caloriesForSlot);
+                    }
+                    
+                }
+                else
+                {
+                    // Phân bổ calo cho bữa duy nhất trong slot
+                    var meal = sameSlotMeals[0];
+                    if (meal.NutritionTargetsDailyId.HasValue) // Kiểm tra nếu đã có NutritionTargetsDailyId
+                    {
+                        var existingNutritionTarget = await _context.NutritionTargetsDailies
+                            .FirstOrDefaultAsync(nt => nt.Id == meal.NutritionTargetsDailyId);
+
+                        if (existingNutritionTarget != null)
+                        {
+                            existingNutritionTarget.IsActive = true;
+                            existingNutritionTarget.Calories = (short)caloriesForSlot;
+                            CalculateMacrosAndFiber(existingNutritionTarget, caloriesForSlot);
+                            _context.NutritionTargetsDailies.Update(existingNutritionTarget);
+                        }
+                    }
+                    else
+                    {
+                        var newNutritionTarget = new NutritionTargetsDaily
+                        {
+                            UserId = userId,
+                            Calories = (short)caloriesForSlot,
+                            FoodTypeIdWant = 1,
+                            ExerciseIntensityId = 1,
+                            IsActive = true,
+                            CarbsMin = 0,
+                            ProteinMin = 0,
+                            FatsMin = 0,
+                            LimitDailySodium = false,
+                            LimitDailyCholesterol = false,
+                            CarbsMax = (short)(caloriesForSlot / 4),
+                            ProteinMax = (short)(caloriesForSlot / 4),
+                            FatsMax = (short)(caloriesForSlot / 9),
+                            MinimumFiber = (short)Math.Round((caloriesForSlot / 1000) * 14)
+                        };
+                        _context.NutritionTargetsDailies.Add(newNutritionTarget);
+                        meal.NutritionTargetsDailyId = newNutritionTarget.Id;
+                        meal.NutritionTargetsDaily = newNutritionTarget;
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
+
+
         public async Task<MealSettingsDetail> AddMealToListAsync(int mealId)
         {
             var mealSettingsDetail = await FindMealSettingsDetailByIdAsync(mealId);
-            if (mealSettingsDetail == null)
+            if (mealSettingsDetail.IsActive == true)
             {
-                return null;
+                return mealSettingsDetail;
             }
-
             mealSettingsDetail.IsActive = true;
-            var existingMeals = await GetAllMealSettingBySelectedAsync(mealSettingsDetail.MealSettingsId);
-
-            bool isMealAlreadyAdded = existingMeals.Any(m => m.Id == mealSettingsDetail.Id && (m.IsActive ?? false));
-            if (isMealAlreadyAdded)
+            var mealSettingUser = await _context.MealSettings.FirstOrDefaultAsync(m => m.Id == mealSettingsDetail.MealSettingsId);
+            if (mealSettingUser == null)
             {
-                throw new InvalidOperationException("Bữa ăn đã có trong danh sách.");
+                throw new InvalidOperationException("User không tồn tại cho MealSettings.");
             }
 
-            var maxOrderNumber = existingMeals
-                .Where(m => m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId && (m.IsActive ?? false) && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId)
+            var userDetail = await _context.UserDetails.FirstOrDefaultAsync(u => u.UserId == mealSettingUser.UserId);
+
+            var totalCalories = userDetail.Calo.Value;
+
+            var activeMeals = await _context.MealSettingsDetails
+                .Include(m => m.NutritionTargetsDaily)
+                .Where(m => m.NutritionTargetsDaily != null
+                            && m.NutritionTargetsDaily.UserId == mealSettingUser.UserId
+                            && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId
+                            && m.IsActive == true
+                            && m.NutritionTargetsDaily.IsActive == true
+                            )
+                .ToListAsync();
+            // Lấy danh sách các SlotOfTheDayId hiện có trong activeMeals với IsActive là true
+            var existingSlots = activeMeals
+                .Where(m => m.IsActive == true)
+                .Select(m => m.SlotOfTheDayId)
+                .ToList();
+
+            // Kiểm tra nếu SlotOfTheDayId của bữa mới đã tồn tại trong danh sách activeMeals
+            if (existingSlots.Contains(mealSettingsDetail.SlotOfTheDayId))
+            {
+                double totalCaloriesSlot = activeMeals
+                .Where(m => m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId)
+                .Sum(m => m.NutritionTargetsDaily?.Calories ?? 0);
+
+                await DistributeCaloriesForSameSlotMealsAsync(1,mealSettingsDetail.SlotOfTheDayId, mealSettingsDetail, activeMeals, mealSettingUser.UserId, totalCaloriesSlot);
+
+            }
+            else
+            {
+                await DistributeCaloriesForSlots(1,activeMeals, mealSettingsDetail, mealSettingUser.UserId, totalCalories);
+
+            }
+            var maxOrderNumber = activeMeals
+                .Where(m => m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId
+                            && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId
+                            && m.IsActive == true)
                 .Max(m => (int?)m.OrderNumber) ?? 0;
 
             mealSettingsDetail.OrderNumber = (short?)(maxOrderNumber + 1);
-
             _context.MealSettingsDetails.Update(mealSettingsDetail);
             await _context.SaveChangesAsync();
 
             return mealSettingsDetail;
         }
-
 
         public async Task AddMealSettingsDetailAsync(MealSettingsDetail mealSettingsDetail)
         {
@@ -193,24 +508,33 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             var mealSettingsDetail = await FindMealSettingsDetailByIdAsync(id);
             if (mealSettingsDetail == null) return null;
-
-            if (model.SlotOfTheDayId != mealSettingsDetail.SlotOfTheDayId || model.IsActive != mealSettingsDetail.IsActive)
+            if(model.OrderNumber != null)
             {
-                if (model.IsActive == true)
+                if (model.SlotOfTheDayId != mealSettingsDetail.SlotOfTheDayId || model.DayOfTheWeekId != mealSettingsDetail.DayOfTheWeekId)
                 {
-                    var existingMeals = await GetAllMealSettingBySelectedAsync(model.MealSettingsId);
+                    var mealsInOldSlot = await _context.MealSettingsDetails
+                        .Where(m => m.MealSettingsId == mealSettingsDetail.MealSettingsId
+                                    && m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId
+                                    && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId
+                                    && m.OrderNumber > mealSettingsDetail.OrderNumber)
+                        .OrderBy(m => m.OrderNumber)
+                        .ToListAsync();
 
-                    var maxOrderNumber = existingMeals
-                        .Where(m => m.SlotOfTheDayId == model.SlotOfTheDayId && m.IsActive.GetValueOrDefault())
-                        .Max(m => (int?)m.OrderNumber) ?? 0;
+                    foreach (var meal in mealsInOldSlot)
+                    {
+                        meal.OrderNumber = (short?)(meal.OrderNumber - 1);
+                        _context.MealSettingsDetails.Update(meal);
+                    }
+                    var maxOrderNumberInNewSlot = await _context.MealSettingsDetails
+                        .Where(m => m.MealSettingsId == mealSettingsDetail.MealSettingsId
+                                    && m.SlotOfTheDayId == model.SlotOfTheDayId
+                                    && m.DayOfTheWeekId == model.DayOfTheWeekId)
+                        .MaxAsync(m => (int?)m.OrderNumber) ?? 0;
 
-                    model.OrderNumber = (short)(maxOrderNumber + 1);
-                }
-                else
-                {
-                    model.OrderNumber = null;
+                    model.OrderNumber = (short)(maxOrderNumberInNewSlot + 1);
                 }
             }
+            
 
             mealSettingsDetail.MealSettingsId = model.MealSettingsId;
             mealSettingsDetail.SlotOfTheDayId = model.SlotOfTheDayId;
@@ -233,6 +557,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             return mealSettingsDetail;
         }
+
+
 
 
         public async Task UpdateMealSettingAsync(int userId, short? dayOfTheWeekStartId, bool? sameScheduleEveryDay)
@@ -273,29 +599,56 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                          Id = d.Id,
                                          MealSettingsId = d.MealSettingsId,
                                          SlotOfTheDayId = d.SlotOfTheDayId,
+                                         NutritionTargetsDailyId = d.NutritionTargetsDailyId,
                                          DayOfTheWeekId = d.DayOfTheWeekId,
-                                         CookingDifficultyId = d.CookingDifficultyId,
+                                         SkipCreationProcess = d.SkipCreationProcess,
                                          Size = d.Size,
                                          NutritionFocus = d.NutritionFocus,
+                                         NumberOfDishes = d.NumberOfDishes,
                                          TypeFavoriteFood = d.TypeFavoriteFood,
-                                         // Thêm các trường khác nếu cần
+                                         WantCookingId = d.WantCookingId,
+                                         TimeAvailable = d.TimeAvailable,
+                                         CookingDifficultyId = d.CookingDifficultyId,
+                                         Name = d.Name,
+                                         IsActive = d.IsActive,
+                                         OrderNumber = d.OrderNumber
                                      }).ToListAsync();
             }
             return new List<CreateMealSettingsDetailDto>();
         }
 
 
-        public async Task<List<MealSettingsDetail>> GetAllMealSettingBySelectedAsync(int userId)
-        {
-            var mealSetting = await _context.MealSettings.FirstOrDefaultAsync(ms => ms.UserId == userId);
-            if (mealSetting != null)
-            {
-                return await _context.MealSettingsDetails
-                                     .Where(msd => msd.MealSettingsId == mealSetting.Id && msd.IsActive == true)
-                                     .ToListAsync();
-            }
-            return new List<MealSettingsDetail>();
-        }
+
+        public async Task<List<CreateMealSettingsDetailDto>> GetAllMealSettingBySelectedAsync(int userId)
+{
+    var mealSetting = await _context.MealSettings.FirstOrDefaultAsync(ms => ms.UserId == userId);
+    if (mealSetting != null)
+    {
+        return await _context.MealSettingsDetails
+                             .Where(msd => msd.MealSettingsId == mealSetting.Id && msd.IsActive == true)
+                             .Select(d => new CreateMealSettingsDetailDto
+                             {
+                                 Id = d.Id,
+                                 MealSettingsId = d.MealSettingsId,
+                                 SlotOfTheDayId = d.SlotOfTheDayId,
+                                 NutritionTargetsDailyId = d.NutritionTargetsDailyId,
+                                 DayOfTheWeekId = d.DayOfTheWeekId,
+                                 SkipCreationProcess = d.SkipCreationProcess,
+                                 Size = d.Size,
+                                 NutritionFocus = d.NutritionFocus,
+                                 NumberOfDishes = d.NumberOfDishes,
+                                 TypeFavoriteFood = d.TypeFavoriteFood,
+                                 WantCookingId = d.WantCookingId,
+                                 TimeAvailable = d.TimeAvailable,
+                                 CookingDifficultyId = d.CookingDifficultyId,
+                                 Name = d.Name,
+                                 IsActive = d.IsActive,
+                                 OrderNumber = d.OrderNumber
+                             }).ToListAsync();
+    }
+    return new List<CreateMealSettingsDetailDto>();
+}
+
         public async Task<List<MealSettingsDetail>> GetAllMealAsync()
         {
             return await _context.MealSettingsDetails.ToListAsync();
@@ -304,37 +657,65 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         ///// Delete
         public async Task DeleteMealSettingsDetailAsync(int id)
         {
-            var mealSettingsDetail = await _context.MealSettingsDetails.FindAsync(id);
-            if (mealSettingsDetail != null)
+            // Tìm MealSettingsDetail cần xóa
+            var mealSettingsDetail = await _context.MealSettingsDetails
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (mealSettingsDetail == null) throw new KeyNotFoundException("MealSettingsDetail not found.");
+
+            // Nếu có NutritionTargetsDaily liên kết, xóa bản ghi NutritionTargetsDaily tương ứng
+            if (mealSettingsDetail.NutritionTargetsDailyId.HasValue)
             {
-                _context.MealSettingsDetails.Remove(mealSettingsDetail);
-                await _context.SaveChangesAsync();
+                var nutritionTarget = await _context.NutritionTargetsDailies
+                    .FirstOrDefaultAsync(nt => nt.Id == mealSettingsDetail.NutritionTargetsDailyId);
+
+                if (nutritionTarget != null)
+                {
+                    _context.NutritionTargetsDailies.Remove(nutritionTarget);
+                }
             }
+
+            // Xóa MealSettingsDetail
+            _context.MealSettingsDetails.Remove(mealSettingsDetail);
+
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<MealSettingsDetail> RemoveMealToListAsync(int mealId)
+        public async Task DeactivateMealAndUpdateOrderAsync(MealSettingsDetail mealSettingsDetail)
         {
-            var mealSettingsDetail = await FindMealSettingsDetailByIdAsync(mealId);
-            if (mealSettingsDetail == null)
+            // Đặt IsActive của mealSettingsDetail thành false và xóa OrderNumber
+            mealSettingsDetail.IsActive = false;
+            var removedOrderNumber = mealSettingsDetail.OrderNumber;
+            mealSettingsDetail.OrderNumber = null;
+            _context.MealSettingsDetails.Update(mealSettingsDetail);
+
+            // Cập nhật trạng thái IsActive của NutritionTargetsDaily nếu tồn tại
+            if (mealSettingsDetail.NutritionTargetsDailyId.HasValue)
             {
-                return null;
+                var nutritionTarget = await _context.NutritionTargetsDailies
+                    .FirstOrDefaultAsync(nt => nt.Id == mealSettingsDetail.NutritionTargetsDailyId);
+
+                if (nutritionTarget != null)
+                {
+                    nutritionTarget.IsActive = false;
+                    nutritionTarget.Calories = 0;
+                    nutritionTarget.MinimumFiber = 0;
+                    nutritionTarget.FatsMax = 0;
+                    nutritionTarget.CarbsMax = 0;
+                    nutritionTarget.ProteinMax = 0;
+                    _context.NutritionTargetsDailies.Update(nutritionTarget);
+                }
             }
 
-            var removedOrderNumber = mealSettingsDetail.OrderNumber;
-            mealSettingsDetail.IsActive = false;
-            mealSettingsDetail.OrderNumber = null;
-
-            _context.MealSettingsDetails.Update(mealSettingsDetail);
-            await _context.SaveChangesAsync();
-
-            var existingMeals = await GetAllMealSettingBySelectedAsync(mealSettingsDetail.MealSettingsId);
-            var mealsToUpdate = existingMeals
-                .Where(m => m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId
-                            && (m.IsActive ?? false)
+            // Cập nhật OrderNumber cho các bữa ăn còn lại trong cùng SlotOfTheDayId và DayOfTheWeekId
+            var mealsToUpdate = await _context.MealSettingsDetails
+                .Where(m => m.MealSettingsId == mealSettingsDetail.MealSettingsId
+                            && m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId
+                            && m.IsActive == true
                             && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId
                             && m.OrderNumber > removedOrderNumber)
                 .OrderBy(m => m.OrderNumber)
-                .ToList();
+                .ToListAsync();
 
             foreach (var meal in mealsToUpdate)
             {
@@ -343,39 +724,106 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<MealSettingsDetail> RemoveMealToListAsync(int mealId)
+        {
+            // Tìm bữa ăn cần xóa
+            var mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == mealId);
+            if (mealSettingsDetail == null)
+            {
+                return null;
+            }
+            var mealSettingUser = await _context.MealSettings.FirstOrDefaultAsync(m => m.Id == mealSettingsDetail.MealSettingsId);
+            if (mealSettingUser == null)
+            {
+                throw new InvalidOperationException("User không tồn tại cho MealSettings.");
+            }
+
+            var userDetail = await _context.UserDetails.FirstOrDefaultAsync(u => u.UserId == mealSettingUser.UserId);
+
+            var totalCalories = userDetail.Calo.Value;
+
+            var activeMeals = await _context.MealSettingsDetails
+                .Include(m => m.NutritionTargetsDaily)
+                .Where(m => m.NutritionTargetsDaily != null
+                            && m.NutritionTargetsDaily.UserId == mealSettingUser.UserId
+                            && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId
+                            && m.IsActive == true
+                            && m.NutritionTargetsDaily.IsActive == true
+                            )
+                .ToListAsync();
+            
+            if(activeMeals.Count != 0)
+            {
+                // Lấy danh sách các SlotOfTheDayId hiện có trong activeMeals với IsActive là true
+                var existingSlots = activeMeals
+                    .Where(m => m.IsActive == true && m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId)
+                    .Count();
+
+                // Kiểm tra nếu SlotOfTheDayId của bữa mới đã tồn tại trong danh sách activeMeals
+                if (existingSlots > 1)
+                {
+                    double totalCaloriesSlot = activeMeals
+                    .Where(m => m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId)
+                    .Sum(m => m.NutritionTargetsDaily?.Calories ?? 0);
+
+                    await DeactivateMealAndUpdateOrderAsync(mealSettingsDetail);
+
+                    await DistributeCaloriesForSameSlotMealsAsync(2, mealSettingsDetail.SlotOfTheDayId, mealSettingsDetail, activeMeals, mealSettingUser.UserId, totalCaloriesSlot);
+
+                }
+                else
+                {
+                    await DeactivateMealAndUpdateOrderAsync(mealSettingsDetail);
+                    await DistributeCaloriesForSlots(2, activeMeals, mealSettingsDetail, mealSettingUser.UserId, totalCalories);
+
+                }
+            }
+            else
+            {
+                mealSettingsDetail.IsActive = false;
+                await _context.SaveChangesAsync();
+                return mealSettingsDetail;
+            }
+            await _context.SaveChangesAsync();
 
             return mealSettingsDetail;
         }
 
+
+
         //// Change
         public async Task<bool> ChangeOrderNumberAsync(int mealId, string direction)
         {
-
-            var mealSettingsDetail = await FindMealSettingsDetailByIdAsync(mealId);
+            // Truy vấn lại đối tượng MealSettingsDetail từ cơ sở dữ liệu để cập nhật
+            var mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == mealId);
             if (mealSettingsDetail == null) return false;
 
-
-            var existingMeals = await GetAllMealSettingBySelectedAsync(mealSettingsDetail.MealSettingsId);
-            var orderedMeals = existingMeals
-                .Where(m => m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId
-                            && m.IsActive.GetValueOrDefault()
+            // Lấy danh sách các MealSettingsDetail cần thiết từ cơ sở dữ liệu để cập nhật
+            var existingMeals = await _context.MealSettingsDetails
+                .Where(m => m.MealSettingsId == mealSettingsDetail.MealSettingsId
+                            && m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId
+                            && m.IsActive == true
                             && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId)
                 .OrderBy(m => m.OrderNumber)
-                .ToList();
+                .ToListAsync();
 
-            int currentIndex = orderedMeals.FindIndex(m => m.Id == mealId);
+            // Tìm vị trí hiện tại của meal trong danh sách đã sắp xếp
+            int currentIndex = existingMeals.FindIndex(m => m.Id == mealId);
             if (currentIndex == -1) return false;
 
             int targetIndex = direction == "up" ? currentIndex - 1 : currentIndex + 1;
 
-            if (targetIndex >= 0 && targetIndex < orderedMeals.Count)
+            if (targetIndex >= 0 && targetIndex < existingMeals.Count)
             {
-
-                var targetMeal = orderedMeals[targetIndex];
+                // Truy vấn đối tượng MealSettingsDetail đích để thực hiện hoán đổi OrderNumber
+                var targetMeal = existingMeals[targetIndex];
                 short? tempOrder = mealSettingsDetail.OrderNumber;
                 mealSettingsDetail.OrderNumber = targetMeal.OrderNumber;
                 targetMeal.OrderNumber = tempOrder;
 
+                // Cập nhật các đối tượng MealSettingsDetail trong cơ sở dữ liệu
                 _context.MealSettingsDetails.Update(mealSettingsDetail);
                 _context.MealSettingsDetails.Update(targetMeal);
                 await _context.SaveChangesAsync();
@@ -385,6 +833,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             return false;
         }
+
 
     }
 }

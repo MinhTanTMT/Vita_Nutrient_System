@@ -309,16 +309,13 @@ using System.Net.Http;
                 ViewBag.ErrorMessage = "Không tìm thấy UserId.";
                 return RedirectToAction("MealSettingsDetailToList");
             }
-
-            // Chuẩn bị model với DayOfTheWeekId từ URL
             var model = new CreateMealSettingsDetail
             {
                 SkipCreationProcess = false,
                 NutritionFocus = false,
                 DayOfTheWeekId = dayOfTheWeekId,
+                NutritionTargetsDailyId = null,
             };
-
-            // Lấy MealSettingsId từ API và gán cho model
             HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
             if (response.IsSuccessStatusCode)
             {

@@ -7,9 +7,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
     public class UserDetailsRepository : IUserDetailsRepository
     {
-        private readonly SEP490_G87_VitaNutrientSystemContext _context;
+        private readonly Sep490G87VitaNutrientSystemContext _context;
 
-        public UserDetailsRepository(SEP490_G87_VitaNutrientSystemContext context)
+        public UserDetailsRepository(Sep490G87VitaNutrientSystemContext context)
         {
             _context = context;
         }
@@ -33,5 +33,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.UserDetails.Add(userEntity);
             await _context.SaveChangesAsync();
         }
+
+
     }
 }
