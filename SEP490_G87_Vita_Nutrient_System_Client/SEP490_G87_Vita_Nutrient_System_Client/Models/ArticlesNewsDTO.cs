@@ -17,6 +17,10 @@
         public DateTime? DateCreated { get; set; }
 
         public string? HeaderImage { get; set; }
-       
+
+        public double? Rate { get; set; }
+
+        public int? NumberRate { get; set; }
+
     }
 }

@@ -90,5 +90,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _newsRepositories.DeleteArticleAsync(id);
             return Ok();
         }
+
+        [HttpPost("{articleId}/evaluations")]
+        public async Task<ActionResult> AddEvaluation(int articleId, [FromBody] NewsEvaluationDTO evaluationDto)
+        {
+            if (evaluationDto == null || evaluationDto.ArticlesNewsId != articleId || !ModelState.IsValid)
+            {
+                return BadRequest("Dữ liệu đánh giá không hợp lệ.");
+            }
+
+            await _newsRepositories.AddEvaluationAsync(evaluationDto);
+            return Ok();
+        }
+
+        [HttpGet("{articleId}/evaluations")]
+        public async Task<ActionResult<IEnumerable<NewsEvaluationDTO>>> GetEvaluations(int articleId)
+        {
+            var evaluations = await _newsRepositories.GetEvaluationsByArticleIdAsync(articleId);
+            return Ok(evaluations);
+        }
     }
 }

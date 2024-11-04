@@ -1,12 +1,13 @@
 ﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNewsDTO
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
 <div class="container">
     <div class="header-section">
         <h2 class="page-title">@Model.Title</h2>
         <div class="row details-row">
             <div class="col-sm-6">
-                <strong>Người tạo:</strong> @Model.NameCreater
+                <strong>Tác giả:</strong> @Model.NameCreater
             </div>
             <div class="col-sm-6 text-right">
                 <strong>Ngày tạo:</strong> @Model.DateCreated?.ToString("dd/MM/yyyy")
@@ -19,6 +20,25 @@
             @Html.Raw(Model.Content)
         </dd>
     </div>
+    <hr />
+    <div class="rating-section">
+        <h4>Đánh giá bài viết</h4>
+        <div class="star-rating">
+            <input type="radio" id="star5" name="rating" value="5" onclick="submitRating(5)" />
+            <label for="star5" title="5 sao"><i class="fa fa-star"></i></label>
+            <input type="radio" id="star4" name="rating" value="4" onclick="submitRating(4)" />
+            <label for="star4" title="4 sao"><i class="fa fa-star"></i></label>
+            <input type="radio" id="star3" name="rating" value="3" onclick="submitRating(3)" />
+            <label for="star3" title="3 sao"><i class="fa fa-star"></i></label>
+            <input type="radio" id="star2" name="rating" value="2" onclick="submitRating(2)" />
+            <label for="star2" title="2 sao"><i class="fa fa-star"></i></label>
+            <input type="radio" id="star1" name="rating" value="1" onclick="submitRating(1)" />
+            <label for="star1" title="1 sao"><i class="fa fa-star"></i></label>
+        </div>
+
+        <p id="rating-display">@Model.Rate/5 - (@Model.NumberRate bình chọn)</p>
+    </div>
+
 
     <div class="action-links text-right">
         <a asp-action="IndexForUsers" class="btn btn-secondary">Quay lại danh sách</a>
@@ -108,4 +128,85 @@
         .btn-secondary:hover {
             background-color: #0041a8;
         }
+
+    .star-rating {
+        direction: rtl;
+        font-size: 1em;
+        display: inline-flex;
+    }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+            .star-rating input:checked ~ label i,
+            .star-rating label:hover i,
+            .star-rating label:hover ~ label i {
+                color: #ffc700;
+            }
+
 </style>
+<script>
+    async function submitRating(rating) {
+        const articleId = @Model.Id;
+        const userId = @User.FindFirst("UserId")?.Value;
+
+        if (!userId) {
+            alert("Bạn cần đăng nhập để đánh giá.");
+            return;
+        }
+
+        const evaluationDto = {
+            ArticlesNewsId: articleId,
+            UserId: parseInt(userId),
+            Ratting: rating
+        };
+
+        try {
+            const response = await fetch(`https://localhost:7045/api/news/${articleId}/evaluations`, { // Sử dụng đúng myUri từ file cấu hình
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(evaluationDto)
+            });
+
+            if (response.ok) {
+                // Cập nhật hiển thị đánh giá trung bình và số lượt đánh giá sau khi lưu thành công
+                updateRatingDisplay(rating);
+                disableRatingInputs();
+            } else {
+                const errorText = await response.text();
+                console.error("Lỗi từ API:", errorText);
+                alert("Lỗi khi gửi đánh giá.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Lỗi khi gửi đánh giá.");
+        }
+    }
+
+    function updateRatingDisplay(rating) {
+        const rateDisplay = document.getElementById('rating-display');
+        let currentRate = parseFloat("@Model.Rate") || 0;
+        let currentVotes = parseInt("@Model.NumberRate") || 0;
+
+        currentRate = ((currentRate * currentVotes) + rating) / (currentVotes + 1);
+        currentVotes += 1;
+
+        rateDisplay.textContent = `${currentRate.toFixed(1)}/5 - (${currentVotes} bình chọn)`;
+    }
+
+    function disableRatingInputs() {
+        document.querySelectorAll('.star-rating input').forEach(input => {
+            input.disabled = true;
+        });
+    }
+</script>
+

@@ -1,9 +1,15 @@
 ﻿@model IEnumerable<SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNewsDTO>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
 <div class="container">
     <h1 class="page-title">Tin Tức Dinh Dưỡng</h1>
-
+    <form asp-action="IndexForUsers" method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="searchTitle" class="form-control" placeholder="Tìm kiếm theo tiêu đề" value="@ViewData["searchTitle"]" />
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </div>
+    </form>
     <div class="row">
         @foreach (var article in Model)
         {
@@ -20,6 +26,38 @@
                             @article.DateCreated?.ToString("dd/MM/yyyy")
                         </p>
                         <p class="card-text text-truncate">@Html.Raw(article.Content.Substring(0, Math.Min(article.Content.Length, 150)))...</p>
+                        <div>
+                            @if (article.NumberRate > 0)
+                            {
+                                <div class="star-rating">
+                                    @{
+                                        int fullStars = (int)Math.Floor(article.Rate ?? 0);
+                                        bool hasHalfStar = (article.Rate % 1) >= 0.5;
+                                    }
+
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= fullStars)
+                                        {
+                                            <i class="fa fa-star text-warning"></i>
+                                        }
+                                        else if (i == fullStars + 1 && hasHalfStar)
+                                        {
+                                            <i class="fa fa-star-half-alt text-warning"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-star text-secondary"></i>
+                                        }
+                                    }
+                                    <p>@article.Rate/5 - (@article.NumberRate bình chọn)</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <p>Chưa có đánh giá</p>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,4 +147,8 @@
             opacity: 0.9;
         }
 
+    /* Star Rating Styling */
+    .star-rating {
+        font-size: 1em;
+    }
 </style>
