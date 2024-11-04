@@ -214,7 +214,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             {
                                 existingNutritionTarget.IsActive = true;
                                 existingNutritionTarget.Calories = (short?)Math.Round(caloriesPerMeal);
-                                meal.Calo = (short?)Math.Round(caloriesPerMeal);
+                                meal.Calories = (short?)Math.Round(caloriesPerMeal);
                                 CalculateMacrosAndFiber(existingNutritionTarget, caloriesPerMeal);
                                 _context.NutritionTargetsDailies.Update(existingNutritionTarget);
                             }
@@ -242,7 +242,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                             meal.NutritionTargetsDailyId = newNutritionTarget.Id;
                             meal.NutritionTargetsDaily = newNutritionTarget;
-                            meal.Calo = (short)Math.Round(caloriesPerMeal);
+                            meal.Calories = (short)Math.Round(caloriesPerMeal);
                         }
                     }
 
@@ -344,7 +344,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         {
                             existingNutritionTarget.IsActive = true;
                             existingNutritionTarget.Calories = (short)caloriesForSlot;
-                            meal.Calo = (short)caloriesForSlot;
+                            meal.Calories = (short)caloriesForSlot;
                             CalculateMacrosAndFiber(existingNutritionTarget, caloriesForSlot);
                             _context.NutritionTargetsDailies.Update(existingNutritionTarget);
                         }
@@ -371,7 +371,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         _context.NutritionTargetsDailies.Add(newNutritionTarget);
                         meal.NutritionTargetsDailyId = newNutritionTarget.Id;
                         meal.NutritionTargetsDaily = newNutritionTarget;
-                        meal.Calo = (short)caloriesForSlot;
+                        meal.Calories = (short)caloriesForSlot;
                     }
                 }
             }
@@ -463,7 +463,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             mealSettingsDetail.IsActive = model.IsActive;
             mealSettingsDetail.OrderNumber = model.OrderNumber;
             mealSettingsDetail.Name = model.Name;
-            mealSettingsDetail.Calo = model.Calo;
+            mealSettingsDetail.Calories = model.Calo.HasValue ? (short?)model.Calo.Value : null;
             _context.MealSettingsDetails.Update(mealSettingsDetail);
             await _context.SaveChangesAsync();
         }
@@ -712,7 +712,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             mealSettingsDetail.IsActive = false;
             var removedOrderNumber = mealSettingsDetail.OrderNumber;
             mealSettingsDetail.OrderNumber = null;
-            mealSettingsDetail.Calo = 0;
+            mealSettingsDetail.Calories = 0;
             _context.MealSettingsDetails.Update(mealSettingsDetail);
 
             // Cập nhật trạng thái IsActive của NutritionTargetsDaily nếu tồn tại
