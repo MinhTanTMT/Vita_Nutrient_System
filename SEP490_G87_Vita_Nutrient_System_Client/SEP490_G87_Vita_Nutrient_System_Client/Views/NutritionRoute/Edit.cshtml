@@ -1,0 +1,156 @@
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionRouteDTO
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
+<div class="container mt-5">
+    <h2 class="page-title text-center mb-4">Chỉnh Sửa Lộ Trình Dinh Dưỡng</h2>
+    <form asp-controller="NutritionRoute" asp-action="Edit" method="post" enctype="multipart/form-data" class="edit-form p-4 rounded shadow">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group mb-3">
+            <label for="Name" class="form-label">Tên Lộ Trình</label>
+            <input type="text" asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Describe" class="form-label">Mô Tả</label>
+            <textarea asp-for="Describe" class="form-control"></textarea>
+            <span asp-validation-for="Describe" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="StartDate" class="form-label">Ngày Bắt Đầu</label>
+            <input type="date" asp-for="StartDate" class="form-control" required />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="EndDate" class="form-label">Ngày Kết Thúc</label>
+            <input type="date" asp-for="EndDate" class="form-control" required />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+
+
+        <div class="form-group mb-4">
+            <label asp-for="IsDone" class="form-label">Trạng Thái</label>
+            <select asp-for="IsDone" class="form-control">
+                <option value="true">Hoạt động</option>
+                <option value="false">Không hoạt động</option>
+            </select>
+            <span asp-validation-for="IsDone" class="text-danger"></span>
+        </div>
+
+        <div class="form-group text-center">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" class="btn btn-primary" value="Lưu Thay Đổi">
+            <a asp-action="GetAll" class="btn btn-secondary">Hủy</a>
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const startDateInput = document.querySelector("input[name='StartDate']");
+        const endDateInput = document.querySelector("input[name='EndDate']");
+        const form = document.querySelector(".edit-form");
+
+        endDateInput.addEventListener("input", function () {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+
+            if (endDate < startDate) {
+                endDateInput.setCustomValidity("Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
+            } else {
+                endDateInput.setCustomValidity("");
+            }
+        });
+
+        form.addEventListener("submit", function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add("was-validated");
+        }, false);
+    });
+</script>
+<style>
+    .container {
+        max-width: 70%;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .page-title {
+        color: #4CAF50;
+        font-weight: 700;
+        font-size: 28px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .form-label {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 16px;
+        box-shadow: none;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+        }
+
+    .btn {
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-family: 'Roboto', sans-serif;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+    .text-danger {
+        font-size: 14px;
+    }
+
+    .shadow {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .was-validated .form-control:invalid {
+        border-color: #dc3545;
+    }
+
+        .was-validated .form-control:invalid:focus {
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+        }
+</style>
+
+

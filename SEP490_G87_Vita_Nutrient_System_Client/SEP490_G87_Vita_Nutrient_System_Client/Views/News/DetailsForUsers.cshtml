@@ -23,20 +23,23 @@
     <hr />
     <div class="rating-section">
         <h4>Đánh giá bài viết</h4>
-        <div class="star-rating">
-            <input type="radio" id="star5" name="rating" value="5" onclick="submitRating(5)" />
-            <label for="star5" title="5 sao"><i class="fa fa-star"></i></label>
-            <input type="radio" id="star4" name="rating" value="4" onclick="submitRating(4)" />
-            <label for="star4" title="4 sao"><i class="fa fa-star"></i></label>
-            <input type="radio" id="star3" name="rating" value="3" onclick="submitRating(3)" />
-            <label for="star3" title="3 sao"><i class="fa fa-star"></i></label>
-            <input type="radio" id="star2" name="rating" value="2" onclick="submitRating(2)" />
-            <label for="star2" title="2 sao"><i class="fa fa-star"></i></label>
-            <input type="radio" id="star1" name="rating" value="1" onclick="submitRating(1)" />
-            <label for="star1" title="1 sao"><i class="fa fa-star"></i></label>
-        </div>
-
-        <p id="rating-display">@Model.Rate/5 - (@Model.NumberRate bình chọn)</p>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" onclick="submitRating(5)" />
+                <label for="star5" title="5 sao"><i class="fa fa-star"></i></label>
+                <input type="radio" id="star4" name="rating" value="4" onclick="submitRating(4)" />
+                <label for="star4" title="4 sao"><i class="fa fa-star"></i></label>
+                <input type="radio" id="star3" name="rating" value="3" onclick="submitRating(3)" />
+                <label for="star3" title="3 sao"><i class="fa fa-star"></i></label>
+                <input type="radio" id="star2" name="rating" value="2" onclick="submitRating(2)" />
+                <label for="star2" title="2 sao"><i class="fa fa-star"></i></label>
+                <input type="radio" id="star1" name="rating" value="1" onclick="submitRating(1)" />
+                <label for="star1" title="1 sao"><i class="fa fa-star"></i></label>
+            </div>
+            
+        }
+        <p id="rating-display">@Model.Rate?.ToString("0.00")/5 - (@Model.NumberRate bình chọn)</p>
     </div>
 
 
@@ -178,14 +181,11 @@
             });
 
             if (response.ok) {
-                // Cập nhật hiển thị đánh giá trung bình và số lượt đánh giá sau khi lưu thành công
                 updateRatingDisplay(rating);
                 disableRatingInputs();
-            } else {
-                const errorText = await response.text();
-                console.error("Lỗi từ API:", errorText);
-                alert("Lỗi khi gửi đánh giá.");
-            }
+            } else if (response.status === 409) {
+                const errorText = await response.text(); // Lấy thông báo từ API
+                alert(errorText);
         } catch (error) {
             console.error("Error:", error);
             alert("Lỗi khi gửi đánh giá.");
