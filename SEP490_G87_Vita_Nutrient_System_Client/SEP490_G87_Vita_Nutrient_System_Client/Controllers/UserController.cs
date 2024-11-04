@@ -48,6 +48,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
+
         [HttpGet]
         public async Task<IActionResult> PlanUserAsync()
         {
@@ -203,17 +204,46 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return Redirect("PlanUser");
             }
 
-            return Redirect("");
+            return Redirect("PlanUser");
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> ChangeAnotherDish()
+        public async Task<IActionResult> ChangeAnotherDish(int SlotOfTheDay, int SettingDetail, int OrderSettingDetail)
         {
+            DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
+            int userId = 1;
+
+            if (userId == 1)
+            {
+                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
+
+                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = res.Content;
+                    string data = await content.ReadAsStringAsync();
+
+                    IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
+
+                    if (rootObjectFoodList.Count() > 0)
+                    {
+                        DataFoodListMealOfTheDay dataFoodListMealOfTheDays = rootObjectFoodList.FirstOrDefault(x => x.SlotOfTheDay == SlotOfTheDay && x.SettingDetail == SettingDetail && x.OrderSettingDetail == OrderSettingDetail);
+
+                        if(dataFoodListMealOfTheDays != null)
+                        {
+                            return View(dataFoodListMealOfTheDays);
+                        }
+                        
+                    }
+                }
 
 
 
-            return View();
+                
+            }
+
+            return View("PlanUser");
         }
 
 
@@ -350,6 +380,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return View("~/Views/User/FoodDetail.cshtml");
             }
         }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////

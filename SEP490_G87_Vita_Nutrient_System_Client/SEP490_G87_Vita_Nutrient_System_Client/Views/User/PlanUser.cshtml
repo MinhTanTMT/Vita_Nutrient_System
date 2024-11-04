@@ -193,8 +193,9 @@
                                             <i class="fa fa-plus-square mr-2"></i> Chance Food
                                         </li>
                                         <form asp-controller="User" asp-action="ChangeAnotherDish" method="get" id="ChanceFoodTheMeal" style="display:none;">
-                                            <input name="" value="@item.NameSlotOfTheDay"></input>
-                                            <input name="" value="@item.NameSlotOfTheDay"></input>
+                                            <input name="SlotOfTheDay" value="@item2.SlotOfTheDay"></input>
+                                            <input name="SettingDetail" value="@item2.SettingDetail"></input>
+                                            <input name="OrderSettingDetail" value="@item2.OrderSettingDetail"></input>
                                             <button type="submit">refreshTheMeal</button>
                                         </form>
 
@@ -240,37 +241,34 @@
                                             @(item3.statusSymbol.Equals("+") ? "checked" : "")
                                             @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
 
-                                            <div class="flex items-center gap-3" onclick="document.getElementById('GetMealDetail').submit();">
+                                            <div class="flex items-center gap-3" onclick="getMealDetail(@item3.idFood)">
                                                 <img src="~/images/@item3.foodData.Urlimage"
                                                      alt="meal"
                                                      class="rounded-lg w-18 h-16" />
                                             </div>
-                                            <div class="flex flex-col" onclick="document.getElementById('GetMealDetail').submit();">
+                                            <div class="flex flex-col" onclick="getMealDetail(@item3.idFood)">
                                                 <span class="text-lg font-medium"> @item3.foodData.Name </span>
                                                 <span>@Math.Round(item3.foodData.IngredientDetails100gReduceDTO.Energy, 2) Calo</span>
                                             </div>
-                                            @*                                         <button><i class="fa-solid fa-ellipsis-vertical" onclick="openMenuChangeAnotherDish();"></i></button> *@
                                         </li>
                                     </ul>
 
-                                    <form asp-controller="Meal" asp-action="MealDetail/@item3.idFood" method="post" id="GetMealDetail" style="display:none;">
+                                    <form asp-controller="User" asp-action="foodDetails" asp-route-foodId="@item3.idFood" method="get" id="GetMealDetail" style="display:none;">
                                         <button type="submit">GetMealDetail</button>
                                     </form>
 
+
+
                                     <script>
-                                        // Hàm sự kiện riêng cho nút fa-ellipsis-vertical
-                                        function openMenuChangeAnotherDish() {
-                                            event.stopPropagation(); // Ngăn sự kiện lan lên div cha
-                                            // Thực hiện hành động riêng, ví dụ mở menu hoặc hiển thị thông báo
-                                            alert("Menu opened!");
+                                        function getMealDetail(id) {
+                                            const url = `/foodDetails/${id}`;
+                                            window.location.href = url;
                                         }
                                     </script>
 
                                     <p style="margin-bottom: 3px;" />
                                 }
                             }
-
-                            
                         }
                     </div>
                     index++;
@@ -383,10 +381,6 @@
                     }
                 });
             </script>
-
-
-
-
 
 
 
@@ -549,7 +543,6 @@
 
 
 
-
     <!-- Popup Modal -->
     <div id="nutritionModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 ease-out">
         <!-- Thêm lớp overflow-y-auto và max-h-screen để cho phép cuộn khi cần -->
@@ -643,10 +636,6 @@
             }
         });
     </script>
-
-
-
-
 
 
 

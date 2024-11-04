@@ -23,4 +23,32 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList
         public FoodListDTO foodData { get; set; }
     }
 
+    public class DataFoodListMealOfTheDayComparer : IEqualityComparer<DataFoodListMealOfTheDay>
+    {
+        public bool Equals(DataFoodListMealOfTheDay x, DataFoodListMealOfTheDay y)
+        {
+            if (x == null || y == null) return false;
+
+            // Kiểm tra các thuộc tính quan trọng, ví dụ như SlotOfTheDay, SettingDetail, và tập hợp idFood
+            return x.SlotOfTheDay == y.SlotOfTheDay &&
+                   x.SettingDetail == y.SettingDetail &&
+                   x.foodIdData.Select(f => f.idFood).OrderBy(id => id)
+                   .SequenceEqual(y.foodIdData.Select(f => f.idFood).OrderBy(id => id));
+        }
+
+        public int GetHashCode(DataFoodListMealOfTheDay obj)
+        {
+            if (obj == null) return 0;
+
+            // Kết hợp các giá trị từ các thuộc tính để tạo mã băm duy nhất
+            int hash = obj.SlotOfTheDay.GetHashCode() ^ obj.SettingDetail.GetHashCode();
+            foreach (var id in obj.foodIdData.Select(f => f.idFood).OrderBy(id => id))
+            {
+                hash ^= id.GetHashCode();
+            }
+            return hash;
+        }
+    }
+
+
 }
