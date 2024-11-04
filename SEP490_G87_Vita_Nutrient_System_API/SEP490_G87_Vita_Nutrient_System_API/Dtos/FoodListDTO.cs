@@ -33,15 +33,17 @@ public partial class FoodListDTO
     public virtual IngredientDetails100gReduceDTO ingredientDetails100gReduceDTO { get; set; } = null!;
     public virtual ScaleAmountDTO ScaleAmounts { get; set; } = null!;
 
-    //public virtual CookingDifficultyDTO? CookingDifficulty { get; set; }
-
     public virtual ICollection<FoodAndDiseaseDTO> FoodAndDiseases { get; set; } = new List<FoodAndDiseaseDTO>();
 
     public virtual ICollection<FoodSelectionDTO> FoodSelections { get; set; } = new List<FoodSelectionDTO>();
 
+   
+    public virtual KeyNoteDTO? KeyNote { get; set; }
+
+
     //public virtual FoodType FoodType { get; set; } = null!;
 
-    public virtual KeyNoteDTO? KeyNote { get; set; }
+    //public virtual CookingDifficultyDTO? CookingDifficulty { get; set; }
 
     //public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
 

@@ -53,13 +53,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> PlanUserAsync()
         {
 
-            DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            //DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime? myDay = DateTime.Now;
 
-            //int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
             // /GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1
-
-            int userId = 1;
 
             if (userId == 1)
             {
