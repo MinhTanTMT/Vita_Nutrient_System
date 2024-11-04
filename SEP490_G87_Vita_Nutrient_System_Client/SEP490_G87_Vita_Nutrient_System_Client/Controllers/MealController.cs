@@ -115,11 +115,7 @@ using System.Net.Http;
         [HttpGet]
         public async Task<IActionResult> MealSettingsDetailToList()
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                ViewBag.ErrorMessage = "Không tìm thấy UserId.";
-            }
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
              List<CreateMealSettingsDetail> activeMeals = new List<CreateMealSettingsDetail>();
             List<CookingDifficulty> cookingDifficulties = new List<CookingDifficulty>();
             List<WantCooking> wantCookings = new List<WantCooking>();
@@ -198,11 +194,7 @@ using System.Net.Http;
         [HttpPost]
         public async Task<IActionResult> UpdateDayOfTheWeek([FromBody] DayOfTheWeekDto dto)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Json(new { success = false, message = "Không tìm thấy UserId." });
-            }
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
             try
             {
@@ -238,11 +230,7 @@ using System.Net.Http;
         [HttpPost]
         public async Task<IActionResult> UpdateSameScheduleEveryDay(bool SameScheduleEveryDay)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Json(new { success = false, message = "Không tìm thấy UserId." });
-            }
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
             try
             {
@@ -315,22 +303,19 @@ using System.Net.Http;
         [HttpGet]
         public async Task<IActionResult> CreateMealSettingsDetailAsync(short dayOfTheWeekId)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            if (userId == null)
             {
                 ViewBag.ErrorMessage = "Không tìm thấy UserId.";
                 return RedirectToAction("MealSettingsDetailToList");
             }
-
-            // Chuẩn bị model với DayOfTheWeekId từ URL
             var model = new CreateMealSettingsDetail
             {
                 SkipCreationProcess = false,
                 NutritionFocus = false,
                 DayOfTheWeekId = dayOfTheWeekId,
+                NutritionTargetsDailyId = null,
             };
-
-            // Lấy MealSettingsId từ API và gán cho model
             HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
             if (response.IsSuccessStatusCode)
             {
@@ -357,9 +342,9 @@ using System.Net.Http;
             List<WantCooking> wantCookings = new List<WantCooking>();
             List<SlotOfTheDay> slotOfTheDays = new List<SlotOfTheDay>();
 
-            var userId = HttpContext.Session.GetString("UserId"); 
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            if (string.IsNullOrEmpty(userId))
+            if (userId == null )
             {
                 ViewBag.ErrorMessage = "Không tìm thấy UserId.";
                 return View();
@@ -425,7 +410,17 @@ using System.Net.Http;
                 if (response.IsSuccessStatusCode)
                 {
 
-                    return RedirectToAction("MealList", new { dayOfTheWeekId = model.DayOfTheWeekId });
+                    // Gọi UpdateCalo sau khi cập nhật bữa ăn thành công
+                    HttpResponseMessage updateCaloResponse = await client.PutAsync($"{client.BaseAddress}/Meals/UpdateCalo/{id}", null);
+
+                    if (updateCaloResponse.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("MealList", new { dayOfTheWeekId = model.DayOfTheWeekId });
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Lỗi khi cập nhật calo cho bữa ăn.";
+                    }
                 }
                 else
                 {

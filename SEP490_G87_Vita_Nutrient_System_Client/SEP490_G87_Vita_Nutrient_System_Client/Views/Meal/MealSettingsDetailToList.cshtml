@@ -52,6 +52,9 @@
                                 </p>
                             </div>
                             <div class="meal-actions d-flex">
+                                <button class="btn btn-light btn-sm mr-1" onclick="openEditNutrition(@meal.NutritionTargetsDailyId)">
+                                    <i class="fa fa-search"></i>
+                                </button>
                                 <button class="btn btn-light btn-sm" onclick="changeOrderNumber(@meal.Id, 'up')"
                                 @(meal.OrderNumber == minOrderNumber ? "disabled" : "")>
                                     <i class="fa fa-arrow-up"></i>
@@ -117,6 +120,9 @@
                                 </div>
                                 <div class="meal-actions d-flex">
                                     <!-- Bật/tắt nút lên/xuống dựa trên OrderNumber -->
+                                    <button class="btn btn-light btn-sm mr-1" onclick="openEditNutrition(@meal.NutritionTargetsDailyId)">
+                                       <i class="fa fa-search"></i>
+                                     </button>
                                     <button class="btn btn-light btn-sm" onclick="changeOrderNumber(@meal.Id, 'up')"
                                     @(meal.OrderNumber == minOrderNumber ? "disabled" : "")>
                                         <i class="fa fa-arrow-up"></i>
@@ -146,6 +152,11 @@
 </div>
 
 <script>
+
+    function openEditNutrition(nutritionId) {
+        window.location.href = '/NutritionTargetsDaily/EditNutritionTargetsDaily/' + nutritionId;
+    }
+
     function changeOrderNumber(mealId, direction) {
         $.ajax({
             url: '@Url.Action("ChangeOrderNumber", "Meal")',

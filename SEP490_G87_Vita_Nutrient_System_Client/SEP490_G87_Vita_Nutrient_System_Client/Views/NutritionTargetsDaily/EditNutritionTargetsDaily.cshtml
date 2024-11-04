@@ -1,0 +1,120 @@
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionTargetsDaily
+
+<div class="container">
+    <h2>Edit - My Nutrition Targets</h2>
+
+    <form asp-action="EditNutritionTargetsDaily" method="post">
+        <!-- Title -->
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Title">Title</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <!-- Calories -->
+        <div class="form-group calories-comparison">
+            <label>Calo</label>
+            <div class="calories-display">
+                <!-- Ô nhập cho Calo của MealSettingsDetail -->
+                <input name="mealCalories" value="@ViewBag.MealCalories" class="form-control d-inline-block calories-input" style="width: 80px;" />
+
+                <!-- Biểu tượng cảnh báo nếu có sự chênh lệch -->
+                @if (ViewBag.MealCalories != ViewBag.NutritionCalories)
+                {
+                    <span class="warning-icon" title="Calo không khớp!">⚠️</span>
+                }
+
+                <!-- Calo của NutritionTargetsDaily hiển thị dưới dạng văn bản -->
+                <span class="calories-value">/ @ViewBag.NutritionCalories</span>
+            </div>
+            <span class="text-danger"></span>
+        </div>
+
+        <!-- Target Macros -->
+        <h4>Target Macros</h4>
+        <div class="form-group">
+            <label>Calculate macros</label>
+            <select class="form-control">
+                <option value="within">Within a range</option>
+            </select>
+        </div>
+
+        <!-- Carbs -->
+        <div class="form-group">
+            <label>Carbs (g)</label>
+            <input asp-for="CarbsMin" type="number" class="form-control d-inline-block" style="width: 80px;" placeholder="Min" />
+            <span>Đến</span>
+            <input asp-for="CarbsMax" type="number" class="form-control d-inline-block" style="width: 80px;" placeholder="Max" />
+            <span asp-validation-for="CarbsMin" class="text-danger"></span>
+            <span asp-validation-for="CarbsMax" class="text-danger"></span>
+        </div>
+
+        <!-- Fats -->
+        <div class="form-group">
+            <label>Fats (g)</label>
+            <input asp-for="FatsMin" type="number" class="form-control d-inline-block" style="width: 80px;" placeholder="Min" />
+            <span>Đến</span>
+            <input asp-for="FatsMax" type="number" class="form-control d-inline-block" style="width: 80px;" placeholder="Max" />
+            <span asp-validation-for="FatsMin" class="text-danger"></span>
+            <span asp-validation-for="FatsMax" class="text-danger"></span>
+        </div>
+
+        <!-- Protein -->
+        <div class="form-group">
+            <label>Protein (g)</label>
+            <input asp-for="ProteinMin" type="number" class="form-control d-inline-block" style="width: 80px;" placeholder="Min" />
+            <span>Đến</span>
+            <input asp-for="ProteinMax" type="number" class="form-control d-inline-block" style="width: 80px;" placeholder="Max" />
+            <span asp-validation-for="ProteinMin" class="text-danger"></span>
+            <span asp-validation-for="ProteinMax" class="text-danger"></span>
+        </div>
+
+        <!-- Micronutrients -->
+        <h4>Micronutrients</h4>
+
+        <!-- Minimum Fiber -->
+        <div class="form-group">
+            <label asp-for="MinimumFiber">Minimum Fiber (g)</label>
+            <input asp-for="MinimumFiber" type="number" class="form-control" />
+            <span asp-validation-for="MinimumFiber" class="text-danger"></span>
+        </div>
+
+        @* <!-- Limit Daily Sodium -->
+        <div class="form-check">
+            <input asp-for="LimitDailySodium" class="form-check-input" type="checkbox" />
+            <label asp-for="LimitDailySodium" class="form-check-label">Limit Daily Sodium</label>
+        </div>
+
+        <!-- Limit Daily Cholesterol -->
+        <div class="form-check">
+            <input asp-for="LimitDailyCholesterol" class="form-check-input" type="checkbox" />
+            <label asp-for="LimitDailyCholesterol" class="form-check-label">Limit Daily Cholesterol</label>
+        </div> *@
+
+        <!-- Save Button -->
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="MealSettingsDetailToList" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .calories-display {
+        display: flex;
+        align-items: center;
+        font-size: 1.2em;
+    }
+
+    .calories-value {
+        font-weight: bold;
+        margin: 0 5px;
+    }
+
+    .warning-icon {
+        color: #ff6b6b; /* Màu đỏ cho cảnh báo */
+        font-size: 1.2em;
+        margin: 0 5px;
+    }
+</style>

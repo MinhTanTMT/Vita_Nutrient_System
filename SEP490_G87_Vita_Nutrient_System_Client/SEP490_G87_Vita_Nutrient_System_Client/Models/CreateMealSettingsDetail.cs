@@ -18,6 +18,7 @@
         public bool? IsActive { get; set; }
         public short? OrderNumber { get; set; }
         public string? Name { get; set; }
+        public int? Calo { get; set; }
 
         public string? CookingDifficulty { get; set; }
         public string? SlotOfTheDay { get; set; }

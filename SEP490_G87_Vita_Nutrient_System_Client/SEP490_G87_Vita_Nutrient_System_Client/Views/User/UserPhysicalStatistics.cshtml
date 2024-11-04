@@ -1,0 +1,41 @@
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.UserPhysicalStatistics
+
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+
+<h2>Thông tin cá nhân</h2>
+
+<div>
+    <label>Giới tính:</label>
+    <span>@(Model.Gender == true ? "Nam" : Model.Gender == false ? "Nữ" : "Không xác định")</span>
+</div>
+
+<div>
+    <label>Chiều cao:</label>
+    <span>@Model.Height cm</span>
+</div>
+
+<div>
+    <label>Cân nặng:</label>
+    <span>@Model.Weight kg</span>
+</div>
+
+<div>
+    <label>Tuổi:</label>
+    <span>@Model.Age năm</span>
+</div>
+
+<div>
+    <label>Mô tả bản thân:</label>
+    <span>@Model.DescribeYourself</span>
+</div>
+
+<div>
+    <label>Premium:</label>
+    <span>@(Model.IsPremium == true ? "Có" : "Không")</span>
+</div>
+
+<div>
+    <a asp-action="EditUserPhysicalStatistics" asp-route-id="@Model.UserId" class="btn btn-primary">Chỉnh sửa</a>
+</div>

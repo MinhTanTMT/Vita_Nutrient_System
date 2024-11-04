@@ -61,7 +61,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                     return NotFound(new { message = "MealSettingsDetail không tìm thấy." });
                 }
 
-                return Ok(new { message = "Bữa ăn đã được thêm vào danh sách và sắp xếp thứ tự thành công.", mealSettingsDetail });
+                return Ok(new { message = "Bữa ăn đã được thêm vào danh sách và sắp xếp thứ tự thành công." });
             }
             catch (InvalidOperationException ex)
             {
@@ -74,7 +74,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpPut("EditMealSettingsDetail/{id}")]
-        public async Task<IActionResult> EditMealSettingsDetailAsync(int id, [FromBody] CreateMealSettingsDetailDto model)
+        public async Task<IActionResult> EditMealSettingsDetailAsync(int id, [FromBody] MealSettingsDetailDTO model)
         {
             try
             {
@@ -93,7 +93,23 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = $"Lỗi trong quá trình cập nhật: {ex.Message}" });
             }
         }
-
+        [HttpPut("UpdateCalo/{id}")]
+        public async Task<IActionResult> UpdateCalo(int id)
+        {
+            try
+            {
+                await repositories.UpdateCalo(id);
+                return Ok(new { message = "Cập nhật calo thành công" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = $"Lỗi trong quá trình cập nhật calo: {ex.Message}" });
+            }
+        }
 
 
         [HttpPut("UpdateMealSetting/{id}")]
@@ -140,6 +156,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
 
             return Ok(mealListBySelected.ToList());
+        }
+        [HttpGet("FindMealSettingsDetailByNutritionTargetsDailyId/{nutritionTargetsDailyId}")]
+        public async Task<IActionResult> FindMealSettingsDetailByNutritionTargetsDailyId(int nutritionTargetsDailyId)
+        {
+            var mealSettingsDetail = await repositories.FindMealSettingsDetailByNutritionTargetsDailyIdAsync(nutritionTargetsDailyId);
+
+            if (mealSettingsDetail == null)
+            {
+                return NotFound(new { message = "MealSettingsDetail không tìm thấy." });
+            }
+
+            return Ok(mealSettingsDetail);
         }
 
         [HttpGet("FindMealSettingsDetailById/{id}")]

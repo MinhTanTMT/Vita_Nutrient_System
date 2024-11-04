@@ -33,5 +33,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.UserDetails.Add(userEntity);
             await _context.SaveChangesAsync();
         }
+
+
     }
 }
