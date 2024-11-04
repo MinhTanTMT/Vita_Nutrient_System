@@ -1,0 +1,249 @@
+﻿@model DataFoodListMealOfTheDay
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.NameSlotOfTheDay</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <style>
+        .highlight {
+            background-color: #374151; /* Màu sáng hơn cho hàng khi được nhấn */
+        }
+    </style>
+</head>
+<body class="bg-pink-100 text-gray-900 font-sans">
+
+    <div class="container mx-auto p-6">
+        <!-- Header Section -->
+        <div class="flex items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">@Model.NameSlotOfTheDay</h1>
+            <div class="ml-4 flex items-center space-x-2 text-gray-500">
+                <span class="text-sm">Normal</span>
+                <span>|</span>
+                <span class="text-sm">Simple</span>
+                <span>|</span>
+                <span class="text-sm">Breakfast</span>
+                <a href="#" class="text-blue-500 underline ml-2">Edit</a>
+            </div>
+            <div class="ml-auto text-orange-500 font-bold text-lg">458 Calories</div>
+        </div>
+
+
+        @{
+            List<int> listFoodId = new List<int>();
+            @if (Model.foodIdData != null && Model.foodIdData.Length > 0)
+            {
+                // Khởi tạo danh sách ID trong Razor
+
+
+                @foreach (var food in Model.foodIdData)
+                {
+                    // Thêm từng foodId vào danh sách
+                    listFoodId.Add(food.idFood);
+                }
+
+                // Chuyển đổi danh sách listFoodId thành JSON để sử dụng trong JavaScript
+                
+            }
+            else
+            {
+                // Xử lý khi Model.foodIdData là null hoặc rỗng (nếu cần)
+            }
+
+            var jsonListFoodId = System.Text.Json.JsonSerializer.Serialize(listFoodId);
+
+        }
+    
+
+    <div class="space-y-4 mb-8 w-1/2">
+        <button class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg"
+                    onclick="changeAllTheDishesCurrentMeal(@jsonListFoodId, @Model.SettingDetail)">
+            <i class="fas fa-expand-arrows-alt cursor-pointer mr-4"></i>
+            <span class="flex-grow text-left">Entire meal</span>
+        </button>
+
+        @if (Model.foodIdData != null && Model.foodIdData.Length > 0)
+        {
+            @foreach (var food in Model.foodIdData)
+            {
+                    <button class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg" onclick="changeOneDishCurrentMeal(@jsonListFoodId, @food.foodData.FoodListId, @food.positionFood, @Model.SettingDetail)">
+                    <i class="fas fa-expand-arrows-alt cursor-pointer mr-4"></i>
+                    <img src="~/images/@food.foodData.Urlimage" alt="@food.foodData.Name" class="w-10 h-10 rounded mr-4">
+                    <span class="flex-grow text-left">@food.foodData.Name</span>
+                    <span>@food.foodData.Describe</span>
+                </button>
+            }
+        }
+        else
+        {
+            <p class="text-center text-red-500">Không tìm được món phù hợp</p>
+        }
+    </div>
+
+        <!-- Tabs Section -->
+        <div class="flex space-x-4 mb-4">
+            <button class="text-orange-500 font-semibold" onclick="loadFoodType(1)">Suggestions</button>
+            <button class="text-gray-500" onclick="loadFoodType(2)">Recent</button>
+            <button class="text-gray-500" onclick="loadFoodType(3)">Collections</button>
+            <button class="text-gray-500" onclick="loadFoodType(4)">Pantry</button>
+        </div>
+
+        <!-- Suggestions Section -->
+        <div class="grid grid-cols-4 gap-4" id="ListFoodDiv">
+
+        </div>
+
+
+        <!-- Show More Button -->
+        <div class="flex justify-center mt-6">
+            <button class="text-gray-500 text-sm flex items-center">
+                <i class="fas fa-angle-down mr-1"></i> Show More
+            </button>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+    
+<script>
+        let suggestedLoadFoodType = 1;
+
+
+        function changeAllTheDishesCurrentMeal(jsonListFoodId, settingDetail) {
+            $.ajax({
+                url: 'https://localhost:7045/api/GenerateMeal/APICreateListOfAlternativeDishes',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    listIdFood: [],
+                    MealSettingsDetailsId: settingDetail,
+                    numberOfCreation: 30
+                }),
+                traditional: true,
+                success: function (response) {
+                    console.log("Response from server:", response);
+                    var ListFoodDiv = $('#ListFoodDiv');
+                    ListFoodDiv.empty();
+
+                    $.each(response, function (index, item) {
+
+                        if (item.foodIdData && item.foodIdData.length > 0) {
+
+                            var trayDiv = $('<div class="bg-gray-700 text-white p-4 rounded-lg flex flex-col items-start"></div>');
+
+                            $.each(item.foodIdData, function (index2, item2) {
+                                var foodItem = `
+                                        <div class="flex items-center mb-2">
+                                            <img src="/images/${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-10 h-10 object-cover rounded mr-2">
+                                            <div class="flex flex-col">
+                                                <h3 class="text-blue-400 font-semibold">${item2.foodData.name}</h3>
+                                                <p class="text-sm text-gray-300">1 serving</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                trayDiv.append(foodItem);
+                            });
+
+                            trayDiv.append(`
+                                    <div class="flex items-center justify-between w-full mt-2">
+                                        <span class="text-orange-400 text-sm">${item.foodIdData.reduce((sum, item2) => sum + item2.foodData.ingredientDetails100gReduceDTO.energy, 0)} Calories</span>
+                                        <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="changeOneDishCurrentMeal(item)">Pick</button>
+                                    </div>
+                                `);
+                            ListFoodDiv.append(trayDiv);
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred:", error);
+                }
+            });
+        }
+
+
+        function getThisListOfDishes(dataFoodListMealOfTheDay) {
+            $.ajax({
+                url: 'https://localhost:7045/api/GenerateMeal/APIgetThisListOfDishes?userId=1&myDay=2024-11-04',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    dataFoodListMealOfTheDay: dataFoodListMealOfTheDay,
+                }),
+                traditional: true,
+                success: function (response) {
+                    console.log("Response from server:", response);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred:", error);
+                }
+            });
+        }
+
+
+        function changeOneDishCurrentMeal(jsonListFoodId, foodListId, positionFood, settingDetail) {
+            jsonListFoodId.splice(positionFood, 1);
+            console.log("Data jsonListFoodId:", jsonListFoodId);
+            $.ajax({
+                url: 'https://localhost:7045/api/GenerateMeal/APICreateListOfAlternativeDishes',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    listIdFood: jsonListFoodId,
+                    MealSettingsDetailsId: settingDetail,
+                    numberOfCreation: 30
+                }),
+                traditional: true,
+                success: function (response) {
+                    console.log("Response from server:", response);
+                    var ListFoodDiv = $('#ListFoodDiv');
+                    ListFoodDiv.empty();
+
+                    $.each(response, function (index, item) {
+                        $.each(item.foodIdData, function (index2, item2) {
+                            if (item2.positionFood == positionFood) {
+                                // chưa có câu lệnh bỏ qua món id đang thay thế
+                                if (!jsonListFoodId.includes(item2.foodData.idFood)) {
+                                    var rowContent = `
+                                            <div class="bg-gray-700 text-white p-4 rounded-lg flex flex-col items-start">
+                                                <img src="/images/${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-full h-24 object-cover rounded mb-2">
+                                                <h3 class="text-white font-semibold">${item2.foodData.name}</h3>
+                                                <p class="text-sm text-gray-300">${item2.foodData.describe}</p>
+                                                <div class="flex items-center justify-between w-full mt-2">
+                                                    <span class="text-orange-400 text-sm">${item2.foodData.ingredientDetails100gReduceDTO.energy} Calories</span>
+                                                    <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm">Pick</button>
+                                                </div>
+                                            </div>
+                                        `;
+                                    ListFoodDiv.append(rowContent);
+                                }
+                            }
+                        });
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred:", error);
+                }
+            });
+        }
+
+
+
+
+
+
+
+</script>
+
+
+
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>
+

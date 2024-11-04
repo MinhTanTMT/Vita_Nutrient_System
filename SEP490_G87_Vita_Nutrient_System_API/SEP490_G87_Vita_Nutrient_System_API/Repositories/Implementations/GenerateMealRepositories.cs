@@ -556,7 +556,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 if (MealSettingDataOfUser.SameScheduleEveryDay ?? false)
                 {
-                    IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == 8).ToListAsync();
+                    IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == 8 & x.IsActive == true).ToListAsync();
 
                     if (MealSettingsDetailDataOfUser.Count() > 0)
                     {
@@ -591,7 +591,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 else
                                 {
                                     IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
-                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                     foreach (var foodOfSlot in dataFoodOfSlot)
                                     {
                                         stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -602,7 +602,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             else
                             {
                                 IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
-                                stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                 foreach (var foodOfSlot in dataFoodOfSlot)
                                 {
                                     stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -645,7 +645,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                     foreach (short nbWk in weekNumber)
                     {
-                        IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == nbWk).ToListAsync();
+                        IEnumerable<MealSettingsDetail> MealSettingsDetailDataOfUser = await _context.MealSettingsDetails.Where(x => x.MealSettingsId == MealSettingDataOfUser.Id && x.DayOfTheWeekId == nbWk & x.IsActive == true).ToListAsync();
 
                         if (MealSettingsDetailDataOfUser.Count() > 0)
                         {
@@ -653,7 +653,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             DateTime today = MyDay;
                             DayOfWeek targetDay = DOW[nbWk-1];
 
-                            // Tính khoảng cách từ ngày hôm nay đến thứ bạn muốn
                             int daysDifference = (7 + (targetDay - MyDay.DayOfWeek)) % 7;
                             DateTime targetDate = today.AddDays(daysDifference);
                             DateTime TheDayBefore = new DateTime(DateTime.Now.Year, 1, 1).AddDays((targetDate.DayOfYear - 7) - 1);
@@ -686,7 +685,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                     else
                                     {
                                         IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
-                                        stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                        stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                         foreach (var foodOfSlot in dataFoodOfSlot)
                                         {
                                             stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -697,7 +696,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 else
                                 {
                                     IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
-                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id}:");
+                                    stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                     foreach (var foodOfSlot in dataFoodOfSlot)
                                     {
                                         stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -752,7 +751,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (dataTake != null && mealSetting != null)
             {
                 
-                stringListId.AppendLine($"SlotOfTheDay={mealSetting.SlotOfTheDayId};SettingDetail={mealSetting.Id}:");
+                stringListId.AppendLine($"SlotOfTheDay={mealSetting.SlotOfTheDayId};SettingDetail={mealSetting.Id};OrderNumber={mealSetting.OrderNumber}:");
                 foreach (var foodOfSlot in dataTake)
                 {
                     stringListId.Append(foodOfSlot.FoodListId + "-;");
@@ -797,55 +796,63 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<DataFoodListMealOfTheDay> SplitAndProcessDataMealOfTheDay(string part)
         {
-                DataFoodListMealOfTheDay dataFoodListMealOfTheDay = new DataFoodListMealOfTheDay();
+            DataFoodListMealOfTheDay dataFoodListMealOfTheDay = new DataFoodListMealOfTheDay();
 
-                string[] splitByEqualHaiCham = part.Split(':');
-                if (splitByEqualHaiCham.Length == 2)
+            string[] splitByEqualHaiCham = part.Split(':');
+            if (splitByEqualHaiCham.Length == 2)
+            {
+                string[] splitByEqualFirstChamPhay = splitByEqualHaiCham[0].Split(';');
+                if (splitByEqualFirstChamPhay.Length == 3)
                 {
-                    string[] splitByEqualFirstChamPhay = splitByEqualHaiCham[0].Split(';');
-                    if (splitByEqualFirstChamPhay.Length == 2)
+                    foreach (var item in splitByEqualFirstChamPhay)
                     {
-                        foreach (var item in splitByEqualFirstChamPhay)
+                        if (item.Contains("SlotOfTheDay"))
                         {
-                            if (item.Contains("SlotOfTheDay"))
-                            {
-                                Dictionary<string, string> SlotOfTheDayData = await SplitAndProcess1(item);
-                                dataFoodListMealOfTheDay.SlotOfTheDay = short.Parse(SlotOfTheDayData.Values.FirstOrDefault());
-                                SlotOfTheDay slotOfTheDayInfo = await _context.SlotOfTheDays.FindAsync(dataFoodListMealOfTheDay.SlotOfTheDay);
-                                dataFoodListMealOfTheDay.NameSlotOfTheDay = slotOfTheDayInfo.Slot;
+                            Dictionary<string, string> SlotOfTheDayData = await SplitAndProcess1(item);
+                            dataFoodListMealOfTheDay.SlotOfTheDay = short.Parse(SlotOfTheDayData.Values.FirstOrDefault());
+                            SlotOfTheDay slotOfTheDayInfo = await _context.SlotOfTheDays.FindAsync(dataFoodListMealOfTheDay.SlotOfTheDay);
+                            dataFoodListMealOfTheDay.NameSlotOfTheDay = slotOfTheDayInfo.Slot;
 
-                            }
-                            else if (item.Contains("SettingDetail"))
-                            {
-                                Dictionary<string, string> SettingDetailData = await SplitAndProcess1(item);
-                                dataFoodListMealOfTheDay.SettingDetail = Int32.Parse(SettingDetailData.Values.FirstOrDefault());
-                            }
+                        }
+                        else if (item.Contains("SettingDetail"))
+                        {
+                            Dictionary<string, string> SettingDetailData = await SplitAndProcess1(item);
+                            dataFoodListMealOfTheDay.SettingDetail = Int32.Parse(SettingDetailData.Values.FirstOrDefault());
+                        }
+                        else if (item.Contains("OrderNumber"))
+                        {
+                            Dictionary<string, string> SettingDetailData = await SplitAndProcess1(item);
+                            dataFoodListMealOfTheDay.OrderSettingDetail = Int32.Parse(SettingDetailData.Values.FirstOrDefault());
                         }
                     }
-
-                    string[] splitByEqualSecondChamPhay = splitByEqualHaiCham[1].Split(';');
-                    List<FoodIdData> foodIdDataList = new List<FoodIdData>();
-                    foreach (var item in splitByEqualSecondChamPhay)
-                    {
-                        if (item.Length > 0)
-                        {
-                            string symbolStatus = item[^1].ToString();
-                            int numberRemaining = await ParseNumeric(item.Substring(0, item.Length - 1)) ?? -1;
-                            FoodList FoodInfo = await _context.FoodLists.FindAsync(numberRemaining);
-                            if (FoodInfo != null)
-                            {
-                                
-                                FoodListDTO foodListDTO = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(numberRemaining));
-                                foodIdDataList.Add(new FoodIdData { idFood = numberRemaining, statusSymbol = symbolStatus, foodData = foodListDTO });
-
-                        }
-                        }
-                    }
-                    dataFoodListMealOfTheDay.foodIdData = foodIdDataList.ToArray();
-
                 }
-                return dataFoodListMealOfTheDay;
+
+                string[] splitByEqualSecondChamPhay = splitByEqualHaiCham[1].Split(';');
+                List<FoodIdData> foodIdDataList = new List<FoodIdData>();
+
+                for (int i = 0; i < splitByEqualSecondChamPhay.Length; i++)
+                {
+                    if (splitByEqualSecondChamPhay[i].Length > 0)
+                    {
+                        string symbolStatus = splitByEqualSecondChamPhay[i][^1].ToString();
+                        int numberRemaining = await ParseNumeric(splitByEqualSecondChamPhay[i].Substring(0, splitByEqualSecondChamPhay[i].Length - 1)) ?? -1;
+                        FoodList FoodInfo = await _context.FoodLists.FindAsync(numberRemaining);
+                        if (FoodInfo != null)
+                        {
+
+                            FoodListDTO foodListDTO = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(numberRemaining));
+                            foodIdDataList.Add(new FoodIdData { idFood = numberRemaining, statusSymbol = symbolStatus, positionFood = i, foodData = foodListDTO });
+
+                        }
+                    }
+                    dataFoodListMealOfTheDay.foodIdData = foodIdDataList.ToArray();   
+                }
+                
+            }
+
+            return dataFoodListMealOfTheDay;
         }
+        
 
 
         public async Task<int?> ParseNumeric(string str)
@@ -894,47 +901,152 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return ints;
         }
 
-        //public async Task<FoodListDTO> DailyTargetTotal(DateTime myDay, int idUser, string? status)
-        //{
-
-        //    IEnumerable<DataFoodListMealOfTheDay> listIdFood = await ListMealOfTheDay(myDay, idUser);
-
-        //    List<FoodListDTO> specifiedCollection = new List<FoodListDTO>();
-
-        //    foreach (var item in listIdFood)
-        //    {
-        //        foreach (var item1 in item.foodIdData)
-        //        {
-        //            if (status.IsNullOrEmpty())
-        //            {
-        //                specifiedCollection.Add(await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(item1.idFood)));
-        //            } 
-        //            else if (status.Equals(item1.statusSymbol))
-        //            {
-        //                specifiedCollection.Add(await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(item1.idFood)));
-        //            }
-        //        }
-        //    }
 
 
-        //    if(specifiedCollection.Count > 0)
-        //    {
-        //        FoodListDTO calculatedList = await TotalAllTheIngredientsOfTheDish(specifiedCollection);
-        //        calculatedList.FoodListId = -1;
-        //        calculatedList.Name = "DailyTargetTotal";
-        //        calculatedList.Describe = "DailyTargetTotal";
-        //        return calculatedList;
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
+        public async Task<bool> GetThisListOfDishesInputMealDay(DataFoodListMealOfTheDay dataListChange, int userId, DateTime myDay)
+        {
 
-        //}
+
+            foreach (var item in dataListChange.foodIdData)
+            {
+                FoodStatusUpdateModel unitFoodChange = new FoodStatusUpdateModel() { UserId = userId, MyDay = myDay, SlotOfTheDay = dataListChange.SlotOfTheDay, SettingDetail = dataListChange.SettingDetail , IdFood = item.idFood, StatusSymbol = "-" };
+                //if (!(await CompleteTheDish())) return true;
+
+                
+            }
+
+
+            return false;
+        }
+
+        public async Task<bool> CompleteTheDish(FoodStatusUpdateModel dataprocess, string? statusSymbolReplace, int? idFoodReplace)
+        {
+
+            NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= dataprocess.MyDay && nr.EndDate >= dataprocess.MyDay && nr.UserId == dataprocess.UserId && nr.IsDone == false);
+            if (activeNutritionRoute != null)
+            {
+                MealOfTheDay mealOfTheDay = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.DateExecute == DateOnly.FromDateTime(dataprocess.MyDay) && x.NutritionRouteId == activeNutritionRoute.Id);
+                if (mealOfTheDay != null)
+                {
+                    string[] arrayData = await SplitAndProcessFirst(mealOfTheDay.DataFoodListId ?? "");
+                    StringBuilder stringListId = new StringBuilder();
+                    if (arrayData.Length > 0)
+                    {
+                        for (int i = 0; i < arrayData.Length;  i++)
+                        { 
+                            if (arrayData[i].Contains($"SlotOfTheDay={dataprocess.SlotOfTheDay};SettingDetail={dataprocess.SettingDetail};OrderNumber={dataprocess.OrderNumber}:"))
+                            {
+
+                                MealSettingsDetail mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == dataprocess.SettingDetail && x.IsActive == true);
+
+                                if (mealSettingsDetail != null) {
+
+                                }
+                                else
+                                {
+
+                                }
+
+                                StringBuilder stringListIdOfSlot = new StringBuilder();
+                                DataFoodListMealOfTheDay dataFoodListMealOfTheDays = await SplitAndProcessDataMealOfTheDay(arrayData[i]);
+                                stringListIdOfSlot.AppendLine($"SlotOfTheDay={dataFoodListMealOfTheDays.SlotOfTheDay};SettingDetail={dataFoodListMealOfTheDays.SettingDetail};OrderNumber={dataFoodListMealOfTheDays.OrderSettingDetail}:");
+
+                                if (dataFoodListMealOfTheDays.foodIdData.Length == mealSettingsDetail.NumberOfDishes)
+                                {
+
+                                }
+                                else
+                                {
+
+                                }
+
+                                foreach (var foodOfSlot in dataFoodListMealOfTheDays.foodIdData)
+                                {
+
+                                    if (statusSymbolReplace != null && !foodOfSlot.statusSymbol.Equals("!"))
+                                    {
+                                        if (foodOfSlot.idFood == dataprocess.IdFood && foodOfSlot.statusSymbol.Equals(dataprocess.StatusSymbol) && foodOfSlot.positionFood == dataprocess.PositionFood)
+                                        {
+                                            stringListIdOfSlot.Append($"{foodOfSlot.idFood}{statusSymbolReplace};");
+                                        }
+                                        else
+                                        {
+                                            stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
+                                        } 
+                                    }
+                                    else if (idFoodReplace != null && !foodOfSlot.statusSymbol.Equals("!"))
+                                    {
+                                        if (foodOfSlot.idFood == dataprocess.IdFood && foodOfSlot.positionFood == dataprocess.PositionFood)
+                                        {
+                                            stringListIdOfSlot.Append($"{idFoodReplace}-;");
+                                        }
+                                        else
+                                        {
+                                            stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
+                                    }
+                                }
+                                arrayData[i] = stringListIdOfSlot.ToString();
+                            }
+                            stringListId.Append(arrayData[i] + "#");
+                        }
+                    }
+
+                    //mealOfTheDay.DataFoodListId = stringListId.ToString();
+                    mealOfTheDay.DataFoodListId = stringListId.ToString().Remove(stringListId.ToString().Length - 1);
+                    _context.SaveChanges();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+
+        public async Task<IEnumerable<DataFoodListMealOfTheDay>> CreateListOfAlternativeDishes(List<int>? listIdFood, int MealSettingsDetailsId, int numberOfCreation)
+        {
+            MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
+
+            if (mealSettingsDetail != null)
+            {
+                List<DataFoodListMealOfTheDay> dataFoodListMealOfTheDay = new List<DataFoodListMealOfTheDay>();
+                for (int i = 0; i < numberOfCreation; i++)
+                {
+                    IEnumerable<FoodListDTO> foodListDTO = await GetTheListOfDishesByMealSettingsDetails(listIdFood, MealSettingsDetailsId);
+                    FoodIdData[] dataCreateArray = new FoodIdData[foodListDTO.Count()];
+                    int index = 0;
+                    foreach (var item in foodListDTO)
+                    {
+                        dataCreateArray[index] = new FoodIdData
+                        {
+                            idFood = item.FoodListId,
+                            statusSymbol = "-",
+                            positionFood = index,
+                            foodData = item
+                        };
+                        index++;
+                    }
+                    dataFoodListMealOfTheDay.Add(new DataFoodListMealOfTheDay
+                    {
+                        SlotOfTheDay = mealSettingsDetail.SlotOfTheDayId ?? 0,
+                        SettingDetail = MealSettingsDetailsId,
+                        OrderSettingDetail = mealSettingsDetail.OrderNumber ?? 0,
+                        NameSlotOfTheDay = "Nope",
+                        foodIdData = dataCreateArray
+                    });
+                }
+                return dataFoodListMealOfTheDay.Distinct(new DataFoodListMealOfTheDayComparer()).ToList();
+            }
+            return null;
+        }
 
     }
 }
-
 
 
 
