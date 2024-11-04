@@ -145,10 +145,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             if (model.StatusSymbol.Equals("-"))
             {
-                return Ok(await generateMealRepositories.CompleteTheDish(model, "+", null));
+                return Ok(await generateMealRepositories.CompleteTheDish(model, "+", null, null));
             }else if (model.StatusSymbol.Equals("+"))
             {
-                return Ok(await generateMealRepositories.CompleteTheDish(model, "-", null));
+                return Ok(await generateMealRepositories.CompleteTheDish(model, "-", null, null));
             }else
             {
                 return BadRequest();
@@ -166,35 +166,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
         [HttpPost("APIgetThisListOfDishes")]
-        public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APIgetThisListOfDishes(
+        public async Task<IActionResult> APIgetThisListOfDishes(
         [FromBody] DataFoodListMealOfTheDay dataListChange,
         [FromQuery] int userId,
         [FromQuery] DateTime myDay)
         {
-
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-
-
-
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return Ok("Đang dat cho model IsValid");
             }
 
+            return Ok("Tra oke roi");
 
-
-
-
-            //Task<bool> CompleteTheDish(FoodStatusUpdateModel dataprocess, string? statusSymbolReplace, int? idFoodReplace)
-
-
-
-
-
-                return BadRequest();
-            
         }
-
 
 
 

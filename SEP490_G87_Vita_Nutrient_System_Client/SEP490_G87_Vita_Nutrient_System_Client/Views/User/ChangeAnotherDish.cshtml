@@ -115,7 +115,12 @@
         let suggestedLoadFoodType = 1;
 
 
+        let selectedItems = []; // Khởi tạo biến toàn cục
+
         function changeAllTheDishesCurrentMeal(jsonListFoodId, settingDetail) {
+            // Xóa dữ liệu cũ trước khi load danh sách mới
+            selectedItems = [];
+
             $.ajax({
                 url: 'https://localhost:7045/api/GenerateMeal/APICreateListOfAlternativeDishes',
                 type: 'POST',
@@ -132,9 +137,10 @@
                     ListFoodDiv.empty();
 
                     $.each(response, function (index, item) {
+                        // Thêm item vào mảng selectedItems mới
+                        selectedItems.push(item);
 
                         if (item.foodIdData && item.foodIdData.length > 0) {
-
                             var trayDiv = $('<div class="bg-gray-700 text-white p-4 rounded-lg flex flex-col items-start"></div>');
 
                             $.each(item.foodIdData, function (index2, item2) {
@@ -153,7 +159,7 @@
                             trayDiv.append(`
                                     <div class="flex items-center justify-between w-full mt-2">
                                         <span class="text-orange-400 text-sm">${item.foodIdData.reduce((sum, item2) => sum + item2.foodData.ingredientDetails100gReduceDTO.energy, 0)} Calories</span>
-                                        <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="changeOneDishCurrentMeal(item)">Pick</button>
+                                        <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="getThisListOfDishes(${index})">Pick</button>
                                     </div>
                                 `);
                             ListFoodDiv.append(trayDiv);
@@ -167,15 +173,19 @@
         }
 
 
-        function getThisListOfDishes(dataFoodListMealOfTheDay) {
+
+        function getThisListOfDishes(index) {
+            const dataFoodListMealOfTheDay = selectedItems[index]; // Lấy item từ mảng selectedItems
+
+            console.log("dataPost:", dataFoodListMealOfTheDay);
+
             $.ajax({
-                url: 'https://localhost:7045/api/GenerateMeal/APIgetThisListOfDishes?userId=1&myDay=2024-11-04',
+                url: 'https://localhost:7045/api/GenerateMeal/APIgetThisListOfDishes?userId=1&myDay=2024-10-30',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    dataFoodListMealOfTheDay: dataFoodListMealOfTheDay,
+                    dataListChange: dataFoodListMealOfTheDay // Đổi tên để khớp với tham số API
                 }),
-                traditional: true,
                 success: function (response) {
                     console.log("Response from server:", response);
                 },
@@ -184,6 +194,23 @@
                 }
             });
         }
+
+        // function getThisListOfDishes(index) {
+        //     // Tạm thời không sử dụng `data` để chỉ kiểm tra `userId` và `myDay`
+        //     $.ajax({
+        //         url: 'https://localhost:7045/api/GenerateMeal/APIgetThisListOfDishes?userId=1&myDay=2024-10-30',
+        //         type: 'POST',
+        //         contentType: 'application/json',
+        //         success: function (response) {
+        //             console.log("Response from server:", response);
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error("Error occurred:", error);
+        //         }
+        //     });
+        // }
+
+
 
 
         function changeOneDishCurrentMeal(jsonListFoodId, foodListId, positionFood, settingDetail) {
