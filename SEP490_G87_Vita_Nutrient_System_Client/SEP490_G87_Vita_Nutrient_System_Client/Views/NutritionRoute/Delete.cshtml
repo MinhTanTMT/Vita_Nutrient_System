@@ -1,22 +1,21 @@
-﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNewsDTO
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionRouteDTO
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
 <div class="container">
-    <h2 class="page-title">Xóa bài viết</h2>
+    <h2 class="page-title">Xóa Lộ Trình Dinh Dưỡng</h2>
 
-    <div class="article-details">
-        <h3 class="article-title">@Model.Title</h3>
-        <p><strong>Người tạo:</strong> @Model.NameCreater</p>
-        <p><strong>Ngày tạo:</strong> @(Model.DateCreated.HasValue ? Model.DateCreated.Value.ToString("dd-MM-yyyy") : "Chưa xác định")</p>
-        <p><strong>Nội dung:</strong> @Html.Raw(Model.Content)</p>
+    <div class="route-details">
+        <p><strong>Tên Lộ Trình:</strong> @Model.Name</p>
+        <p><strong>Mô Tả:</strong> @Model.Describe</p>
+        <p><strong>Ngày Bắt Đầu:</strong> @Model.StartDate?.ToString("dd/MM/yyyy")</p>
+        <p><strong>Ngày Kết Thúc:</strong> @Model.EndDate?.ToString("dd/MM/yyyy")</p>
     </div>
 
-    <div class="action-buttons">
+    <div class="action-buttons text-center">
         <button class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal">Xóa</button>
-        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        <a asp-action="GetAll" class="btn btn-secondary">Hủy</a>
     </div>
-    
 </div>
 
 <!-- Bootstrap Modal -->
@@ -30,10 +29,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                Bạn có chắc chắn muốn xóa bài viết này không?
+                Bạn có chắc chắn muốn xóa lộ trình dinh dưỡng này không?
             </div>
             <div class="modal-footer">
-                <form asp-action="Delete" method="post" class="delete-form">
+                <form asp-action="DeleteConfirmed" method="post">
                     <input type="hidden" asp-for="Id" />
                     <button type="submit" class="btn btn-danger">Xóa</button>
                 </form>
@@ -44,7 +43,6 @@
 </div>
 
 <style>
-    
     /* Global Font Styling */
     body {
         font-family: 'Roboto', sans-serif;
@@ -52,13 +50,12 @@
 
     /* Container Styling */
     .container {
-        max-width: 100%;
+        max-width: 600px;
         margin: 30px auto;
         padding: 20px;
         background-color: #f9f9f9;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        font-family: 'Roboto', sans-serif;
     }
 
     /* Page Title Styling */
@@ -71,18 +68,8 @@
         font-family: 'Roboto', sans-serif;
     }
 
-    /* Article Details */
-    .article-details {
-        margin-bottom: 20px;
-    }
-
-    .article-title {
-        font-size: 24px;
-        font-weight: 500;
-        color: #333;
-    }
-
-    .article-details p {
+    /* Route Details */
+    .route-details p {
         font-size: 16px;
         color: #555;
         margin: 5px 0;
@@ -99,7 +86,6 @@
         padding: 10px 20px;
         font-size: 16px;
         border-radius: 8px;
-        text-decoration: none;
         font-family: 'Roboto', sans-serif;
     }
 
@@ -109,9 +95,9 @@
         border: none;
     }
 
-        .btn-danger:hover {
-            background-color: #b71c1c;
-        }
+    .btn-danger:hover {
+        background-color: #b71c1c;
+    }
 
     .btn-secondary {
         background-color: #6c757d;
@@ -119,11 +105,12 @@
         border: none;
     }
 
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
 
-    .modal-title{
+    .modal-title,
+    .modal-footer .btn {
         font-family: 'Roboto', sans-serif;
     }
 </style>

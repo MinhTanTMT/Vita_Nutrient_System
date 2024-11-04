@@ -381,10 +381,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> AddEvaluation(int articleId, int rating)
         {
+            var userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            // Kiểm tra xem người dùng đã đánh giá bài viết này chưa
+            var existingEvaluation = await CheckUserEvaluation(articleId, userId);
+            if (existingEvaluation != null)
+            {
+                return BadRequest("Bạn đã đánh giá bài viết này.");
+            }
+
             var evaluationDto = new NewsEvaluationDTO
             {
                 ArticlesNewsId = articleId,
-                UserId = int.Parse(User.FindFirst("UserId")?.Value), // Lấy UserId của người dùng hiện tại
+                UserId = userId,
                 Ratting = (short)rating
             };
 
@@ -395,13 +404,26 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                return Ok(); // Trả về phản hồi thành công
+                return Ok();
             }
             else
             {
-                return BadRequest("Lỗi khi gửi đánh giá."); // Trả về phản hồi lỗi nếu có vấn đề
+                return BadRequest("Lỗi khi gửi đánh giá.");
             }
         }
+
+        // Phương thức phụ để kiểm tra xem người dùng đã đánh giá bài viết chưa
+        private async Task<NewsEvaluationDTO> CheckUserEvaluation(int articleId, int userId)
+        {
+            var response = await client.GetAsync($"/api/news/{articleId}/evaluations/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<NewsEvaluationDTO>(data);
+            }
+            return null;
+        }
+
 
     }
 }
