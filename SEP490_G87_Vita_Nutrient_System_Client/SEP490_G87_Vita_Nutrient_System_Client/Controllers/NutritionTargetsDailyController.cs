@@ -31,6 +31,20 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     var jsonData = await response.Content.ReadAsStringAsync();
                     nutritionTargetsDaily = JsonConvert.DeserializeObject<NutritionTargetsDaily>(jsonData);
+                    HttpResponseMessage mealResponse = await client.GetAsync($"{client.BaseAddress}/Meals/FindMealSettingsDetailByNutritionTargetsDailyId/{nutritionTargetsDaily.Id}");
+
+                        if (mealResponse.IsSuccessStatusCode)
+                        {
+                            var mealData = await mealResponse.Content.ReadAsStringAsync();
+                            var mealSettingsDetail = JsonConvert.DeserializeObject<CreateMealSettingsDetail>(mealData);
+
+                            // Gán calo từ MealSettingsDetail vào ViewBag
+                            ViewBag.MealCalories = mealSettingsDetail?.Calo;
+                        }
+                        else
+                        {
+                            ViewBag.MealCalories = "N/A"; // Không tìm thấy
+                        }
                 }
                 else
                 {
@@ -49,7 +63,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.ErrorMessage = "Không tìm thấy nutritionTargetsDaily.";
                 return RedirectToAction("Error");
             }
-
+            // Gán giá trị calo vào ViewBag
+            ViewBag.NutritionCalories = nutritionTargetsDaily?.Calories; 
             return View(nutritionTargetsDaily);
 
 

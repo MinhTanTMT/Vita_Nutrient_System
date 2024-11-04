@@ -410,7 +410,17 @@ using System.Net.Http;
                 if (response.IsSuccessStatusCode)
                 {
 
-                    return RedirectToAction("MealList", new { dayOfTheWeekId = model.DayOfTheWeekId });
+                    // Gọi UpdateCalo sau khi cập nhật bữa ăn thành công
+                    HttpResponseMessage updateCaloResponse = await client.PutAsync($"{client.BaseAddress}/Meals/UpdateCalo/{id}", null);
+
+                    if (updateCaloResponse.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("MealList", new { dayOfTheWeekId = model.DayOfTheWeekId });
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Lỗi khi cập nhật calo cho bữa ăn.";
+                    }
                 }
                 else
                 {

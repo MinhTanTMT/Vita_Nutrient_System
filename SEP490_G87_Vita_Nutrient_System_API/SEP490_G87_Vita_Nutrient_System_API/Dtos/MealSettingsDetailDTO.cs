@@ -32,4 +32,10 @@ public partial class MealSettingsDetailDTO
     public short? CookingDifficultyId { get; set; }
 
     public string? Name { get; set; }
+
+    public bool? IsActive { get; set; }
+
+    public short? OrderNumber { get; set; }
+
+    public int? Calo { get; set; }
 }

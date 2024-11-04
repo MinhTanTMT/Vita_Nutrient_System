@@ -11,6 +11,8 @@
         </div>
         <input type="hidden" asp-for="IsActive" />
         <input type="hidden" asp-for="OrderNumber" />
+        <input type="hidden" asp-for="Calo" />
+        <input type="hidden" asp-for="NutritionTargetsDailyId" />
         <div class="form-group">
             <label for="SlotOfTheDayId">Thứ tự ăn trong ngày</label>
             <select asp-for="SlotOfTheDayId" class="form-control" asp-items="ViewBag.SlotOfTheDays"></select>
