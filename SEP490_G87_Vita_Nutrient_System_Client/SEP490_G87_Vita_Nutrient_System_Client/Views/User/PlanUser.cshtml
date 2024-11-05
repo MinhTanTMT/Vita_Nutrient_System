@@ -182,38 +182,9 @@
 
                             <div class="relative inline-block">
                                 <!-- Nút ba chấm để mở popup -->
-                                <button onclick="toggleMenu(@index)" class="focus:outline-none">
+                                <button onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item2.SettingDetail, @item2.OrderSettingDetail)" class="focus:outline-none">
                                     <i class="fa-solid fa-ellipsis-vertical text-gray-500 hover:text-gray-300"></i>
                                 </button>
-
-                                <!-- Popup menu -->
-                                <div id="popupMenu-@index" class="absolute right-0 mt-2 bg-gray-800 text-white rounded-lg shadow-lg w-40 hidden z-10">
-                                    <ul class="py-1">
-                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center" onclick="event.preventDefault(); document.getElementById('ChanceFoodTheMeal').submit();">
-                                            <i class="fa fa-plus-square mr-2"></i> Chance Food
-                                        </li>
-                                        <form asp-controller="User" asp-action="ChangeAnotherDish" method="get" id="ChanceFoodTheMeal" style="display:none;">
-                                            <input name="SlotOfTheDay" value="@item2.SlotOfTheDay"></input>
-                                            <input name="SettingDetail" value="@item2.SettingDetail"></input>
-                                            <input name="OrderSettingDetail" value="@item2.OrderSettingDetail"></input>
-                                            <button type="submit">refreshTheMeal</button>
-                                        </form>
-
-
-                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                            <i class="fa fa-pen mr-2"></i> Create note
-                                        </li>
-                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                            <i class="fa fa-copy mr-2"></i> Copy foods
-                                        </li>
-                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                            <i class="fa fa-times mr-2"></i> Clear foods
-                                        </li>
-                                        <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer flex items-center">
-                                            <i class="fa fa-edit mr-2"></i> Edit meal settings
-                                        </li>
-                                    </ul>
-                                </div>
                             </div>
 
                             @if (item2.foodIdData.Length == 0)
@@ -323,6 +294,13 @@
                     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
                 }
 
+                function ChanceFoodTheMeal(slotOfTheDay, settingDetail, orderSettingDetail) {
+                    // Xây dựng URL với các tham số
+                    const url = `/User/ChangeAnotherDish?SlotOfTheDay=${encodeURIComponent(slotOfTheDay)}&SettingDetail=${encodeURIComponent(settingDetail)}&OrderSettingDetail=${encodeURIComponent(orderSettingDetail)}`;
+
+                    // Chuyển hướng trình duyệt sang URL
+                    window.location.href = url;
+                }
 
             </script>
 

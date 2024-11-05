@@ -62,14 +62,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             _context.Users.Add(user);
             _context.SaveChanges();
+            return user;
+
+
 
             //var userReturn = await _context.Users.FirstOrDefaultAsync(u => u.Account.Equals(user.Account) && u.Password.Equals(user.Password));
             //if (userReturn == null)
             //{
             //    return NotFound();
             //}
-
-            return user;
         }
 
         public dynamic GetUserById(int id)

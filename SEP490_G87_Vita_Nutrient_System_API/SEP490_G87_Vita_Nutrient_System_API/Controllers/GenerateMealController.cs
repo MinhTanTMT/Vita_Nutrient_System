@@ -167,20 +167,38 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
         [HttpPost("APIgetThisListOfDishes")]
         public async Task<IActionResult> APIgetThisListOfDishes(
-        [FromBody] DataFoodListMealOfTheDay dataListChange,
+        [FromBody] DataFoodListMealOfTheDay dataFoodListMealOfTheDay,
         [FromQuery] int userId,
         [FromQuery] DateTime myDay)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok("Đang dat cho model IsValid");
-            }
-
-            return Ok("Tra oke roi");
-
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            return Ok(await generateMealRepositories.GetThisListOfDishesInputMealDay(dataFoodListMealOfTheDay, userId, myDay));
         }
 
+
+
+        [HttpPost("APISelectReplaceCurrentFood")]
+        public async Task<IActionResult> APISelectReplaceCurrentFood(
+        [FromBody] FoodStatusUpdateModel model,
+        [FromQuery] int idFoodSelect)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            return Ok(await generateMealRepositories.CompleteTheDish(model, null, idFoodSelect, null));
+        }
+
+
     }
+
+
+
+
+
 
     public class AlternativeDishesRequest
     {

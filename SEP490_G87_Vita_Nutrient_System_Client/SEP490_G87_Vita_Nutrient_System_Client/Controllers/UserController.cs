@@ -200,36 +200,36 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
-            DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime? myDay = DateTime.Now;
 
 
-            if (userId == 1)
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
+                HttpContent content = res.Content;
+                string data = await content.ReadAsStringAsync();
 
-                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
+
+                if (rootObjectFoodList.Count() > 0)
                 {
-                    HttpContent content = res.Content;
-                    string data = await content.ReadAsStringAsync();
+                    DataFoodListMealOfTheDay dataFoodListMealOfTheDays = rootObjectFoodList.FirstOrDefault(x => x.SlotOfTheDay == SlotOfTheDay && x.SettingDetail == SettingDetail && x.OrderSettingDetail == OrderSettingDetail);
 
-                    IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
-
-                    if (rootObjectFoodList.Count() > 0)
+                    if (dataFoodListMealOfTheDays != null)
                     {
-                        DataFoodListMealOfTheDay dataFoodListMealOfTheDays = rootObjectFoodList.FirstOrDefault(x => x.SlotOfTheDay == SlotOfTheDay && x.SettingDetail == SettingDetail && x.OrderSettingDetail == OrderSettingDetail);
+                        ViewBag.myDay = myDay;
+                        ViewBag.userId = userId;
+                        ViewBag.APIgetThisListOfDishes = client.BaseAddress + $"/GenerateMeal/APIgetThisListOfDishes?userId={userId}&myDay={myDay}";
+                        ViewBag.APISelectReplaceCurrentFood = client.BaseAddress + $"/GenerateMeal/APISelectReplaceCurrentFood?idFoodSelect=";
 
-                        if (dataFoodListMealOfTheDays != null)
-                        {
-                            return View(dataFoodListMealOfTheDays);
-                        }
+                        return View(dataFoodListMealOfTheDays);
 
                     }
+
                 }
-
-
-
-
             }
+
 
             return View("PlanUser");
         }

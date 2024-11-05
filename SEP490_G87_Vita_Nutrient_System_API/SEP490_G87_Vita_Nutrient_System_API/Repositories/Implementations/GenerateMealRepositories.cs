@@ -905,7 +905,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public async Task<bool> GetThisListOfDishesInputMealDay(DataFoodListMealOfTheDay dataListChange, int userId, DateTime myDay)
         {
 
-            FoodStatusUpdateModel unitSlotFoodChange = new FoodStatusUpdateModel() { UserId = userId, MyDay = myDay, SlotOfTheDay = dataListChange.SlotOfTheDay, SettingDetail = dataListChange.SettingDetail };
+            FoodStatusUpdateModel unitSlotFoodChange = new FoodStatusUpdateModel() { UserId = userId, MyDay = myDay, SlotOfTheDay = dataListChange.SlotOfTheDay, SettingDetail = dataListChange.SettingDetail , OrderNumber = dataListChange.OrderSettingDetail};
             
             List<int> listIdFoodChange = new List<int>();
             foreach (var item in dataListChange.foodIdData)

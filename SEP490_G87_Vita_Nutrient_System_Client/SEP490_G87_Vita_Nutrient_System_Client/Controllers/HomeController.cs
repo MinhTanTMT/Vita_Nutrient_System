@@ -69,7 +69,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = false,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(999)
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -86,7 +86,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                         return RedirectToAction("Index", "Home");
                     }
-
                 }
                 else
                 {
