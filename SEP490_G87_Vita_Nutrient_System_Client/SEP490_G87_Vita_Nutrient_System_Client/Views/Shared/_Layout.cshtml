@@ -294,7 +294,26 @@
                             }
                             else if (role.Equals("UserPremium"))
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("MealSettingsDetailToList", "Meal")">
+                                        <span class="menu-title">Bố Cục Bữa Ăn</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("UserPhysicalStatistics", "User")">
+                                        <span class="menu-title">Thống Kê Vật Lý</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
+                                        <span class="menu-title">Thống Kê Vật Lý</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                             }
                             else if (role.Equals("User"))
                             {
@@ -311,6 +330,14 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
+                                        <span class="menu-title">Plan User</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
                             }
                             else
                             {
