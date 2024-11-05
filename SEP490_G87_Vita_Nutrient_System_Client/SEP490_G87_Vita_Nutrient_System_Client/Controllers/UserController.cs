@@ -193,8 +193,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> RefreshTheMeal()
         {
+            DateTime? myDay = DateTime.Now;
 
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIRefreshTheMeal?myDay=2024-10-30T00%3A00%3A00&idUser=1");
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
