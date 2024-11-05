@@ -345,7 +345,6 @@ using System.Net.Http;
                 ViewBag.ErrorMessage = "Không tìm thấy UserId.";
                 return View();
             }
-
             try
             {
                 

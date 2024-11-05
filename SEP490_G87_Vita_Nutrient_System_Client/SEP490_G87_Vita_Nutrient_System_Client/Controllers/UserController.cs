@@ -9,8 +9,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
-	public class UserController : Controller
-	{
+    public class UserController : Controller
+    {
 
         ////////////////////////////////////////////////////////////
         /// Tân
@@ -28,33 +28,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpGet, Authorize(Roles = "User, UserPremium")]
-        public async Task<IActionResult> cAsync()
-        {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
-
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/Users/GetUserById/" + userId);
-
-            if (res.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                HttpContent content = res.Content;
-                string data = await content.ReadAsStringAsync();
-
-                TempData["user"] = data;
-
-                return View();
-            }
-            return RedirectToAction("Error");
-        }
-
-
-
         [HttpGet]
         public async Task<IActionResult> PlanUserAsync()
         {
 
             //DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-            
+
             DateTime? myDay = DateTime.Now;
 
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
@@ -193,6 +172,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> RefreshTheMeal()
         {
+            //DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            //int userId = 1;
+
+
             DateTime? myDay = DateTime.Now;
 
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
@@ -212,9 +195,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangeAnotherDish(int SlotOfTheDay, int SettingDetail, int OrderSettingDetail)
         {
+            //DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            //int userId = 1;
+
+
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
             DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
-            int userId = 1;
 
             if (userId == 1)
             {
@@ -231,17 +218,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     {
                         DataFoodListMealOfTheDay dataFoodListMealOfTheDays = rootObjectFoodList.FirstOrDefault(x => x.SlotOfTheDay == SlotOfTheDay && x.SettingDetail == SettingDetail && x.OrderSettingDetail == OrderSettingDetail);
 
-                        if(dataFoodListMealOfTheDays != null)
+                        if (dataFoodListMealOfTheDays != null)
                         {
                             return View(dataFoodListMealOfTheDays);
                         }
-                        
+
                     }
                 }
 
 
 
-                
+
             }
 
             return View("PlanUser");
@@ -275,14 +262,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         [HttpGet("foodsList")]
         public async Task<IActionResult> FoodList(
-            string searchQuery = "", 
+            string searchQuery = "",
             int foodTypeId = 0,
-            int page = 1, 
+            int page = 1,
             int pageSize = 10)
         {
             try
             {
-                HttpResponseMessage response = foodTypeId == 0?
+                HttpResponseMessage response = foodTypeId == 0 ?
                                     await client.GetAsync(client.BaseAddress + "/Food/GetFoods/")
                                     :
                                     await client.GetAsync(client.BaseAddress + "/Food/GetFoods?foodTypeId=" + foodTypeId);
@@ -299,10 +286,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     //remove foods that are not active
                     foods.RemoveAll(f => f.IsActive == false);
 
-            ////////////////////////////////////////////////////////////
-            /// Sơn
-            ////////////////////////////////////////////////////////////
-            ///
+                    ////////////////////////////////////////////////////////////
+                    /// Sơn
+                    ////////////////////////////////////////////////////////////
+                    ///
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
@@ -330,13 +317,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 List<FoodType> foodTypes = JsonConvert.DeserializeObject<List<FoodType>>(data1);
                 ViewBag.foodTypes = foodTypes;
                 FoodType ft = foodTypes.FirstOrDefault(f => f.FoodTypeId == foodTypeId);
-                ViewBag.foodType = ft ?? new FoodType { FoodTypeId = 0, Name = "All Types"};
+                ViewBag.foodType = ft ?? new FoodType { FoodTypeId = 0, Name = "All Types" };
                 ViewBag.foodTypeId = foodTypeId;
                 ViewBag.searchQuery = searchQuery;
 
                 return View("~/Views/User/FoodList.cshtml");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/User/FoodList.cshtml");
@@ -348,7 +335,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                HttpResponseMessage response = 
+                HttpResponseMessage response =
                     await client.GetAsync(client.BaseAddress + "/Food/GetFoodById/" + foodId);
 
                 HttpResponseMessage response1 =
@@ -375,7 +362,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 return View("~/Views/User/FoodDetail.cshtml");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/User/FoodDetail.cshtml");
@@ -392,7 +379,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
         [HttpGet("UserPhysicalStatistics")]
-        public async Task<IActionResult> GetUserPhysicalStatistics()
+        public async Task<IActionResult> UserPhysicalStatistics()
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
@@ -415,12 +402,33 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     IsPremium = userDetails?.IsPremium
                 };
 
-                return View("UserPhysicalStatistics", model);
+                return View(model);
             }
 
             return View("Error");
         }
 
 
+
+        [HttpGet()]
+        public async Task<IActionResult> UserProfile()
+        {
+
+
+            /// dùng bao nhiêu thì dùng 
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/Users/GetUserById/" + userId);
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContent content = res.Content;
+                string data = await content.ReadAsStringAsync();
+
+                return View();
+            }
+            return RedirectToAction("Error");
+
+        }
     }
 }
