@@ -31,8 +31,9 @@
                             {
                                 <div class="star-rating">
                                     @{
-                                        int fullStars = (int)Math.Floor(article.Rate ?? 0);
-                                        bool hasHalfStar = (article.Rate % 1) >= 0.5;
+                                        double roundedRate = Math.Round(article.Rate ?? 0, 2);
+                                        int fullStars = (int)Math.Floor(roundedRate);
+                                        bool hasHalfStar = (roundedRate % 1) >= 0.5;
                                     }
 
                                     @for (int i = 1; i <= 5; i++)
@@ -50,7 +51,7 @@
                                             <i class="fa fa-star text-secondary"></i>
                                         }
                                     }
-                                    <p>@article.Rate/5 - (@article.NumberRate bình chọn)</p>
+                                    <p>@roundedRate/5 - (@article.NumberRate bình chọn)</p>
                                 </div>
                             }
                             else
