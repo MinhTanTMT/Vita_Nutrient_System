@@ -47,6 +47,61 @@
         <a asp-action="IndexForUsers" class="btn btn-secondary">Quay lại danh sách</a>
     </div>
 </div>
+<script>
+    async function submitRating(rating) {
+        const articleId = @Model.Id;
+        const userId = @User.FindFirst("UserId")?.Value;
+
+        const evaluationDto = {
+            ArticlesNewsId: articleId,
+            UserId: parseInt(userId),
+            Ratting: rating
+        };
+
+        try {
+            const response = await fetch(`https://localhost:7045/api/news/${articleId}/evaluations`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(evaluationDto)
+            });
+
+            if (response.ok) {
+                updateRatingDisplay(rating);
+                disableRatingInputs();
+            } else if (response.status === 409) {
+                const errorText = await response.text(); // Lấy thông báo từ API
+                alert(errorText); // Hiển thị thông báo nếu đã đánh giá
+            } else {
+                alert("Lỗi khi gửi đánh giá.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Lỗi khi gửi đánh giá.");
+        }
+    }
+
+    function updateRatingDisplay(rating) {
+        const rateDisplay = document.getElementById('rating-display');
+        let currentRate = parseFloat("@Model.Rate") || 0;
+        let currentVotes = parseInt("@Model.NumberRate") || 0;
+
+        // Cập nhật điểm trung bình và số lượt bình chọn
+        currentRate = ((currentRate * currentVotes) + rating) / (currentVotes + 1);
+        currentVotes += 1;
+
+        // Cập nhật hiển thị đánh giá
+        rateDisplay.textContent = `${currentRate.toFixed(2)}/5 - (${currentVotes} bình chọn)`;
+    }
+
+    function disableRatingInputs() {
+        document.querySelectorAll('.star-rating input').forEach(input => {
+            input.disabled = true;
+        });
+    }
+</script>
+
 
 <style>
     /* Global Font Styling */
@@ -155,58 +210,5 @@
             }
 
 </style>
-<script>
-    async function submitRating(rating) {
-        const articleId = @Model.Id;
-        const userId = @User.FindFirst("UserId")?.Value;
 
-        if (!userId) {
-            alert("Bạn cần đăng nhập để đánh giá.");
-            return;
-        }
-
-        const evaluationDto = {
-            ArticlesNewsId: articleId,
-            UserId: parseInt(userId),
-            Ratting: rating
-        };
-
-        try {
-            const response = await fetch(`https://localhost:7045/api/news/${articleId}/evaluations`, { // Sử dụng đúng myUri từ file cấu hình
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(evaluationDto)
-            });
-
-            if (response.ok) {
-                updateRatingDisplay(rating);
-                disableRatingInputs();
-            } else if (response.status === 409) {
-                const errorText = await response.text(); // Lấy thông báo từ API
-                alert(errorText);
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Lỗi khi gửi đánh giá.");
-        }
-    }
-
-    function updateRatingDisplay(rating) {
-        const rateDisplay = document.getElementById('rating-display');
-        let currentRate = parseFloat("@Model.Rate") || 0;
-        let currentVotes = parseInt("@Model.NumberRate") || 0;
-
-        currentRate = ((currentRate * currentVotes) + rating) / (currentVotes + 1);
-        currentVotes += 1;
-
-        rateDisplay.textContent = `${currentRate.toFixed(1)}/5 - (${currentVotes} bình chọn)`;
-    }
-
-    function disableRatingInputs() {
-        document.querySelectorAll('.star-rating input').forEach(input => {
-            input.disabled = true;
-        });
-    }
-</script>
 
