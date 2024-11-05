@@ -37,5 +37,5 @@ public partial class MealSettingsDetailDTO
 
     public short? OrderNumber { get; set; }
 
-    public int? Calo { get; set; }
+    public int? Calories { get; set; }
 }

@@ -158,6 +158,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             nutritionTarget.FatsMax = (short)(totalCalories / 9);       // 9 calo mỗi gram cho chất béo
             nutritionTarget.MinimumFiber = (short)Math.Round((totalCalories / 1000) * 14); // Chất xơ tối thiểu
         }
+        private void CalculateMacrosAndFiberForMeal(MealSettingsDetail mealSettingsDetail, double totalCalories)
+        {
+
+            mealSettingsDetail.Calories = (short?)Math.Round(totalCalories);
+            mealSettingsDetail.CarbsMax = (short)(totalCalories / 4);      // 4 calo mỗi gram cho carbs
+            mealSettingsDetail.ProteinMax = (short)(totalCalories / 4);    
+            mealSettingsDetail.FatsMax = (short)(totalCalories / 9);
+            mealSettingsDetail.CarbsMin = 0;      
+            mealSettingsDetail.ProteinMin = 0;    
+            mealSettingsDetail.FatsMin = 0;
+            mealSettingsDetail.MinimumFiber = (short)Math.Round((totalCalories / 1000) * 14); // Chất xơ tối thiểu
+        }
+
         private async Task DistributeCaloriesForSameSlotMealsAsync(int index,short? slotOfTheDayId, MealSettingsDetail mealSettingsDetail, List<MealSettingsDetail> activeMeals, int userId, double totalCaloriesSlot)
          {
             // Lấy tất cả các bữa có cùng SlotOfTheDayId và thêm bữa mới
@@ -214,7 +227,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             {
                                 existingNutritionTarget.IsActive = true;
                                 existingNutritionTarget.Calories = (short?)Math.Round(caloriesPerMeal);
-                                meal.Calo = (short?)Math.Round(caloriesPerMeal);
+                                CalculateMacrosAndFiberForMeal(meal, caloriesPerMeal);
                                 CalculateMacrosAndFiber(existingNutritionTarget, caloriesPerMeal);
                                 _context.NutritionTargetsDailies.Update(existingNutritionTarget);
                             }
@@ -242,8 +255,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                             meal.NutritionTargetsDailyId = newNutritionTarget.Id;
                             meal.NutritionTargetsDaily = newNutritionTarget;
-                            meal.Calo = (short)Math.Round(caloriesPerMeal);
-                        }
+                            meal.Calories = (short)Math.Round(caloriesPerMeal);
+                            meal.CarbsMax = (short)(caloriesPerMeal / 4);      // 4 calo mỗi gram cho carbs
+                            meal.ProteinMax = (short)(caloriesPerMeal / 4);    // 4 calo mỗi gram cho protein
+                            meal.FatsMax = (short)(caloriesPerMeal / 9);       // 9 calo mỗi gram cho chất béo
+                            meal.MinimumFiber = (short)Math.Round((caloriesPerMeal / 1000) * 14); // Chất xơ tối thiểu
+                    }
                     }
 
                     allocatedCalories += caloriesForGroup;
@@ -344,7 +361,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         {
                             existingNutritionTarget.IsActive = true;
                             existingNutritionTarget.Calories = (short)caloriesForSlot;
-                            meal.Calo = (short)caloriesForSlot;
+                            CalculateMacrosAndFiberForMeal(meal, caloriesForSlot);
                             CalculateMacrosAndFiber(existingNutritionTarget, caloriesForSlot);
                             _context.NutritionTargetsDailies.Update(existingNutritionTarget);
                         }
@@ -371,7 +388,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         _context.NutritionTargetsDailies.Add(newNutritionTarget);
                         meal.NutritionTargetsDailyId = newNutritionTarget.Id;
                         meal.NutritionTargetsDaily = newNutritionTarget;
-                        meal.Calo = (short)caloriesForSlot;
+                        meal.Calories = (short)caloriesForSlot;
+                        meal.CarbsMax = (short)(caloriesForSlot / 4);      // 4 calo mỗi gram cho carbs
+                        meal.ProteinMax = (short)(caloriesForSlot / 4);    // 4 calo mỗi gram cho protein
+                        meal.FatsMax = (short)(caloriesForSlot / 9);       // 9 calo mỗi gram cho chất béo
+                        meal.MinimumFiber = (short)Math.Round((caloriesForSlot / 1000) * 14); // Chất xơ tối thiểu
                     }
                 }
             }
@@ -463,7 +484,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             mealSettingsDetail.IsActive = model.IsActive;
             mealSettingsDetail.OrderNumber = model.OrderNumber;
             mealSettingsDetail.Name = model.Name;
-            mealSettingsDetail.Calo = model.Calo;
+            mealSettingsDetail.Calories = (short)model.Calories;
             _context.MealSettingsDetails.Update(mealSettingsDetail);
             await _context.SaveChangesAsync();
         }
@@ -712,7 +733,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             mealSettingsDetail.IsActive = false;
             var removedOrderNumber = mealSettingsDetail.OrderNumber;
             mealSettingsDetail.OrderNumber = null;
-            mealSettingsDetail.Calo = 0;
+            mealSettingsDetail.Calories = 0;
+            mealSettingsDetail.CarbsMin = 0;
+            mealSettingsDetail.CarbsMax = 0;
+            mealSettingsDetail.ProteinMax = 0;
+            mealSettingsDetail.ProteinMin = 0;
+            mealSettingsDetail.FatsMin = 0;
+            mealSettingsDetail.FatsMax = 0;
+            mealSettingsDetail.MinimumFiber = 0;
             _context.MealSettingsDetails.Update(mealSettingsDetail);
 
             // Cập nhật trạng thái IsActive của NutritionTargetsDaily nếu tồn tại
