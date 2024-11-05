@@ -27,7 +27,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-        
+
 
 
         ////////////////////////////////////////////////////////////
@@ -44,6 +44,20 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Chiến
         ////////////////////////////////////////////////////////////
         ///
+
+
+        [HttpGet()]
+        public async Task<IActionResult> NutritionistProfile()
+        {
+
+
+
+
+
+
+                return View();
+          
+        }
 
 
 

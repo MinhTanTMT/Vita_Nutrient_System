@@ -114,6 +114,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmV3c1xJbmRleEZvclVzZXJzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/Nutritionist/NutritionistProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnV0cml0aW9uaXN0XE51dHJpdGlvbmlzdFByb2ZpbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/NutritionRoute/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTnV0cml0aW9uUm91dGVcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -164,10 +168,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/User/PlanUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQbGFuVXNlci5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/User/ProfileUser.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQcm9maWxlVXNlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/SEP490_G87_Vita_Nutrient_System/Vita_Nutrient_System/SEP490_G87_Vita_Nutrient_System_Client/SEP490_G87_Vita_Nutrient_System_Client/Views/User/UserPhysicalStatistics.cshtml]
