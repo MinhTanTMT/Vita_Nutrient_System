@@ -145,6 +145,34 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View();
         }
 
+
+
+        // GET: Details of a single article for users
+        [HttpGet]
+        public async Task<IActionResult> DetailsForUsers(int id)
+        {
+            try
+            {
+                var response = await client.GetAsync($"api/news/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
+                    return View(article); // Sử dụng View riêng cho user
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+                return View();
+            }
+        }
+
+
+
         // POST: Create a new article
         [HttpPost]
         [Authorize(Roles = "Admin")]
