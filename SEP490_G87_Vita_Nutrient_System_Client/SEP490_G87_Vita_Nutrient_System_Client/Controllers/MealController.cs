@@ -260,10 +260,6 @@ using System.Net.Http;
         }
 
 
-
-
-
-
         [HttpPost]
         public async Task<IActionResult> CreateMealSettingsDetailAsync(CreateMealSettingsDetail model)
         {
@@ -349,7 +345,6 @@ using System.Net.Http;
                 ViewBag.ErrorMessage = "Không tìm thấy UserId.";
                 return View();
             }
-
             try
             {
                 

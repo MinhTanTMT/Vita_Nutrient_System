@@ -902,24 +902,28 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-
         public async Task<bool> GetThisListOfDishesInputMealDay(DataFoodListMealOfTheDay dataListChange, int userId, DateTime myDay)
         {
 
-
+            FoodStatusUpdateModel unitSlotFoodChange = new FoodStatusUpdateModel() { UserId = userId, MyDay = myDay, SlotOfTheDay = dataListChange.SlotOfTheDay, SettingDetail = dataListChange.SettingDetail };
+            
+            List<int> listIdFoodChange = new List<int>();
             foreach (var item in dataListChange.foodIdData)
             {
-                FoodStatusUpdateModel unitFoodChange = new FoodStatusUpdateModel() { UserId = userId, MyDay = myDay, SlotOfTheDay = dataListChange.SlotOfTheDay, SettingDetail = dataListChange.SettingDetail , IdFood = item.idFood, StatusSymbol = "-" };
-                //if (!(await CompleteTheDish())) return true;
-
-                
+                listIdFoodChange.Add(item.idFood);
             }
 
-
-            return false;
+            if (await CompleteTheDish(unitSlotFoodChange, null, null, listIdFoodChange))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            } 
         }
 
-        public async Task<bool> CompleteTheDish(FoodStatusUpdateModel dataprocess, string? statusSymbolReplace, int? idFoodReplace)
+        public async Task<bool> CompleteTheDish(FoodStatusUpdateModel dataprocess, string? statusSymbolReplace, int? idFoodReplace, List<int>? listIdFoodChange)
         {
 
             NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= dataprocess.MyDay && nr.EndDate >= dataprocess.MyDay && nr.UserId == dataprocess.UserId && nr.IsDone == false);
@@ -941,68 +945,67 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                                 if (mealSettingsDetail != null) {
 
-                                }
-                                else
-                                {
+                                    StringBuilder stringListIdOfSlot = new StringBuilder();
+                                    DataFoodListMealOfTheDay dataFoodListMealOfTheDays = await SplitAndProcessDataMealOfTheDay(arrayData[i]);
+                                    stringListIdOfSlot.AppendLine($"SlotOfTheDay={dataFoodListMealOfTheDays.SlotOfTheDay};SettingDetail={dataFoodListMealOfTheDays.SettingDetail};OrderNumber={dataFoodListMealOfTheDays.OrderSettingDetail}:");
 
-                                }
-
-                                StringBuilder stringListIdOfSlot = new StringBuilder();
-                                DataFoodListMealOfTheDay dataFoodListMealOfTheDays = await SplitAndProcessDataMealOfTheDay(arrayData[i]);
-                                stringListIdOfSlot.AppendLine($"SlotOfTheDay={dataFoodListMealOfTheDays.SlotOfTheDay};SettingDetail={dataFoodListMealOfTheDays.SettingDetail};OrderNumber={dataFoodListMealOfTheDays.OrderSettingDetail}:");
-
-                                if (dataFoodListMealOfTheDays.foodIdData.Length == mealSettingsDetail.NumberOfDishes)
-                                {
-
-                                }
-                                else
-                                {
-
-                                }
-
-                                foreach (var foodOfSlot in dataFoodListMealOfTheDays.foodIdData)
-                                {
-
-                                    if (statusSymbolReplace != null && !foodOfSlot.statusSymbol.Equals("!"))
+                                    if (dataFoodListMealOfTheDays.foodIdData.Length == mealSettingsDetail.NumberOfDishes && listIdFoodChange == null)
                                     {
-                                        if (foodOfSlot.idFood == dataprocess.IdFood && foodOfSlot.statusSymbol.Equals(dataprocess.StatusSymbol) && foodOfSlot.positionFood == dataprocess.PositionFood)
+                                        foreach (var foodOfSlot in dataFoodListMealOfTheDays.foodIdData)
                                         {
-                                            stringListIdOfSlot.Append($"{foodOfSlot.idFood}{statusSymbolReplace};");
+                                            if (statusSymbolReplace != null && !foodOfSlot.statusSymbol.Equals("!"))
+                                            {
+                                                if (foodOfSlot.idFood == dataprocess.IdFood && foodOfSlot.statusSymbol.Equals(dataprocess.StatusSymbol) && foodOfSlot.positionFood == dataprocess.PositionFood)
+                                                {
+                                                    stringListIdOfSlot.Append($"{foodOfSlot.idFood}{statusSymbolReplace};");
+                                                }
+                                                else
+                                                {
+                                                    stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
+                                                }
+                                            }
+                                            else if (idFoodReplace != null && !foodOfSlot.statusSymbol.Equals("!"))
+                                            {
+                                                if (foodOfSlot.idFood == dataprocess.IdFood && foodOfSlot.positionFood == dataprocess.PositionFood)
+                                                {
+                                                    stringListIdOfSlot.Append($"{idFoodReplace}-;");
+                                                }
+                                                else
+                                                {
+                                                    stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
+                                            }
                                         }
-                                        else
-                                        {
-                                            stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
-                                        } 
-                                    }
-                                    else if (idFoodReplace != null && !foodOfSlot.statusSymbol.Equals("!"))
-                                    {
-                                        if (foodOfSlot.idFood == dataprocess.IdFood && foodOfSlot.positionFood == dataprocess.PositionFood)
-                                        {
-                                            stringListIdOfSlot.Append($"{idFoodReplace}-;");
-                                        }
-                                        else
-                                        {
-                                            stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
-                                        }
+                                        arrayData[i] = stringListIdOfSlot.ToString();
                                     }
                                     else
                                     {
-                                        stringListIdOfSlot.Append($"{foodOfSlot.idFood}{foodOfSlot.statusSymbol};");
+                                        IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(listIdFoodChange, mealSettingsDetail.Id);
+                                        foreach (var foodOfSlot in dataFoodOfSlot)
+                                        {
+                                            stringListIdOfSlot.Append(foodOfSlot.FoodListId + "-;");
+                                        }
+                                        arrayData[i] = stringListIdOfSlot.ToString();
                                     }
                                 }
-                                arrayData[i] = stringListIdOfSlot.ToString();
+                                else
+                                {
+                                    arrayData[i] = "";
+                                }
                             }
                             stringListId.Append(arrayData[i] + "#");
                         }
                     }
 
-                    //mealOfTheDay.DataFoodListId = stringListId.ToString();
                     mealOfTheDay.DataFoodListId = stringListId.ToString().Remove(stringListId.ToString().Length - 1);
                     _context.SaveChanges();
                     return true;
                 }
             }
-
             return false;
         }
 

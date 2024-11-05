@@ -9,8 +9,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
-	public class UserController : Controller
-	{
+    public class UserController : Controller
+    {
 
         ////////////////////////////////////////////////////////////
         /// Tân
@@ -28,115 +28,92 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpGet, Authorize(Roles = "User, UserPremium")]
-        public async Task<IActionResult> cAsync()
+        [HttpGet]
+        public async Task<IActionResult> PlanUserAsync()
         {
+
+            //DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
+            DateTime? myDay = DateTime.Now;
+
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/Users/GetUserById/" + userId);
+            // /GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 HttpContent content = res.Content;
                 string data = await content.ReadAsStringAsync();
 
-                TempData["user"] = data;
+                IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
 
-                return View();
-            }
-            return RedirectToAction("Error");
-        }
-
-
-
-        [HttpGet]
-        public async Task<IActionResult> PlanUserAsync()
-        {
-
-            DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-
-            //int userId = int.Parse(User.FindFirst("UserId")?.Value);
-
-            // /GenerateMeal/APIListMealOfTheDay?myDay=2024-10-30T00%3A00%3A00&idUser=1
-
-            int userId = 1;
-
-            if (userId == 1)
-            {
-                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
-
-                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                if (rootObjectFoodList.Count() > 0)
                 {
-                    HttpContent content = res.Content;
-                    string data = await content.ReadAsStringAsync();
+                    List<SlotBranch> slotBranchesData = new List<SlotBranch>();
 
-                    IEnumerable<DataFoodListMealOfTheDay> rootObjectFoodList = JsonConvert.DeserializeObject<IEnumerable<DataFoodListMealOfTheDay>>(data);
-
-                    if (rootObjectFoodList.Count() > 0)
+                    var numberSlot = rootObjectFoodList.Select(x => new
                     {
-                        List<SlotBranch> slotBranchesData = new List<SlotBranch>();
+                        x.SlotOfTheDay,
+                        x.NameSlotOfTheDay
+                    }).Distinct().ToList();
 
-                        var numberSlot = rootObjectFoodList.Select(x => new
+                    foreach (var item in numberSlot)
+                    {
+                        SlotBranch slotBranch = new SlotBranch()
                         {
-                            x.SlotOfTheDay,
-                            x.NameSlotOfTheDay
-                        }).Distinct().ToList();
+                            SlotOfTheDay = item.SlotOfTheDay,
+                            NameSlotOfTheDay = item.NameSlotOfTheDay,
+                            TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2),
+                            foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.OrderSettingDetail).ToArray()
+                        };
+                        slotBranchesData.Add(slotBranch);
+                    }
 
-                        foreach (var item in numberSlot)
-                        {
-                            SlotBranch slotBranch = new SlotBranch()
-                            {
-                                SlotOfTheDay = item.SlotOfTheDay,
-                                NameSlotOfTheDay = item.NameSlotOfTheDay,
-                                TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2),
-                                foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.OrderSettingDetail).ToArray()
-                            };
-                            slotBranchesData.Add(slotBranch);
-                        }
+                    List<FoodList> foodListTotaAll = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Select(item1 => item1.foodData)
+                        .ToList();
 
-                        List<FoodList> foodListTotaAll = rootObjectFoodList
-                            .SelectMany(item => item.foodIdData)
-                            .Select(item1 => item1.foodData)
-                            .ToList();
+                    List<FoodList> foodListNotEaten = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "-")
+                        .Select(item1 => item1.foodData)
+                        .ToList();
 
-                        List<FoodList> foodListNotEaten = rootObjectFoodList
-                            .SelectMany(item => item.foodIdData)
-                            .Where(item1 => item1.statusSymbol == "-")
-                            .Select(item1 => item1.foodData)
-                            .ToList();
+                    List<FoodList> foodListEaten = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "+")
+                        .Select(item1 => item1.foodData)
+                        .ToList();
 
-                        List<FoodList> foodListEaten = rootObjectFoodList
-                            .SelectMany(item => item.foodIdData)
-                            .Where(item1 => item1.statusSymbol == "+")
-                            .Select(item1 => item1.foodData)
-                            .ToList();
+                    List<FoodList> foodListMissed = rootObjectFoodList
+                        .SelectMany(item => item.foodIdData)
+                        .Where(item1 => item1.statusSymbol == "!")
+                        .Select(item1 => item1.foodData)
+                        .ToList();
 
-                        List<FoodList> foodListMissed = rootObjectFoodList
-                            .SelectMany(item => item.foodIdData)
-                            .Where(item1 => item1.statusSymbol == "!")
-                            .Select(item1 => item1.foodData)
-                            .ToList();
-
-                        List<FoodList> nullData = new List<FoodList> { new FoodList {
+                    List<FoodList> nullData = new List<FoodList> { new FoodList {
                         IngredientDetails100gReduceDTO = new Ingredientdetails100greducedto {  },
                         KeyNote = new KeyNote { } ,
                         ScaleAmounts = new ScaleAmounts {  } } };
 
-                        ViewBag.myDay = myDay;
-                        ViewBag.userId = userId;
-                        ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListTotaAll) : TotalAllTheIngredientsOfTheDish(nullData);
-                        ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListNotEaten) : TotalAllTheIngredientsOfTheDish(nullData);
-                        ViewBag.foodListEatenCalculated = foodListEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListEaten) : TotalAllTheIngredientsOfTheDish(nullData);
-                        ViewBag.foodListMissedCalculated = foodListMissed.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListMissed) : TotalAllTheIngredientsOfTheDish(nullData);
+                    ViewBag.myDay = myDay;
+                    ViewBag.userId = userId;
+                    ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListTotaAll) : TotalAllTheIngredientsOfTheDish(nullData);
+                    ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListNotEaten) : TotalAllTheIngredientsOfTheDish(nullData);
+                    ViewBag.foodListEatenCalculated = foodListEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListEaten) : TotalAllTheIngredientsOfTheDish(nullData);
+                    ViewBag.foodListMissedCalculated = foodListMissed.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListMissed) : TotalAllTheIngredientsOfTheDish(nullData);
 
-                        return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
-                    }
-                    else
-                    {
-                        return RedirectToAction("Error");
-                    }
+                    return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
                 }
-      
+                else
+                {
+                    return RedirectToAction("Error");
+                }
+
+
             }
 
             return RedirectToAction("Error");
@@ -195,8 +172,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> RefreshTheMeal()
         {
+            //DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            //int userId = 1;
 
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/GenerateMeal/APIRefreshTheMeal?myDay=2024-10-30T00%3A00%3A00&idUser=1");
+
+            DateTime? myDay = DateTime.Now;
+
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -211,9 +195,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangeAnotherDish(int SlotOfTheDay, int SettingDetail, int OrderSettingDetail)
         {
+            //DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            //int userId = 1;
+
+
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
             DateTime? myDay = DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
-            int userId = 1;
 
             if (userId == 1)
             {
@@ -230,17 +218,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     {
                         DataFoodListMealOfTheDay dataFoodListMealOfTheDays = rootObjectFoodList.FirstOrDefault(x => x.SlotOfTheDay == SlotOfTheDay && x.SettingDetail == SettingDetail && x.OrderSettingDetail == OrderSettingDetail);
 
-                        if(dataFoodListMealOfTheDays != null)
+                        if (dataFoodListMealOfTheDays != null)
                         {
                             return View(dataFoodListMealOfTheDays);
                         }
-                        
+
                     }
                 }
 
 
 
-                
+
             }
 
             return View("PlanUser");
@@ -274,14 +262,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         [HttpGet("foodsList")]
         public async Task<IActionResult> FoodList(
-            string searchQuery = "", 
+            string searchQuery = "",
             int foodTypeId = 0,
-            int page = 1, 
+            int page = 1,
             int pageSize = 10)
         {
             try
             {
-                HttpResponseMessage response = foodTypeId == 0?
+                HttpResponseMessage response = foodTypeId == 0 ?
                                     await client.GetAsync(client.BaseAddress + "/Food/GetFoods/")
                                     :
                                     await client.GetAsync(client.BaseAddress + "/Food/GetFoods?foodTypeId=" + foodTypeId);
@@ -298,10 +286,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     //remove foods that are not active
                     foods.RemoveAll(f => f.IsActive == false);
 
-            ////////////////////////////////////////////////////////////
-            /// Sơn
-            ////////////////////////////////////////////////////////////
-            ///
+                    ////////////////////////////////////////////////////////////
+                    /// Sơn
+                    ////////////////////////////////////////////////////////////
+                    ///
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
@@ -329,13 +317,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 List<FoodType> foodTypes = JsonConvert.DeserializeObject<List<FoodType>>(data1);
                 ViewBag.foodTypes = foodTypes;
                 FoodType ft = foodTypes.FirstOrDefault(f => f.FoodTypeId == foodTypeId);
-                ViewBag.foodType = ft ?? new FoodType { FoodTypeId = 0, Name = "All Types"};
+                ViewBag.foodType = ft ?? new FoodType { FoodTypeId = 0, Name = "All Types" };
                 ViewBag.foodTypeId = foodTypeId;
                 ViewBag.searchQuery = searchQuery;
 
                 return View("~/Views/User/FoodList.cshtml");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/User/FoodList.cshtml");
@@ -347,7 +335,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                HttpResponseMessage response = 
+                HttpResponseMessage response =
                     await client.GetAsync(client.BaseAddress + "/Food/GetFoodById/" + foodId);
 
                 HttpResponseMessage response1 =
@@ -374,7 +362,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 return View("~/Views/User/FoodDetail.cshtml");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/User/FoodDetail.cshtml");
@@ -391,7 +379,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
         [HttpGet("UserPhysicalStatistics")]
-        public async Task<IActionResult> GetUserPhysicalStatistics()
+        public async Task<IActionResult> UserPhysicalStatistics()
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
@@ -414,12 +402,33 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     IsPremium = userDetails?.IsPremium
                 };
 
-                return View("UserPhysicalStatistics", model);
+                return View(model);
             }
 
             return View("Error");
         }
 
 
+
+        [HttpGet()]
+        public async Task<IActionResult> UserProfile()
+        {
+
+
+            /// dùng bao nhiêu thì dùng 
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/Users/GetUserById/" + userId);
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContent content = res.Content;
+                string data = await content.ReadAsStringAsync();
+
+                return View();
+            }
+            return RedirectToAction("Error");
+
+        }
     }
 }

@@ -1,0 +1,83 @@
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionRouteDTO
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4"><strong>Chi Tiết Lộ Trình Dinh Dưỡng</strong></h2>
+
+    <div class="detail-box p-4 mb-4">
+        <p><strong>ID:</strong> @Model.Id</p>
+        <p><strong>Tên Lộ Trình:</strong> @Model.Name</p>
+        <p><strong>Mô Tả:</strong> @Model.Describe</p>
+        <p><strong>Ngày Bắt Đầu:</strong> @Model.StartDate?.ToString("dd/MM/yyyy")</p>
+        <p><strong>Ngày Kết Thúc:</strong> @Model.EndDate?.ToString("dd/MM/yyyy")</p>
+        <p><strong>Trạng Thái:</strong> @(Model.IsDone == true ? "Hoàn Thành" : "Chưa Hoàn Thành")</p>
+    </div>
+
+    <div class="text-center">
+        <a asp-action="GetAll" class="btn btn-secondary btn-lg me-2">Quay lại Danh Sách</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg me-2">Chỉnh Sửa</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-lg">Xóa</a>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 80%;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'Roboto', sans-serif;
+    }
+
+    h2 {
+        color: #4CAF50;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .detail-box {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .detail-box p {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+    .btn {
+        font-size: 18px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-family: 'Roboto', sans-serif;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+    .btn-warning {
+        background-color: #FFC107;
+        color: white;
+    }
+
+        .btn-warning:hover {
+            background-color: #FFA000;
+        }
+
+    .btn-danger {
+        background-color: #f44336;
+        color: white;
+    }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+</style>

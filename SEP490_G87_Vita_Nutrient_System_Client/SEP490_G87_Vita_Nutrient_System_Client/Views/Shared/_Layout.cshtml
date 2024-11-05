@@ -1,27 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-@*     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Purple Admin</title>
-    <!-- plugins:css --> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/MealSettingsDetailToList.css" />
-    <link rel="stylesheet" href="/css/meal-list.css" />
-    <link rel="stylesheet" href="~/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="~/vendors/css/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
-    <link rel="stylesheet" href="~/css/style.css">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="~/images/favicon.ico" /> *@
-
 
         <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -291,10 +270,37 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index", "News")">
+                                        <span class="menu-title">News</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
+
+
                             }
                             else if (role.Equals("UserPremium"))
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("MealSettingsDetailToList", "Meal")">
+                                        <span class="menu-title">Bố Cục Bữa Ăn</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("UserPhysicalStatistics", "User")">
+                                        <span class="menu-title">Thống Kê Vật Lý</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
+                                        <span class="menu-title">Thống Kê Vật Lý</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                             }
                             else if (role.Equals("User"))
                             {
@@ -311,12 +317,25 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
+                                        <span class="menu-title">Kế hoạch bữa ăn</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("foodsList", "User")">
+                                        <span class="menu-title">Plan User</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                             }
                             else
                             {
-
+                                
                             }
-
                         }
                         else
                         {
@@ -336,15 +355,12 @@
                                     </ul>
                                 </div>
                             </li>
-
-
                             <li class="nav-item">
-                                <a class="nav-link" href="/News/Index">
-                                    <i class="mdi mdi-newspaper"></i>
-                                    <span class="menu-title">News</span>
+                                <a class="nav-link" href="@Url.Action("GetAll", "NutritionRoute")">
+                                    <span class="menu-title">Nutrition Route</span>
+                                    <i class="mdi mdi-newspaper menu-icon"></i>
                                 </a>
                             </li>
-
                         }
                     }
 
