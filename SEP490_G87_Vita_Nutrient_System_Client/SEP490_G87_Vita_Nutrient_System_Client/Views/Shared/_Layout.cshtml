@@ -291,6 +291,17 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
+
+                            }
+                            else if (role.Equals("User"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
+                                        <span class="menu-title">Today's meal plan</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                
                             }
                             else if (role.Equals("UserPremium"))
                             {
@@ -341,7 +352,7 @@
                             }
                             else
                             {
-
+                                
                             }
 
                         }
@@ -363,7 +374,12 @@
                                     </ul>
                                 </div>
                             </li>
-
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("GetAll", "NutritionRoute")">
+                                    <span class="menu-title">Nutrition Route</span>
+                                    <i class="mdi mdi-newspaper menu-icon"></i>
+                                </a>
+                            </li>
                         }
                     }
 

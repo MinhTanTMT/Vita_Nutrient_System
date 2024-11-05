@@ -14,7 +14,7 @@
                     @if (ViewBag.Gender == "Nữ")
                     {
                         <option value="Nam">Nam</option>
-                        <option value="Nữ" selected>Nữ</option>    
+                        <option value="Nữ" selected>Nữ</option>
                     }
                     else
                     {
@@ -22,7 +22,6 @@
                         <option value="Nữ">Nữ</option>
                     }
                 </select>
-
             </div>
         </div>
 
@@ -36,7 +35,6 @@
         </div>
 
         <button type="submit" class="btn btn-primary">KIỂM TRA</button>
-
     </form>
 
     @if (!string.IsNullOrEmpty(ViewBag.AgeError))
@@ -53,14 +51,31 @@
             <p>Chỉ số BMI của bạn: <span class="bmi-value">@Model.BMI</span></p>
             <p>Đánh giá: <span class="status">@Model.Status</span></p>
             <p>Phạm vi: <span class="evaluation">@Model.Evaluation</span></p>
+            <p>Giới tính: <span class="gender"><strong>@Model.Gender</strong></span></p>
+            <p>Tuổi của bạn: <span class="age"><strong>@ViewBag.Age</strong></span></p>
+            <p>
+                Phương pháp đánh giá:
+                <span class="evaluation-method">
+                    @if (ViewBag.Age >= 19)
+                    {
+                        @:Dành cho người trưởng thành
+                    }
+                    else
+                    {
+                        @:Dành cho trẻ em và thanh thiếu niên
+                    }
+                </span>
+            </p>
         </div>
     }
+
     <div class="note">
         <p>
-            <span class="icon">📋</span> <span class="warning">LƯU Ý:</span> Phần mềm <span class="highlight">ĐÁNH GIÁ TÌNH TRẠNG DINH DƯỠNG</span> này chỉ áp dụng cho trường hợp người trưởng thành <strong>(19 tuổi trở lên)</strong>. Đối với trẻ nhỏ, việc đánh giá cân phụ thuộc vào yếu tố chiều cao, cân nặng theo từng độ tuổi. Bố mẹ vui lòng cho trẻ đến gặp bác sĩ để được tư vấn cụ thể và chính xác tình trạng dinh dưỡng của trẻ. Xin cảm ơn.
+            <span class="icon">📋</span> <span class="warning">LƯU Ý:</span> Phần mềm <span class="highlight">ĐÁNH GIÁ TÌNH TRẠNG DINH DƯỠNG</span> này áp dụng cho cả trẻ em, thanh thiếu niên và người trưởng thành. Đối với trẻ nhỏ, việc đánh giá dinh dưỡng phụ thuộc vào yếu tố chiều cao, cân nặng và độ tuổi cụ thể. Bố mẹ vui lòng tham khảo ý kiến của chuyên gia dinh dưỡng hoặc bác sĩ để được tư vấn chính xác tình trạng dinh dưỡng của trẻ.
         </p>
     </div>
 </div>
+
 
 <style>
     .container {
@@ -197,23 +212,58 @@
         color: #007bff;
         font-weight: bold;
         font-size: 24px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .status {
         font-family: 'Roboto', sans-serif;
         color: #28a745;
         font-weight: bold;
+        font-size: 20px;
+        padding: 5px 10px;
+        background-color: rgba(40, 167, 69, 0.1);
+        border-radius: 5px;
+        display: inline-block;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .evaluation {
-        color: #ffc107;
+        color: #ff5722;
         font-weight: bold;
+        font-size: 20px;
+        padding: 5px 10px;
+        background-color: rgba(255, 193, 7, 0.1);
+        border-radius: 5px;
+        display: inline-block;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
-    .bmi-chart img {
-        width: 100%;
-        max-width: 400px;
-        margin-top: 20px;
+    .gender {
+        color: #6c757d;
+        font-weight: 500;
+        font-style: italic;
+        font-size: 18px;
+    }
+
+    .age {
+        color: #17a2b8;
+        font-weight: 500;
+        font-size: 18px;
+        padding: 2px 8px;
+        background-color: rgba(23, 162, 184, 0.1);
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+    .evaluation-method {
+        font-family: 'Roboto', sans-serif;
+        color: #343a40;
+        font-weight: 600;
+        font-size: 18px;
+        background-color: rgba(52, 58, 64, 0.05);
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: inline-block;
     }
 
 </style>

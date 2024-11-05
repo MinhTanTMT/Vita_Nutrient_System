@@ -123,6 +123,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
         public async Task AddEvaluationAsync(NewsEvaluationDTO evaluationDto)
         {
+            // Kiểm tra nếu người dùng đã đánh giá bài viết này
+            var existingEvaluation = await _context.NewsEvaluations
+                .FirstOrDefaultAsync(e => e.ArticlesNewsId == evaluationDto.ArticlesNewsId && e.UserId == evaluationDto.UserId);
+
+            if (existingEvaluation != null)
+            {
+                throw new InvalidOperationException("Người dùng đã đánh giá bài viết này.");
+            }
+
             var evaluation = new NewsEvaluation
             {
                 ArticlesNewsId = evaluationDto.ArticlesNewsId,
@@ -133,18 +142,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.NewsEvaluations.AddAsync(evaluation);
             await _context.SaveChangesAsync();
 
-            // Cập nhật số lượng đánh giá và điểm đánh giá trung bình cho bài viết
+            // Cập nhật số lượng và điểm đánh giá trung bình cho bài viết
             var article = await _context.ArticlesNews.FirstOrDefaultAsync(a => a.Id == evaluationDto.ArticlesNewsId);
             if (article != null)
             {
-                // Tính lại số lượng đánh giá và điểm đánh giá trung bình
                 article.NumberRate = (article.NumberRate ?? 0) + 1;
                 article.Rate = ((article.Rate ?? 0) * (article.NumberRate - 1) + evaluationDto.Ratting) / article.NumberRate;
-
-                // Lưu thay đổi
                 await _context.SaveChangesAsync();
             }
         }
+
 
         public async Task<IEnumerable<NewsEvaluationDTO>> GetEvaluationsByArticleIdAsync(int articleId)
         {

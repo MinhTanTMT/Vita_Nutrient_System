@@ -43,6 +43,7 @@
     <div class="action-links">
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Chỉnh sửa</a>
         <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Xóa</a>
     </div>
 </div>
 
@@ -144,4 +145,15 @@
         .btn-secondary:hover {
             background-color: #5a6268;
         }
+
+    .btn-danger {
+        background-color: #f44336;
+        color: white;
+    }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+
 </style>
