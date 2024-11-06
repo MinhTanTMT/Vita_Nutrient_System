@@ -87,10 +87,13 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var ConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("DefaultConnection");
-        optionsBuilder.UseSqlServer(ConnectionString);
-
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+        }
     }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -390,6 +393,10 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.HasOne(d => d.DayOfTheWeekStart).WithMany(p => p.MealSettings)
                 .HasForeignKey(d => d.DayOfTheWeekStartId)
                 .HasConstraintName("FK__MealSetti__DayOf__5E8A0973");
+
+            entity.HasOne(d => d.FoodTypeIdWantNavigation).WithMany(p => p.MealSettings)
+                .HasForeignKey(d => d.FoodTypeIdWant)
+                .HasConstraintName("FK__MealSetti__FoodT__2CBDA3B5");
 
             entity.HasOne(d => d.User).WithOne(p => p.MealSetting)
                 .HasForeignKey<MealSetting>(d => d.UserId)

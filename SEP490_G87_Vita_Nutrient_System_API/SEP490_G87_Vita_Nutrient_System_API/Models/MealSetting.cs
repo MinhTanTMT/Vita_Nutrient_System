@@ -13,7 +13,11 @@ public partial class MealSetting
 
     public bool? SameScheduleEveryDay { get; set; }
 
+    public short? FoodTypeIdWant { get; set; }
+
     public virtual DayOfTheWeek? DayOfTheWeekStart { get; set; }
+
+    public virtual FoodType? FoodTypeIdWantNavigation { get; set; }
 
     public virtual ICollection<MealSettingsDetail> MealSettingsDetails { get; set; } = new List<MealSettingsDetail>();
 
