@@ -268,6 +268,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             int page = 1,
             int pageSize = 10)
         {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
             try
             {
                 HttpResponseMessage response = foodTypeId == 0 ?
@@ -278,14 +279,23 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response1 =
                                     await client.GetAsync(client.BaseAddress + "/Food/GetFoodTypes");
 
+                HttpResponseMessage response2 =
+                                    await client.GetAsync(client.BaseAddress + "/Food/GetBlockFoodOfUser/" + userId);
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
                     List<FoodList> foods = JsonConvert.DeserializeObject<List<FoodList>>(data);
 
+                    HttpContent content2 = response2.Content;
+                    string data2 = await content2.ReadAsStringAsync();
+                    List<int> foodIds = JsonConvert.DeserializeObject<List<int>>(data2);
+
                     //remove foods that are not active
                     foods.RemoveAll(f => f.IsActive == false);
+                    //remove foods that are blocked
+                    foods.RemoveAll(food => foodIds.Contains(food.FoodListId));
 
                     ////////////////////////////////////////////////////////////
                     /// Sơn

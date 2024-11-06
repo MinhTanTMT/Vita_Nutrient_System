@@ -52,5 +52,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             List<FoodType> types = repositories.GetFoodTypes();
             return types.Select(t => _mapper.Map<FoodTypeResponse>(t)).ToList();
         }
+
+        [HttpGet("GetBlockFoodOfUser/{userId}")]
+        public async Task<ActionResult<List<int>>> GetBlockFoodOfUser(int userId)
+        {
+            List<int> result = new List<int>();
+            List<FoodSelection> foodSelections = repositories.GetFoodSelectionsByUserId(userId);
+
+            foreach (var foodSelection in foodSelections)
+            {
+                if(foodSelection.IsBlock == true)
+                {
+                    result.Add(foodSelection.FoodListId);
+                }
+            }
+
+            return result;
+        }
     }
 }

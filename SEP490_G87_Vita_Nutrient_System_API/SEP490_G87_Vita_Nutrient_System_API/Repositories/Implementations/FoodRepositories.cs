@@ -102,5 +102,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.TypeOfCalculations.Find(id);
         }
+
+        public List<FoodSelection> GetFoodSelectionsByUserId(int userId)
+        {
+            return _context.FoodSelections.Where(fs => fs.UserId == userId).ToList();
+        }
     }
 }
