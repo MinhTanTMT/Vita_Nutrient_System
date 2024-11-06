@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
+using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
@@ -382,27 +383,77 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> UserPhysicalStatistics()
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
-
             HttpResponseMessage userRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserById/{userId}");
-            HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserDetail/{userId}");
+            HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetOnlyUserDetail/{userId}");
 
-            if (userRes.IsSuccessStatusCode && userDetailsRes.IsSuccessStatusCode)
+            if (userDetailsRes.IsSuccessStatusCode)
             {
                 var user = JsonConvert.DeserializeObject<User>(await userRes.Content.ReadAsStringAsync());
-                var userDetails = JsonConvert.DeserializeObject<UserDetail>(await userDetailsRes.Content.ReadAsStringAsync());
-
+                var userPhysicalStatistics = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailsRes.Content.ReadAsStringAsync());
                 var model = new UserPhysicalStatistics
                 {
-                    UserId = user.UserId,
-                    Gender = user.Gender, // Lấy từ User
-                    Height = userDetails?.Height,
-                    Weight = userDetails?.Weight,
-                    Age = userDetails?.Age,
-                    DescribeYourself = userDetails?.DescribeYourself,
-                    IsPremium = userDetails?.IsPremium
-                };
+                      UserId = userPhysicalStatistics.UserId,
+                      Gender = user.Gender,
+                      Height = userPhysicalStatistics.Height,
+                      Weight = userPhysicalStatistics.Weight,
+                      Age = userPhysicalStatistics.Age,
+                      ActivityLevel = userPhysicalStatistics.ActivityLevel
+    };
+                return View(userPhysicalStatistics);
+            }
 
-                return View(model);
+            return View("Error");
+        }
+        [HttpPost("UserPhysicalStatistics")]
+        public async Task<IActionResult> UserPhysicalStatistics(UserPhysicalStatistics model)
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ." });
+            }
+
+            var userDetailsDTO = new UserPhysicalStatistics
+            {
+                UserId = userId,
+                Gender = model.Gender,
+                Height = model.Height,
+                Weight = model.Weight,
+                Age = model.Age,
+                ActivityLevel = model.ActivityLevel
+            };
+
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(userDetailsDTO), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(client.BaseAddress + "/Users/UpdateUserPhysicalStatistics", jsonContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true, message = "Thông tin cá nhân đã được lưu thành công." });
+            }
+            else
+            {
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình lưu thông tin: " + errorResponse });
+            }
+        }
+
+        [HttpGet("NutritionalGoals")]
+        public async Task<IActionResult> NutritionalGoals()
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetOnlyUserDetail/{userId}");
+
+            if (userDetailsRes.IsSuccessStatusCode)
+            {
+                var nutritionalGoals = JsonConvert.DeserializeObject<NutritionalGoals>(await userDetailsRes.Content.ReadAsStringAsync());
+                    var model = new NutritionalGoals
+                    {
+                        Calo = nutritionalGoals.Calo,
+                        Carbs = (int)(nutritionalGoals.Calo * 0.4 / 4),  // 40% calo từ carbs (4 calo mỗi gram)
+                        Fats = (int)(nutritionalGoals.Calo * 0.3 / 9),   // 30% calo từ chất béo (9 calo mỗi gram)
+                        Proteins = (int)(nutritionalGoals.Calo * 0.3 / 4) // 30% calo từ protein (4 calo mỗi gram)
+                    };
+                    return View(model);
             }
 
             return View("Error");

@@ -116,7 +116,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.Users.Include(u => u.RoleNavigation).Where(u => u.Role == roleId);
         }
-
+        public async Task<UserDetail> GetUserDetailByUserIdAsync(int userId)
+        {
+            return await _context.UserDetails
+                .FirstOrDefaultAsync(ud => ud.UserId == userId);
+        }
         public User? GetUserDetailsInfo(int id)
         {
             var user = _context.Users

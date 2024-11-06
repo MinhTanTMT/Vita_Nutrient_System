@@ -158,18 +158,75 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             nutritionTarget.FatsMax = (short)(totalCalories / 9);       // 9 calo mỗi gram cho chất béo
             nutritionTarget.MinimumFiber = (short)Math.Round((totalCalories / 1000) * 14); // Chất xơ tối thiểu
         }
-        private void CalculateMacrosAndFiberForMeal(MealSettingsDetail mealSettingsDetail, double totalCalories)
+        private void CalculateMacrosAndFiberForMeal(MealSettingsDetail mealSettingsDetail, NutritionTargetsDaily existingNutritionTarget, double totalCalories)
         {
 
-            mealSettingsDetail.Calories = (short?)Math.Round(totalCalories);
-            mealSettingsDetail.CarbsMax = (short)(totalCalories / 4);      // 4 calo mỗi gram cho carbs
-            mealSettingsDetail.ProteinMax = (short)(totalCalories / 4);    
-            mealSettingsDetail.FatsMax = (short)(totalCalories / 9);
-            mealSettingsDetail.CarbsMin = 0;      
-            mealSettingsDetail.ProteinMin = 0;    
-            mealSettingsDetail.FatsMin = 0;
-            mealSettingsDetail.MinimumFiber = (short)Math.Round((totalCalories / 1000) * 14); // Chất xơ tối thiểu
+            // Chỉ cập nhật mealSettingsDetail nếu giá trị tương ứng giống với NutritionTargetsDaily
+            if (mealSettingsDetail.Calories == existingNutritionTarget.Calories)
+            {
+                existingNutritionTarget.Calories = (short?)Math.Round(totalCalories);
+                mealSettingsDetail.Calories = existingNutritionTarget.Calories;
+            }
+            else
+            {
+                existingNutritionTarget.Calories = (short?)Math.Round(totalCalories);
+            }
+            // Cập nhật CarbsMax
+            if (mealSettingsDetail.CarbsMax == existingNutritionTarget.CarbsMax)
+            {
+                existingNutritionTarget.CarbsMax = (short)(totalCalories / 4);
+                mealSettingsDetail.CarbsMax = existingNutritionTarget.CarbsMax;
+            }
+            else
+            {
+                existingNutritionTarget.CarbsMax = (short)(totalCalories / 4); // 4 calo mỗi gram cho carbs
+            }
+            if (mealSettingsDetail.CarbsMax < mealSettingsDetail.CarbsMin)
+            {
+                mealSettingsDetail.CarbsMin = 0; 
+            }
+
+            // Cập nhật ProteinMax
+            if (mealSettingsDetail.ProteinMax == existingNutritionTarget.ProteinMax)
+            {
+                existingNutritionTarget.ProteinMax = (short)(totalCalories / 4);
+                mealSettingsDetail.ProteinMax = existingNutritionTarget.ProteinMax;
+            }
+            else
+            {
+                existingNutritionTarget.ProteinMax = (short)(totalCalories / 4);
+            }
+            if (mealSettingsDetail.ProteinMax < mealSettingsDetail.ProteinMin)
+            {
+                mealSettingsDetail.ProteinMin = 0;
+            }
+            // Cập nhật FatsMax
+            if (mealSettingsDetail.FatsMax == existingNutritionTarget.FatsMax)
+            {
+                existingNutritionTarget.FatsMax = (short)(totalCalories / 9);
+                mealSettingsDetail.FatsMax = existingNutritionTarget.FatsMax;
+            }
+            else
+            {
+                existingNutritionTarget.FatsMax = (short)(totalCalories / 9);
+            }
+            if (mealSettingsDetail.FatsMax < mealSettingsDetail.FatsMin)
+            {
+                mealSettingsDetail.FatsMin = 0;
+            }
+            // Cập nhật MinimumFiber
+            if (mealSettingsDetail.MinimumFiber == existingNutritionTarget.MinimumFiber)
+            {
+                existingNutritionTarget.MinimumFiber = (short)Math.Round((totalCalories / 1000) * 14);
+                mealSettingsDetail.MinimumFiber = existingNutritionTarget.MinimumFiber;
+            }
+            else
+            {
+                 existingNutritionTarget.MinimumFiber = (short)Math.Round((totalCalories / 1000) * 14);
+            }
         }
+
+
 
         private async Task DistributeCaloriesForSameSlotMealsAsync(int index,short? slotOfTheDayId, MealSettingsDetail mealSettingsDetail, List<MealSettingsDetail> activeMeals, int userId, double totalCaloriesSlot)
          {
@@ -227,9 +284,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             {
                                 existingNutritionTarget.IsActive = true;
                                 existingNutritionTarget.Calories = (short?)Math.Round(caloriesPerMeal);
-                                CalculateMacrosAndFiberForMeal(meal, caloriesPerMeal);
-                                CalculateMacrosAndFiber(existingNutritionTarget, caloriesPerMeal);
-                                _context.NutritionTargetsDailies.Update(existingNutritionTarget);
+                                CalculateMacrosAndFiberForMeal(meal, existingNutritionTarget, caloriesPerMeal);
+                            _context.NutritionTargetsDailies.Update(existingNutritionTarget);
                             }
                         }
                         else
@@ -361,8 +417,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         {
                             existingNutritionTarget.IsActive = true;
                             existingNutritionTarget.Calories = (short)caloriesForSlot;
-                            CalculateMacrosAndFiberForMeal(meal, caloriesForSlot);
-                            CalculateMacrosAndFiber(existingNutritionTarget, caloriesForSlot);
+                            
+                            CalculateMacrosAndFiberForMeal(meal, existingNutritionTarget, caloriesForSlot);
                             _context.NutritionTargetsDailies.Update(existingNutritionTarget);
                         }
                     }
@@ -729,7 +785,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
         public async Task DeactivateMealAndUpdateOrderAsync(MealSettingsDetail mealSettingsDetail)
         {
-            // Đặt IsActive của mealSettingsDetail thành false và xóa OrderNumber
             mealSettingsDetail.IsActive = false;
             var removedOrderNumber = mealSettingsDetail.OrderNumber;
             mealSettingsDetail.OrderNumber = null;

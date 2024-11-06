@@ -1,6 +1,6 @@
-﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Models
+﻿namespace SEP490_G87_Vita_Nutrient_System_API.Dtos
 {
-    public class UserPhysicalStatistics
+    public class UserPhysicalStatisticsDTO
     {
         public int UserId { get; set; }
         public bool? Gender { get; set; }
