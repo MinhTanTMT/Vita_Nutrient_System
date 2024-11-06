@@ -14,8 +14,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     {
 
         private readonly INewsRepositories _newsRepositories = new NewsRepositories();
-        private readonly IMapper _mapper;
-
 
         // GET: api/news
         [HttpGet]
@@ -90,6 +88,32 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _newsRepositories.DeleteArticleAsync(id);
             return Ok();
         }
+
+        [HttpPost("{articleId}/evaluations")]
+        public async Task<ActionResult> AddEvaluation(int articleId, [FromBody] NewsEvaluationDTO evaluationDto)
+        {
+            if (evaluationDto == null || evaluationDto.ArticlesNewsId != articleId || !ModelState.IsValid)
+            {
+                return BadRequest("Dữ liệu đánh giá không hợp lệ.");
+            }
+
+            try
+            {
+                await _newsRepositories.AddEvaluationAsync(evaluationDto);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict("Bạn đã đánh giá bài viết này trước đó.");// Trả về 409 Conflict nếu người dùng đã đánh giá
+            }
+        }
+
+
+        [HttpGet("{articleId}/evaluations")]
+        public async Task<ActionResult<IEnumerable<NewsEvaluationDTO>>> GetEvaluations(int articleId)
+        {
+            var evaluations = await _newsRepositories.GetEvaluationsByArticleIdAsync(articleId);
+            return Ok(evaluations);
+        }
     }
 }
-    

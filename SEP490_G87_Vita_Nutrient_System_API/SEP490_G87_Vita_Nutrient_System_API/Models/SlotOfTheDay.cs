@@ -13,15 +13,5 @@ public partial class SlotOfTheDay
 
     public TimeOnly? EndAt { get; set; }
 
-    public virtual ICollection<MealOfTheDay> MealOfTheDaySlot1OfTheDays { get; set; } = new List<MealOfTheDay>();
-
-    public virtual ICollection<MealOfTheDay> MealOfTheDaySlot2OfTheDays { get; set; } = new List<MealOfTheDay>();
-
-    public virtual ICollection<MealOfTheDay> MealOfTheDaySlot3OfTheDays { get; set; } = new List<MealOfTheDay>();
-
-    public virtual ICollection<MealOfTheDay> MealOfTheDaySlot4OfTheDays { get; set; } = new List<MealOfTheDay>();
-
-    public virtual ICollection<MealOfTheDay> MealOfTheDaySlot5OfTheDays { get; set; } = new List<MealOfTheDay>();
-
     public virtual ICollection<MealSettingsDetail> MealSettingsDetails { get; set; } = new List<MealSettingsDetail>();
 }

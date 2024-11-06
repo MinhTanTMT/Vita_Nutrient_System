@@ -55,6 +55,8 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     public virtual DbSet<Msg> Msgs { get; set; }
 
+    public virtual DbSet<NewsEvaluation> NewsEvaluations { get; set; }
+
     public virtual DbSet<NutritionRoute> NutritionRoutes { get; set; }
 
     public virtual DbSet<NutritionTargetsDaily> NutritionTargetsDailies { get; set; }
@@ -84,8 +86,14 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
     public virtual DbSet<WantCooking> WantCookings { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
+    {
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+        }
+    }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -95,7 +103,6 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.ToTable("ArticlesNews", "Business");
 
-            entity.Property(e => e.Content).HasMaxLength(500);
             entity.Property(e => e.DateCreated).HasColumnType("datetime");
             entity.Property(e => e.HeaderImage).HasMaxLength(255);
             entity.Property(e => e.NameCreater).HasMaxLength(50);
@@ -359,50 +366,20 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<MealOfTheDay>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MealOfTh__3214EC07B79ED122");
+            entity.HasKey(e => e.Id).HasName("PK__MealOfTh__3214EC07F5556AEE");
 
             entity.ToTable("MealOfTheDay", "Business");
 
-            entity.Property(e => e.Slot1FoodListId)
-                .HasMaxLength(512)
-                .IsUnicode(false);
-            entity.Property(e => e.Slot2FoodListId)
-                .HasMaxLength(512)
-                .IsUnicode(false);
-            entity.Property(e => e.Slot3FoodListId)
-                .HasMaxLength(512)
-                .IsUnicode(false);
-            entity.Property(e => e.Slot4FoodListId)
-                .HasMaxLength(512)
-                .IsUnicode(false);
-            entity.Property(e => e.Slot5FoodListId)
+            entity.HasIndex(e => new { e.NutritionRouteId, e.DateExecute }, "UQ__MealOfTh__641B4C6D9F1431EA").IsUnique();
+
+            entity.Property(e => e.DataFoodListId)
                 .HasMaxLength(512)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.NutritionRoute).WithMany(p => p.MealOfTheDays)
                 .HasForeignKey(d => d.NutritionRouteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MealOfThe__Nutri__693CA210");
-
-            entity.HasOne(d => d.Slot1OfTheDay).WithMany(p => p.MealOfTheDaySlot1OfTheDays)
-                .HasForeignKey(d => d.Slot1OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot1__6A30C649");
-
-            entity.HasOne(d => d.Slot2OfTheDay).WithMany(p => p.MealOfTheDaySlot2OfTheDays)
-                .HasForeignKey(d => d.Slot2OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot2__6B24EA82");
-
-            entity.HasOne(d => d.Slot3OfTheDay).WithMany(p => p.MealOfTheDaySlot3OfTheDays)
-                .HasForeignKey(d => d.Slot3OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot3__6C190EBB");
-
-            entity.HasOne(d => d.Slot4OfTheDay).WithMany(p => p.MealOfTheDaySlot4OfTheDays)
-                .HasForeignKey(d => d.Slot4OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot4__6D0D32F4");
-
-            entity.HasOne(d => d.Slot5OfTheDay).WithMany(p => p.MealOfTheDaySlot5OfTheDays)
-                .HasForeignKey(d => d.Slot5OfTheDayId)
-                .HasConstraintName("FK__MealOfThe__Slot5__6E01572D");
+                .HasConstraintName("FK__MealOfThe__Nutri__0D44F85C");
         });
 
         modelBuilder.Entity<MealSetting>(entity =>
@@ -416,6 +393,10 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.HasOne(d => d.DayOfTheWeekStart).WithMany(p => p.MealSettings)
                 .HasForeignKey(d => d.DayOfTheWeekStartId)
                 .HasConstraintName("FK__MealSetti__DayOf__5E8A0973");
+
+            entity.HasOne(d => d.FoodTypeIdWantNavigation).WithMany(p => p.MealSettings)
+                .HasForeignKey(d => d.FoodTypeIdWant)
+                .HasConstraintName("FK__MealSetti__FoodT__2CBDA3B5");
 
             entity.HasOne(d => d.User).WithOne(p => p.MealSetting)
                 .HasForeignKey<MealSetting>(d => d.UserId)
@@ -495,6 +476,25 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__MSG__UserID__0D7A0286");
+        });
+
+        modelBuilder.Entity<NewsEvaluation>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__NewsEval__3214EC071137F020");
+
+            entity.ToTable("NewsEvaluation", "Business");
+
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.ArticlesNews).WithMany(p => p.NewsEvaluations)
+                .HasForeignKey(d => d.ArticlesNewsId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__NewsEvalu__Artic__1B9317B3");
+
+            entity.HasOne(d => d.User).WithMany(p => p.NewsEvaluations)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__NewsEvalu__UserI__1C873BEC");
         });
 
         modelBuilder.Entity<NutritionRoute>(entity =>

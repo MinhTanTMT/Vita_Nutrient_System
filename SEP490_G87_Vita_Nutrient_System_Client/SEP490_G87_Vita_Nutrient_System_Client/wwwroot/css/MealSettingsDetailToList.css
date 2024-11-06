@@ -1,0 +1,57 @@
+﻿/* Style each day on a new row */
+.day-schedule-vertical {
+    display: block;
+    padding: 10px 0;
+}
+
+.day-row {
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+    /* Style for the heading of each day */
+    .day-row h5 {
+        font-size: 1.1em;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    /* Style the "Thêm bữa ăn vào bố cục" button */
+    .day-row button {
+        background-color: #d3d3d3;
+        border: none;
+        border-radius: 4px;
+        color: #333;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        font-size: 0.9em;
+    }
+
+        .day-row button:hover {
+            background-color: #bbb;
+        }
+
+/* Meal item styling within each day */
+.meal-item {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+    .meal-item h6 {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .meal-item p {
+        margin: 0;
+        font-size: 0.9em;
+        color: #666;
+    }

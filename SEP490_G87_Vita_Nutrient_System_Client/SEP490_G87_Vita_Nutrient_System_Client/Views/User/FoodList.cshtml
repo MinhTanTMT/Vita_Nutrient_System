@@ -1,0 +1,125 @@
+﻿@using SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<FoodList> foods = ViewBag.foods;
+    int currentPage = ViewBag.currentPage ?? 0;
+    int totalPages = ViewBag.totalPages ?? 0;
+    string searchQuery = ViewBag.searchQuery;
+    List<FoodType> foodTypes = ViewBag.foodTypes;
+    int typeId = ViewBag.foodTypeId ?? 0;
+    FoodType foodType = ViewBag.foodType;
+}
+
+<link rel="stylesheet" href="~/css/foodlist.css">
+
+<div class="row" style="width: 100%;">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">List Foods</h4>
+
+                <!-- Search form -->
+                <form method="get" action="@Url.Action("FoodList", "User")" style="padding: 8px 10px;">
+                    <div class="input-group mb-3">
+                        <input type="hidden" name="foodTypeId" value="@typeId" />
+                        <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
+                        <div class="input-group-append">
+                            <button class="btn btn-success btn-fw" type="submit">
+                                <i class="mdi mdi-magnify"></i>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="type-filter" style="margin-bottom: 50px; padding: 8px 10px;">
+                    <div class="dropdown" style="float: right;">
+                        <button id="typeFilterButton">@foodType.Name</button>
+                        <ul class="dropdown-menu dropdown-center">
+                            <li id="0" onclick="updateFoodType(0, 'All types')">All types</li>
+                            @foreach (FoodType ft in foodTypes)
+                            {
+                                <li id="@ft.FoodTypeId" onclick="updateFoodType(@ft.FoodTypeId, '@ft.Name')">@ft.Name</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                @if (foods == null || foods.Count == 0)
+                {
+                    <h1>There is no food.</h1>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> Image </th>
+                                    <th> Food name </th>
+                                    <th> Type </th>
+                                    <th> Difficulty </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < foods.Count; i++)
+                                {
+                                    FoodList f = foods[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>
+                                            @if (f.Urlimage == null || f.Urlimage.Length == 0)
+
+                                            {
+                                                <img src="~/images/foods/default_food.png" alt="default" style="width: 200px; height: auto; border-radius: 0;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/images/@f.Urlimage" alt="@f.Name"
+                                                     onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 200px; height: auto; border-radius: 5px;" />
+                                            }
+                                        </td>
+                                        <td>@f.Name</td>
+                                        <td> @f.FoodType.Name </td>
+                                        <td> @((CookingDifficultyLevel)f.CookingDifficultyId) </td>
+                                        <td>
+                                            <a class="btn-link" asp-controller="User" asp-action="FoodDetails" asp-route-foodId="@f.FoodListId">View</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination controls -->
+                    <nav aria-label="Page navigation" style="padding: 50px 0 0 0;">
+                        <ul class="pagination justify-content-center">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = currentPage - 1 })">Previous</a>
+                                </li>
+                            }
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = i })">@i</a>
+                                </li>
+                            }
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = currentPage + 1 })">Next</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/foodlist.js"></script>

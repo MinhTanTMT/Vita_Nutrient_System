@@ -1,0 +1,106 @@
+﻿<!-- plugins:css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/MealSettingsDetailToList.css" />
+<link rel="stylesheet" href="/css/meal-list.css" />
+
+@model SEP490_G87_Vita_Nutrient_System_Client.Models.CreateMealSettingsDetail
+
+<div class="container">
+    <h2>Tạo Cài đặt Bữa ăn</h2>
+    <form asp-action="CreateMealSettingsDetail" method="post">
+        <input type="hidden" asp-for="MealSettingsId" />
+        <input type="hidden" asp-for="DayOfTheWeekId" />
+        <div class="form-group">
+            <label for="Name">Tên bữa ăn</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="SlotOfTheDayId">Thứ tự ăn trong ngày</label>
+            <select asp-for="SlotOfTheDayId" class="form-control" asp-items="ViewBag.SlotOfTheDays"></select>
+        </div>
+        @* <div class="form-group">
+            <label for="NutritionTargetsDailyId">Chọn mục tiêu dinh dưỡng hàng ngày</label>
+            <select asp-for="NutritionTargetsDailyId" class="form-control" asp-items="ViewBag.NutritionTargetsDaily"></select>
+        </div> *@
+
+
+        <div class="form-group">
+            <label for="SkipCreationProcess">
+                Bỏ qua quá trình tạo
+                <div class="form-check">
+                    <input type="checkbox" asp-for="SkipCreationProcess" class="form-check-input" />
+                </div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="Size">Size</label>
+            <select asp-for="Size" class="form-control"> 
+                <option value="Bữa nhỏ">Bữa nhỏ</option>
+                <option value="Bữa vừa">Bữa vừa</option>
+                <option value="Bữa lớn">Bữa lớn</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="NutritionFocus">
+                Tập trung dinh dưỡng
+                <div class="form-check">
+                    <input type="checkbox" asp-for="NutritionFocus" class="form-check-input" />
+                </div>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label for="NumberOfDishes">Số lượng món ăn</label>
+            <select asp-for="NumberOfDishes" class="form-control">
+                <option value="0">Tự Động</option>
+                <option value="1">1 Món Ăn</option>
+                <option value="2">2 Món Ăn</option>
+                <option value="3">3 Món Ăn</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="TypeFavoriteFood">Loại Món ăn ưa thích</label>
+            <select asp-for="TypeFavoriteFood" class="form-control" asp-items="ViewBag.SlotOfTheDays"></select>
+        </div>
+
+        <div class="form-group">
+            <label for="WantCookingId">Muốn nấu ăn</label>
+            <select asp-for="WantCookingId" class="form-control" asp-items="ViewBag.WantCookings"></select>
+        </div>
+
+        <div class="form-group">
+            <label for="TimeAvailable">Thời gian có sẵn</label>
+            <select asp-for="TimeAvailable" class="form-control">
+                <option value="5">Không có thời gian (&lt; 5 phút)</option>
+                <option value="15">Thời gian ít (&lt; 15 phút)</option>
+                <option value="30">Một thời gian (&lt; 30 phút)</option>
+                <option value="45">Thêm thời gian (&lt; 45 phút)</option>
+                <option value="60">Rất nhiều thời gian (&lt; 60 phút)</option>
+                <option value="0">Không giới hạn</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="CookingDifficultyId">Độ khó nấu ăn</label>
+            <select asp-for="CookingDifficultyId" class="form-control" asp-items="ViewBag.CookingDifficulties">
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Tạo Mới</button>
+        <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = Model.DayOfTheWeekId })" class="btn btn-secondary">Hủy</a>
+    </form>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+</script>

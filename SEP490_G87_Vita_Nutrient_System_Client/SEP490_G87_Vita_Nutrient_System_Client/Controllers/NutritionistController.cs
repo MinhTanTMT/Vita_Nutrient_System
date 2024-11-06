@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using SEP490_G87_Vita_Nutrient_System_Client.Models;
+using System.Net;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -21,6 +26,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
+
+
+
+
         ////////////////////////////////////////////////////////////
         /// Dũng
         ////////////////////////////////////////////////////////////
@@ -35,6 +44,20 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Chiến
         ////////////////////////////////////////////////////////////
         ///
+
+
+        [HttpGet()]
+        public async Task<IActionResult> NutritionistProfile()
+        {
+
+
+
+
+
+
+                return View();
+          
+        }
 
 
 
@@ -55,3 +78,4 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ///
     }
 }
+

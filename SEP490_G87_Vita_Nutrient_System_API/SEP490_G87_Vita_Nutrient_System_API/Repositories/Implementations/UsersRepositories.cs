@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using SEP490_G87_Vita_Nutrient_System_API.DTO.User;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using System.Drawing.Printing;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -26,7 +28,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password);
+            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password && u.IsActive == true);
             if (user == null)
             {
                 return null;
@@ -60,14 +62,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             _context.Users.Add(user);
             _context.SaveChanges();
+            return user;
+
+
 
             //var userReturn = await _context.Users.FirstOrDefaultAsync(u => u.Account.Equals(user.Account) && u.Password.Equals(user.Password));
             //if (userReturn == null)
             //{
             //    return NotFound();
             //}
-
-            return user;
         }
 
         public dynamic GetUserById(int id)
@@ -114,7 +117,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.Users.Include(u => u.RoleNavigation).Where(u => u.Role == roleId);
         }
-
+        public async Task<UserDetail> GetUserDetailByUserIdAsync(int userId)
+        {
+            return await _context.UserDetails
+                .FirstOrDefaultAsync(ud => ud.UserId == userId);
+        }
         public User? GetUserDetailsInfo(int id)
         {
             var user = _context.Users
@@ -125,7 +132,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (user.Role != (int)UserRole.USERPREMIUM && user.Role != (int)UserRole.USER)
                 return null;
 
-                return user;
+            return user;
         }
 
         public User? GetNutritionistDetailsInfo(int id)
@@ -161,15 +168,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public dynamic ChangePassword(ChangePasswordDTO model)
         {
             var user = _context.Users.FirstOrDefault(t => t.Account == model.Account);
-            if(user == null)
+            if (user == null)
             {
                 throw new ApplicationException("Account does not exist");
             }
-            if(model.CurrentPassword != user.Password)
+            if (model.CurrentPassword != user.Password)
             {
                 throw new ApplicationException("Your current password is not match!");
             }
-            if(model.NewPassword != model.ConfirmPassword)
+            if (model.NewPassword != model.ConfirmPassword)
             {
                 throw new ApplicationException("Your new password and confirm password is not match!");
             }
@@ -180,5 +187,78 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
+        public async Task<List<FoodList>> GetLikedFoods(GetLikeFoodDTO model)
+        {
+            var query = _context.FoodSelections
+                        .Where(fs => fs.UserId == model.UserId && (bool)fs.IsLike)
+                        .Join(_context.FoodLists, fs => fs.FoodListId, f => f.FoodListId, (fs, f) => f);
+
+            if(query == null)
+            {
+                throw new ApplicationException("Not found!");
+            }
+
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(f => f.Name.Contains(model.Search));
+            }
+
+            var paginatedFoods = await query
+                .Skip((model.Page - 1) * model.PageSize)
+                .Take(model.PageSize)
+                .ToListAsync();
+            return paginatedFoods;
+        }
+
+        public async void LikeOrUnlikeFood(int userId, int foodId)
+        {
+            var foodSelection = await _context.FoodSelections
+            .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId && (bool)fs.IsLike);
+
+            if (foodSelection == null) throw new ApplicationException("Not found!");
+
+            if(foodSelection.IsLike == null)
+            {
+                foodSelection.IsLike = true;
+            }
+
+            foodSelection.IsLike = !foodSelection.IsLike;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<FoodList>> GetBlockedFoods(GetLikeFoodDTO model)
+        {
+            var query = _context.FoodSelections
+                .Where(fs => fs.UserId == model.UserId && (bool)fs.IsBlock)
+                .Join(_context.FoodLists, fs => fs.FoodListId, f => f.FoodListId, (fs, f) => f);
+
+            if (query == null)
+            {
+                throw new ApplicationException("Not found!");
+            }
+
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(f => f.Name.Contains(model.Search));
+            }
+
+            var paginatedFoods = await query
+                .Skip((model.Page - 1) * model.PageSize)
+                .Take(model.PageSize)
+                .ToListAsync();
+
+            return paginatedFoods;
+        }
+
+        public async void UnblockFood(int userId, int foodId)
+        {
+            var foodSelection = await _context.FoodSelections
+                .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId && (bool)fs.IsBlock);
+
+            if (foodSelection == null) throw new ApplicationException("Not found!");
+
+            foodSelection.IsBlock = false;
+            await _context.SaveChangesAsync();
+        }
     }
 }

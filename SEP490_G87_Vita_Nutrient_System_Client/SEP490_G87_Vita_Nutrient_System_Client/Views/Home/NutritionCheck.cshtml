@@ -1,0 +1,269 @@
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.BMIResult
+<div class="container nutrition-check">
+    <h2>KIỂM TRA TÌNH TRẠNG DINH DƯỠNG</h2>
+    <div class="divider"></div>
+    <p class="sub-text">Vui lòng điền đầy đủ thông tin</p>
+
+    <form asp-action="NutritionCheck" method="post">
+        <div class="form-row">
+            <div class="form-group">
+                <input type="date" name="birthDate" placeholder="Ngày sinh vd: 19/05/1890(*)" required value="@ViewBag.BirthDate" />
+            </div>
+            <div class="form-group">
+                <select name="gender" required>
+                    @if (ViewBag.Gender == "Nữ")
+                    {
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ" selected>Nữ</option>
+                    }
+                    else
+                    {
+                        <option value="Nam" selected>Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <input type="number" name="weight" placeholder="Nhập cân nặng (kg)" step="0.1" required value="@ViewBag.Weight" />
+            </div>
+            <div class="form-group">
+                <input type="number" name="height" placeholder="Nhập chiều cao (cm)" step="0.1" required value="@ViewBag.Height" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">KIỂM TRA</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(ViewBag.AgeError))
+    {
+        <div class="alert alert-danger">
+            @ViewBag.AgeError
+        </div>
+    }
+
+    @if (Model != null && Model.BMI > 0)
+    {
+        <div class="result-section">
+            <h3>Kết Quả Kiểm Tra BMI</h3>
+            <p>Chỉ số BMI của bạn: <span class="bmi-value">@Model.BMI</span></p>
+            <p>Đánh giá: <span class="status">@Model.Status</span></p>
+            <p>Phạm vi: <span class="evaluation">@Model.Evaluation</span></p>
+            <p>Giới tính: <span class="gender"><strong>@Model.Gender</strong></span></p>
+            <p>Tuổi của bạn: <span class="age"><strong>@ViewBag.Age</strong></span></p>
+            <p>
+                Phương pháp đánh giá:
+                <span class="evaluation-method">
+                    @if (ViewBag.Age >= 19)
+                    {
+                        @:Dành cho người trưởng thành
+                    }
+                    else
+                    {
+                        @:Dành cho trẻ em và thanh thiếu niên
+                    }
+                </span>
+            </p>
+        </div>
+    }
+
+    <div class="note">
+        <p>
+            <span class="icon">📋</span> <span class="warning">LƯU Ý:</span> Phần mềm <span class="highlight">ĐÁNH GIÁ TÌNH TRẠNG DINH DƯỠNG</span> này áp dụng cho cả trẻ em, thanh thiếu niên và người trưởng thành. Đối với trẻ nhỏ, việc đánh giá dinh dưỡng phụ thuộc vào yếu tố chiều cao, cân nặng và độ tuổi cụ thể. Bố mẹ vui lòng tham khảo ý kiến của chuyên gia dinh dưỡng hoặc bác sĩ để được tư vấn chính xác tình trạng dinh dưỡng của trẻ.
+        </p>
+    </div>
+</div>
+
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 80%;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border-top: 4px solid #3333ff;
+    }
+
+    .divider {
+        width: 100%;
+        height: 1px;
+        background-color: #3333ff; /* Màu xanh đậm */
+        margin: 10px 0 20px; /* Khoảng cách trên và dưới */
+    }
+
+
+    .nutrition-check h2 {
+        color: #3333ff;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    .sub-text {
+        color: #666;
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .form-group {
+        flex: 1 1 50%;
+    }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+
+            .form-group input::placeholder {
+                color: #aaa;
+            }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                border-color: #3333ff;
+                box-shadow: 0 0 5px rgba(51, 51, 255, 0.2);
+            }
+
+    .btn-primary {
+        width: 100%;
+        background-color: #3333ff;
+        color: blue;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .btn-check:hover {
+        background-color: #0000cc;
+    }
+
+    .note {
+        background-color: #f9f9ff; /* Màu nền nhẹ nhàng */
+        border-left: 4px solid #3333ff; /* Viền bên trái màu xanh đậm */
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333; /* Màu chữ */
+    }
+
+        .note .icon {
+            font-size: 20px;
+            margin-right: 8px;
+            color: #3333ff;
+            vertical-align: middle;
+        }
+
+        .note .warning {
+            font-weight: bold;
+            color: #cc0000;
+        }
+
+        .note .highlight {
+            font-weight: bold;
+            color: red;
+        }
+
+        .note strong {
+            color: red;
+        }
+
+    .result-section {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+        .result-section h3 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            color: #3333ff;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+    .bmi-value {
+        color: #007bff;
+        font-weight: bold;
+        font-size: 24px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .status {
+        font-family: 'Roboto', sans-serif;
+        color: #28a745;
+        font-weight: bold;
+        font-size: 20px;
+        padding: 5px 10px;
+        background-color: rgba(40, 167, 69, 0.1);
+        border-radius: 5px;
+        display: inline-block;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .evaluation {
+        color: #ff5722;
+        font-weight: bold;
+        font-size: 20px;
+        padding: 5px 10px;
+        background-color: rgba(255, 193, 7, 0.1);
+        border-radius: 5px;
+        display: inline-block;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .gender {
+        color: #6c757d;
+        font-weight: 500;
+        font-style: italic;
+        font-size: 18px;
+    }
+
+    .age {
+        color: #17a2b8;
+        font-weight: 500;
+        font-size: 18px;
+        padding: 2px 8px;
+        background-color: rgba(23, 162, 184, 0.1);
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+    .evaluation-method {
+        font-family: 'Roboto', sans-serif;
+        color: #343a40;
+        font-weight: 600;
+        font-size: 18px;
+        background-color: rgba(52, 58, 64, 0.05);
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+</style>

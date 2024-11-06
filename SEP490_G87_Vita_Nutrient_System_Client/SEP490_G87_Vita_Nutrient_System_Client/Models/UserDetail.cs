@@ -26,4 +26,9 @@ public partial class UserDetail
     public string? InforConfirmBad { get; set; }
 
     public bool? IsPremium { get; set; }
+
+    public double? ActivityLevel { get; set; }
+
+    public int? Calo { get; set; }
+
 }

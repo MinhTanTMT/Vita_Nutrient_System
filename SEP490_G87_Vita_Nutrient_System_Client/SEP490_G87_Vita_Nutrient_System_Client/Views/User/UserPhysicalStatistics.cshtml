@@ -1,0 +1,143 @@
+﻿<link rel="stylesheet" href="/css/userPhysicalStatistics.css" />
+@model SEP490_G87_Vita_Nutrient_System_Client.Models.UserPhysicalStatistics
+
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+
+<div class="container">
+    <h2 class="title">Thông kế chỉ số cá nhân</h2>
+
+    <form asp-action="UserPhysicalStatistics" method="post" class="personal-info-form" id="userInfoForm">
+        @Html.AntiForgeryToken()
+        <div class="form-group row">
+            <label for="Gender" class="col-label">Giới tính:</label>
+            <div class="col-input">
+                <select asp-for="Gender" class="form-control">
+                    <option value="true">Nam giới</option>
+                    <option value="false">Nữ giới</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="Height" class="col-label">Chiều cao(cm):</label>
+            <div class="col-input">
+                <input asp-for="Height" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="Weight" class="col-label">Cân nặng(kg):</label>
+            <div class="col-input">
+                <input asp-for="Weight" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="Age" class="col-label">Tuổi(năm):</label>
+            <div class="col-input">
+                <input asp-for="Age" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="ActivityLevel" class="col-label">Mức độ hoạt động:</label>
+            <div class="col-input">
+                <select asp-for="ActivityLevel" class="form-control">
+                    <option value="1.2">Công việc bàn giấy, tập thể dục nhẹ</option>
+                    <option value="1.375">Hoạt động nhẹ nhàng, tập luyện 1-3 lần/tuần</option>
+                    <option value="1.55">Tập thể dục thường xuyên, 3-5 lần/tuần</option>
+                    <option value="1.725">Tập nhiều, 6-7 lần/tuần</option>
+                    <option value="1.9">Tập cường độ cao, công việc nặng</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-label"></div>
+            <div class="col-input">
+                <!-- Nút để mở modal -->
+                <button type="button" class="btn btn-primary" onclick="showNutritionalGoals()">Cập nhật mục tiêu dinh dưỡng</button>
+            </div>
+        </div>
+        <div id="successMessage" class="alert alert-success" style="display:none;"></div>
+        <div id="errorMessage" class="alert alert-danger" style="display:none;"></div>
+    </form>
+</div>
+
+<!-- Modal cho bảng "Mục tiêu dinh dưỡng của tôi" -->
+<div id="nutritionalGoalsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>Cập nhật mục tiêu dinh dưỡng</h3>
+        <p>Lượng Calo: <span id="caloriesValue"></span> calo</p>
+        <ul>
+            <li><span class="dot yellow"></span> ~ <span id="carbsValue"></span>g (40%) Carbs</li>
+            <li><span class="dot blue"></span> ~ <span id="fatsValue"></span>g (30%) Chất béo</li>
+            <li><span class="dot purple"></span> ~ <span id="proteinsValue"></span>g (30%) Protein</li>
+        </ul>
+        <button type="button" class="btn btn-primary" onclick="submitForm()">Lưu</button>
+    </div>
+</div>
+
+<script>
+    function showNutritionalGoals() {
+        const height = parseFloat(document.querySelector('input[name="Height"]').value) || 0;
+        const weight = parseFloat(document.querySelector('input[name="Weight"]').value) || 0;
+        const age = parseFloat(document.querySelector('input[name="Age"]').value) || 0;
+        const gender = document.querySelector('select[name="Gender"]').value === "true";
+        const activityLevel = parseFloat(document.querySelector('select[name="ActivityLevel"]').value) || 1.2;
+
+        let bmr = gender ? (10 * weight) + (6.25 * height) - (5 * age) + 5 : (10 * weight) + (6.25 * height) - (5 * age) - 161;
+        let tdee = bmr * activityLevel;
+
+        const carbs = Math.round(tdee * 0.4 / 4);
+        const fats = Math.round(tdee * 0.3 / 9);
+        const proteins = Math.round(tdee * 0.3 / 4);
+
+        document.getElementById("caloriesValue").textContent = Math.round(tdee);
+        document.getElementById("carbsValue").textContent = carbs;
+        document.getElementById("fatsValue").textContent = fats;
+        document.getElementById("proteinsValue").textContent = proteins;
+
+        document.getElementById("nutritionalGoalsModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("nutritionalGoalsModal").style.display = "none";
+    }
+
+      function submitForm() {
+        closeModal();
+        $.ajax({
+            url: '@Url.Action("UserPhysicalStatistics", "User")',
+            type: 'POST',
+            data: {
+                Gender: $("#Gender").val(),
+                Height: $("#Height").val(),
+                Weight: $("#Weight").val(),
+                Age: $("#Age").val(),
+                ActivityLevel: $("#ActivityLevel").val()
+            },
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (response) {
+                if (response.success) {
+                    $("#successMessage").text(response.message).show();
+                    $("#errorMessage").hide();
+                } else {
+                    $("#errorMessage").text(response.message).show();
+                    $("#successMessage").hide();
+                }
+            },
+            error: function () {
+                $("#errorMessage").text("Có lỗi xảy ra trong quá trình lưu thông tin.").show();
+                $("#successMessage").hide();
+            }
+        });
+
+    }
+
+</script>

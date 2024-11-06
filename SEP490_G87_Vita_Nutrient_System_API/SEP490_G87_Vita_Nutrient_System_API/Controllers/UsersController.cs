@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
@@ -13,6 +16,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     public class UsersController : ControllerBase
     {
 
+        private IUserDetailsRepository _repositories = new UserDetailsRepository();
         private IUserRepositories repositories = new UsersRepositories();
         private readonly IMapper _mapper;
 
@@ -52,7 +56,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
             
         }
-
 
 
         [HttpPost("Register")]
@@ -119,7 +122,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("GetOnlyUserDetail/{userId}")]
+        public async Task<IActionResult> GetOnlyUserDetail(int userId)
+        {
+            var userDetail = await repositories.GetUserDetailByUserIdAsync(userId);
 
+            if (userDetail == null)
+            {
+                return NotFound(new { message = "UserDetail not found" });
+            }
+
+            return Ok(userDetail);
+        }
         [HttpGet("GetNutritionistDetail/{id}")]
         public async Task<ActionResult<dynamic>> GetNutritionistDetail(int id)
         {
@@ -146,6 +160,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+        [HttpPost("UpdateUserPhysicalStatistics")]
+        public async Task<IActionResult> UpdateUserPhysicalStatistics([FromBody] UserPhysicalStatisticsDTO userDetails)
+        {
+            if (userDetails == null || userDetails.UserId <= 0)
+            {
+                return BadRequest(new { message = "Invalid user details data." });
+            }
+
+            await _repositories.SaveUserDetails(userDetails);
+            return Ok(new { message = "User details updated successfully." });
+        }
 
         [HttpPost("UpdateUserStatus")]
         public async Task<ActionResult<string>> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
@@ -161,6 +186,47 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             repositories.UpdateUser(u);
 
             return Ok("Update user status successfully!");
+        }
+
+        [HttpGet("{userId}/liked-foods")]
+        public async Task<ActionResult<dynamic>> GetLikedFoods([FromQuery] GetLikeFoodDTO model)
+        {
+
+            return Ok(await repositories.GetLikedFoods(model));
+        }
+
+        [HttpPost("{userId}/unlike-food/{foodId}")]
+        public async Task<IActionResult> UnlikeFood(int userId, int foodId)
+        {
+            User u = repositories.GetUserById(userId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+            repositories.LikeOrUnlikeFood(userId, foodId);
+            return NoContent();
+        }
+
+        [HttpGet("{userId}/unblock-food/{foodId}")]
+        public async Task<IActionResult> UnblockFood(int userId, int foodId)
+        {
+            User u = repositories.GetUserById(userId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+            repositories.UnblockFood(userId, foodId);
+            return NoContent();
+        }
+
+        [HttpGet("{userId}/blocked-foods")]
+        public async Task<IActionResult> GetBlockedFoods([FromQuery]GetLikeFoodDTO model)
+        {
+            var paginatedFoods = await repositories.GetBlockedFoods(model);
+
+            return Ok(paginatedFoods);
         }
     }
 }
