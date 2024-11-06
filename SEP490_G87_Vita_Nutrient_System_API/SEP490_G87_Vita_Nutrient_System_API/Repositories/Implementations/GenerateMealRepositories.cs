@@ -527,7 +527,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-
         public async Task<bool> FillInDishIdInDailyDish(int idUser, DateTime MyDay)
         {
             MealSetting MealSettingDataOfUser = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == idUser);
@@ -922,6 +921,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return false;
             } 
         }
+
 
         public async Task<bool> CompleteTheDish(FoodStatusUpdateModel dataprocess, string? statusSymbolReplace, int? idFoodReplace, List<int>? listIdFoodChange)
         {
