@@ -61,6 +61,10 @@
       "PackagePath": "staticwebassets\\css\\toast.css"
     },
     {
+      "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\css\\userPhysicalStatistics.css",
+      "PackagePath": "staticwebassets\\css\\userPhysicalStatistics.css"
+    },
+    {
       "Id": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_Client\\SEP490_G87_Vita_Nutrient_System_Client\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
