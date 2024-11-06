@@ -16,6 +16,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     public class UsersController : ControllerBase
     {
 
+        private IUserDetailsRepository _repositories = new UserDetailsRepository();
         private IUserRepositories repositories = new UsersRepositories();
         private readonly IMapper _mapper;
 
@@ -121,7 +122,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("GetOnlyUserDetail/{userId}")]
+        public async Task<IActionResult> GetOnlyUserDetail(int userId)
+        {
+            var userDetail = await repositories.GetUserDetailByUserIdAsync(userId);
 
+            if (userDetail == null)
+            {
+                return NotFound(new { message = "UserDetail not found" });
+            }
+
+            return Ok(userDetail);
+        }
         [HttpGet("GetNutritionistDetail/{id}")]
         public async Task<ActionResult<dynamic>> GetNutritionistDetail(int id)
         {
@@ -147,6 +159,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 .ToList();
 
             return Ok(result);
+        }
+        [HttpPost("UpdateUserPhysicalStatistics")]
+        public async Task<IActionResult> UpdateUserPhysicalStatistics([FromBody] UserPhysicalStatisticsDTO userDetails)
+        {
+            if (userDetails == null || userDetails.UserId <= 0)
+            {
+                return BadRequest(new { message = "Invalid user details data." });
+            }
+
+            await _repositories.SaveUserDetails(userDetails);
+            return Ok(new { message = "User details updated successfully." });
         }
 
         [HttpPost("UpdateUserStatus")]

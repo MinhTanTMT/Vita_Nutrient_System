@@ -39,7 +39,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                             var mealSettingsDetail = JsonConvert.DeserializeObject<CreateMealSettingsDetail>(mealData);
 
                             // Gán calo từ MealSettingsDetail vào ViewBag
-                            ViewBag.MealCalories = mealSettingsDetail?.Calo;
+                            ViewBag.MealCalories = mealSettingsDetail?.Calories;
                         }
                         else
                         {
