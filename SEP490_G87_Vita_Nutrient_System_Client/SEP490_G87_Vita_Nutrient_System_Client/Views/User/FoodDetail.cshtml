@@ -7,6 +7,29 @@
 }
 
 <link rel="stylesheet" href="~/css/fooddetails.css">
+<link rel="stylesheet" href="~/css/ratingCircle.css">
+
+<style>
+    .rating-display{
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    /* Styles for the stars rating */
+    .stars {
+        display: flex;
+    }
+
+    .star {
+        font-size: 24px;
+        color: #ddd; /* Default (dimmed) color for stars */
+    }
+
+        .star.filled {
+            color: gold; /* Color for filled stars */
+        }
+</style>
 
 <div class="row" style="width: 100%;">
     <div class="col-12 grid-margin">
@@ -27,29 +50,48 @@
                                 <img src="~/images/@food.Urlimage" alt="@food.Name"
                                      onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="border-radius: 5px; width: 100%;" />
                         }
+
+                        <div class="rating-display">
+                            <!-- Circle Rating -->
+                            <div class="rating">@food.Rate</div>
+
+                            <!-- Stars Rating -->
+                            <div class="">
+                                <div class="stars" id="starsContainer"></div>
+
+                                <div style="font-size: small; color: gray;">
+                                    (Đánh giá @(food.Rate / 10) từ @food.NumberRate thành viên)
+                                </div>
+                            </div>
+                            
+                        </div>
                     </div>
                     <div class="col-1"></div>
                     <div class="food-info col-6">
-                        <label>Description: </label>
-                        <p>@food.Describe</p>
-                        <br />
-                        <label>Rate: </label>
-                        <p>@food.Rate</p>
-                        <br />
-                        <label>Number rate: </label>
-                        <p>@food.NumberRate</p>
-                        <br />
-                        <label>Type: </label>
-                        <p>@food.FoodType.Name</p>
-                        <br />
-                        <label>Preparation time: </label>
-                        <p>@food.PreparationTime (mins)</p>
-                        <br />
-                        <label>Cooking time: </label>
-                        <p>@food.CookingTime (mins)</p>
-                        <br />
-                        <label>Difficulty: </label>
-                        <p>@Enum.GetName(typeof(SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums.CookingDifficultyLevel), food.CookingDifficultyId)</p>
+                        <div>
+                            <label>Mô tả: </label>
+                            <p>@food.Describe</p>
+                        </div>
+
+                        <div>
+                            <label>Loại: </label>
+                            <p>@food.FoodType.Name</p>
+                        </div>
+
+                        <div>
+                            <label>Thời gian chuẩn bị: </label>
+                            <p>@food.PreparationTime (mins)</p>
+                        </div>
+
+                        <div>
+                            <label>Thời gian nấu: </label>
+                            <p>@food.CookingTime (mins)</p>
+                        </div>
+
+                        <div>
+                            <label>Độ khó: </label>
+                            <p>@Enum.GetName(typeof(SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums.CookingDifficultyLevel), food.CookingDifficultyId)</p>
+                        </div>
                     </div>
                 </div>
 
@@ -106,3 +148,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    function displayRating(x) {
+        // Display stars based on the rating
+        const starsContainer = document.getElementById("starsContainer");
+        starsContainer.innerHTML = ""; // Clear previous stars
+
+        const fullStars = Math.floor(x / 10); // Determine the number of filled stars
+        for (let i = 1; i <= 10; i++) {
+            const star = document.createElement("span");
+            star.classList.add("star");
+            star.textContent = "★";
+            if (i <= fullStars) star.classList.add("filled"); // Make star filled if within rating
+            starsContainer.appendChild(star);
+        }
+    }
+
+    // Set the rating value here
+    displayRating(@food.Rate); // Example rating of 75
+</script>
+<script src="~/js/ratingCircle.js"></script>
