@@ -11,7 +11,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         ///
         Task<List<NutritionTargetsDaily>> GetAllNutritionTargetsDailyAsync();
         Task<NutritionTargetsDailyDTO> CreateNutritionTargetsDailyAsync(int userId, short calories);
+        Task<NutritionTargetOfMealDTO> GetNutritionTargetOfMealByIdAsync(int id);
         Task<NutritionTargetsDailyDTO> GetNutritionTargetByIdAsync(int id);
-        Task<NutritionTargetsDailyDTO> UpdateNutritionTargetAsync(NutritionTargetsDailyDTO nutritionTargetDTO);
+        Task<NutritionTargetOfMealDTO> UpdateNutritionTargetAsync(NutritionTargetOfMealDTO nutritionTargetDTO);
     }
 }

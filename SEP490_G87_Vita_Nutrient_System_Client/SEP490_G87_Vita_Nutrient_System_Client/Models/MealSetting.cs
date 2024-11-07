@@ -5,6 +5,7 @@
         public int Id { get; set; }
 
         public int UserId { get; set; }
+        public short FoodTypeIdWant { get; set; }
 
         public short DayOfTheWeekStartId { get; set; }
 

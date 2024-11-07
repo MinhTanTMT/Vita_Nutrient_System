@@ -21,81 +21,96 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public async Task<IActionResult> EditNutritionTargetsDaily(int id)
         {
+            NutritionTargetOfMeal nutritionTargetsDaily = null;
+            NutritionTargetsDaily additionalNutritionData = null;
 
-            NutritionTargetsDaily nutritionTargetsDaily = null;
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/NutritionTargetsDaily/GetNutritionTargetsDaily/{id}");
+                // Gọi API để lấy thông tin dinh dưỡng chính của meal
+                HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/NutritionTargetsDaily/GetNutritionTargetsDailyOfMeal/{id}");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonData = await response.Content.ReadAsStringAsync();
-                    nutritionTargetsDaily = JsonConvert.DeserializeObject<NutritionTargetsDaily>(jsonData);
-                    HttpResponseMessage mealResponse = await client.GetAsync($"{client.BaseAddress}/Meals/FindMealSettingsDetailByNutritionTargetsDailyId/{nutritionTargetsDaily.Id}");
-
-                        if (mealResponse.IsSuccessStatusCode)
-                        {
-                            var mealData = await mealResponse.Content.ReadAsStringAsync();
-                            var mealSettingsDetail = JsonConvert.DeserializeObject<CreateMealSettingsDetail>(mealData);
-
-                            // Gán calo từ MealSettingsDetail vào ViewBag
-                            ViewBag.MealCalories = mealSettingsDetail?.Calories;
-                        }
-                        else
-                        {
-                            ViewBag.MealCalories = "N/A"; // Không tìm thấy
-                        }
+                    nutritionTargetsDaily = JsonConvert.DeserializeObject<NutritionTargetOfMeal>(jsonData);
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "Không thể lấy dữ liệu từ API.";
+                    TempData["ErrorMessage"] = "Không thể lấy dữ liệu từ API GetNutritionTargetsDailyOfMeal.";
+                    return RedirectToAction("Error");
+                }
+                // Lấy danh sách FoodTypes để hiển thị trong dropdown
+                HttpResponseMessage foodTypeResponse = await client.GetAsync($"{client.BaseAddress}/Food/GetFoodTypes");
+                if (foodTypeResponse.IsSuccessStatusCode)
+                {
+                    var foodTypeData = await foodTypeResponse.Content.ReadAsStringAsync();
+                    var foodTypes = JsonConvert.DeserializeObject<List<FoodType>>(foodTypeData);
+                    ViewBag.FoodTypes = foodTypes;
+                }
+
+                HttpResponseMessage additionalResponse = await client.GetAsync($"{client.BaseAddress}/NutritionTargetsDaily/GetNutritionTargetsDaily/{id}");
+                if (additionalResponse.IsSuccessStatusCode)
+                {
+                    var additionalData = await additionalResponse.Content.ReadAsStringAsync();
+                    additionalNutritionData = JsonConvert.DeserializeObject<NutritionTargetsDaily>(additionalData);
+
+                    ViewBag.Calories = additionalNutritionData.Calories;
+                    ViewBag.CarbsMin = additionalNutritionData.CarbsMin;
+                    ViewBag.CarbsMax = additionalNutritionData.CarbsMax;
+                    ViewBag.FatsMin = additionalNutritionData.FatsMin;
+                    ViewBag.FatsMax = additionalNutritionData.FatsMax;
+                    ViewBag.ProteinMin = additionalNutritionData.ProteinMin;
+                    ViewBag.ProteinMax = additionalNutritionData.ProteinMax;
+                    ViewBag.MinimumFiber = additionalNutritionData.MinimumFiber;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Không thể lấy dữ liệu từ API GetNutritionTargetsDaily.";
                     return RedirectToAction("Error");
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
-                return RedirectToAction("Meal");
+                TempData["ErrorMessage"] = $"Lỗi trong quá trình gọi API: {ex.Message}";
+                return RedirectToAction("MealSettingsDetailToList", "Meal");
             }
 
             if (nutritionTargetsDaily == null)
             {
-                ViewBag.ErrorMessage = "Không tìm thấy nutritionTargetsDaily.";
+                TempData["ErrorMessage"] = "Không tìm thấy nutritionTargetsDaily.";
                 return RedirectToAction("Error");
             }
-            // Gán giá trị calo vào ViewBag
-            ViewBag.NutritionCalories = nutritionTargetsDaily?.Calories; 
+
+            // Trả về model chính cho view và dữ liệu bổ sung qua ViewBag
             return View(nutritionTargetsDaily);
-
-
         }
 
-        [HttpPost]
 
-        public async Task<IActionResult> EditNutritionTargetsDaily(int id, CreateMealSettingsDetail model)
+        [HttpPost]
+        public async Task<IActionResult> EditNutritionTargetsDaily(int id, NutritionTargetOfMeal model)
         {
             try
             {
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync($"{client.BaseAddress}/NutritionTargetsDaily/UpdateNutritionTargetAsync/{model.Id}", content);
+                HttpResponseMessage response = await client.PutAsync($"{client.BaseAddress}/NutritionTargetsDaily/UpdateNutritionTargetsDaily/{id}", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-
-                    return RedirectToAction("MealSettingsDetailToList");
+                    return RedirectToAction("MealSettingsDetailToList", "Meal");
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = $"Lỗi khi cập nhật thông tin bữa ăn";
+                    TempData["ErrorMessage"] = "Lỗi khi cập nhật thông tin bữa ăn";
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
+                TempData["ErrorMessage"] = $"Lỗi trong quá trình gọi API: {ex.Message}";
             }
 
             return View("EditMealSettingsDetail", model);
         }
+
 
     }
 }

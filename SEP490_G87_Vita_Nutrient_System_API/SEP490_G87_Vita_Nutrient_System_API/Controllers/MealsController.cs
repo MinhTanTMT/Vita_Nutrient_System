@@ -120,7 +120,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            await repositories.UpdateMealSettingAsync(id, dto.DayOfTheWeekStartId, dto.SameScheduleEveryDay);
+            await repositories.UpdateMealSettingForMealAsync(id, dto);
 
             return Ok(new { message = "Cập nhật thành công" });
         }

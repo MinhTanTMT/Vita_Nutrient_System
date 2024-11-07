@@ -24,6 +24,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(nutritionTargetsDailies);
         }
 
+        [HttpGet("GetNutritionTargetsDailyOfMeal/{id}")]
+        public async Task<IActionResult> GetNutritionTargetsDailyOfMeal(int id)
+        {
+            var nutritionTargetDTO = await repositories.GetNutritionTargetOfMealByIdAsync(id);
+            if (nutritionTargetDTO == null)
+            {
+                return NotFound();
+            }
+            return Ok(nutritionTargetDTO);
+        }
         [HttpGet("GetNutritionTargetsDaily/{id}")]
         public async Task<IActionResult> GetNutritionTargetsDaily(int id)
         {
@@ -33,12 +43,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return NotFound();
             }
             return Ok(nutritionTargetDTO);
-        }
+        } 
 
         [HttpPut("UpdateNutritionTargetsDaily/{id}")]
-        public async Task<IActionResult> UpdateNutritionTargetsDaily(int id, [FromBody] NutritionTargetsDailyDTO updatedNutritionTargetDTO)
+        public async Task<IActionResult> UpdateNutritionTargetsDaily(int id, [FromBody] NutritionTargetOfMealDTO updatedNutritionTargetDTO)
         {
-            if (id != updatedNutritionTargetDTO.Id)
+            if (id != updatedNutritionTargetDTO.NutritionTargetsDailyId)
             {
                 return BadRequest("Nutrition target ID mismatch.");
             }

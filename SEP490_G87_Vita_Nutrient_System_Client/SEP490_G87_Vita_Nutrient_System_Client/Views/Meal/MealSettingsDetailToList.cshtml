@@ -18,13 +18,31 @@
 
     <div class="modal-body">
         <div class="form-group">
-            <label for="dayOfTheWeekStartId">Ngày đầu tuần</label>
-            <select id="dayOfTheWeekStartId" name="DayOfTheWeekStartId" class="form-control" onchange="updateDayOfTheWeek(this.value)">
-                @foreach (var day in daysOfWeek)
+            <label for="foodTypeIdWant">Chế độ ăn uống mong muốn</label>
+            <select id="foodTypeIdWant" name="FoodTypeIdWant" class="form-control" onchange="updateFoodType(this.value)">
+                @foreach (var foodType in ViewBag.FoodTypes as List<SelectListItem>)
                 {
-                    <option value="@day.Value" selected="@(day.Selected ? "selected" : null)">@day.Text</option>
+                    <option value="@foodType.Value" selected="@(foodType.Selected ? "selected" : null)">@foodType.Text</option>
                 }
             </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="dayOfTheWeekStartId">Ngày đầu tuần</label>
+             @if (selectedDayOfTheWeekStartId == "8")
+                {
+                    <span class="form-control">@daysOfWeek.FirstOrDefault(day => day.Value == "8").Text</span>
+                }
+            else
+                {
+            <select id="dayOfTheWeekStartId" name="DayOfTheWeekStartId" class="form-control" onchange="updateDayOfTheWeek(this.value)">
+                    @foreach (var day in daysOfWeek)
+                    {
+                        <option value="@day.Value" selected="@(day.Selected ? "selected" : null)">@day.Text</option>
+                    }
+            </select>
+                }
         </div>
 
         <div class="form-group d-flex align-items-center">
@@ -222,4 +240,24 @@
             }
         });
     }
+
+    function updateFoodType(foodTypeId) {
+        $.ajax({
+            url: '@Url.Action("UpdateFoodType", "Meal")',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ FoodTypeIdWant: parseInt(foodTypeId) }),
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    console.log("Cập nhật chế độ ăn uống mong muốn thành công");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log("Cập nhật chế độ ăn uống mong muốn thất bại:", error);
+            }
+        });
+    }
+
+
 </script>
