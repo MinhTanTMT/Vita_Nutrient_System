@@ -32,7 +32,7 @@
     <div>
         @if (Model.NumberRate > 0)
         {
-            <p>Đánh giá trung bình: @Model.Rate</p>
+            <p>Đánh giá trung bình: @Math.Round(Model.Rate.Value, 2)/5</p>
             <p>Số lượt đánh giá: @Model.NumberRate</p>
         }
         else
