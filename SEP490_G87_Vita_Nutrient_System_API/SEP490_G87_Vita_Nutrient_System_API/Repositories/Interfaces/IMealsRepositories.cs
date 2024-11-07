@@ -34,6 +34,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<MealSetting> GetMealSettingByUserIdAsync(int userId);
         Task<List<CreateMealSettingsDetailDto>> GetAllMealSettingByUserIdAsync(int userId);
         Task<List<CreateMealSettingsDetailDto>> GetAllMealSettingBySelectedAsync(int userId);
+        Task<MealSettingsDetail> GetMealSettingDetailByMealSettingIdAsync(int mealSettingsId);
         Task<MealSettingsDetail > FindMealSettingsDetailByIdAsync(int id);
         Task<MealSettingsDetail> FindMealSettingsDetailByNutritionTargetsDailyIdAsync(int nutritionTargetsDailyId);
         Task<bool> ChangeOrderNumberAsync(int mealId, string direction);

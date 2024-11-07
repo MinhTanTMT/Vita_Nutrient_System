@@ -535,21 +535,23 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             double totalCalories = userDetail.Calo.Value;
 
-            // Lấy danh sách các bữa ăn trong ngày (active meals) để phân bổ lại calo
-            var activeMeals = await _context.MealSettingsDetails
-                .Include(m => m.NutritionTargetsDaily)
-                .Where(m => m.NutritionTargetsDaily != null
-                            && m.NutritionTargetsDaily.UserId == mealSettingUser.UserId
-                            && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId
-                            && m.IsActive == true
-                            && m.NutritionTargetsDaily.IsActive == true)
-                .ToListAsync();
-
-            // Nếu có các bữa ăn active, phân bổ lại calo cho từng slot
-            if (activeMeals.Count > 0)
+            for (int day = 1; day <= 8; day++)
             {
-                // Phân bổ calo cho tất cả các slot dựa trên tổng calo của user
-                await DistributeCaloriesForSlots(2, activeMeals, mealSettingsDetail, mealSettingUser.UserId, totalCalories);
+                // Lọc các bữa ăn active của người dùng theo từng ngày
+                var activeMeals = await _context.MealSettingsDetails
+                    .Include(m => m.NutritionTargetsDaily)
+                    .Where(m => m.NutritionTargetsDaily != null
+                                && m.NutritionTargetsDaily.UserId == mealSettingUser.UserId
+                                && m.DayOfTheWeekId == day
+                                && m.IsActive == true
+                                && m.NutritionTargetsDaily.IsActive == true)
+                    .ToListAsync();
+
+                // Nếu có các bữa ăn active trong ngày, phân bổ lại calo cho từng slot của ngày đó
+                if (activeMeals.Count > 0)
+                {
+                    await DistributeCaloriesForSlots(2, activeMeals, mealSettingsDetail, mealSettingUser.UserId, totalCalories);
+                }
             }
 
             await _context.SaveChangesAsync();
@@ -588,7 +590,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return await _context.MealSettings.FirstOrDefaultAsync(ms => ms.UserId == userId);
         }
-
+        public async Task<MealSettingsDetail> GetMealSettingDetailByMealSettingIdAsync(int mealSettingsId)
+        {
+            return await _context.MealSettingsDetails.FirstOrDefaultAsync(ms => ms.MealSettingsId == mealSettingsId);
+        }
         public async Task<List<CreateMealSettingsDetailDto>> GetAllMealSettingByUserIdAsync(int userId)
         {
             var mealSetting = await _context.MealSettings.FirstOrDefaultAsync(ms => ms.UserId == userId);

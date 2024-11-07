@@ -428,7 +428,26 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                return Json(new { success = true, message = "Thông tin cá nhân đã được lưu thành công." });
+                // Lấy MealSettingsDetail gần nhất của user
+                HttpResponseMessage mealSettingResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
+                if (mealSettingResponse.IsSuccessStatusCode)
+                {
+                    var mealSettingData = await mealSettingResponse.Content.ReadAsStringAsync();
+                    var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
+                    HttpResponseMessage mealSettingDetailResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingDetailByMealSettingId/{mealSetting.Id}");
+                    if (mealSettingDetailResponse.IsSuccessStatusCode)
+                    {
+                        var mealSettingDetailData = await mealSettingDetailResponse.Content.ReadAsStringAsync();
+                        var mealSettingDetail = JsonConvert.DeserializeObject<MealSetting>(mealSettingDetailData);
+                        if (mealSettingDetail != null)
+                        {
+                            // Gọi UpdateCalo cho MealSettingsDetail ID đầu tiên
+                            await client.PutAsync($"{client.BaseAddress}/Meals/UpdateCalo/{mealSettingDetail.Id}", null);
+                        }
+                    }
+                }
+
+                return Json(new { success = true, message = "Thông tin cá nhân đã được lưu thành công và calo đã được cập nhật." });
             }
             else
             {
@@ -436,6 +455,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình lưu thông tin: " + errorResponse });
             }
         }
+
 
         [HttpGet("NutritionalGoals")]
         public async Task<IActionResult> NutritionalGoals()

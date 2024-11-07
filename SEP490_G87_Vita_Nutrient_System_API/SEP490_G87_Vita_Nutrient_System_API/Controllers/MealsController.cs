@@ -176,7 +176,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var mealById = await repositories.FindMealSettingsDetailByIdAsync(id);
             return Ok(mealById);
         }
-
+        [HttpGet("GetMealSettingDetailByMealSettingId/{id}")]
+        public async Task<IActionResult> GetMealSettingDetailByMealSettingId(int id)
+        {
+            var mealById = await repositories.GetMealSettingDetailByMealSettingIdAsync(id);
+            return Ok(mealById);
+        }
+        
         [HttpGet("GetMealSettingByUserId/{id}")]
         public async Task<IActionResult> GetMealSettingByUserId(int id)
         {
