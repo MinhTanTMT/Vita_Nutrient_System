@@ -95,6 +95,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
+            await generateMealRepositories.CreateMealSetting(idUser);
+
             IEnumerable<DataFoodListMealOfTheDay> dataFoodListMealOfTheDays;
 
             dataFoodListMealOfTheDays = await generateMealRepositories.ListMealOfTheDay(myDay, idUser);
@@ -191,7 +193,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(await generateMealRepositories.CompleteTheDish(model, null, idFoodSelect, null));
         }
-
 
     }
 
