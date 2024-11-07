@@ -4,6 +4,7 @@
 @{
     FoodList food = ViewBag.food;
     List<FoodRecipe> recipes = ViewBag.recipes;
+    string foodSlots = ViewBag.foodSlots;
 }
 
 <link rel="stylesheet" href="~/css/fooddetails.css">
@@ -23,6 +24,8 @@
 
     .star {
         font-size: 24px;
+        line-height: 25px;
+        padding-bottom: 5px;
         color: #ddd; /* Default (dimmed) color for stars */
     }
 
@@ -60,7 +63,7 @@
                                 <div class="stars" id="starsContainer"></div>
 
                                 <div style="font-size: small; color: gray;">
-                                    (Đánh giá @(food.Rate / 10) từ @food.NumberRate thành viên)
+                                    (Đánh giá @(Math.Floor((double)food.Rate) / 10)/10 từ @food.NumberRate thành viên)
                                 </div>
                             </div>
                             
@@ -92,11 +95,18 @@
                             <label>Độ khó: </label>
                             <p>@Enum.GetName(typeof(SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums.CookingDifficultyLevel), food.CookingDifficultyId)</p>
                         </div>
+
+                        <div style="padding-top: 10px; font-size:x-large;">
+                            <i class="mdi mdi-calendar-check"></i>
+                            Planned for @foodSlots
+                        </div>
                     </div>
                 </div>
 
+                </br></br>
+
                 <div class="hr">
-                    <div class="hr-content">The steps to cook</div>
+                    <div class="hr-content">Các bước nấu</div>
                 </div>
 
                 <div class="card-body">
@@ -108,13 +118,13 @@
                             @if(i == recipes.Count - 1 && i != 0)
                             {
                                 <div class="font-weight-bold p-5 text-decoration-underline">
-                                    Last Step
+                                    Bước cuối
                                 </div>
                             }
                             else
                             {
                                 <div class="font-weight-bold p-5 text-decoration-underline">
-                                    Step @(i + 1)
+                                    Bước @(i + 1)
                                 </div>
                             }
                             

@@ -357,12 +357,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
-                    FoodList food = JsonConvert.DeserializeObject<FoodList>(data);
+                    dynamic result = JsonConvert.DeserializeObject<dynamic>(data);
+                    FoodList food = result.food.ToObject<FoodList>();
+                    List<SlotOfTheDay> slots = result.slots.ToObject<List<SlotOfTheDay>>();
 
                     HttpContent content1 = response1.Content;
                     string data1 = await content1.ReadAsStringAsync();
                     List<FoodRecipe> recipes = JsonConvert.DeserializeObject<List<FoodRecipe>>(data1);
 
+                    List<string> foodSlots = slots.Select(s => s.Slot).ToList();
+                    ViewBag.foodSlots = string.Join(", ", foodSlots.Take(foodSlots.Count - 1)) +
+                                    (foodSlots.Count > 1 ? " và " : "") +
+                                    foodSlots.LastOrDefault();
                     ViewBag.food = food;
                     ViewBag.recipes = recipes;
                 }
