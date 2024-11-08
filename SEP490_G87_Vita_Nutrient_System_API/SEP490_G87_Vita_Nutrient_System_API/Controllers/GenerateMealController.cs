@@ -90,6 +90,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+
+
         [HttpGet("APIListMealOfTheDay")]
         public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APIListMealOfTheDay(DateTime myDay, int idUser)
         {
@@ -193,6 +200,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(await generateMealRepositories.CompleteTheDish(model, null, idFoodSelect, null));
         }
+
+
+        [HttpGet("APIFirstMealSetting")]
+        public async Task<IActionResult> APIFirstMealSetting(int idUser)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            return Ok(await generateMealRepositories.CreateMealSetting(idUser));
+        }
+
 
     }
 
