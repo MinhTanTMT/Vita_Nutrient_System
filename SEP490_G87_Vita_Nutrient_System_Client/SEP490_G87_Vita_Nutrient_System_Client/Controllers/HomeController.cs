@@ -270,14 +270,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             int age = DateTime.Today.Year - birthDate.Year;
             if (birthDate > DateTime.Today.AddYears(-age)) age--;
 
-            // Nếu tuổi dưới 2 hoặc chiều cao, cân nặng không hợp lý, trả về lỗi
-            if (age < 2 || height <= 0 || weight <= 0)
+            // Nếu tuổi dưới 5 hoặc chiều cao, cân nặng không hợp lý, trả về lỗi
+            if (age < 5 || height <= 0 || weight <= 0)
             {
                 ViewBag.AgeError = "Phần mềm này chỉ áp dụng cho người từ 2 tuổi trở lên với chiều cao và cân nặng hợp lý.";
                 return View();
             }
 
             double bmi = weight / Math.Pow(height / 100, 2);
+            int percentile = 0;
             string status;
             string evaluation;
 
@@ -308,16 +309,34 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else // Tiêu chí cho trẻ em và thanh thiếu niên
             {
-                // Ví dụ đánh giá cơ bản cho trẻ em/thanh thiếu niên (theo phần trăm phân vị hoặc khuyến nghị từ tổ chức y tế)
-                if (bmi < 5) { status = "THIẾU CÂN"; evaluation = "Dưới mức bình thường"; }
-                else if (bmi <= 85) { status = "BÌNH THƯỜNG"; evaluation = "Trong phạm vi bình thường"; }
-                else if (bmi <= 95) { status = "NGUY CƠ THỪA CÂN"; evaluation = "Trên mức bình thường"; }
-                else { status = "THỪA CÂN"; evaluation = "Cao hơn mức bình thường"; }
+                percentile = GetBMIPercentileForAgeAndGender(age, bmi, gender);
+                if (percentile < 5)
+                {
+                    status = "THIẾU CÂN";
+                    evaluation = $"Hãy cải thiện chế độ dinh dưỡng để đạt mức cân nặng phù hợp.";
+                }
+                else if (percentile <= 85)
+                {
+                    status = "BÌNH THƯỜNG";
+                    evaluation = $"Hãy duy trì chế độ ăn uống và luyện tập hiện tại.";
+                }
+                else if (percentile <= 95)
+                {
+                    status = "NGUY CƠ THỪA CÂN";
+                    evaluation = $"Cần điều chỉnh chế độ ăn uống và luyện tập để tránh thừa cân.";
+                }
+                else
+                {
+                    status = "THỪA CÂN";
+                    evaluation = $"Cần có chế độ ăn uống và vận động phù hợp để cải thiện sức khỏe.";
+                }
+
             }
 
             var result = new BMIResult
             {
                 BMI = Math.Round(bmi, 2),
+                Percentile = percentile,
                 Status = status,
                 Evaluation = evaluation,
                 Gender = gender
@@ -330,6 +349,82 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             ViewBag.Age = age;
 
             return View("NutritionCheck", result);
+        }
+
+        private int GetBMIPercentileForAgeAndGender(int age, double bmi, string gender)
+        {
+            // Dữ liệu từ tài liệu WHO (bạn có thể mở rộng thêm dữ liệu từ file PDF)
+            var boysBmiPercentiles = new Dictionary<int, List<(double Bmi, int Percentile)>>
+            {
+                { 5, new List<(double, int)> { (12.7, 5), (13.1, 15), (13.4, 25), (15.3, 50), (16.7, 75), (18.1, 95) } },
+                { 6, new List<(double, int)> { (12.7, 5), (13.2, 15), (13.4, 25), (15.3, 50), (16.8, 75), (18.4, 95) } },
+                { 7, new List<(double, int)> { (12.9, 5), (13.4, 15), (13.7, 25), (15.7, 50), (17.2, 75), (18.9, 95) } },
+                { 8, new List<(double, int)> { (13.1, 5), (13.6, 15), (14.0, 25), (16.1, 50), (17.6, 75), (19.3, 95) } },
+                { 9, new List<(double, int)> { (13.4, 5), (14.0, 15), (14.4, 25), (16.7, 50), (18.2, 75), (20.0, 95) } },
+                { 10, new List<(double, int)> { (13.7, 5), (14.4, 15), (14.9, 25), (17.3, 50), (18.9, 75), (20.7, 95) } },
+                { 11, new List<(double, int)> { (14.0, 5), (14.8, 15), (15.4, 25), (18.0, 50), (19.6, 75), (21.4, 95) } },
+                { 12, new List<(double, int)> { (14.3, 5), (15.3, 15), (15.9, 25), (18.7, 50), (20.3, 75), (22.1, 95) } },
+                { 13, new List<(double, int)> { (14.7, 5), (15.7, 15), (16.4, 25), (19.3, 50), (21.0, 75), (22.9, 95) } },
+                { 14, new List<(double, int)> { (15.0, 5), (16.1, 15), (16.9, 25), (19.9, 50), (21.7, 75), (23.6, 95) } },
+                { 15, new List<(double, int)> { (15.3, 5), (16.5, 15), (17.3, 25), (20.4, 50), (22.3, 75), (24.3, 95) } },
+                { 16, new List<(double, int)> { (15.6, 5), (16.9, 15), (17.8, 25), (20.9, 50), (22.9, 75), (25.0, 95) } },
+                { 17, new List<(double, int)> { (15.9, 5), (17.2, 15), (18.2, 25), (21.4, 50), (23.5, 75), (25.6, 95) } },
+                { 18, new List<(double, int)> { (16.1, 5), (17.5, 15), (18.6, 25), (21.9, 50), (24.0, 75), (26.2, 95) } },
+                { 19, new List<(double, int)> { (16.4, 5), (17.8, 15), (19.0, 25), (22.3, 50), (24.5, 75), (26.7, 95) } }
+            };
+
+            var girlsBmiPercentiles = new Dictionary<int, List<(double Bmi, int Percentile)>>
+            {
+                { 5, new List<(double, int)> { (12.4, 5), (12.9, 15), (13.1, 25), (15.2, 50), (16.9, 75), (18.6, 95) } },
+                { 6, new List<(double, int)> { (12.4, 5), (12.9, 15), (13.1, 25), (15.3, 50), (17.1, 75), (19.0, 95) } },
+                { 7, new List<(double, int)> { (12.8, 5), (13.3, 15), (13.6, 25), (15.8, 50), (17.6, 75), (19.6, 95) } },
+                { 8, new List<(double, int)> { (13.1, 5), (13.6, 15), (14.0, 25), (16.3, 50), (18.2, 75), (20.2, 95) } },
+                { 9, new List<(double, int)> { (13.4, 5), (14.0, 15), (14.5, 25), (16.9, 50), (18.9, 75), (20.9, 95) } },
+                { 10, new List<(double, int)> { (13.8, 5), (14.4, 15), (15.0, 25), (17.5, 50), (19.6, 75), (21.6, 95) } },
+                { 11, new List<(double, int)> { (14.1, 5), (14.8, 15), (15.5, 25), (18.1, 50), (20.3, 75), (22.3, 95) } },
+                { 12, new List<(double, int)> { (14.4, 5), (15.2, 15), (16.0, 25), (18.7, 50), (21.0, 75), (23.0, 95) } },
+                { 13, new List<(double, int)> { (14.8, 5), (15.6, 15), (16.5, 25), (19.3, 50), (21.6, 75), (23.7, 95) } },
+                { 14, new List<(double, int)> { (15.1, 5), (16.0, 15), (17.0, 25), (19.9, 50), (22.3, 75), (24.4, 95) } },
+                { 15, new List<(double, int)> { (15.4, 5), (16.4, 15), (17.5, 25), (20.4, 50), (22.9, 75), (25.1, 95) } },
+                { 16, new List<(double, int)> { (15.7, 5), (16.8, 15), (18.0, 25), (20.9, 50), (23.5, 75), (25.8, 95) } },
+                { 17, new List<(double, int)> { (16.0, 5), (17.2, 15), (18.4, 25), (21.4, 50), (24.1, 75), (26.5, 95) } },
+                { 18, new List<(double, int)> { (16.2, 5), (17.5, 15), (18.8, 25), (21.9, 50), (24.6, 75), (27.1, 95) } },
+                { 19, new List<(double, int)> { (16.5, 5), (17.9, 15), (19.2, 25), (22.4, 50), (25.1, 75), (27.7, 95) } }
+            };
+
+            List<(double Bmi, int Percentile)> bmiPercentiles;
+            if (gender == "Nam")
+            {
+                if (!boysBmiPercentiles.TryGetValue(age, out bmiPercentiles))
+                {
+                    throw new ArgumentException("Tuổi không hợp lệ hoặc không có dữ liệu cho tuổi này.");
+                }
+            }
+            else if (gender == "Nữ")
+            {
+                if (!girlsBmiPercentiles.TryGetValue(age, out bmiPercentiles))
+                {
+                    throw new ArgumentException("Tuổi không hợp lệ hoặc không có dữ liệu cho tuổi này.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Giới tính không hợp lệ.");
+            }
+
+            // Tìm percentile phù hợp với chỉ số BMI của trẻ
+            int percentile = 0;
+            foreach (var (Bmi, Percentile) in bmiPercentiles)
+            {
+                if (bmi < Bmi)
+                {
+                    percentile = Percentile;
+                    break;
+                }
+                percentile = Percentile; // Cập nhật nếu BMI lớn hơn tất cả các giá trị trong danh sách
+            }
+
+            return percentile;
         }
 
 
