@@ -143,49 +143,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             bool foragingLoop = true;
             int loopCount = 0;
 
-            while (foragingLoop)
+            if(mealSettingsDetail.NumberOfDishes > 0)
             {
-                List<int> selectedIds = new List<int>();
-                loopCount++;
-                foreach (int idGet in idFoodListSystemCanBeObtained)
+                while (foragingLoop)
                 {
-                    int randomId = await GetRandomFoodId(idFoodListSystemCanBeObtained, selectedIds);
-                    selectedIds.Add(randomId);
-                    if (collectionOfDishes.Count() == 0)
+                    List<int> selectedIds = new List<int>();
+                    loopCount++;
+                    foreach (int idGet in idFoodListSystemCanBeObtained)
                     {
-                        FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
-
-                        if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
-                        {
-                            collectionOfDishes.Add(foodObtained);
-                            break;
-                        }
-                        else if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
-                        {
-                            collectionOfDishes.Add(foodObtained);
-                            break;
-                        }
-                    }
-                    else if (collectionOfDishes.Count() < (mealSettingsDetail.NumberOfDishes ?? 1))
-                    {
-                        if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
+                        int randomId = await GetRandomFoodId(idFoodListSystemCanBeObtained, selectedIds);
+                        selectedIds.Add(randomId);
+                        if (collectionOfDishes.Count() == 0)
                         {
                             FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
-                            if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
-                            {
-                                collectionOfDishes.Add(foodObtained);
-                                break;
-                            }
-                            else if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
-                            {
-                                collectionOfDishes.Add(foodObtained);
-                                break;
-                            }
 
-                        }
-                        else if (await CheckForUserMealSettingsDetails(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
-                        {
-                            FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
                             if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
                             {
                                 collectionOfDishes.Add(foodObtained);
@@ -197,34 +168,67 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 break;
                             }
                         }
+                        else if (collectionOfDishes.Count() < (mealSettingsDetail.NumberOfDishes ?? 1))
+                        {
+                            if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
+                            {
+                                FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
+                                if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
+                                {
+                                    collectionOfDishes.Add(foodObtained);
+                                    break;
+                                }
+                                else if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                                {
+                                    collectionOfDishes.Add(foodObtained);
+                                    break;
+                                }
+
+                            }
+                            else if (await CheckForUserMealSettingsDetails(await TotalAllTheIngredientsOfTheDish(collectionOfDishes), MealSettingsDetailsId))
+                            {
+                                FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(randomId));
+                                if (await CheckForUserMealSettingsDetailsIsSmallerThanNeeded(foodObtained, MealSettingsDetailsId))
+                                {
+                                    collectionOfDishes.Add(foodObtained);
+                                    break;
+                                }
+                                else if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                                {
+                                    collectionOfDishes.Add(foodObtained);
+                                    break;
+                                }
+                            }
+                        }
                     }
-                }
-                if (collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
-                {
-                    FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(collectionOfDishes);
-                    if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                    if (collectionOfDishes.Count() == (mealSettingsDetail.NumberOfDishes ?? 1))
                     {
-                        foragingLoop = false;
+                        FoodListDTO foodObtained = await TotalAllTheIngredientsOfTheDish(collectionOfDishes);
+                        if (await CheckForUserMealSettingsDetails(foodObtained, MealSettingsDetailsId))
+                        {
+                            foragingLoop = false;
+                        }
+                        else
+                        {
+                            collectionOfDishes.Clear();
+                            if (combinedAndFilteredList != null)
+                            {
+                                foreach (int idFood in combinedAndFilteredList)
+                                {
+                                    FoodListDTO foodObtainedRetake = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(idFood));
+                                    collectionOfDishes.Add(foodObtainedRetake);
+                                }
+                            }
+                        }
                     }
-                    else
+                    if (loopCount == (mealSettingsDetail.NumberOfDishes ?? 1) * 5)
                     {
                         collectionOfDishes.Clear();
-                        if (combinedAndFilteredList != null)
-                        {
-                            foreach (int idFood in combinedAndFilteredList)
-                            {
-                                FoodListDTO foodObtainedRetake = await TotalAllTheIngredientsOfTheDish(await TakeAllTheIngredientsOfTheDish(idFood));
-                                collectionOfDishes.Add(foodObtainedRetake);
-                            }
-                        }
+                        foragingLoop = false;
                     }
                 }
-                if (loopCount == (mealSettingsDetail.NumberOfDishes ?? 1) * 5)
-                {
-                    collectionOfDishes.Clear();
-                    foragingLoop = false;
-                }
             }
+
             return collectionOfDishes;
         }
 
@@ -600,6 +604,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             }
                             else
                             {
+                                // bị lỗi nếu như số lượng món cài đặt = 0
                                 IEnumerable<FoodListDTO> dataFoodOfSlot = await GetTheListOfDishesByMealSettingsDetails(null, itemMealSettingsDetai.Id);
                                 stringListId.AppendLine($"SlotOfTheDay={itemMealSettingsDetai.SlotOfTheDayId};SettingDetail={itemMealSettingsDetai.Id};OrderNumber={itemMealSettingsDetai.OrderNumber}:");
                                 foreach (var foodOfSlot in dataFoodOfSlot)
