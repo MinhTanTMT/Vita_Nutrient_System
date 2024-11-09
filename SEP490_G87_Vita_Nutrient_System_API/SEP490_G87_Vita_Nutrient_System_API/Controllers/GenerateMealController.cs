@@ -84,9 +84,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIRun")]
         public async Task<IActionResult> APIRun()
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
 
+
+            //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            //return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
+
+
+            List<DietWithFoodType> courseList = _context.DietTypes
+            .SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
+            {
+                DietTypeId = a.DietTypeId,
+                FoodTypeId = b.FoodTypeId
+            })
+            .ToList();
+
+            return Ok(courseList);
         }
 
 

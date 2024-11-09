@@ -28,8 +28,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<bool> CheckOfFilterTheTypeDiseaseBlockListAvoidIngredient(FoodList FoodSystemInput, NutritionTargetsDaily nutritionTargetsDaily, int idUser)
         {
+            IEnumerable<DietWithFoodType> dataDietWithFoodType = await _context.DietTypes
+            .SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
+            {
+                DietTypeId = a.DietTypeId,
+                FoodTypeId = b.FoodTypeId
+            })
+            .ToListAsync();
 
-            if (FoodSystemInput.FoodTypeId != nutritionTargetsDaily.FoodTypeIdWant) return false;
+            List<short> allFoodTypeSelect = dataDietWithFoodType.Where(x => x.DietTypeId == nutritionTargetsDaily.FoodTypeIdWant).Select(x => x.FoodTypeId).ToList();
+
+            if (!allFoodTypeSelect.Contains(FoodSystemInput.FoodTypeId)) return false; // test sau
 
             FoodSelection foodSelection = await _context.FoodSelections.FirstOrDefaultAsync(x => x.FoodListId == FoodSystemInput.FoodListId && x.UserId == idUser);
             if (foodSelection != null)
@@ -64,7 +73,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<IEnumerable<int>> FilterTheTypeDiseaseBlockListAvoidIngredient(NutritionTargetsDaily nutritionTargetsDaily, int idUser)
         {
-            IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant).ToListAsync();
+            IEnumerable<DietWithFoodType> dataDietWithFoodType = await _context.DietTypes
+            .SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
+            {
+                DietTypeId = a.DietTypeId,
+                FoodTypeId = b.FoodTypeId
+            })
+            .ToListAsync();
+
+            List<short> allFoodTypeSelect = dataDietWithFoodType.Where(x => x.DietTypeId == nutritionTargetsDaily.FoodTypeIdWant).Select(x => x.FoodTypeId).ToList();
+
+            IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => allFoodTypeSelect.Contains(x.FoodTypeId)).ToListAsync();
 
             List<int> idFoodListSystemCollection = new List<int>();
 
@@ -1065,6 +1084,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 await _context.MealSettings.AddAsync(new MealSetting { UserId = userId, DayOfTheWeekStartId = 8, SameScheduleEveryDay = true , FoodTypeIdWant = 1});
                 await _context.SaveChangesAsync();
             }
+
+            var userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == userId);
+
+            if (userDetail == null)
+            {
+                await _context.UserDetails.AddAsync(new UserDetail { UserId = userId });
+                await _context.SaveChangesAsync();
+            }
+
             return true;
         }
     }

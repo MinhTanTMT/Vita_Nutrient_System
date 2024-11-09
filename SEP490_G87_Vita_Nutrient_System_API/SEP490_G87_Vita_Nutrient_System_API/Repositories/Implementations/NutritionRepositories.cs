@@ -113,16 +113,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             };
         }
 
+        // Sửa hàm này
         public async Task SaveNutritionTargetsAsync(NutritionTargetsDaily nutritionTargets)
         {
-            bool exerciseIntensityExists = await _context.ExerciseIntensities
-        .AnyAsync(e => e.Id == nutritionTargets.ExerciseIntensityId);
-            if (!exerciseIntensityExists)
-            {
-                throw new Exception("Invalid ExerciseIntensityId. Please ensure that the Exercise Intensity exists.");
-            }
-            _context.Add(nutritionTargets);
-            await _context.SaveChangesAsync();
+        //    bool exerciseIntensityExists = await _context.ExerciseIntensities
+        //.AnyAsync(e => e.Id == nutritionTargets.ExerciseIntensityId);
+        //    if (!exerciseIntensityExists)
+        //    {
+        //        throw new Exception("Invalid ExerciseIntensityId. Please ensure that the Exercise Intensity exists.");
+        //    }
+        //    _context.Add(nutritionTargets);
+        //    await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<UserDTO>> GetUsers(int userId, string? search, int page = 1, int pageSize = 10)
