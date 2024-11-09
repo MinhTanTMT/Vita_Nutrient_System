@@ -30,19 +30,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(nutritionTargets);
         }
 
-        [HttpGet("users")]
-        public async Task<IActionResult> GetUsers(string? search, int page = 1, int pageSize = 10)
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUsers(int userId, string? search, int page = 1, int pageSize = 10)
         {
-            var paginatedUsers = await _nutritionRepo.GetUsers(search, page, pageSize);
+            var paginatedUsers = await _nutritionRepo.GetUsers(userId, search, page, pageSize);
+
+            return Ok(paginatedUsers);
+        }
+
+        [HttpGet("user-detail/{userId}")]
+        public async Task<IActionResult> GetUserDetail(int userId)
+        {
+            var paginatedUsers = await _nutritionRepo.GetUserDetail(userId);
 
             return Ok(paginatedUsers);
         }
 
         [HttpPut("user/{userId}")]
-        public async Task<IActionResult> UpdateUser(int userId, [FromBody] User updateUser)
+        public async Task<IActionResult> UpdateUser(int userId, string inforConfirmBad, string inforConfirmGood)
         {
-            await _nutritionRepo.UpdateUser(userId, updateUser);
-            return NoContent();
+            return Ok(await _nutritionRepo.UpdateUser(userId, inforConfirmBad, inforConfirmGood));
         }
 
         [HttpGet("food-disease/{diseaseId}/{foodId}")]
