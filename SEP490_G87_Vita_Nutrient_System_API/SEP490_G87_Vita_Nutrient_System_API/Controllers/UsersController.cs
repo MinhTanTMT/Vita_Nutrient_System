@@ -167,26 +167,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("{userId}/liked-foods")]
-        public async Task<ActionResult<dynamic>> GetLikedFoods([FromQuery] GetLikeFoodDTO model)
+        public async Task<ActionResult<dynamic>> GetLikedFoods(int userId, [FromQuery] GetLikeFoodDTO model)
         {
 
-            return Ok(await repositories.GetLikedFoods(model));
+            return Ok(await repositories.GetLikedFoods(userId, model));
         }
 
         [HttpPost("{userId}/unlike-food/{foodId}")]
         public async Task<IActionResult> UnlikeFood(int userId, int foodId)
         {
             User u = repositories.GetUserById(userId);
-            //kiem tra xem user ton tai hay ko
+            // Check if user exists
             if (u == null)
             {
                 return BadRequest("User not found!");
             }
-            repositories.LikeOrUnlikeFood(userId, foodId);
-            return NoContent();
+            // Await the result of LikeOrUnlikeFood
+            var result = await repositories.LikeOrUnlikeFood(userId, foodId);
+            return Ok(result);
         }
 
-        [HttpGet("{userId}/unblock-food/{foodId}")]
+        [HttpPost("{userId}/unblock-food/{foodId}")]
         public async Task<IActionResult> UnblockFood(int userId, int foodId)
         {
             User u = repositories.GetUserById(userId);
@@ -200,9 +201,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("{userId}/blocked-foods")]
-        public async Task<IActionResult> GetBlockedFoods([FromQuery]GetLikeFoodDTO model)
+        public async Task<IActionResult> GetBlockedFoods(int userId, [FromQuery]GetLikeFoodDTO model)
         {
-            var paginatedFoods = await repositories.GetBlockedFoods(model);
+            var paginatedFoods = await repositories.GetBlockedFoods(userId, model);
 
             return Ok(paginatedFoods);
         }

@@ -5,6 +5,7 @@ using SEP490_G87_Vita_Nutrient_System_API.Domain.Enums;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using System.Drawing.Printing;
 using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_API.PageResult;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -182,10 +183,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return user;
         }
 
-        public async Task<List<FoodList>> GetLikedFoods(GetLikeFoodDTO model)
+        public async Task<PagedResult<FoodList>> GetLikedFoods(int userId, GetLikeFoodDTO model)
         {
             var query = _context.FoodSelections
-                        .Where(fs => fs.UserId == model.UserId && (bool)fs.IsLike)
+                        .Where(fs => fs.UserId == userId && (bool)fs.IsLike)
                         .Join(_context.FoodLists, fs => fs.FoodListId, f => f.FoodListId, (fs, f) => f);
 
             if(query == null)
@@ -198,19 +199,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 query = query.Where(f => f.Name.Contains(model.Search));
             }
 
+            int totalRecords = query.Count();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)model.PageSize);
+
             var paginatedFoods = await query
                 .Skip((model.Page - 1) * model.PageSize)
                 .Take(model.PageSize)
                 .ToListAsync();
-            return paginatedFoods;
+            return new PagedResult<FoodList>
+            {
+                Items = paginatedFoods,
+                TotalPages = totalPages,
+                CurrentPage = model.Page
+            }; 
         }
 
-        public async void LikeOrUnlikeFood(int userId, int foodId)
+        public async Task<string> LikeOrUnlikeFood(int userId, int foodId)
         {
             var foodSelection = await _context.FoodSelections
-            .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId && (bool)fs.IsLike);
+            .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId);
 
-            if (foodSelection == null) throw new ApplicationException("Not found!");
+            if (foodSelection == null) return "Not found";
 
             if(foodSelection.IsLike == null)
             {
@@ -218,13 +227,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             foodSelection.IsLike = !foodSelection.IsLike;
+            _context.Update(foodSelection);
             await _context.SaveChangesAsync();
+
+            return "Success";
         }
 
-        public async Task<List<FoodList>> GetBlockedFoods(GetLikeFoodDTO model)
+        public async Task<PagedResult<FoodList>> GetBlockedFoods(int userId, GetLikeFoodDTO model)
         {
             var query = _context.FoodSelections
-                .Where(fs => fs.UserId == model.UserId && (bool)fs.IsBlock)
+                .Where(fs => fs.UserId == userId && (bool)fs.IsBlock)
                 .Join(_context.FoodLists, fs => fs.FoodListId, f => f.FoodListId, (fs, f) => f);
 
             if (query == null)
@@ -237,23 +249,34 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 query = query.Where(f => f.Name.Contains(model.Search));
             }
 
+            int totalRecords = query.Count();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)model.PageSize);
+
             var paginatedFoods = await query
                 .Skip((model.Page - 1) * model.PageSize)
                 .Take(model.PageSize)
                 .ToListAsync();
 
-            return paginatedFoods;
+            return new PagedResult<FoodList>
+            {
+                Items = paginatedFoods,
+                TotalPages = totalPages,
+                CurrentPage = model.Page
+            };
         }
 
-        public async void UnblockFood(int userId, int foodId)
+        public async Task<string> UnblockFood(int userId, int foodId)
         {
             var foodSelection = await _context.FoodSelections
-                .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId && (bool)fs.IsBlock);
+                .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId);
 
-            if (foodSelection == null) throw new ApplicationException("Not found!");
+            if (foodSelection == null) return "Not found";
 
             foodSelection.IsBlock = false;
+            _context.Update(foodSelection);
             await _context.SaveChangesAsync();
+
+            return "Success";
         }
     }
 }
