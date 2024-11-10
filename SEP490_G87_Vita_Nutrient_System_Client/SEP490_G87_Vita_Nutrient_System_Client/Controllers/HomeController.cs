@@ -231,9 +231,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [Authorize]
         public async Task<bool> checkExsitAsync(string account)
         {
-            
-
-
             HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + "/Users/checkExit?account=" + account);
             if (respone.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

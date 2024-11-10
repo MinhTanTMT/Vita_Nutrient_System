@@ -34,15 +34,37 @@
                 </button>
             </div>
             <div class="flex items-center space-x-4">
-                <button>
+
+                <button onclick="changeDate(-1)">   
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <button class="bg-gray-100 p-2 rounded-full">
-                    <i class="fa-regular fa-calendar"></i>
-                </button>
-                <button>
+
+
+                <input type="date" id="datePicker" 
+               value="@((ViewBag.myDay != null ? ((DateTime)ViewBag.myDay).ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd")))" 
+               onchange="submitDate()" class="bg-gray-100 p-2 rounded-full">
+
+                <button onclick="changeDate(1)">
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
+
+                <script>
+                    function changeDate(offset) {
+                        let currentDate = new Date('@(ViewBag.myDay?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))');
+                        currentDate.setDate(currentDate.getDate() + offset);
+                        window.location.href = `/User/PlanUser?myDay=${currentDate.toISOString().split('T')[0]}`;
+                    }
+
+                    function submitDate() {
+                        const datePicker = document.getElementById("datePicker");
+                        const selectedDate = datePicker.value;
+                        if (selectedDate) {
+                            window.location.href = `/User/PlanUser?myDay=${selectedDate}`;
+                        }
+                    }
+                </script>
+
+
             </div>
             <h1 class="text-xl font-bold">Hôm nay</h1>
         </div>
@@ -125,11 +147,8 @@
                         </button>
 
                         <form asp-controller="User" asp-action="RefreshTheMeal" method="post" id="refreshTheMeal" style="display:none;">
-                            <button type="submit">refreshTheMeal</button>
+                            <input type="hidden" name="myDay" value="@ViewBag.myDay.ToString("yyyy-MM-dd")" />
                         </form>
-
-
-                        <!-- NutChuyen-->
 
                         <button><i class="fa-solid fa-ellipsis-vertical"></i></button>
                     </div>
@@ -182,7 +201,7 @@
 
                             <div class="relative inline-block">
                                 <!-- Nút ba chấm để mở popup -->
-                                <button onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item2.SettingDetail, @item2.OrderSettingDetail)" class="focus:outline-none">
+                                <button onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item2.SettingDetail, @item2.OrderSettingDetail, '@ViewBag.myDay')" class="focus:outline-none">
                                     <i class="fa-solid fa-ellipsis-vertical text-gray-500 hover:text-gray-300"></i>
                                 </button>
                             </div>
@@ -292,9 +311,9 @@
                     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
                 }
 
-                function ChanceFoodTheMeal(slotOfTheDay, settingDetail, orderSettingDetail) {
+                function ChanceFoodTheMeal(slotOfTheDay, settingDetail, orderSettingDetail, myDaySelect) {
                     // Xây dựng URL với các tham số
-                    const url = `/User/ChangeAnotherDish?SlotOfTheDay=${encodeURIComponent(slotOfTheDay)}&SettingDetail=${encodeURIComponent(settingDetail)}&OrderSettingDetail=${encodeURIComponent(orderSettingDetail)}`;
+                    const url = `/User/ChangeAnotherDish?SlotOfTheDay=${encodeURIComponent(slotOfTheDay)}&SettingDetail=${encodeURIComponent(settingDetail)}&OrderSettingDetail=${encodeURIComponent(orderSettingDetail)}&MyDaySelect=${encodeURIComponent(myDaySelect)}`;
 
                     // Chuyển hướng trình duyệt sang URL
                     window.location.href = url;
@@ -354,10 +373,6 @@
                     }
                 });
             </script>
-
-
-
-
 
 
 
