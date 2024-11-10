@@ -116,11 +116,13 @@ using System.Net.Http;
         public async Task<IActionResult> MealSettingsDetailToList()
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
-             List<CreateMealSettingsDetail> activeMeals = new List<CreateMealSettingsDetail>();
+            List<CreateMealSettingsDetail> activeMeals = new List<CreateMealSettingsDetail>();
             List<CookingDifficulty> cookingDifficulties = new List<CookingDifficulty>();
             List<WantCooking> wantCookings = new List<WantCooking>();
             List<SlotOfTheDay> slotOfTheDays = new List<SlotOfTheDay>();
             List<SelectListItem> daysOfWeek = new List<SelectListItem>();
+            List<SelectListItem> foodTypes = new List<SelectListItem>();
+            short foodTypeIdWant = 0;
             short dayOfTheWeekStartId = 0;
             bool sameScheduleEveryDay = false;
             try
@@ -138,8 +140,37 @@ using System.Net.Http;
                 {
                     var mealSettingData = await mealSettingResponse.Content.ReadAsStringAsync();
                     var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
-                    dayOfTheWeekStartId = mealSetting.DayOfTheWeekStartId;
+
+                    foodTypeIdWant = mealSetting.FoodTypeIdWant;
                     sameScheduleEveryDay = mealSetting.SameScheduleEveryDay;
+                    sameScheduleEveryDay = mealSetting.SameScheduleEveryDay;
+
+                    if (sameScheduleEveryDay)
+                    {
+                        dayOfTheWeekStartId = 8;                                                  
+                        if (mealSetting.DayOfTheWeekStartId != 8)
+                        {
+                            mealSetting.DayOfTheWeekStartId = 8;
+                            var content = new StringContent(JsonConvert.SerializeObject(mealSetting), Encoding.UTF8, "application/json");
+                            await client.PutAsync($"{client.BaseAddress}/Meals/UpdateMealSetting/{mealSetting.UserId}", content);
+                        }
+                    }
+                    else
+                    {
+                        dayOfTheWeekStartId = mealSetting.DayOfTheWeekStartId;
+                    }
+                }
+                HttpResponseMessage foodTypeResponse = await client.GetAsync($"{client.BaseAddress}/Food/GetFoodTypes");
+                if (foodTypeResponse.IsSuccessStatusCode)
+                {
+                    var foodTypeData = await foodTypeResponse.Content.ReadAsStringAsync();
+                    var foodTypesList = JsonConvert.DeserializeObject<List<FoodType>>(foodTypeData);
+                    foodTypes = foodTypesList.Select(ft => new SelectListItem
+                    {
+                        Value = ft.FoodTypeId.ToString(),
+                        Text = ft.Name,
+                        Selected = ft.FoodTypeId == foodTypeIdWant // Đặt selected nếu trùng với giá trị ban đầu
+                    }).ToList();
                 }
 
                 HttpResponseMessage dayOfTheWeekResponse = await client.GetAsync($"{client.BaseAddress}/DayOfTheWeek/GetAllDayOfTheWeek");
@@ -148,7 +179,9 @@ using System.Net.Http;
                     var jsonData = await dayOfTheWeekResponse.Content.ReadAsStringAsync();
                     var days = JsonConvert.DeserializeObject<List<DayOfTheWeek>>(jsonData);
 
-                    daysOfWeek = days.Select(day => new SelectListItem
+                    daysOfWeek = days
+                    .Where(day => sameScheduleEveryDay || day.Id != 8)
+                    .Select(day => new SelectListItem
                     {
                         Value = day.Id.ToString(),
                         Text = day.Name,
@@ -179,7 +212,8 @@ using System.Net.Http;
                     meal.SlotOfTheDay = slotOfTheDays.FirstOrDefault(s => s.Id == meal.SlotOfTheDayId)?.Slot;
                     meal.WantCooking = wantCookings.FirstOrDefault(wc => wc.Id == meal.WantCookingId)?.Name;
                 }
-
+                ViewBag.FoodTypes = foodTypes;
+                ViewBag.FoodTypeIdWant = foodTypeIdWant;
                 ViewBag.DaysOfWeek = daysOfWeek;
                 ViewData["DayOfTheWeekStartId"] = dayOfTheWeekStartId;
                 ViewBag.SameScheduleEveryDay = sameScheduleEveryDay;
@@ -190,9 +224,8 @@ using System.Net.Http;
             }
             return View(activeMeals);
         }
-
         [HttpPost]
-        public async Task<IActionResult> UpdateDayOfTheWeek([FromBody] DayOfTheWeekDto dto)
+        public async Task<IActionResult> UpdateFoodType([FromBody] MealSetting dto)
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
@@ -204,7 +237,40 @@ using System.Net.Http;
                     var mealSettingData = await mealSettingResponse.Content.ReadAsStringAsync();
                     var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
 
-                    mealSetting.DayOfTheWeekStartId = dto.DayOfTheWeekStartId;
+                    mealSetting.FoodTypeIdWant = dto.FoodTypeIdWant;
+
+                    var content = new StringContent(JsonConvert.SerializeObject(mealSetting), Encoding.UTF8, "application/json");
+                    HttpResponseMessage updateResponse = await client.PutAsync($"{client.BaseAddress}/Meals/UpdateMealSetting/{mealSetting.UserId}", content);
+
+                    if (updateResponse.IsSuccessStatusCode)
+                    {
+                        return Json(new { success = true });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Lỗi trong quá trình cập nhật: {ex.Message}" });
+            }
+
+            return Json(new { success = false, message = "Cập nhật không thành công." });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDayOfTheWeek([FromBody] DayOfTheWeek dto)
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            try
+            {
+                HttpResponseMessage mealSettingResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
+                if (mealSettingResponse.IsSuccessStatusCode)
+                {
+                    var mealSettingData = await mealSettingResponse.Content.ReadAsStringAsync();
+                    var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
+
+                    mealSetting.DayOfTheWeekStartId = dto.Id;
 
                     var content = new StringContent(JsonConvert.SerializeObject(mealSetting), Encoding.UTF8, "application/json");
                     HttpResponseMessage updateResponse = await client.PutAsync($"{client.BaseAddress}/Meals/UpdateMealSetting/{mealSetting.UserId}", content);
@@ -241,7 +307,14 @@ using System.Net.Http;
                     var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
 
                     mealSetting.SameScheduleEveryDay = SameScheduleEveryDay;
-
+                    if(SameScheduleEveryDay == false)
+                    {
+                        mealSetting.DayOfTheWeekStartId = 1;
+                    }
+                    else
+                    {
+                        mealSetting.DayOfTheWeekStartId = 8;
+                    }
                     var content = new StringContent(JsonConvert.SerializeObject(mealSetting), Encoding.UTF8, "application/json");
                     HttpResponseMessage updateResponse = await client.PutAsync($"{client.BaseAddress}/Meals/UpdateMealSetting/{mealSetting.UserId}", content);
 
@@ -258,6 +331,9 @@ using System.Net.Http;
 
             return Json(new { success = false, message = "Cập nhật không thành công." });
         }
+
+
+
 
 
         [HttpPost]
