@@ -352,8 +352,24 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response1 =
                     await client.GetAsync(client.BaseAddress + "/Food/GetFoodRecipe/" + foodId);
 
+                HttpResponseMessage response2 =
+                    await client.GetAsync(client.BaseAddress + "/Ingredient/GetPreparationIngredientsByFoodId/" + foodId);
+
+                if (response2.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content2 = response2.Content;
+                    string data2 = await content2.ReadAsStringAsync();
+                    List<dynamic> foodIngredients = JsonConvert.DeserializeObject<List<dynamic>>(data2);
+
+                    ViewBag.ingredients = foodIngredients;
+                }
+                else
+                {
+                    ViewBag.ingredients = new List<dynamic>();
+                }
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK
-                    && response.StatusCode == System.Net.HttpStatusCode.OK)
+                    && response1.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();

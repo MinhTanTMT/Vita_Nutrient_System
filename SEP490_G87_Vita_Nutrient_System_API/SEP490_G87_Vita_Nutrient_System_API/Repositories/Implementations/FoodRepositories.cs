@@ -110,7 +110,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public List<ScaleAmount> GetIngredientByFoodId(int foodId)
         {
-            return _context.ScaleAmounts.Include(s => s.IngredientDetails)
+            return _context.ScaleAmounts
+                .Include(s => s.IngredientDetails)
                 .Where(s => s.FoodListId == foodId).ToList();
         }
     }

@@ -1,4 +1,4 @@
-﻿--delete from [SEP490_G87_VitaNutrientSystem].[FoodData].[Recipe] where FoodListId > 0;
+﻿delete from [SEP490_G87_VitaNutrientSystem].[FoodData].[Recipe] where FoodListId > 0;
 
 DBCC CHECKIDENT ('[SEP490_G87_VitaNutrientSystem].[FoodData].[Recipe]', RESEED, 0);
  

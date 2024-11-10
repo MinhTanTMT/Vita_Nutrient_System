@@ -102,6 +102,47 @@
                                 <i class="mdi mdi-calendar-check"></i>
                                 Planned for @foodSlots
                             </div>
+
+                            <div style="padding-left: 12px;">
+                                <div style="font-size: large; font-weight: 500; padding: 10px 0 5px 0;">
+                                    <i class="mdi mdi-chevron-right"></i>
+                                    Nguyên liệu chuẩn bị
+                                </div>
+
+                                <div>
+                                    @if (ingredients is null || ingredients.Count == 0)
+                                    {
+                                        <p>Chưa cập nhật danh sách nguyên liệu cho món ăn này. Xin thông cảm :( !!</p>
+                                    }
+                                    else
+                                    {
+                                        foreach (var x in ingredients)
+                                        {
+                                            <div class="d-flex" style="padding: 3px 0px 3px 25px;">
+                                                <p id="ingre-@x.id" style="display: none;">@x.id</p>
+                                                <div class="ingre-img" style="margin-right: 15px;">
+                                                    @if (x.urlimage == null ||  ((string) x.urlimage).Length == 0)
+                                                    {
+                                                        <img src="~/images/foods/default_food.png" alt="default" style="width: 60px; height: auto; border-radius: 5px;" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/images/@x.urlimage" alt="@x.name"
+                                                             onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 60px; height: auto; border-radius: 5px;" />
+                                                    }
+                                                </div>
+                                                <div class="ingre-name" style="min-width: 80px;">
+                                                    @x.name
+                                                </div>
+                                                <div style="margin: 0 15px;">-</div>
+                                                <div class="ingre-amount">
+                                                    @x.amount
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

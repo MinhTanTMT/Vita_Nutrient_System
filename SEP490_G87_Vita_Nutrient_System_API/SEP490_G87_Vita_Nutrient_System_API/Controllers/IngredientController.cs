@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
@@ -41,6 +42,81 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 IngredientResponse result = _mapper.Map<IngredientResponse>(ingredient);
                 return result;
             }
+        }
+
+        [HttpGet("GetPreparationIngredientsByFoodId/{foodId}")]
+        public async Task<ActionResult<dynamic>> GetIngredientsByFoodId(int foodId)
+        {
+            List<ScaleAmount> scaleAmounts = repositories.GetIngredientByFoodId(foodId);
+
+            return scaleAmounts.Select(s => new
+            {
+                Id = s.IngredientDetailsId,
+                Name = s.IngredientDetails.Name,
+                Urlimage = s.IngredientDetails.Urlimage,
+                Amount = CalculateQuantity(
+                    repositories.GetTypeOfCalculation(s.IngredientDetails.TypeOfCalculationId).CalculationForm, 
+                    s.ScaleAmount1 ?? 0)
+            }).ToList();
+
+        }
+
+        public static string CalculateQuantity(string input, double x)
+        {
+            var parts = input.Split('#');
+            var typeOfCalculation = parts[1].Split(':')[1];
+
+            var matches = Regex.Matches(typeOfCalculation, @"([\D]+?)-(\d+)");
+            var calculations = new List<(string Unit, double Amount)>();
+
+            string result = "";
+
+            foreach (Match match in matches)
+            {
+                string unit = match.Groups[1].Value.Trim();
+                double amount = double.Parse(match.Groups[2].Value);
+                calculations.Add((unit, amount));
+            }
+
+            var distinctUnits = calculations.Select(c => c.Unit).Distinct().Count();
+
+            if (distinctUnits == 1)
+            {
+                double minAmount = calculations.Min(c => c.Amount);
+                var unit = calculations.First().Unit;
+                double quantity = x / minAmount;
+                result = $"{Math.Round(quantity, 1)} {unit}";
+            }
+            else
+            {
+                var divisibleQuantities = calculations.Where(c => x % c.Amount == 0).OrderBy(c => c.Amount).ToList();
+
+                if (divisibleQuantities.Any())
+                {
+                    var bestCalculation = divisibleQuantities.First();
+                    double quantity = x / bestCalculation.Amount;
+                    result = $"{Math.Round(quantity, 1)} {bestCalculation.Unit}";
+                }
+                else
+                {
+                    var largerThanOne = calculations.Where(c => x / c.Amount > 1).OrderBy(c => x / c.Amount).ToList();
+
+                    if (largerThanOne.Any())
+                    {
+                        var bestCalculation = largerThanOne.First();
+                        double quantity = x / bestCalculation.Amount;
+                        result = $"{Math.Round(quantity, 1)} {bestCalculation.Unit}";
+                    }
+                    else
+                    {
+                        var minCalculation = calculations.OrderBy(c => c.Amount).First();
+                        double quantity = x / minCalculation.Amount;
+                        result = $"{Math.Round(quantity, 1)} {minCalculation.Unit}";
+                    }
+                }
+            }
+
+            return result.Length > 0? result.Replace(";", "") : "Không thể tính toán";
         }
 
         [HttpPost("AddIngredient")]
