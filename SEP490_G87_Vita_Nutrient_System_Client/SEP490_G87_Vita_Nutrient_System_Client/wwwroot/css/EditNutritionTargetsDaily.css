@@ -1,0 +1,151 @@
+﻿.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.carbs-values, .fats-values, .protein-values {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.carbs-input, .fats-input, .protein-input {
+    width: 60px;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.to-text {
+    font-size: 16px;
+    color: #555;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 10px;
+    outline: none;
+    margin-top: 10px;
+}
+
+#carbsSlider, #fatsSlider, #proteinSlider {
+    background: linear-gradient(to right, #d3d3d3 0%, #d3d3d3 100%);
+}
+
+    #carbsSlider::-webkit-slider-thumb,
+    #fatsSlider::-webkit-slider-thumb,
+    #proteinSlider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    #carbsSlider::-webkit-slider-thumb {
+        background: #f1c40f;
+    }
+
+    #fatsSlider::-webkit-slider-thumb {
+        background: #00b3b3;
+    }
+
+    #proteinSlider::-webkit-slider-thumb {
+        background: #800080;
+    }
+
+/* Toggle switch styling */
+.toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.toggle-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-label {
+    position: absolute;
+    cursor: pointer;
+    background-color: #d3d3d3;
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    transition: background-color 0.3s;
+    border: 1px solid #d3d3d3;
+    top: 0; /* Align toggle switch */
+}
+
+    .toggle-label::before {
+        content: "";
+        position: absolute;
+        left: 2px;
+        top: 2px; /* Align thumb */
+        width: 16px;
+        height: 16px;
+        background-color: #bfcbd9;
+        border-radius: 50%;
+        transition: transform 0.3s;
+    }
+
+.toggle-input:checked + .toggle-label {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+    .toggle-input:checked + .toggle-label::before {
+        transform: translateX(20px);
+        background-color: white;
+    }
+.calories-input {
+    width: 120px; /* Điều chỉnh kích thước theo nhu cầu */
+    font-size: 16px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.slider-container {
+    position: relative;
+    width: 100%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 10px;
+    outline: none;
+    margin-top: 10px;
+}
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+    }

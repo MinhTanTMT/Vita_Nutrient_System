@@ -27,13 +27,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task AddMealSettingsDetailAsync(MealSettingsDetail mealSettingsDetail);
         Task<MealSettingsDetail?> EditMealSettingsDetailAsync(int id, MealSettingsDetailDTO model);
         Task UpdateCalo(int id);
-        Task UpdateMealSettingAsync(int id, short? dayOfTheWeekStartId, bool? sameScheduleEveryDay);
+        Task UpdateMealSettingForMealAsync(int id, MealSettingDTO dto);
         Task<MealSettingsDetail> RemoveMealToListAsync(int mealId);
         Task DeleteMealSettingsDetailAsync(int id);
         Task<List<MealSettingsDetail>> GetAllMealAsync();
         Task<MealSetting> GetMealSettingByUserIdAsync(int userId);
         Task<List<CreateMealSettingsDetailDto>> GetAllMealSettingByUserIdAsync(int userId);
         Task<List<CreateMealSettingsDetailDto>> GetAllMealSettingBySelectedAsync(int userId);
+        Task<MealSettingsDetail> GetMealSettingDetailByMealSettingIdAsync(int mealSettingsId);
         Task<MealSettingsDetail > FindMealSettingsDetailByIdAsync(int id);
         Task<MealSettingsDetail> FindMealSettingsDetailByNutritionTargetsDailyIdAsync(int nutritionTargetsDailyId);
         Task<bool> ChangeOrderNumberAsync(int mealId, string direction);

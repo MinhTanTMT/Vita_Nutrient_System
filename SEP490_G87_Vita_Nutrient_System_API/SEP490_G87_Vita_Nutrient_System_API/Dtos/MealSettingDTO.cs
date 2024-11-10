@@ -2,6 +2,7 @@
 {
     public class MealSettingDTO
     {
+        public short? FoodTypeIdWant { get; set; }
         public short? DayOfTheWeekStartId { get; set; }
 
         public bool? SameScheduleEveryDay { get; set; }

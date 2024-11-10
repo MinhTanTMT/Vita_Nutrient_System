@@ -83,8 +83,16 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else
                     {
+                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
 
-                        return RedirectToAction("Index", "Home");
+                        if (res2.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Error", "Home");
+                        }
                     }
                 }
                 else
@@ -190,7 +198,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                            return RedirectToAction("Index", "Home");
+                            HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
+                            if (res2.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                return RedirectToAction("Index", "Home");
+                            }
+                            else
+                            {
+                                return RedirectToAction("Error", "Home");
+                            }
                         }
                         else
                         {
