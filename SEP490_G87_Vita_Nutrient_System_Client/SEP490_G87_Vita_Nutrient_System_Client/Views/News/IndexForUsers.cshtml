@@ -10,60 +10,66 @@
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
         </div>
     </form>
+    @{
+        var activeArticles = Model.Where(a => a.IsActive == true).ToList();
+    }
     <div class="row">
-        @foreach (var article in Model)
-        {
+        @foreach (var article in activeArticles)
+        {           
             <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <a href="@Url.Action("DetailsForUsers", "News", new { id = article.Id })" class="text-decoration-none text-dark">
+                <a href="@Url.Action("DetailsForUsers", "News", new { id = article.Id })" class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm border-0">
                         <div class="img-container">
                             <img src="@article.HeaderImage" alt="Header Image" class="article-image card-img-top">
                         </div>
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title text-truncate">@article.Title</h5>
-                        <p class="card-date text-muted">
-                            @article.DateCreated?.ToString("dd/MM/yyyy")
-                        </p>
-                        <p class="card-text text-truncate">@Html.Raw(article.Content.Substring(0, Math.Min(article.Content.Length, 150)))...</p>
-                        <div>
-                            @if (article.NumberRate > 0)
-                            {
-                                <div class="star-rating">
-                                    @{
-                                        double roundedRate = Math.Round(article.Rate ?? 0, 2);
-                                        int fullStars = (int)Math.Floor(roundedRate);
-                                        bool hasHalfStar = (roundedRate % 1) >= 0.5;
-                                    }
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">@article.Title</h5>
+                            <p class="card-date text-muted">
+                                @article.DateCreated?.ToString("dd/MM/yyyy")
+                            </p>
+                            <p class="card-text text-truncate">@Html.Raw(article.Content.Substring(0, Math.Min(article.Content.Length, 150)))...</p>
+                            <div>
+                                @if (article.NumberRate > 0)
+                                {
+                                    <div class="star-rating">
+                                        @{
+                                            double roundedRate = Math.Round(article.Rate ?? 0, 2);
+                                            int fullStars = (int)Math.Floor(roundedRate);
+                                            bool hasHalfStar = (roundedRate % 1) >= 0.5;
+                                        }
 
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        if (i <= fullStars)
+                                        @for (int i = 1; i <= 5; i++)
                                         {
-                                            <i class="fa fa-star text-warning"></i>
+                                            if (i <= fullStars)
+                                            {
+                                                <i class="fa fa-star text-warning"></i>
+                                            }
+                                            else if (i == fullStars + 1 && hasHalfStar)
+                                            {
+                                                <i class="fa fa-star-half-alt text-warning"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-star text-secondary"></i>
+                                            }
                                         }
-                                        else if (i == fullStars + 1 && hasHalfStar)
-                                        {
-                                            <i class="fa fa-star-half-alt text-warning"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="fa fa-star text-secondary"></i>
-                                        }
-                                    }
-                                    <p>@roundedRate/5 - (@article.NumberRate bình chọn)</p>
-                                </div>
-                            }
-                            else
-                            {
-                                <p>Chưa có đánh giá</p>
-                            }
+                                        <p>@roundedRate/5 - (@article.NumberRate bình chọn)</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p>Chưa có đánh giá</p>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
+           
         }
     </div>
+
+
 </div>
 
 <style>

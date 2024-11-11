@@ -10,7 +10,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
     public class NewsController : Controller
     {
-        private readonly HttpClient client = null;
+        private readonly HttpClient client;
 
         public NewsController(IConfiguration configuration)
         {
@@ -379,7 +379,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEvaluation(int articleId, int rating)
+        public async Task<IActionResult> AddOrUpdateEvaluation(int articleId, int rating)
         {
             var userId = int.Parse(User.FindFirst("UserId")?.Value);
 
@@ -387,30 +387,48 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             var existingEvaluation = await CheckUserEvaluation(articleId, userId);
             if (existingEvaluation != null)
             {
-                return BadRequest("Bạn đã đánh giá bài viết này.");
-            }
+                // Nếu đã có đánh giá, cập nhật đánh giá mới
+                existingEvaluation.Ratting = (short)rating;
+                var jsonContent = JsonConvert.SerializeObject(existingEvaluation);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            var evaluationDto = new NewsEvaluationDTO
-            {
-                ArticlesNewsId = articleId,
-                UserId = userId,
-                Ratting = (short)rating
-            };
+                HttpResponseMessage response = await client.PutAsync($"/api/news/{articleId}/evaluations/{existingEvaluation.Id}", content);
 
-            var jsonContent = JsonConvert.SerializeObject(evaluationDto);
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await client.PostAsync($"/api/news/{articleId}/evaluations", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return Ok();
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Lỗi khi cập nhật đánh giá.");
+                }
             }
             else
             {
-                return BadRequest("Lỗi khi gửi đánh giá.");
+                // Tạo đánh giá mới nếu chưa có
+                var evaluationDto = new NewsEvaluationDTO
+                {
+                    ArticlesNewsId = articleId,
+                    UserId = userId,
+                    Ratting = (short)rating
+                };
+
+                var jsonContent = JsonConvert.SerializeObject(evaluationDto);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync($"/api/news/{articleId}/evaluations", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Lỗi khi gửi đánh giá.");
+                }
             }
         }
+
 
         // Phương thức phụ để kiểm tra xem người dùng đã đánh giá bài viết chưa
         private async Task<NewsEvaluationDTO> CheckUserEvaluation(int articleId, int userId)
