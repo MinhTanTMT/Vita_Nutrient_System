@@ -243,7 +243,7 @@
 
     function updateFoodType(foodTypeId) {
         $.ajax({
-            url: '@Url.Action("UpdateFoodType", "Meal")',
+            url: '@Url.Action("UpdateDietType", "Meal")',
             type: 'POST',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({ FoodTypeIdWant: parseInt(foodTypeId) }),

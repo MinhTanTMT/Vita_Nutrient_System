@@ -267,7 +267,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             };
                             _context.NutritionTargetsDailies.Add(newNutritionTarget);
                             await _context.SaveChangesAsync();
-
                             meal.NutritionTargetsDailyId = newNutritionTarget.Id;
                             meal.NutritionTargetsDaily = newNutritionTarget;
                             meal.Calories = (short)Math.Round(caloriesPerMeal);
@@ -372,8 +371,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         {
                             UserId = userId,
                             Calories = (short)caloriesForSlot,
-                            FoodTypeIdWant = mealSetting.FoodTypeIdWant,
-                            ExerciseIntensityId = 1,
+                            FoodTypeIdWant =mealSetting.FoodTypeIdWant ,
                             IsActive = true,
                             CarbsMin = 0,
                             ProteinMin = 0,
@@ -564,11 +562,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             var mealSetting = await _context.MealSettings.FirstOrDefaultAsync(ms => ms.UserId == userId);
             if (mealSetting != null)
             {
-                // Cập nhật các thuộc tính từ DTO
                 mealSetting.FoodTypeIdWant = dto.FoodTypeIdWant ?? 1;
                 mealSetting.DayOfTheWeekStartId = dto.DayOfTheWeekStartId;
                 mealSetting.SameScheduleEveryDay = dto.SameScheduleEveryDay;
-
                 _context.MealSettings.Update(mealSetting);
                 await _context.SaveChangesAsync();
             }
