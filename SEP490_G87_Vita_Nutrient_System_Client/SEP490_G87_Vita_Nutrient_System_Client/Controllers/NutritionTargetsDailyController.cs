@@ -48,7 +48,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.DietTypes = dietType;
                 }
 
-                HttpResponseMessage additionalResponse = await client.GetAsync($"{client.BaseAddress}/NutritionTargetsDaily/GetNutritionTargetsDaily/{id}");
+                HttpResponseMessage additionalResponse = await client.GetAsync($"{client.BaseAddress}/Meals/FindMealSettingsDetailByNutritionTargetsDailyId/{id}");
                 if (additionalResponse.IsSuccessStatusCode)
                 {
                     var additionalData = await additionalResponse.Content.ReadAsStringAsync();
