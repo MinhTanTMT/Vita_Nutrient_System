@@ -160,16 +160,16 @@ using System.Net.Http;
                         dayOfTheWeekStartId = mealSetting.DayOfTheWeekStartId;
                     }
                 }
-                HttpResponseMessage foodTypeResponse = await client.GetAsync($"{client.BaseAddress}/Food/GetFoodTypes");
+                HttpResponseMessage foodTypeResponse = await client.GetAsync($"{client.BaseAddress}/Food/GetDietType");
                 if (foodTypeResponse.IsSuccessStatusCode)
                 {
                     var foodTypeData = await foodTypeResponse.Content.ReadAsStringAsync();
-                    var foodTypesList = JsonConvert.DeserializeObject<List<FoodType>>(foodTypeData);
+                    var foodTypesList = JsonConvert.DeserializeObject<List<DietType>>(foodTypeData);
                     foodTypes = foodTypesList.Select(ft => new SelectListItem
                     {
-                        Value = ft.FoodTypeId.ToString(),
+                        Value = ft.DietTypeId.ToString(),
                         Text = ft.Name,
-                        Selected = ft.FoodTypeId == foodTypeIdWant // Đặt selected nếu trùng với giá trị ban đầu
+                        Selected = ft.DietTypeId == foodTypeIdWant 
                     }).ToList();
                 }
 
@@ -225,7 +225,7 @@ using System.Net.Http;
             return View(activeMeals);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateFoodType([FromBody] MealSetting dto)
+        public async Task<IActionResult> UpdateDietType([FromBody] MealSetting dto)
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
 

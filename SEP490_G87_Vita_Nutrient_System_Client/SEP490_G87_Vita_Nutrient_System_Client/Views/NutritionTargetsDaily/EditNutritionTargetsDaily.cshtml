@@ -111,8 +111,8 @@
 
 
         <div class="form-group">
-            <label for="FoodTypeIdWant">Chế độ ăn uống chính</label>
-            <select asp-for="FoodTypeIdWant" class="form-control" asp-items="@(new SelectList(ViewBag.FoodTypes, "FoodTypeId", "Name", Model.FoodTypeIdWant))">
+            <label for="DietTypeIdWant">Chế độ ăn uống chính</label>
+            <select asp-for="FoodTypeIdWant" class="form-control" asp-items="@(new SelectList(ViewBag.DietTypes, "DietTypeId", "Name", Model.FoodTypeIdWant))">
             </select>
         </div>
         <!-- Save Button -->

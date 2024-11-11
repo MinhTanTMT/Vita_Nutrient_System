@@ -39,7 +39,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.FoodTypes.ToList();
         }
-
+        public List<DietType> GetDietTypes()
+        {
+            return _context.DietTypes.ToList();
+        }
         public IngredientDetails100g? GetIngredientDetail(int id)
         {
             return _context.IngredientDetails100gs.Find(id);
