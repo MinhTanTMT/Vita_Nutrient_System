@@ -16,6 +16,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     public class UsersController : ControllerBase
     {
 
+        private IUserDetailsRepository _repositories = new UserDetailsRepository();
         private IUserRepositories repositories = new UsersRepositories();
         private readonly IMapper _mapper;
 
@@ -121,7 +122,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("GetOnlyUserDetail/{userId}")]
+        public async Task<IActionResult> GetOnlyUserDetail(int userId)
+        {
+            var userDetail = await repositories.GetUserDetailByUserIdAsync(userId);
 
+            if (userDetail == null)
+            {
+                return NotFound(new { message = "UserDetail not found" });
+            }
+
+            return Ok(userDetail);
+        }
         [HttpGet("GetNutritionistDetail/{id}")]
         public async Task<ActionResult<dynamic>> GetNutritionistDetail(int id)
         {
@@ -148,6 +160,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+        [HttpPost("UpdateUserPhysicalStatistics")]
+        public async Task<IActionResult> UpdateUserPhysicalStatistics([FromBody] UserPhysicalStatisticsDTO userDetails)
+        {
+            if (userDetails == null || userDetails.UserId <= 0)
+            {
+                return BadRequest(new { message = "Invalid user details data." });
+            }
+
+            await _repositories.SaveUserDetails(userDetails);
+            return Ok(new { message = "User details updated successfully." });
+        }
 
         [HttpPost("UpdateUserStatus")]
         public async Task<ActionResult<string>> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
@@ -166,26 +189,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("{userId}/liked-foods")]
-        public async Task<ActionResult<dynamic>> GetLikedFoods([FromQuery] GetLikeFoodDTO model)
+        public async Task<ActionResult<dynamic>> GetLikedFoods(int userId, [FromQuery] GetLikeFoodDTO model)
         {
 
-            return Ok(repositories.GetLikedFoods(model));
+            return Ok(await repositories.GetLikedFoods(userId, model));
         }
 
         [HttpPost("{userId}/unlike-food/{foodId}")]
         public async Task<IActionResult> UnlikeFood(int userId, int foodId)
         {
             User u = repositories.GetUserById(userId);
-            //kiem tra xem user ton tai hay ko
+            // Check if user exists
             if (u == null)
             {
                 return BadRequest("User not found!");
             }
-            repositories.UnlikeFood(userId, foodId);
-            return NoContent();
+            // Await the result of LikeOrUnlikeFood
+            var result = await repositories.LikeOrUnlikeFood(userId, foodId);
+            return Ok(result);
         }
 
-        [HttpGet("{userId}/unblock-food/{foodId}")]
+        [HttpPost("{userId}/unblock-food/{foodId}")]
         public async Task<IActionResult> UnblockFood(int userId, int foodId)
         {
             User u = repositories.GetUserById(userId);
@@ -199,9 +223,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("{userId}/blocked-foods")]
-        public async Task<IActionResult> GetBlockedFoods(GetLikeFoodDTO model)
+        public async Task<IActionResult> GetBlockedFoods(int userId, [FromQuery]GetLikeFoodDTO model)
         {
-            var paginatedFoods = repositories.GetBlockedFoods(model);
+            var paginatedFoods = await repositories.GetBlockedFoods(userId, model);
 
             return Ok(paginatedFoods);
         }

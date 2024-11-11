@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
@@ -6,7 +6,6 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
-using Microsoft.AspNetCore.Http;
 
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
@@ -70,6 +69,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     string data = await content.ReadAsStringAsync();
                     dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
 
+                    HttpContext.Session.SetString("UserId", (string)u.userId);
+
                     importStringToSession("takeFullName", u.fullName, "string");
                     importStringToSession("imageUrl", u.urlimage, "URL");
 
@@ -83,7 +84,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = false,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(999)
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -97,10 +98,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else
                     {
+                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
 
-                        return RedirectToAction("Index", "Home");
+                        if (res2.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Error", "Home");
+                        }
                     }
-
                 }
                 else
                 {
@@ -205,7 +213,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                            return RedirectToAction("Index", "Home");
+                            HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
+                            if (res2.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                return RedirectToAction("Index", "Home");
+                            }
+                            else
+                            {
+                                return RedirectToAction("Error", "Home");
+                            }
                         }
                         else
                         {
@@ -230,9 +246,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [Authorize]
         public async Task<bool> checkExsitAsync(string account)
         {
-            
-
-
             HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + "/Users/checkExit?account=" + account);
             if (respone.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -274,21 +287,21 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Dũng
         ////////////////////////////////////////////////////////////
         ///
-        public IActionResult NutritionCheck()
-        {
-            return View();
-        }
 
-        [HttpPost]
-        public IActionResult NutritionCheck(DateTime birthDate, double weight, double height, string gender)
-        {
-            int age = DateTime.Today.Year - birthDate.Year;
-            if (birthDate > DateTime.Today.AddYears(-age)) age--;
+public IActionResult NutritionCheck()
+{
+    return View();
+}
+[HttpPost]
+public IActionResult NutritionCheck(DateTime birthDate, double weight, double height, string gender)
+{
+    int age = DateTime.Today.Year - birthDate.Year;
+    if (birthDate > DateTime.Today.AddYears(-age)) age--;
 
             // Nếu tuổi dưới 5 hoặc chiều cao, cân nặng không hợp lý, trả về lỗi
             if (age < 5 || height <= 0 || weight <= 0)
             {
-                ViewBag.AgeError = "Phần mềm này chỉ áp dụng cho người từ 2 tuổi trở lên với chiều cao và cân nặng hợp lý.";
+                ViewBag.AgeError = "Phần mềm này chỉ áp dụng cho người từ 5 tuổi trở lên với chiều cao và cân nặng hợp lý.";
                 return View();
             }
 
@@ -441,6 +454,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             return percentile;
         }
+
 
 
 

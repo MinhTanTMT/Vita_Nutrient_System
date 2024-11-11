@@ -23,8 +23,9 @@
     padding: 10px 20px;
 }
 
-.food-info p{
+.food-info div p{
     display: inline-block;
+    margin-bottom: 5px;
 }
 
 .food-info label{

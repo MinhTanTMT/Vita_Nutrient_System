@@ -27,7 +27,7 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     public virtual DbSet<DayOfTheWeek> DayOfTheWeeks { get; set; }
 
-    public virtual DbSet<ExerciseIntensity> ExerciseIntensities { get; set; }
+    public virtual DbSet<DietType> DietTypes { get; set; }
 
     public virtual DbSet<ExpertPackage> ExpertPackages { get; set; }
 
@@ -86,17 +86,8 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
     public virtual DbSet<WantCooking> WantCookings { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(config.GetConnectionString("value"));
-        }
-
-    }
-
-    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -106,7 +97,6 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.ToTable("ArticlesNews", "Business");
 
-            entity.Property(e => e.Content).HasMaxLength(500);
             entity.Property(e => e.DateCreated).HasColumnType("datetime");
             entity.Property(e => e.HeaderImage).HasMaxLength(255);
             entity.Property(e => e.NameCreater).HasMaxLength(50);
@@ -188,14 +178,13 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<ExerciseIntensity>(entity =>
+        modelBuilder.Entity<DietType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Exercise__3214EC07090D2F5D");
+            entity.HasKey(e => e.DietTypeId).HasName("PK__DietType__B578CC5F3799E70E");
 
-            entity.ToTable("ExerciseIntensity", "UserData");
+            entity.ToTable("DietType", "FoodData");
 
             entity.Property(e => e.Describe).HasMaxLength(500);
-            entity.Property(e => e.ListKey).HasMaxLength(500);
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
@@ -290,6 +279,23 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.Property(e => e.Describe).HasMaxLength(500);
             entity.Property(e => e.Name).HasMaxLength(50);
+
+            entity.HasMany(d => d.DietTypes).WithMany(p => p.FoodTypes)
+                .UsingEntity<Dictionary<string, object>>(
+                    "DietWithFoodType",
+                    r => r.HasOne<DietType>().WithMany()
+                        .HasForeignKey("DietTypeId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK__DietWithF__DietT__373B3228"),
+                    l => l.HasOne<FoodType>().WithMany()
+                        .HasForeignKey("FoodTypeId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK__DietWithF__FoodT__36470DEF"),
+                    j =>
+                    {
+                        j.HasKey("FoodTypeId", "DietTypeId").HasName("PK__DietWith__3886D849DC44F26D");
+                        j.ToTable("DietWithFoodType", "FoodData");
+                    });
         });
 
         modelBuilder.Entity<IngredientDetails100g>(entity =>
@@ -397,6 +403,11 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.HasOne(d => d.DayOfTheWeekStart).WithMany(p => p.MealSettings)
                 .HasForeignKey(d => d.DayOfTheWeekStartId)
                 .HasConstraintName("FK__MealSetti__DayOf__5E8A0973");
+
+            entity.HasOne(d => d.FoodTypeIdWantNavigation).WithMany(p => p.MealSettings)
+                .HasForeignKey(d => d.FoodTypeIdWant)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MealSetti__FoodT__382F5661");
 
             entity.HasOne(d => d.User).WithOne(p => p.MealSetting)
                 .HasForeignKey<MealSetting>(d => d.UserId)
@@ -528,15 +539,10 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.Property(e => e.AvoidIngredient).HasMaxLength(500);
             entity.Property(e => e.Title).HasMaxLength(255);
 
-            entity.HasOne(d => d.ExerciseIntensity).WithMany(p => p.NutritionTargetsDailies)
-                .HasForeignKey(d => d.ExerciseIntensityId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Nutrition__Exerc__01142BA1");
-
             entity.HasOne(d => d.FoodTypeIdWantNavigation).WithMany(p => p.NutritionTargetsDailies)
                 .HasForeignKey(d => d.FoodTypeIdWant)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Nutrition__FoodT__02084FDA");
+                .HasConstraintName("FK__Nutrition__FoodT__39237A9A");
 
             entity.HasOne(d => d.User).WithMany(p => p.NutritionTargetsDailies)
                 .HasForeignKey(d => d.UserId)

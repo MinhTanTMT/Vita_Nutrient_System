@@ -1,5 +1,6 @@
 ﻿using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
+using SEP490_G87_Vita_Nutrient_System_API.PageResult;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
 {
@@ -16,10 +17,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         dynamic GetUserRegister(User user);
         dynamic GetUserById(int id);
         dynamic ChangePassword(ChangePasswordDTO model);
-        dynamic GetLikedFoods(GetLikeFoodDTO model);
-        void UnlikeFood(int userId, int foodId);
-        void UnblockFood(int userId, int foodId);
-        Task<List<FoodList>> GetBlockedFoods(GetLikeFoodDTO model);
+        Task<PagedResult<FoodList>> GetLikedFoods(int userId, GetLikeFoodDTO model);
+        Task<string> LikeOrUnlikeFood(int userId, int foodId);
+        Task<string> UnblockFood(int userId, int foodId);
+        Task<PagedResult<FoodList>> GetBlockedFoods(int userId, GetLikeFoodDTO model);
 
 
 
@@ -49,6 +50,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         IQueryable<User> GetAllUsers();
         IQueryable<User> GetUsersByRole(int roleId);
         User? GetUserDetailsInfo(int id);
+        Task<UserDetail> GetUserDetailByUserIdAsync(int userId);
         void UpdateUser(User user);
         User? GetNutritionistDetailsInfo(int id);
         IQueryable<ExpertPackage> GetNutritionistPackages(int id);

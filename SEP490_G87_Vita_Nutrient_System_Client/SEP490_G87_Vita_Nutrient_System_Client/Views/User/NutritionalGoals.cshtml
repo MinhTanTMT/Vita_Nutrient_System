@@ -1,0 +1,63 @@
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionalGoals
+
+<div class="nutritional-goals-container">
+    <h3>Mục tiêu dinh dưỡng của tôi</h3>
+    <p class="calories">@Model.Calo calo</p>
+    <ul class="nutritional-list">
+        <li>
+            <span class="dot yellow"></span>
+            ~ @Model.Carbs g (40%) Carbs
+        </li>
+        <li>
+            <span class="dot blue"></span>
+            ~ @Model.Fats g (30%) Chất béo
+        </li>
+        <li>
+            <span class="dot purple"></span>
+            ~ @Model.Proteins g (30%) Protein
+        </li>
+    </ul>
+</div>
+
+<style>
+    .nutritional-goals-container {
+        font-family: Arial, sans-serif;
+        color: #1a3c81;
+    }
+
+    .nutritional-goals-container h3 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .calories {
+        font-size: 24px;
+        font-weight: bold;
+        color: #000;
+    }
+
+    .nutritional-list {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+    }
+
+    .nutritional-list li {
+        font-size: 16px;
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    .yellow { background-color: #ffc107; }
+    .blue { background-color: #17a2b8; }
+    .purple { background-color: #6f42c1; }
+</style>

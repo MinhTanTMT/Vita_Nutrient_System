@@ -33,15 +33,13 @@ public partial class NutritionTargetsDaily
 
     public short ExerciseIntensityId { get; set; }
 
-    public short FoodTypeIdWant { get; set; }
-
     public string? AvoidIngredient { get; set; }
 
     public bool? IsActive { get; set; }
 
-    public virtual ExerciseIntensity ExerciseIntensity { get; set; } = null!;
+    public short FoodTypeIdWant { get; set; }
 
-    public virtual FoodType FoodTypeIdWantNavigation { get; set; } = null!;
+    public virtual DietType FoodTypeIdWantNavigation { get; set; } = null!;
 
     public virtual ICollection<MealSettingsDetail> MealSettingsDetails { get; set; } = new List<MealSettingsDetail>();
 

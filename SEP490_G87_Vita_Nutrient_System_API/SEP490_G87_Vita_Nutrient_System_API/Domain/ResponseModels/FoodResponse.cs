@@ -2,7 +2,7 @@
 {
     public class FoodResponse
     {
-        public int FoodId { get; set; }
+        public int FoodListId { get; set; }
 
         public string? Name { get; set; }
 

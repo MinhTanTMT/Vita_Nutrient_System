@@ -1,7 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
+
+        <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Purple Admin</title>
@@ -17,6 +18,8 @@
     <link rel="stylesheet" href="~/css/style.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="~/images/favicon.ico" />
+
+
 </head>
 <body>
     <div class="container-scroller">
@@ -35,8 +38,8 @@
         <!-- partial:partials/_navbar.html -->
         <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="navbar-brand brand-logo" href="index.html"><img src="~/images/logo.svg" alt="logo" /></a>
-                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="~/images/logo-mini.svg" alt="logo" /></a>
+                <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/logo.svg" alt="logo" /></a>
+                <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img src="~/images/logo-mini.svg" alt="logo" /></a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-stretch">
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -250,12 +253,6 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Index", "News")">
-                                        <span class="menu-title">News</span>
-                                        <i class="mdi mdi-newspaper menu-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("ListUser", "Admin")">
                                         <span class="menu-title">User Management</span>
                                         <i class="mdi mdi-account-circle menu-icon"></i>
@@ -273,32 +270,148 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-
-                            }
-                            else if (role.Equals("User"))
-                            {
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
-                                        <span class="menu-title">Today's meal plan</span>
-                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    <a class="nav-link" href="@Url.Action("Index", "News")">
+                                        <span class="menu-title">News</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
                                 </li>
-                                
+
+
+                            }
+                            else if (role.Equals("Nutritionist"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("GetAll", "NutritionRoute")">
+                                        <span class="menu-title">Tất cả lộ trình người dùng mình quản lý</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListUser", "Nutritionist")">
+                                        <span class="menu-title">Quản lý khách hàng</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("NutritionistProfile", "Nutritionist")">
+                                        <span class="menu-title">Thông tin của tôi</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
                             }
                             else if (role.Equals("UserPremium"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
-                                        <span class="menu-title">Today's meal plan</span>
+                                    <a class="nav-link" href="@Url.Action("MealSettingsDetailToList", "Meal")">
+                                        <span class="menu-title">Bố Cục Bữa Ăn</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("NutritionalGoals", "User")">
+                                        <span class="menu-title">Mục Tiêu Dinh Dưỡng</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("UserPhysicalStatistics", "User")">
+                                        <span class="menu-title">Thống Kê Vật Lý</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
+                                        <span class="menu-title">Kế hoạch bữa ăn</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PlanUserWeek", "User")">
+                                        <span class="menu-title">Kế hoạch bữa ăn theo tuần</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("FoodList", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods ", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListBlockedFoods", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn Blocked</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                               
+                            }
+                            else if (role.Equals("User"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("MealSettingsDetailToList", "Meal")">
+                                        <span class="menu-title">Bố Cục Bữa Ăn</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("NutritionalGoals", "User")">
+                                        <span class="menu-title">Mục Tiêu Dinh Dưỡng</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("UserPhysicalStatistics", "User")">
+                                        <span class="menu-title">Thống Kê Vật Lý</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PlanUser", "User")">
+                                        <span class="menu-title">Kế hoạch bữa ăn</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("FoodList", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods ", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListBlockedFoods", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn Blocked</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+
+
                             }
                             else
                             {
-                                
-                            }
 
+                            }
                         }
                         else
                         {
@@ -317,12 +430,6 @@
                                         <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
                                     </ul>
                                 </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("GetAll", "NutritionRoute")">
-                                    <span class="menu-title">Nutrition Route</span>
-                                    <i class="mdi mdi-newspaper menu-icon"></i>
-                                </a>
                             </li>
                         }
                     }

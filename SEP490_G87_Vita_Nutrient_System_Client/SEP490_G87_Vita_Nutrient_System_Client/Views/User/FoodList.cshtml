@@ -52,7 +52,7 @@
                 }
                 else
                 {
-                    @* <div class="table-responsive">
+                    <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -71,6 +71,7 @@
                                         <td>@(i + 1)</td>
                                         <td>
                                             @if (f.Urlimage == null || f.Urlimage.Length == 0)
+
                                             {
                                                 <img src="~/images/foods/default_food.png" alt="default" style="width: 200px; height: auto; border-radius: 0;" />
                                             }
@@ -84,13 +85,13 @@
                                         <td> @f.FoodType.Name </td>
                                         <td> @((CookingDifficultyLevel)f.CookingDifficultyId) </td>
                                         <td>
-                                            <a class="btn-link" asp-controller="User" asp-action="FoodDetails" asp-route-foodId="@f.FoodId">View</a>
+                                            <a class="btn-link" asp-controller="User" asp-action="FoodDetails" asp-route-foodId="@f.FoodListId">View</a>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
-                    </div> *@
+                    </div>
 
                     <!-- Pagination controls -->
                     <nav aria-label="Page navigation" style="padding: 50px 0 0 0;">

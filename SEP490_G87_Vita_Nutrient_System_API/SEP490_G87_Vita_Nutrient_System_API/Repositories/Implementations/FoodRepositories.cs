@@ -39,7 +39,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.FoodTypes.ToList();
         }
-
+        public List<DietType> GetDietTypes()
+        {
+            return _context.DietTypes.ToList();
+        }
         public IngredientDetails100g? GetIngredientDetail(int id)
         {
             return _context.IngredientDetails100gs.Find(id);
@@ -101,6 +104,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public TypeOfCalculation GetTypeOfCalculation(short id)
         {
             return _context.TypeOfCalculations.Find(id);
+        }
+
+        public List<FoodSelection> GetFoodSelectionsByUserId(int userId)
+        {
+            return _context.FoodSelections.Where(fs => fs.UserId == userId).ToList();
+        }
+
+        public List<ScaleAmount> GetIngredientByFoodId(int foodId)
+        {
+            return _context.ScaleAmounts
+                .Include(s => s.IngredientDetails)
+                .Where(s => s.FoodListId == foodId).ToList();
         }
     }
 }

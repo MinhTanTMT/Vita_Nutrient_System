@@ -30,27 +30,32 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(nutritionTargets);
         }
 
-        [HttpGet("users")]
-        public async Task<IActionResult> GetUsers(string? search, int page = 1, int pageSize = 10)
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUsers(int userId, string? search, int page = 1, int pageSize = 10)
         {
-            var paginatedUsers = await _nutritionRepo.GetUsers(search, page, pageSize);
+            var paginatedUsers = await _nutritionRepo.GetUsers(userId, search, page, pageSize);
 
             return Ok(paginatedUsers);
         }
 
-
-        [HttpPut("user/{userId}")]
-        public async Task<IActionResult> UpdateUser(int userId, [FromBody] User updateUser)
+        [HttpGet("user-detail/{userId}")]
+        public async Task<IActionResult> GetUserDetail(int userId)
         {
-            await _nutritionRepo.UpdateUser(userId, updateUser);
-            return NoContent();
+            var paginatedUsers = await _nutritionRepo.GetUserDetail(userId);
+
+            return Ok(paginatedUsers);
         }
 
+        [HttpPut("user/{userId}")]
+        public async Task<IActionResult> UpdateUser(int userId, string inforConfirmBad, string inforConfirmGood)
+        {
+            return Ok(await _nutritionRepo.UpdateUser(userId, inforConfirmBad, inforConfirmGood));
+        }
 
         [HttpGet("food-disease/{diseaseId}/{foodId}")]
         public async Task<IActionResult> CheckFoodDiseaseRelation(int diseaseId, int foodId)
         {
-            var isGoodOrBad = _nutritionRepo.CheckFoodDiseaseRelation(diseaseId, foodId);
+            var isGoodOrBad = await _nutritionRepo.CheckFoodDiseaseRelation(diseaseId, foodId);
 
             return Ok(isGoodOrBad);
         }

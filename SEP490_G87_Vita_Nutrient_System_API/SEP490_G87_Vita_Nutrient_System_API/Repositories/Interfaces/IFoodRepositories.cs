@@ -10,6 +10,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         FoodList? GetFood(int foodId);
         List<Recipe> GetFoodRecipe(int foodId);
         List<FoodType> GetFoodTypes();
+        List<DietType> GetDietTypes();
         List<IngredientDetails100g> GetIngredientDetails();
         IngredientDetails100g? GetIngredientDetail(int id);
         void DeleteIngredientDetail(int id);
@@ -20,5 +21,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         KeyNote GetKeynote(int id);
         List<TypeOfCalculation> GetTypesOfCalculation();
         TypeOfCalculation GetTypeOfCalculation(short id);
+        List<FoodSelection> GetFoodSelectionsByUserId(int userId);
+        List<ScaleAmount> GetIngredientByFoodId(int foodId);
     }
 }
