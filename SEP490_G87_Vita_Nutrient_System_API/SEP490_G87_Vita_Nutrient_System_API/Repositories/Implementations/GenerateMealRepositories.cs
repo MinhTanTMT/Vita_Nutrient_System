@@ -996,7 +996,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     {
                         if (day.DayOfYear >= DateTime.Now.DayOfYear)
                         {
-                            if (await FillInDishIdInWeekDish(idUser, day))
+                            if (await FillInDishIdInDailyDish(idUser, day))
                             {
                                 dataFoodListMealOfTheDays = await ListMealOfTheDay(day, idUser);
                             }
@@ -1027,8 +1027,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         for (int i = 0; i < arrayData.Length - 1; i++)
                         {
                             dataFoodListMealOfTheDays.Add(await SplitAndProcessDataMealOfTheDay(arrayData[i]));
-
-
                         }
                     }
                 }

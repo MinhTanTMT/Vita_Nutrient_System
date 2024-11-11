@@ -32,10 +32,78 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> PlanUserWeekAsync()
+        public async Task<IActionResult> PlanUserWeekAsync(DateTime? myDay)
         {
 
-            return View();
+            string role = User.FindFirst(ClaimTypes.Role)?.Value;
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            List <DataFoodAllDayOfWeek> rootObjectFoodListWeek = new List<DataFoodAllDayOfWeek>();
+
+            if (role.Equals("UserPremium"))
+            {
+                if (myDay == null) myDay = DateTime.Now;
+                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheWeek?myDay={myDay}&idUser={userId}");
+                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = res.Content;
+                    string data = await content.ReadAsStringAsync();
+
+                    rootObjectFoodListWeek = JsonConvert.DeserializeObject<List<DataFoodAllDayOfWeek>>(data);
+                }
+                else return RedirectToAction("Error2");
+            }
+            else
+            {
+                if (myDay == null || myDay <= DateTime.Now)
+                {
+                    if (myDay == null) myDay = DateTime.Now;
+                    HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheWeek?myDay={myDay}&idUser={userId}");
+                    if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        HttpContent content = res.Content;
+                        string data = await content.ReadAsStringAsync();
+                        rootObjectFoodListWeek = JsonConvert.DeserializeObject<List<DataFoodAllDayOfWeek>>(data);
+                    }
+                    else return RedirectToAction("Error2");
+                }
+                else return RedirectToAction("PageUpgratePremium");
+            }
+
+
+            List<DataFoodAllDayOfWeekModify> dataFoodAllDayOfWeekModify = new List<DataFoodAllDayOfWeekModify>();
+            foreach (var item in rootObjectFoodListWeek)
+            {
+                List<SlotBranch> slotBranchesData = GetListCollection(item.dataListFoodMealOfTheDay.ToList());
+                dataFoodAllDayOfWeekModify.Add(new DataFoodAllDayOfWeekModify { DayOfTheWeekId = item.DayOfTheWeekId, DayOfTheWeekIdStart = item.DayOfTheWeekIdStart, DayOfWeek = item.DayOfWeek, NameDayOfWeek = item.NameDayOfWeek, dataListFoodMealDayOfTheWeek = slotBranchesData.ToArray(), TotalCaloriesAllDay = slotBranchesData.Sum(x => x.TotalCaloriesPerMeal) });
+            }
+            ViewBag.myDay = myDay;
+            ViewBag.userId = userId;
+            return View(dataFoodAllDayOfWeekModify);
+        }
+
+
+        public List<SlotBranch> GetListCollection(List<DataFoodListMealOfTheDay> rootObjectFoodList)
+        {
+            List<SlotBranch> slotBranchesData = new List<SlotBranch>();
+            var numberSlot = rootObjectFoodList.Select(x => new
+            {
+                x.SlotOfTheDay,
+                x.NameSlotOfTheDay
+            }).Distinct().ToList();
+
+            foreach (var item in numberSlot)
+            {
+                SlotBranch slotBranch = new SlotBranch()
+                {
+                    SlotOfTheDay = item.SlotOfTheDay,
+                    NameSlotOfTheDay = item.NameSlotOfTheDay,
+                    TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2),
+                    foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.OrderSettingDetail).ToArray()
+                };
+                slotBranchesData.Add(slotBranch);
+            }
+            return slotBranchesData;
         }
 
 
@@ -77,27 +145,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 else return RedirectToAction("PageUpgratePremium");
             }
 
+            List<SlotBranch> slotBranchesData = GetListCollection(rootObjectFoodList);
 
-            List<SlotBranch> slotBranchesData = new List<SlotBranch>();
-            var numberSlot = rootObjectFoodList.Select(x => new
-            {
-                x.SlotOfTheDay,
-                x.NameSlotOfTheDay
-            }).Distinct().ToList();
-
-            foreach (var item in numberSlot)
-            {
-                SlotBranch slotBranch = new SlotBranch()
-                {
-                    SlotOfTheDay = item.SlotOfTheDay,
-                    NameSlotOfTheDay = item.NameSlotOfTheDay,
-                    TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2),
-                    foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.OrderSettingDetail).ToArray()
-                };
-                slotBranchesData.Add(slotBranch);
-            }
-
-            List<FoodList> foodListTotaAll = rootObjectFoodList
+            List <FoodList> foodListTotaAll = rootObjectFoodList
                 .SelectMany(item => item.foodIdData)
                 .Select(item1 => item1.foodData)
                 .ToList();
@@ -136,6 +186,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         }
+
+
 
 
         public FoodList TotalAllTheIngredientsOfTheDish(IEnumerable<FoodList> dataFood)
@@ -212,6 +264,34 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
 
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshTheMealWeek(DateTime myDay)
+        {
+
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            string role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!role.Equals("UserPremium"))
+            {
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+            }
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContent content = res.Content;
+                return Redirect($"PlanUserWeek?myDay={myDay}");
+            }
+            else
+            {
+                return Redirect("Loi me roi");
+            }
+
+        }
+
 
 
         [HttpGet]

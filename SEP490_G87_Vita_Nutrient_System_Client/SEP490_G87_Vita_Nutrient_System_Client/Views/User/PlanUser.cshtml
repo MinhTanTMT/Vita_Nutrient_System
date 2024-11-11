@@ -25,13 +25,22 @@
         <!-- Header -->
         <div class="flex justify-start items-center mb-6 mt-2 gap-8">
             <div class="flex border border-gray-300 rounded-lg p-1">
-                <button id="day-btn" class="day-btn w-full py-2 px-4 text-white rounded-md">
-                    Ngày
-                </button>
-                <button id="week-btn"
-                        class="w-full py-2 px-4 bg-white text-gray-700 rounded-md">
-                    Tuần
-                </button>
+                <button class="day-btn w-full py-2 px-4 text-white rounded-md" onclick="navigateToPlanUserDay()">Ngày</button>
+                <button class="w-full py-2 px-4 bg-white text-gray-700 rounded-md" onclick="navigateToPlanUserWeek()">Tuần</button>
+
+                <script>
+                    function navigateToPlanUserDay() {
+                        const myDay = '@ViewBag.myDay'; // Lấy giá trị từ ViewBag.myDay
+                        const url = `/User/PlanUser?myDay=${encodeURIComponent(myDay)}`;
+                        window.location.href = url;
+                    }
+
+                    function navigateToPlanUserWeek() {
+                        const myDay = '@ViewBag.myDay'; // Lấy giá trị từ ViewBag.myDay
+                        const url = `/User/PlanUserWeek?myDay=${encodeURIComponent(myDay)}`;
+                        window.location.href = url;
+                    }
+                </script>
             </div>
             <div class="flex items-center space-x-4">
 
@@ -243,9 +252,9 @@
                                         </li>
                                     </ul>
 
-                                    <form asp-controller="User" asp-action="foodDetails" asp-route-foodId="@item3.idFood" method="get" id="GetMealDetail" style="display:none;">
+@*                                     <form asp-controller="User" asp-action="foodDetails" asp-route-foodId="@item3.idFood" method="get" id="GetMealDetail" style="display:none;">
                                         <button type="submit">GetMealDetail</button>
-                                    </form>
+                                    </form> *@
 
                                     <script>
                                         function getMealDetail(id) {

@@ -1,7 +1,4 @@
-﻿@{
-    var daysOfWeek = new[] { "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư" };
-    var totalCalories = new[] { "2004 Calories", "1800 Calories", "2200 Calories", "2100 Calories", "1950 Calories", "2300 Calories", "1900 Calories" }; // Ví dụ số calories cho từng ngày
-}
+﻿@model IEnumerable<DataFoodAllDayOfWeekModify>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,14 +18,55 @@
         <!-- Header -->
         <div class="flex justify-start items-center mb-6 mt-2 gap-8">
             <div class="flex border border-gray-300 rounded-lg p-1">
-                <button class="day-btn w-full py-2 px-4 text-white rounded-md">Ngày</button>
-                <button class="w-full py-2 px-4 bg-white text-gray-700 rounded-md">Tuần</button>
+                <button class="w-full py-2 px-4 bg-white text-gray-700 rounded-md" onclick="navigateToPlanUserDay()">Ngày</button>
+                <button class="day-btn w-full py-2 px-4 text-white rounded-md" onclick="navigateToPlanUserWeek()">Tuần</button>
+
+                <script>
+                    function navigateToPlanUserDay() {
+                        const myDay = '@ViewBag.myDay'; // Lấy giá trị từ ViewBag.myDay
+                        const url = `/User/PlanUser?myDay=${encodeURIComponent(myDay)}`;
+                        window.location.href = url;
+                    }
+
+                    function navigateToPlanUserWeek() {
+                        const myDay = '@ViewBag.myDay'; // Lấy giá trị từ ViewBag.myDay
+                        const url = `/User/PlanUserWeek?myDay=${encodeURIComponent(myDay)}`;
+                        window.location.href = url;
+                    }
+                </script>
+
             </div>
             <div class="flex items-center space-x-4">
-                <button onclick="changeDate(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                <input type="date" id="datePicker" onchange="submitDate()" class="bg-gray-100 p-2 rounded-full">
-                <button onclick="changeDate(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="changeDate(-1)">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+
+                <input type="date" id="datePicker"
+                       value="@((ViewBag.myDay != null ? ((DateTime)ViewBag.myDay).ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd")))"
+                       onchange="submitDate()" class="bg-gray-100 p-2 rounded-full">
+
+                <button onclick="changeDate(1)">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+                <script>
+                    function changeDate(offset) {
+                        let currentDate = new Date('@(ViewBag.myDay?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))');
+                        currentDate.setDate(currentDate.getDate() + offset);
+                        window.location.href = `/User/PlanUserWeek?myDay=${currentDate.toISOString().split('T')[0]}`;
+                    }
+
+                    function submitDate() {
+                        const datePicker = document.getElementById("datePicker");
+                        const selectedDate = datePicker.value;
+                        if (selectedDate) {
+                            window.location.href = `/User/PlanUserWeek?myDay=${selectedDate}`;
+                        }
+                    }
+                </script>
             </div>
+
             <h1 class="text-xl font-bold">Hôm nay</h1>
         </div>
 
@@ -43,50 +81,102 @@
             </div>
 
             <div class="days overflow-x-auto whitespace-nowrap" id="meal-plan-days">
-                @for (int i = 0; i < daysOfWeek.Length; i++)
+                @foreach (var item in Model)
                 {
                     <div class="bg-gray-900 rounded-lg shadow-lg p-4 w-80 mb-4 inline-block">
                         <!-- Header: Date and Calories -->
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <h3 class="text-blue-400 font-bold">@daysOfWeek[i]</h3>
-                                <p class="text-sm text-red-500">⚠ @totalCalories[i]</p>
+                                <h3 class="text-blue-400 font-bold">@item.NameDayOfWeek.ToUpper() </h3>
+                                <p class="text-sm text-red-500" style="cursor: pointer;" onclick="navigateToPlanUser('@item.DayOfWeek')">
+                                    ⚠ @item.DayOfWeek.ToString("yyyy-MM-dd")
+                                </p>
+                                <p class="text-sm text-red-500">⚠ @item.TotalCaloriesAllDay Calo </p>
                             </div>
-                            <button class="text-gray-400"><i class="fas fa-sync"></i></button>
+                            <!-- Button inside form -->
+                            <form asp-controller="User" asp-action="RefreshTheMealWeek" method="post">
+                                <input type="hidden" name="myDay" value="@item.DayOfWeek" />
+                                <button type="submit" class="text-gray-400"><i class="fas fa-sync"></i></button>
+                            </form>
                         </div>
 
                         <!-- Meal Sections -->
                         <div class="space-y-4">
-                            <!-- Breakfast -->
-                            <div class="bg-gray-800 rounded-lg p-3 relative w-72">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="text-yellow-500 font-bold">Breakfast</h4>
-                                    <p class="text-sm text-gray-400">414 Calories</p>
-                                    <button class="text-gray-400"><i class="fas fa-ellipsis-v"></i></button>
+
+                            @foreach (var item2 in item.dataListFoodMealDayOfTheWeek)
+                            {
+                                <!-- Breakfast -->
+                                <div class="bg-gray-800 rounded-lg p-3 relative w-72">
+                                    <h4 class="text-yellow-500 font-bold">@item2.NameSlotOfTheDay</h4>
+                                    <p class="text-sm text-gray-400"> @item2.TotalCaloriesPerMeal Calories</p>
+                                    @foreach (var item3 in item2.foodDataOfSlot)
+                                    {
+                                        <div class="flex items-center justify-between mb-2">
+                                            <p class="text-sm text-gray-400">1 Meal</p>
+                                            <button class="text-gray-400" onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item3.SettingDetail, @item3.OrderSettingDetail, '@item.DayOfWeek')"><i class="fas fa-ellipsis-v"></i></button>
+                                        </div>
+                                        @foreach (var item4 in item3.foodIdData)
+                                        {
+                                            <ul class="space-y-2">
+                                                <li class="flex items-start" onclick="getMealDetail(@item4.idFood)">
+                                                    <img src="@Url.Content("~/images/" + item4.foodData.Urlimage)" alt="Meal Image" class="w-12 h-12 rounded mr-3" style="margin-bottom: 3px">
+                                                    <div>
+                                                        <p class="text-blue-400 font-semibold meal-item-title">@item4.foodData.Name</p>
+                                                        <p class="text-gray-400 meal-item-description"> @item4.foodData.Describe </p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        }
+                                    }
                                 </div>
-                                <ul class="space-y-2">
-                                    <li class="flex items-start">
-                                        <img src="https://via.placeholder.com/50" alt="Meal Image" class="w-12 h-12 rounded mr-3">
-                                        <div>
-                                            <p class="text-blue-400 font-semibold meal-item-title">Hard Boiled Egg and Avocado Bowl</p>
-                                            <p class="text-gray-400 meal-item-description">Prepare 4 servings, 1 serving</p>
-                                        </div>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <img src="https://via.placeholder.com/50" alt="Meal Image" class="w-12 h-12 rounded mr-3">
-                                        <div>
-                                            <p class="text-blue-400 font-semibold meal-item-title">Fruit Salad</p>
-                                            <p class="text-gray-400 meal-item-description">Prepare 2 servings, ½ serving</p>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                            }
                         </div>
                     </div>
                 }
             </div>
         </div>
     </div>
+
+
+    <script>
+        function navigateToPlanUser(day) {
+            const url = `/User/PlanUser?myDay=${encodeURIComponent(day)}`;
+            window.location.href = url;
+        }
+        function getMealDetail(id) {
+            const url = `/foodDetails/${id}`;
+            window.location.href = url;
+        }
+
+        function ChanceFoodTheMeal(slotOfTheDay, settingDetail, orderSettingDetail, myDaySelect) {
+            // Xây dựng URL với các tham số
+            const url = `/User/ChangeAnotherDish?SlotOfTheDay=${encodeURIComponent(slotOfTheDay)}&SettingDetail=${encodeURIComponent(settingDetail)}&OrderSettingDetail=${encodeURIComponent(orderSettingDetail)}&MyDaySelect=${encodeURIComponent(myDaySelect)}`;
+
+            // Chuyển hướng trình duyệt sang URL
+            window.location.href = url;
+        }
+    </script>
+
+@*     <script>
+        function refreshMeal(day) {
+            fetch('/User/RefreshTheMeal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': '@Html.AntiForgeryToken()'
+                },
+                body: JSON.stringify({ myDay: day })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Meal refreshed successfully");
+                    } else {
+                        console.error("Error refreshing meal");
+                    }
+                })
+                .catch(error => console.error('Fetch error:', error));
+        }
+    </script> *@
 
     <!-- Inline CSS -->
     <style>
