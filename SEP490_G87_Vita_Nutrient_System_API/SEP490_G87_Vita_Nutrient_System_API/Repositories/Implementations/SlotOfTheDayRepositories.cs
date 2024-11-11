@@ -22,5 +22,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return await _context.SlotOfTheDays.ToListAsync();
         }
 
+        ////////////////////////////////////////////////////////////
+        /// Sơn
+        ////////////////////////////////////////////////////////////
+        ///
+        public async Task<SlotOfTheDay> GetSlotOfTheDayAsyncById(short id)
+        {
+            return await _context.SlotOfTheDays.FindAsync(id);
+        }
     }
 }

@@ -363,6 +363,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             int page = 1,
             int pageSize = 10)
         {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
             try
             {
                 HttpResponseMessage response = foodTypeId == 0 ?
@@ -373,14 +374,23 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response1 =
                                     await client.GetAsync(client.BaseAddress + "/Food/GetFoodTypes");
 
+                HttpResponseMessage response2 =
+                                    await client.GetAsync(client.BaseAddress + "/Food/GetBlockFoodOfUser/" + userId);
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
                     List<FoodList> foods = JsonConvert.DeserializeObject<List<FoodList>>(data);
 
+                    HttpContent content2 = response2.Content;
+                    string data2 = await content2.ReadAsStringAsync();
+                    List<int> foodIds = JsonConvert.DeserializeObject<List<int>>(data2);
+
                     //remove foods that are not active
                     foods.RemoveAll(f => f.IsActive == false);
+                    //remove foods that are blocked
+                    foods.RemoveAll(food => foodIds.Contains(food.FoodListId));
 
                     ////////////////////////////////////////////////////////////
                     /// Sơn
@@ -437,17 +447,39 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response1 =
                     await client.GetAsync(client.BaseAddress + "/Food/GetFoodRecipe/" + foodId);
 
+                HttpResponseMessage response2 =
+                    await client.GetAsync(client.BaseAddress + "/Ingredient/GetPreparationIngredientsByFoodId/" + foodId);
+
+                if (response2.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content2 = response2.Content;
+                    string data2 = await content2.ReadAsStringAsync();
+                    List<dynamic> foodIngredients = JsonConvert.DeserializeObject<List<dynamic>>(data2);
+
+                    ViewBag.ingredients = foodIngredients;
+                }
+                else
+                {
+                    ViewBag.ingredients = new List<dynamic>();
+                }
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK
-                    && response.StatusCode == System.Net.HttpStatusCode.OK)
+                    && response1.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
-                    FoodList food = JsonConvert.DeserializeObject<FoodList>(data);
+                    dynamic result = JsonConvert.DeserializeObject<dynamic>(data);
+                    FoodList food = result.food.ToObject<FoodList>();
+                    List<SlotOfTheDay> slots = result.slots.ToObject<List<SlotOfTheDay>>();
 
                     HttpContent content1 = response1.Content;
                     string data1 = await content1.ReadAsStringAsync();
                     List<FoodRecipe> recipes = JsonConvert.DeserializeObject<List<FoodRecipe>>(data1);
 
+                    List<string> foodSlots = slots.Select(s => s.Slot).ToList();
+                    ViewBag.foodSlots = string.Join(", ", foodSlots.Take(foodSlots.Count - 1)) +
+                                    (foodSlots.Count > 1 ? " và " : "") +
+                                    foodSlots.LastOrDefault();
                     ViewBag.food = food;
                     ViewBag.recipes = recipes;
                 }

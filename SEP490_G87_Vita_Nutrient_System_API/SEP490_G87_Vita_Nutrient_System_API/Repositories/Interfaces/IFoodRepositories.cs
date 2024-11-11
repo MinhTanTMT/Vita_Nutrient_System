@@ -20,5 +20,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         KeyNote GetKeynote(int id);
         List<TypeOfCalculation> GetTypesOfCalculation();
         TypeOfCalculation GetTypeOfCalculation(short id);
+        List<FoodSelection> GetFoodSelectionsByUserId(int userId);
+        List<ScaleAmount> GetIngredientByFoodId(int foodId);
     }
 }
