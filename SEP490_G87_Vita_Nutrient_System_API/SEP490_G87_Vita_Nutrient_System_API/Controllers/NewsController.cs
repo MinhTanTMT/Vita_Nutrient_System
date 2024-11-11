@@ -35,6 +35,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(article);
         }
 
+        [HttpGet("latest")]
+        public async Task<ActionResult<IEnumerable<ArticlesNewsDTO>>> GetLatestArticles()
+        {
+            var latestArticles = await _newsRepositories.GetLatestArticlesAsync(3); // Lấy 3 bài viết mới nhất
+            return Ok(latestArticles);
+        }
+
         // POST: api/news
         [HttpPost]
         public async Task<ActionResult> CreateArticle([FromBody] ArticlesNewsDTO articleDto)
@@ -90,7 +97,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpPost("{articleId}/evaluations")]
-        public async Task<ActionResult> AddEvaluation(int articleId, [FromBody] NewsEvaluationDTO evaluationDto)
+        public async Task<ActionResult> AddOrUpdateEvaluation(int articleId, [FromBody] NewsEvaluationDTO evaluationDto)
         {
             if (evaluationDto == null || evaluationDto.ArticlesNewsId != articleId || !ModelState.IsValid)
             {
@@ -99,14 +106,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             try
             {
-                await _newsRepositories.AddEvaluationAsync(evaluationDto);
+                await _newsRepositories.AddOrUpdateEvaluationAsync(evaluationDto);
                 return Ok();
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return Conflict("Bạn đã đánh giá bài viết này trước đó.");// Trả về 409 Conflict nếu người dùng đã đánh giá
+                return StatusCode(500, $"Lỗi khi xử lý đánh giá: {ex.Message}");
             }
         }
+
 
 
         [HttpGet("{articleId}/evaluations")]

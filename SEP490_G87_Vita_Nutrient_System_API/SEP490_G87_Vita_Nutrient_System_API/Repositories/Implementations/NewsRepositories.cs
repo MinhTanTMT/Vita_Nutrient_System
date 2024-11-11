@@ -59,6 +59,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             };
         }
 
+        public async Task<IEnumerable<ArticlesNewsDTO>> GetLatestArticlesAsync(int count)
+        {
+            return await _context.ArticlesNews
+                .Where(article => article.IsActive == true)
+                .OrderByDescending(article => article.DateCreated)
+                .Take(count)
+                .Select(article => new ArticlesNewsDTO
+                {
+                    Id = article.Id,
+                    UserId = article.UserId,
+                    NameCreater = article.NameCreater,
+                    Title = article.Title,
+                    Content = article.Content,
+                    IsActive = article.IsActive,
+                    DateCreated = article.DateCreated,
+                    HeaderImage = article.HeaderImage,
+                    Rate = article.Rate,
+                    NumberRate = article.NumberRate
+                })
+                .ToListAsync();
+        }
         public async Task CreateArticleAsync(ArticlesNewsDTO articleDto)
         {
             try
@@ -121,35 +142,37 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task AddEvaluationAsync(NewsEvaluationDTO evaluationDto)
+        public async Task AddOrUpdateEvaluationAsync(NewsEvaluationDTO evaluationDto)
         {
-            // Kiểm tra nếu người dùng đã đánh giá bài viết này
             var existingEvaluation = await _context.NewsEvaluations
                 .FirstOrDefaultAsync(e => e.ArticlesNewsId == evaluationDto.ArticlesNewsId && e.UserId == evaluationDto.UserId);
 
+            var article = await _context.ArticlesNews.FirstOrDefaultAsync(a => a.Id == evaluationDto.ArticlesNewsId);
+
             if (existingEvaluation != null)
             {
-                throw new InvalidOperationException("Người dùng đã đánh giá bài viết này.");
+                // Nếu đã có đánh giá, cập nhật điểm đánh giá và điều chỉnh lại điểm trung bình
+                double totalRating = (double)((article.Rate * article.NumberRate) - existingEvaluation.Ratting + evaluationDto.Ratting);
+                existingEvaluation.Ratting = evaluationDto.Ratting;
+                article.Rate = totalRating / article.NumberRate;
             }
-
-            var evaluation = new NewsEvaluation
+            else
             {
-                ArticlesNewsId = evaluationDto.ArticlesNewsId,
-                UserId = evaluationDto.UserId,
-                Ratting = evaluationDto.Ratting
-            };
+                // Thêm đánh giá mới và cập nhật số lượng cùng điểm trung bình
+                var evaluation = new NewsEvaluation
+                {
+                    ArticlesNewsId = evaluationDto.ArticlesNewsId,
+                    UserId = evaluationDto.UserId,
+                    Ratting = evaluationDto.Ratting
+                };
 
-            await _context.NewsEvaluations.AddAsync(evaluation);
-            await _context.SaveChangesAsync();
+                await _context.NewsEvaluations.AddAsync(evaluation);
 
-            // Cập nhật số lượng và điểm đánh giá trung bình cho bài viết
-            var article = await _context.ArticlesNews.FirstOrDefaultAsync(a => a.Id == evaluationDto.ArticlesNewsId);
-            if (article != null)
-            {
                 article.NumberRate = (article.NumberRate ?? 0) + 1;
                 article.Rate = ((article.Rate ?? 0) * (article.NumberRate - 1) + evaluationDto.Ratting) / article.NumberRate;
-                await _context.SaveChangesAsync();
             }
+
+            await _context.SaveChangesAsync();
         }
 
 
