@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Collections.Generic;
 using System.Data;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
@@ -501,6 +502,24 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
+        [HttpGet, Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = "")
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
+
+            var response = await client.GetAsync($"{client.BaseAddress}/Users/{userId}/liked-foods?Search={search}&Page={page}&PageSize={pageSize}");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                var likedFoods = JsonConvert.DeserializeObject<LikedFoodsResponse>(responseData);
+                ViewBag.Search = search;
+                ViewBag.TotalPages = likedFoods.TotalPages;
+                ViewBag.CurrentPage = likedFoods.CurrentPage;
+                return View(likedFoods.Items);
+            }
+            return View("Error"); // Show an error view if the API call fails
+        }
+
 
         ////////////////////////////////////////////////////////////
         /// Chiến
@@ -582,8 +601,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình lưu thông tin: " + errorResponse });
             }
         }
-
-
+            // Call the API to get liked foods
+            
         [HttpGet("NutritionalGoals")]
         public async Task<IActionResult> NutritionalGoals()
         {
@@ -612,7 +631,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> UserProfile()
         {
 
-
             /// dùng bao nhiêu thì dùng 
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
@@ -626,7 +644,43 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return View();
             }
             return RedirectToAction("Error");
+        }
 
+
+
+        [HttpGet, Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> ListBlockedFoods(int page = 1, int pageSize = 10, string search = "")
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
+
+            // Call the API to get blocked foods
+            var response = await client.GetAsync($"Users/{userId}/blocked-foods?Search={search}&Page={page}&PageSize={pageSize}");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                var blockedFoods = JsonConvert.DeserializeObject<LikedFoodsResponse>(responseData);
+                ViewBag.Search = search;
+                ViewBag.TotalPages = blockedFoods.TotalPages;
+                ViewBag.CurrentPage = blockedFoods.CurrentPage;
+                return View(blockedFoods.Items);
+            }
+
+            return View("Error"); // Show an error view if the API call fails
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Unblock(int foodId)
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
+
+            // Call the API to unblock the food
+            var response = await client.PostAsync($"Users/{userId}/unblock-food/{foodId}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Failed to unblock food" });
         }
     }
 }
