@@ -115,14 +115,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task SaveNutritionTargetsAsync(NutritionTargetsDaily nutritionTargets)
         {
-            bool exerciseIntensityExists = await _context.ExerciseIntensities
+            /*bool exerciseIntensityExists = await _context.ExpertPackages
         .AnyAsync(e => e.Id == nutritionTargets.ExerciseIntensityId);
             if (!exerciseIntensityExists)
             {
                 throw new Exception("Invalid ExerciseIntensityId. Please ensure that the Exercise Intensity exists.");
             }
             _context.Add(nutritionTargets);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();*/
         }
 
         public async Task<PagedResult<UserDTO>> GetUsers(int userId, string? search, int page = 1, int pageSize = 10)

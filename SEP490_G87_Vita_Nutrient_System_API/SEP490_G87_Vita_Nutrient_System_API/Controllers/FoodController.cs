@@ -52,5 +52,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             List<FoodType> types = repositories.GetFoodTypes();
             return types.Select(t => _mapper.Map<FoodTypeResponse>(t)).ToList();
         }
+
+        [HttpGet("GetDietType")]
+        public async Task<IActionResult> GetDietTypes()
+        {
+            List<DietType> types = repositories.GetDietTypes();
+            return Ok(types);
+        }
+
     }
 }
+

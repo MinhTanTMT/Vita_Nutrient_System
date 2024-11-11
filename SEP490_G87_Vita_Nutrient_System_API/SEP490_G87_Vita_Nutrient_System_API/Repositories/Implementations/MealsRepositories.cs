@@ -179,7 +179,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             // Cập nhật FoodWanId
             if(existingNutritionTarget.FoodTypeIdWant == null)
             {
-                existingNutritionTarget.FoodTypeIdWant = (short)(mealSetting.FoodTypeIdWant ?? 0);
+                existingNutritionTarget.FoodTypeIdWant = mealSetting.FoodTypeIdWant;
             }
         }
 
@@ -252,7 +252,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             {
                                 UserId = userId,
                                 Calories = (short)Math.Round(caloriesPerMeal),
-                                FoodTypeIdWant = (short)(mealSetting.FoodTypeIdWant ?? 0),
+                                FoodTypeIdWant = mealSetting.FoodTypeIdWant,
                                 ExerciseIntensityId = 1,
                                 IsActive = true,
                                 CarbsMin = 0,
@@ -267,7 +267,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             };
                             _context.NutritionTargetsDailies.Add(newNutritionTarget);
                             await _context.SaveChangesAsync();
-
                             meal.NutritionTargetsDailyId = newNutritionTarget.Id;
                             meal.NutritionTargetsDaily = newNutritionTarget;
                             meal.Calories = (short)Math.Round(caloriesPerMeal);
@@ -372,8 +371,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         {
                             UserId = userId,
                             Calories = (short)caloriesForSlot,
-                            FoodTypeIdWant = (short)(mealSetting.FoodTypeIdWant ?? 0),
-                            ExerciseIntensityId = 1,
+                            FoodTypeIdWant =mealSetting.FoodTypeIdWant ,
                             IsActive = true,
                             CarbsMin = 0,
                             ProteinMin = 0,
@@ -565,7 +563,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (mealSetting != null)
             {
                 // Cập nhật các thuộc tính từ DTO
-                mealSetting.FoodTypeIdWant = dto.FoodTypeIdWant;
+                mealSetting.FoodTypeIdWant = dto.FoodTypeIdWant ?? 0;
                 mealSetting.DayOfTheWeekStartId = dto.DayOfTheWeekStartId;
                 mealSetting.SameScheduleEveryDay = dto.SameScheduleEveryDay;
 
@@ -760,7 +758,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                 if (nutritionTarget != null)
                 {
-                    nutritionTarget.FoodTypeIdWant = (short)(mealSetting.FoodTypeIdWant ?? 0);
+                    nutritionTarget.FoodTypeIdWant = mealSetting.FoodTypeIdWant;
                     nutritionTarget.LimitDailyCholesterol = false;
                     nutritionTarget.LimitDailySodium = false;
                     nutritionTarget.IsActive = false;

@@ -39,13 +39,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     TempData["ErrorMessage"] = "Không thể lấy dữ liệu từ API GetNutritionTargetsDailyOfMeal.";
                     return RedirectToAction("Error");
                 }
-                // Lấy danh sách FoodTypes để hiển thị trong dropdown
-                HttpResponseMessage foodTypeResponse = await client.GetAsync($"{client.BaseAddress}/Food/GetFoodTypes");
+                // Lấy danh sách DietType để hiển thị trong dropdown
+                HttpResponseMessage foodTypeResponse = await client.GetAsync($"{client.BaseAddress}/Food/GetDietType");
                 if (foodTypeResponse.IsSuccessStatusCode)
                 {
-                    var foodTypeData = await foodTypeResponse.Content.ReadAsStringAsync();
-                    var foodTypes = JsonConvert.DeserializeObject<List<FoodType>>(foodTypeData);
-                    ViewBag.FoodTypes = foodTypes;
+                    var dietTypeData = await foodTypeResponse.Content.ReadAsStringAsync();
+                    var dietType = JsonConvert.DeserializeObject<List<DietType>>(dietTypeData);
+                    ViewBag.DietTypes = dietType;
                 }
 
                 HttpResponseMessage additionalResponse = await client.GetAsync($"{client.BaseAddress}/NutritionTargetsDaily/GetNutritionTargetsDaily/{id}");
