@@ -279,6 +279,27 @@
 
 
                             }
+                            else if (role.Equals("Nutritionist"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("GetAll", "NutritionRoute")">
+                                        <span class="menu-title">Tất cả lộ trình người dùng mình quản lý</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListUser", "Nutritionist")">
+                                        <span class="menu-title">Quản lý khách hàng</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("NutritionistProfile", "Nutritionist")">
+                                        <span class="menu-title">Thông tin của tôi</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
+                            }
                             else if (role.Equals("UserPremium"))
                             {
                                 <li class="nav-item">
@@ -309,7 +330,7 @@
 
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("PlanUserWeek", "User")">
-                                        <span class="menu-title">Kế hoạch bữa ăn</span>
+                                        <span class="menu-title">Kế hoạch bữa ăn theo tuần</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
@@ -319,6 +340,22 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods ", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListBlockedFoods", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn Blocked</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                               
                             }
                             else if (role.Equals("User"))
                             {
@@ -353,6 +390,23 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods ", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListBlockedFoods", "User")">
+                                        <span class="menu-title">Danh Sách Món Ăn Blocked</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+
+
                             }
                             else
                             {
@@ -376,12 +430,6 @@
                                         <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
                                     </ul>
                                 </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("GetAll", "NutritionRoute")">
-                                    <span class="menu-title">Nutrition Route</span>
-                                    <i class="mdi mdi-newspaper menu-icon"></i>
-                                </a>
                             </li>
                         }
                     }
