@@ -39,8 +39,18 @@ using System.Net.Http;
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("MealSettingsDetailToList");
-                }
+                    // Gọi UpdateCalo sau khi cập nhật bữa ăn thành công
+                    HttpResponseMessage updateCaloResponse = await client.PutAsync($"{client.BaseAddress}/Meals/UpdateCalo/{mealId}", null);
+
+                    if (updateCaloResponse.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("MealSettingsDetailToList");
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Lỗi khi cập nhật calo cho bữa ăn.";
+                    }
+                }          
                 else if (response.StatusCode == HttpStatusCode.Conflict)
                 {
                     return RedirectToAction("MealSettingsDetailToList");
