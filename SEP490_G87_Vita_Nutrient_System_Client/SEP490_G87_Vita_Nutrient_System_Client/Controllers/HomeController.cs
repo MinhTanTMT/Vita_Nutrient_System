@@ -30,9 +30,24 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<ArticlesNewsDTO> latestArticles = new List<ArticlesNewsDTO>();
+
+            // Gọi API để lấy 3 bài viết mới nhất
+            HttpResponseMessage response = await client.GetAsync("/api/news/latest");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                latestArticles = JsonConvert.DeserializeObject<List<ArticlesNewsDTO>>(data);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error fetching latest articles from API.");
+            }
+
+            // Truyền dữ liệu bài viết mới nhất đến View
+            return View(latestArticles);
         }
 
 

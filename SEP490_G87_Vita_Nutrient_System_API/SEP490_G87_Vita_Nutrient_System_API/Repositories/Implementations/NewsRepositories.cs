@@ -59,6 +59,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             };
         }
 
+        public async Task<IEnumerable<ArticlesNewsDTO>> GetLatestArticlesAsync(int count)
+        {
+            return await _context.ArticlesNews
+                .Where(article => article.IsActive == true)
+                .OrderByDescending(article => article.DateCreated)
+                .Take(count)
+                .Select(article => new ArticlesNewsDTO
+                {
+                    Id = article.Id,
+                    UserId = article.UserId,
+                    NameCreater = article.NameCreater,
+                    Title = article.Title,
+                    Content = article.Content,
+                    IsActive = article.IsActive,
+                    DateCreated = article.DateCreated,
+                    HeaderImage = article.HeaderImage,
+                    Rate = article.Rate,
+                    NumberRate = article.NumberRate
+                })
+                .ToListAsync();
+        }
         public async Task CreateArticleAsync(ArticlesNewsDTO articleDto)
         {
             try

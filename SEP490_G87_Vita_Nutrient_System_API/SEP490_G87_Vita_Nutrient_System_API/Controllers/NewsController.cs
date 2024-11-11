@@ -35,6 +35,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(article);
         }
 
+        [HttpGet("latest")]
+        public async Task<ActionResult<IEnumerable<ArticlesNewsDTO>>> GetLatestArticles()
+        {
+            var latestArticles = await _newsRepositories.GetLatestArticlesAsync(3); // Lấy 3 bài viết mới nhất
+            return Ok(latestArticles);
+        }
+
         // POST: api/news
         [HttpPost]
         public async Task<ActionResult> CreateArticle([FromBody] ArticlesNewsDTO articleDto)
