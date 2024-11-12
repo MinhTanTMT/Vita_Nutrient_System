@@ -1,0 +1,15 @@
+﻿namespace SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels
+{
+    public class UserAction
+    {
+        public int UserId { get; set; }
+        public int FoodId { get; set; }
+    }
+
+    public class UserActionRecur
+    {
+        public int UserId { get; set; }
+        public int FoodId { get; set; }
+        public int RecurId { get; set; }
+    }
+}

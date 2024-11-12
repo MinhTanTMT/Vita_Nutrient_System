@@ -1,0 +1,38 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
+using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
+using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
+
+namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserFoodActionController : ControllerBase
+    {
+        private readonly IFoodSelectionRepositories repositories = new FoodSelectionRepositories();
+
+        [HttpPost("UserBlockFood")]
+        public async Task<ActionResult> UserBlockFood([FromBody]UserAction userAction)
+        {
+            repositories.UserBlockFood(userAction.UserId, userAction.FoodId);
+
+            return Ok("Operation successful!");
+        }
+
+        [HttpPost("UserLikeOrUnlikeFood")]
+        public async Task<ActionResult> UserLikeOrUnlikeFood([FromBody] UserAction userAction)
+        {
+            repositories.UserLikeOrUnlikeFood(userAction.UserId, userAction.FoodId);
+
+            return Ok("Operation successful!");
+        }
+
+        [HttpPost("UserSaveOrUnsaveFood")]
+        public async Task<ActionResult> UserSaveOrUnsaveFood([FromBody] UserAction userAction)
+        {
+            repositories.UserSaveOrUnsaveFood(userAction.UserId, userAction.FoodId);
+
+            return Ok("Operation successful!");
+        }
+    }
+}

@@ -70,23 +70,29 @@
                                 </div>
                             </div>
 
-                            <div>
-                                <div class="like-n-dislike d-flex" style="background: #0866ff; color: white; width: fit-content; height: fit-content; padding: 10px 8px; border-radius: 6px; margin-left: auto;">
+                            <div class="d-flex user-action-container">
+                                <div class="user-action" style="color: blue;">
                                     @if (true)
                                     {
                                         <i class="mdi mdi-thumb-up"></i>
-                                        <span style="padding-left: 5px;">Đã thích</span>
                                     }
                                     else
                                     {
                                         <i class="mdi mdi-thumb-up-outline"></i>
-                                        <span style="padding-left: 5px;">Thích</span>
                                     }
-                                    
                                 </div>
-                                <div class="block" style="background: rgb(232, 81, 81); color: white; width: fit-content; height: fit-content; padding: 10px 8px; border-radius: 6px; margin-top: 10px; margin-left: auto;">
-                                    <i class="mdi mdi-block-helper" alt="Block"></i>
-                                    <span style="padding-left: 5px;">Block</span>
+                                <div class="user-action">
+                                    @if (true)
+                                    {
+                                        <i class="mdi mdi-bookmark"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="mdi mdi-bookmark-outline"></i>
+                                    }
+                                </div>
+                                <div class="user-action" style="color: red;">
+                                    <i class="mdi mdi-block-helper"></i>
                                 </div>
                             </div>
                         </div>
@@ -242,3 +248,4 @@
     displayRating(@food.Rate); // Example rating of 75
 </script>
 <script src="~/js/ratingCircle.js"></script>
+<script src="~/js/userActionForFood.js"></script>
