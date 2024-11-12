@@ -4,13 +4,6 @@ using SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http.Headers;
 using System.Text;
-﻿using Microsoft.AspNetCore.Authorization;
-using System.Security.Principal;
-using static System.Net.WebRequestMethods;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Diagnostics.Metrics;
-using System;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -817,6 +810,191 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
+        // GET: Food List with Search
+        public async Task<IActionResult> GetFoodList(string? search)
+        {
+            var route = $"get-food-list?search={search}";
+            HttpResponseMessage response = await client.GetAsync(route);
 
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                var foodList = JsonConvert.DeserializeObject<List<FoodList>>(responseData);
+                return PartialView("FoodListPopup", foodList);
+            }
+
+            return PartialView("Error");
+        }
+
+        // GET: Disease List with optional search
+        public async Task<IActionResult> GetDiseaseList(string? search)
+        {
+            var route = $"list-disease?search={search}";
+            HttpResponseMessage response = await client.GetAsync(route);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                var diseaseList = JsonConvert.DeserializeObject<List<ListOfDisease>>(responseData);
+                return PartialView("DiseaseListPopup", diseaseList);
+            }
+
+            return PartialView("Error");
+        }
+
+        // GET: Food and Disease Compatibility
+        public async Task<IActionResult> GetFoodAndDisease(int foodId, int diseaseId)
+        {
+            var route = $"get-food-and-disease/{foodId}/{diseaseId}";
+            HttpResponseMessage response = await client.GetAsync(route);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                var foodAndDisease = JsonConvert.DeserializeObject<FoodAndDisease>(responseData);
+                return PartialView("FoodAndDiseasePopup", foodAndDisease);
+            }
+
+            return PartialView("Error");
+        }
+
+        // POST: Create Food
+        [HttpPost]
+        public async Task<IActionResult> CreateFood(FoodList food)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(food), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync("create-food", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        // POST: Create Disease
+        [HttpPost]
+        public async Task<IActionResult> CreateDisease(ListOfDisease disease)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(disease), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync("create-disease", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        // POST: Create Food and Disease Compatibility
+        [HttpPost]
+        public async Task<IActionResult> CreateFoodAndDisease(FoodAndDisease foodAndDisease)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(foodAndDisease), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync("create-food-and-disease", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        // PUT: Update Food
+        [HttpPost]
+        public async Task<IActionResult> UpdateFood(FoodList food)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(food), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PutAsync($"FoodList/{food.FoodListId}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        // PUT: Update Disease
+        [HttpPost]
+        public async Task<IActionResult> UpdateDisease(ListOfDisease disease)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(disease), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PutAsync($"listOfDisease/{disease.Id}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        // PUT: Update Food and Disease Compatibility
+        [HttpPost]
+        public async Task<IActionResult> UpdateFoodAndDisease(FoodAndDisease foodAndDisease)
+        {
+            var json = JsonConvert.SerializeObject(foodAndDisease);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PutAsync("update-food-and-disease", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        // DELETE: Food
+        [HttpPost]
+        public async Task<IActionResult> DeleteFood(int id)
+        {
+            HttpResponseMessage response = await client.DeleteAsync($"FoodList/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        // DELETE: Disease
+        [HttpPost]
+        public async Task<IActionResult> DeleteDisease(int id)
+        {
+            HttpResponseMessage response = await client.DeleteAsync($"delete-disease{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        // DELETE: Food and Disease Compatibility
+        [HttpPost]
+        public async Task<IActionResult> DeleteFoodAndDisease(int foodId, int diseaseId)
+        {
+            HttpResponseMessage response = await client.DeleteAsync($"delete-food-and-disease{foodId}/{diseaseId}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Error");
+        }
+
+        public IActionResult FoodAndDiseaseManagement()
+        {
+            return View();
+        }
     }
 }

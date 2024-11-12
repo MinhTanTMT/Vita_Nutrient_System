@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
@@ -25,6 +25,11 @@ builder.Services.AddCors(options =>
                           .AllowCredentials());
 });
 
+// Thêm thư viện Microsoft.AspNetCore.Mvc.NewtonsoftJson để sử dụng ReferenceLoopHandling
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+});
 
 
 var app = builder.Build();

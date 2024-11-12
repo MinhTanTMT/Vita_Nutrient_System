@@ -654,7 +654,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
 
             // Call the API to get blocked foods
-            var response = await client.GetAsync($"Users/{userId}/blocked-foods?Search={search}&Page={page}&PageSize={pageSize}");
+            var response = await client.GetAsync(client.BaseAddress + $"/Users/{userId}/blocked-foods?Search={search}&Page={page}&PageSize={pageSize}");
             if (response.IsSuccessStatusCode)
             {
                 var responseData = await response.Content.ReadAsStringAsync();
@@ -664,8 +664,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.CurrentPage = blockedFoods.CurrentPage;
                 return View(blockedFoods.Items);
             }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error: {response.StatusCode}, Content: {errorContent}");
+                return View("Error");
+            }
 
-            return View("Error"); // Show an error view if the API call fails
+          // Show an error view if the API call fails
         }
 
         [HttpPost]

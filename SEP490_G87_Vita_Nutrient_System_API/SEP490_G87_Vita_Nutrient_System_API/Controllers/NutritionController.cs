@@ -92,7 +92,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<IActionResult> PutFoodList(FoodList foodList)
         {
             var result = await _nutritionRepo.UpdateFoodList(foodList);
-            if(result == 0)
+            if (result == 0)
             {
                 return BadRequest();
             }
@@ -104,7 +104,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<IActionResult> DeleteFoodList(int id)
         {
             var result = await _nutritionRepo.DeleteFoodList(id);
-            if(result == 0)
+            if (result == 0)
             {
                 return BadRequest();
             }
@@ -143,18 +143,83 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         // DELETE: api/ListOfDisease/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete("delete-disease{id}")]
         public async Task<IActionResult> DeleteDisease(int id)
         {
             var result = await _nutritionRepo.DeleteDisease(id);
 
-            if(result == 0)
+            if (result == 0)
             {
                 return NotFound();
             }
 
             return Ok(result);
         }
+
+        [HttpPost("create-food-and-disease")]
+        public async Task<IActionResult> CreateFoodAndDisease([FromBody] FoodAndDisease foodAndDisease)
+        {
+            var result = await _nutritionRepo.CreateFoodAndDiseases(foodAndDisease);
+            if (result == null)
+            {
+                return Conflict("The combination of food and disease already exists.");
+            }
+
+            return CreatedAtAction(nameof(CreateFoodAndDisease), result);
+        }
+
+        [HttpPut("update-food-and-disease")]
+        public async Task<IActionResult> UpdateFoodAndDisease([FromBody] FoodAndDisease foodAndDisease)
+        {
+            var result = await _nutritionRepo.UpdateFoodAndDisease(foodAndDisease);
+
+            if (result == null)
+            {
+                return NotFound("The specified food and disease combination does not exist.");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpDelete("delete-food-and-disease{foodId}/{diseaseId}")]
+        public async Task<IActionResult> DeleteFoodAndDisease(int foodId, int diseaseId)
+        {
+            var result = await _nutritionRepo.DeleteFoodAndDisease(foodId, diseaseId);
+
+            if (result == 0)
+            {
+                return NotFound("The specified food and disease combination does not exist.");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("get-food-and-disease/{foodId}/{diseaseId}")]
+        public async Task<IActionResult> GetFoodAndDisease(int foodId, int diseaseId)
+        {
+            var result = await _nutritionRepo.GetFoodAndDiseases(foodId, diseaseId);
+
+            if (result == null)
+            {
+                return NotFound("The specified food and disease combination does not exist.");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("get-all-food-and-disease")]
+        public async Task<IActionResult> GetAllFoodAndDiseases()
+        {
+            var result = await _nutritionRepo.GetFoodAndDiseases();
+
+            if (result == null || result.Count == 0)
+            {
+                return NotFound("No food and disease combinations found.");
+            }
+
+            return Ok(result);
+        }
+
     }
 
 }
