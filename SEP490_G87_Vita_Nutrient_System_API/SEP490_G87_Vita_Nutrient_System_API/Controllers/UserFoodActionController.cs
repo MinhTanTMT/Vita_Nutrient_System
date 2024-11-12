@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 
@@ -10,6 +12,30 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     public class UserFoodActionController : ControllerBase
     {
         private readonly IFoodSelectionRepositories repositories = new FoodSelectionRepositories();
+
+        [HttpGet("GetUserFoodAction")]
+        public async Task<ActionResult> GetUserFoodAction(int UserId, int FoodId)
+        {
+            FoodSelection fs = repositories.Get(UserId, FoodId);
+
+            if(fs is null)
+            {
+                return Ok("Not found!");
+            }
+
+            FoodSelectionDTO result = new FoodSelectionDTO
+            {
+                UserId = fs.UserId,
+                FoodListId = fs.FoodListId,
+                Rate = fs.Rate,
+                RecurringId = fs.RecurringId,
+                IsCollection = fs.IsCollection,
+                IsBlock = fs.IsBlock,
+                IsLike = fs.IsLike,
+            };
+
+            return Ok(result);
+        }
 
         [HttpPost("UserBlockFood")]
         public async Task<ActionResult> UserBlockFood([FromBody]UserAction userAction)

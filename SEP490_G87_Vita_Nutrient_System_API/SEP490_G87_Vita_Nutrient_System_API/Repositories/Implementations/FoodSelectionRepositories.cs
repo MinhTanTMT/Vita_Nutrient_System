@@ -112,5 +112,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.Entry<FoodSelection>(fs).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             _context.SaveChanges();
         }
+
+        public FoodSelection Get(int UserId, int FoodId)
+        {
+            return _context.FoodSelections.SingleOrDefault(fs => fs.UserId == UserId && fs.FoodListId == FoodId);
+        }
     }
 }

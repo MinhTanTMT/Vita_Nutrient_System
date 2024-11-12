@@ -6,6 +6,7 @@
     List<FoodRecipe> recipes = ViewBag.recipes;
     string foodSlots = ViewBag.foodSlots;
     List<dynamic> ingredients = ViewBag.ingredients;
+    FoodSelection fs = ViewBag.fs;
 }
 
 <link rel="stylesheet" href="~/css/fooddetails.css">
@@ -71,10 +72,10 @@
                             </div>
 
                             <div class="d-flex user-action-container">
-                                <div class="user-action" style="color: blue;">
-                                    @if (true)
+                                <div class="user-action" style="color: blue;" onclick="toggleLike(@fs.UserId, @fs.FoodListId)">
+                                    @if (fs.IsLike == true)
                                     {
-                                        <i class="mdi mdi-thumb-up"></i>
+                                        <i class="mdi mdi-thumb-up like-icon"></i>
                                     }
                                     else
                                     {
@@ -82,7 +83,7 @@
                                     }
                                 </div>
                                 <div class="user-action">
-                                    @if (true)
+                                    @if (fs.IsCollection == true)
                                     {
                                         <i class="mdi mdi-bookmark"></i>
                                     }
