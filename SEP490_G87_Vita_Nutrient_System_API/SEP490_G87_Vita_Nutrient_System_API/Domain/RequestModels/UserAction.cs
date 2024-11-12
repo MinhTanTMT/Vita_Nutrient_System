@@ -10,6 +10,6 @@
     {
         public int UserId { get; set; }
         public int FoodId { get; set; }
-        public int RecurId { get; set; }
+        public short RecurId { get; set; }
     }
 }

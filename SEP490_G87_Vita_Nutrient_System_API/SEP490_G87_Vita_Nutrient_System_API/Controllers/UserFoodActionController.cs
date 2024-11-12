@@ -34,5 +34,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok("Operation successful!");
         }
+
+        [HttpPost("UserSetRecurFood")]
+        public async Task<ActionResult> UserSetRecurFood([FromBody] UserActionRecur userAction)
+        {
+            repositories.UserRecurFood(userAction.UserId, userAction.FoodId, userAction.RecurId);
+
+            return Ok("Operation successful!");
+        }
     }
 }
