@@ -7,7 +7,7 @@
     <h2 class="text-center">Blocked Foods Collection</h2>
 
     <!-- Search Bar -->
-    <form method="get" asp-action="Index" class="d-flex mb-4">
+    <form method="get" asp-action="ListBlockedFoods" class="d-flex mb-4">
         <input type="text" name="search" value="@ViewBag.Search" placeholder="Search foods..." class="form-control me-2" />
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
@@ -47,7 +47,7 @@
             @for (int i = 1; i <= ViewBag.TotalPages; i++)
             {
                 <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="10" asp-route-search="@ViewBag.Search">@i</a>
+                    <a class="page-link" asp-action="ListBlockedFoods" asp-route-page="@i" asp-route-pageSize="10" asp-route-search="@ViewBag.Search">@i</a>
                 </li>
             }
         </ul>

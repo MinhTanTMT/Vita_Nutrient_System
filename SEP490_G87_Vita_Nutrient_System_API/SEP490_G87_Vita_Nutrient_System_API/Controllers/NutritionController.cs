@@ -59,6 +59,102 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(isGoodOrBad);
         }
+
+        [HttpGet("get-food-list")]
+        public async Task<ActionResult<List<FoodList>>> GetFoodLists([FromQuery] string? search)
+        {
+            var result = await _nutritionRepo.GetFoodLists(search);
+            return Ok(result);
+        }
+
+        [HttpGet("get-food/{id}")]
+        public async Task<ActionResult<FoodList>> GetFoodList(int id)
+        {
+            var foodList = await _nutritionRepo.GetFoodList(id);
+            if (foodList == null)
+            {
+                return NotFound();
+            }
+            return Ok(foodList);
+        }
+
+        // POST: api/FoodList
+        [HttpPost("create-food")]
+        public async Task<ActionResult<FoodList>> PostFoodList(FoodList foodList)
+        {
+            await _nutritionRepo.CreateFoodList(foodList);
+
+            return CreatedAtAction("GetFoodList", new { id = foodList.FoodListId }, foodList);
+        }
+
+        // PUT: api/FoodList/{id}
+        [HttpPut("FoodList/{id}")]
+        public async Task<IActionResult> PutFoodList(FoodList foodList)
+        {
+            var result = await _nutritionRepo.UpdateFoodList(foodList);
+            if(result == 0)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
+        }
+
+        // DELETE: api/FoodList/{id}
+        [HttpDelete("FoodList/{id}")]
+        public async Task<IActionResult> DeleteFoodList(int id)
+        {
+            var result = await _nutritionRepo.DeleteFoodList(id);
+            if(result == 0)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("list-disease")]
+        public async Task<ActionResult<IEnumerable<ListOfDisease>>> GetDiseases([FromQuery] string? search)
+        {
+            return await _nutritionRepo.GetDiseases(search);
+        }
+
+        // GET: api/ListOfDisease/{id}
+        [HttpGet("ListOfDisease/{id}")]
+        public async Task<ActionResult<ListOfDisease>> GetDisease(int id)
+        {
+            return await _nutritionRepo.GetDiseases(id);
+        }
+
+        // POST: api/ListOfDisease
+        [HttpPost("create-disease")]
+        public async Task<ActionResult<ListOfDisease>> CreateDisease(ListOfDisease disease)
+        {
+            await _nutritionRepo.CreateDisease(disease);
+
+            return CreatedAtAction("GetDisease", new { id = disease.Id }, disease);
+        }
+
+        // PUT: api/ListOfDisease/{id}
+        [HttpPut("listOfDisease/{id}")]
+        public async Task<IActionResult> PutDisease(ListOfDisease disease)
+        {
+            await _nutritionRepo.UpdateDisease(disease);
+
+            return NoContent();
+        }
+
+        // DELETE: api/ListOfDisease/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDisease(int id)
+        {
+            var result = await _nutritionRepo.DeleteDisease(id);
+
+            if(result == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
     }
 
 }

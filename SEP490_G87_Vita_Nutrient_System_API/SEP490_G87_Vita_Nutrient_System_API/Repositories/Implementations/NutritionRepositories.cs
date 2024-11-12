@@ -127,10 +127,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<PagedResult<UserDTO>> GetUsers(int userId, string? search, int page = 1, int pageSize = 10)
         {
-            var nutritionist = await _context.NutritionistDetails.FirstOrDefaultAsync(t => t.Nutritionist.UserId == userId);
-            var query = await _context.Users
+            var userListManagement = await _context.UserListManagements.Where(t => t.NutritionistId == userId).ToListAsync();
+            
+            List<UserDTO> query = new List<UserDTO>();
+
+            foreach(var item in userListManagement)
+            {
+                query.Add(await _context.Users
                         .AsNoTracking()
-                        .Where(t => t.NutritionistDetail.NutritionistId == nutritionist.NutritionistId)
                         .Select(u => new UserDTO
                         {
                             UserId = u.UserId,
@@ -150,17 +154,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                 InforConfirmBad = u.UserDetail.InforConfirmBad,
                                 IsPremium = u.UserDetail.IsPremium
                             } : null
-                        }).ToListAsync();
+                        }).FirstOrDefaultAsync(t => t.UserId == item.UserId));
+            }
 
-            var userListManagement = await _context.UserListManagements.Where(t => t.EndDate > DateTime.UtcNow).ToListAsync();
+            var userDelete = await _context.UserListManagements.Where(t => t.EndDate > DateTime.UtcNow).ToListAsync();
 
-            foreach (var item in userListManagement)
+            foreach (var item in userDelete)
             {
-                var userDel = await _context.Users.FirstOrDefaultAsync(t => t.UserId == item.UserId);
-                if (userDel != null)
-                {
-                    _context.Remove(userDel);
-                }
+                _context.UserListManagements.Remove(item);
             }
 
             await _context.SaveChangesAsync();
@@ -257,6 +258,174 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             return (bool)relation.IsGoodOrBad;
         }
-    }
 
+        public async Task<List<FoodList>> GetFoodLists(string search)
+        {
+            return await _context.FoodLists
+            .Where(f => string.IsNullOrEmpty(search) || f.Name.Contains(search))
+            .ToListAsync();
+        }
+
+        public async Task<FoodList> GetFoodList(int id)
+        {
+            var foodList = await _context.FoodLists.FindAsync(id);
+
+            if (foodList == null)
+            {
+                return null;
+            }
+
+            return foodList;
+        }
+
+        public async Task<FoodList> CreateFoodList(FoodList foodList)
+        {
+            _context.FoodLists.Add(foodList);
+            await _context.SaveChangesAsync();
+            return foodList;
+        }
+
+        public async Task<int> UpdateFoodList(FoodList foodList)
+        {
+            var check = await _context.FoodLists.FirstOrDefaultAsync(t => t.FoodListId == foodList.FoodListId);
+            if(check == null)
+            {
+                return 0;
+            }
+            check = foodList;
+            _context.Update(check);
+            await _context.SaveChangesAsync();
+            return check.FoodListId;
+        }
+
+        public async Task<int> DeleteFoodList(int id)
+        {
+            var foodList = await _context.FoodLists.FirstOrDefaultAsync(t => t.FoodListId == id);
+            if (foodList == null)
+            {
+                return 0;
+            }
+
+            _context.FoodLists.Remove(foodList);
+            await _context.SaveChangesAsync();
+
+            return foodList.FoodListId;
+        }
+
+        public async Task<List<ListOfDisease>> GetDiseases(string search)
+        {
+            return await _context.ListOfDiseases
+            .Where(d => string.IsNullOrEmpty(search) || d.Name.Contains(search))
+            .ToListAsync();
+        }
+
+        public async Task<ListOfDisease> GetDiseases(int id)
+        {
+            var disease = await _context.ListOfDiseases.FirstOrDefaultAsync(t => t.Id == id);
+
+            if (disease == null)
+            {
+                return null;
+            }
+
+            return disease;
+        }
+
+        public async Task<ListOfDisease> CreateDisease(ListOfDisease disease)
+        {
+            var check = await _context.ListOfDiseases.FirstOrDefaultAsync(t => t.Id == disease.Id);
+            if(check != null)
+            {
+                return null;
+            }
+            _context.ListOfDiseases.Add(disease);
+            await _context.SaveChangesAsync();
+
+            return disease;
+        }
+
+        public async Task<int> DeleteDisease(int id)
+        {
+            var disease = await _context.ListOfDiseases.FirstOrDefaultAsync(t => t.Id == id);
+            if (disease == null)
+            {
+                return 0;
+            }
+
+            _context.ListOfDiseases.Remove(disease);
+            await _context.SaveChangesAsync();
+
+            return disease.Id;
+        }
+
+        public async Task<int> UpdateDisease(ListOfDisease disease)
+        {
+            var check = await _context.ListOfDiseases.FirstOrDefaultAsync(t => t.Id == disease.Id);
+            if (check == null)
+            {
+                return 0;
+            }
+            check = disease;
+            _context.Update(check);
+            await _context.SaveChangesAsync();
+            return check.Id;
+        }
+
+        public async Task<FoodAndDisease> GetFoodAndDiseases(int foodId, int diseaseId)
+        {
+            var foodAndDisease = await _context.FoodAndDiseases
+            .Include(f => f.FoodList)
+            .Include(d => d.ListOfDiseases)
+            .FirstOrDefaultAsync(fd => fd.FoodListId == foodId && fd.ListOfDiseasesId == diseaseId);
+
+            return foodAndDisease;
+        }
+
+        public async Task<List<FoodAndDisease>> GetFoodAndDiseases()
+        {
+            return await _context.FoodAndDiseases.Include(f => f.FoodList).Include(d => d.ListOfDiseases).ToListAsync();
+        }
+
+        public async Task<FoodAndDisease> CreateFoodAndDiseases(FoodAndDisease foodAndDisease)
+        {
+            var check = await _context.FoodAndDiseases.FirstOrDefaultAsync(t => t.ListOfDiseasesId == foodAndDisease.ListOfDiseasesId && t.FoodListId == foodAndDisease.FoodListId);
+            if (check != null)
+            {
+                return null;
+            }
+            _context.FoodAndDiseases.Add(foodAndDisease);
+            await _context.SaveChangesAsync();
+
+            return foodAndDisease;
+        }
+
+        public async Task<bool?> UpdateFoodAndDisease(FoodAndDisease foodAndDisease)
+        {
+            var check = await _context.FoodAndDiseases.FirstOrDefaultAsync(t => t.ListOfDiseasesId == foodAndDisease.ListOfDiseasesId && t.FoodListId == foodAndDisease.FoodListId);
+            if (check == null)
+            {
+                return false;
+            }
+            check = foodAndDisease;
+            _context.Update(check);
+            await _context.SaveChangesAsync();
+            return check.IsGoodOrBad;
+        }
+
+        public async Task<int> DeleteFoodAndDisease(int foodId, int diseaseId)
+        {
+            var foodAndDisease = await _context.FoodAndDiseases
+            .FirstOrDefaultAsync(fd => fd.FoodListId == foodId && fd.ListOfDiseasesId == diseaseId);
+
+            if (foodAndDisease == null)
+            {
+                return 0 ;
+            }
+
+            _context.FoodAndDiseases.Remove(foodAndDisease);
+            await _context.SaveChangesAsync();
+
+            return foodAndDisease.ListOfDiseasesId;
+        }
+    }
 }

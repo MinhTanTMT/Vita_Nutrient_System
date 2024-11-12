@@ -80,7 +80,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
         [HttpGet, Authorize(Roles = "User, UserPremium")]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = "")
+        public async Task<IActionResult> ListLikedFoods(int page = 1, int pageSize = 10, string search = "")
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
 
