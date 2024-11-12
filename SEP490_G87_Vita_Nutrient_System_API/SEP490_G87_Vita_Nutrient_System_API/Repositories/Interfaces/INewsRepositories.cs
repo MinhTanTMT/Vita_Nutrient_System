@@ -11,5 +11,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories
         Task CreateArticleAsync(ArticlesNewsDTO article);
         Task UpdateArticleAsync(ArticlesNewsDTO article);
         Task DeleteArticleAsync(int id);
+        Task AddOrUpdateEvaluationAsync(NewsEvaluationDTO evaluation);
+        Task<IEnumerable<NewsEvaluationDTO>> GetEvaluationsByArticleIdAsync(int articleId);
+        Task<IEnumerable<ArticlesNewsDTO>> GetLatestArticlesAsync(int count);
     }
 }

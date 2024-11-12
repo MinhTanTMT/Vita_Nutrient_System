@@ -29,7 +29,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password);
+            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password && u.IsActive == true);
             if (user == null)
             {
                 return null;
@@ -63,14 +63,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             _context.Users.Add(user);
             _context.SaveChanges();
-
-            //var userReturn = await _context.Users.FirstOrDefaultAsync(u => u.Account.Equals(user.Account) && u.Password.Equals(user.Password));
-            //if (userReturn == null)
-            //{
-            //    return NotFound();
-            //}
-
             return user;
+
+
         }
 
         public dynamic GetUserById(int id)
@@ -117,7 +112,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.Users.Include(u => u.RoleNavigation).Where(u => u.Role == roleId);
         }
-
+        public async Task<UserDetail> GetUserDetailByUserIdAsync(int userId)
+        {
+            return await _context.UserDetails
+                .FirstOrDefaultAsync(ud => ud.UserId == userId);
+        }
         public User? GetUserDetailsInfo(int id)
         {
             var user = _context.Users

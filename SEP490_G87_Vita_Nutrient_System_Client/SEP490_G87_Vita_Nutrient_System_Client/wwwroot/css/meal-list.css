@@ -1,0 +1,106 @@
+﻿/* Container và modal */
+.container {
+    padding: 20px;
+    background-color: #f7f7f7;
+}
+
+.modal-header h5 {
+    font-weight: bold;
+}
+
+.meal-list {
+    margin-top: 20px;
+}
+
+/* Meal item */
+.meal-item {
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.meal-info h6 {
+    margin: 0;
+    font-weight: bold;
+}
+
+.meal-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Nút thêm bữa ăn */
+.add-meal-btn {
+    font-size: 18px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Nút tạo bữa ăn */
+.btn-primary {
+    background-color: #5867dd;
+    border: none;
+    font-size: 16px;
+}
+
+    .btn-primary i {
+        margin-right: 8px;
+    }
+
+/* Meal actions: thêm, chỉnh sửa và xóa */
+.meal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+    .meal-actions .btn {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+    }
+
+        .meal-actions .btn .fa-pencil-alt {
+            color: #007bff; /* Màu xanh dương cho chỉnh sửa */
+            font-size: 18px;
+        }
+
+        .meal-actions .btn .fa-times {
+            color: red; /* Màu đỏ cho xóa */
+            font-size: 18px;
+        }
+
+        .meal-actions .btn .fa-plus {
+            color: green; /* Màu xanh cho thêm */
+            font-size: 18px;
+        }
+
+    /* Tăng kích thước và màu sắc cho biểu tượng */
+    .meal-actions .fa-pencil-alt:hover,
+    .meal-actions .fa-times:hover,
+    .meal-actions .fa-plus:hover {
+        transform: scale(1.1); /* Phóng to khi hover */
+    }
+
+    /* Hiệu ứng chuyển đổi mượt */
+    .meal-actions .fa-pencil-alt,
+    .meal-actions .fa-times,
+    .meal-actions .fa-plus {
+        transition: transform 0.2s ease-in-out;
+    }
+
+.fa-chef-hat::before {
+    content: "\f86d"; /* Biểu tượng mũ đầu bếp */
+    font-family: FontAwesome;
+}

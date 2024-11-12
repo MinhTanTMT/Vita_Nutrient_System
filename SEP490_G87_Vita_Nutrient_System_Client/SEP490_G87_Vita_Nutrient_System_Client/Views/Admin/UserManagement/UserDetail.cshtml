@@ -46,6 +46,7 @@
                     </br></br>
                     <form asp-controller="Admin" asp-action="UpdateUserStatus" method="post">
                         <input type="hidden" name="userId" value="@user.UserId" />
+                        <input type="hidden" name="returnUrl" value="@Url.Action("UserDetail", "Admin")" />
                         @if (user.IsActive is not null && user.IsActive == true)
                         {
                             <input type="hidden" name="status" value="0" />

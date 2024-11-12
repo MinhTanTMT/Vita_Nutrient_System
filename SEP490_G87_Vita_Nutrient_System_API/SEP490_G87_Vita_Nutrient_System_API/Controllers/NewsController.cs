@@ -14,8 +14,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     {
 
         private readonly INewsRepositories _newsRepositories = new NewsRepositories();
-        private readonly IMapper _mapper;
-
 
         // GET: api/news
         [HttpGet]
@@ -35,6 +33,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return NotFound();
             }
             return Ok(article);
+        }
+
+        [HttpGet("latest")]
+        public async Task<ActionResult<IEnumerable<ArticlesNewsDTO>>> GetLatestArticles()
+        {
+            var latestArticles = await _newsRepositories.GetLatestArticlesAsync(3); // Lấy 3 bài viết mới nhất
+            return Ok(latestArticles);
         }
 
         // POST: api/news
@@ -90,6 +95,33 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _newsRepositories.DeleteArticleAsync(id);
             return Ok();
         }
+
+        [HttpPost("{articleId}/evaluations")]
+        public async Task<ActionResult> AddOrUpdateEvaluation(int articleId, [FromBody] NewsEvaluationDTO evaluationDto)
+        {
+            if (evaluationDto == null || evaluationDto.ArticlesNewsId != articleId || !ModelState.IsValid)
+            {
+                return BadRequest("Dữ liệu đánh giá không hợp lệ.");
+            }
+
+            try
+            {
+                await _newsRepositories.AddOrUpdateEvaluationAsync(evaluationDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi xử lý đánh giá: {ex.Message}");
+            }
+        }
+
+
+
+        [HttpGet("{articleId}/evaluations")]
+        public async Task<ActionResult<IEnumerable<NewsEvaluationDTO>>> GetEvaluations(int articleId)
+        {
+            var evaluations = await _newsRepositories.GetEvaluationsByArticleIdAsync(articleId);
+            return Ok(evaluations);
+        }
     }
 }
-    

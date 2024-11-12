@@ -1,0 +1,643 @@
+﻿@model IEnumerable<SlotBranch>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Tailwind CSS Example</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="~/css/style3.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-4 px-8 pb-24">
+        <!-- Nút ngày chỉnh sửa  -->
+        <div class="mx-2 flex justify-end">
+            <button class="edit_date_btn text-white font-bold py-2 px-4 rounded-md border">
+                Ngày chỉnh sửa
+            </button>
+        </div>
+        <!-- Header -->
+        <div class="flex justify-start items-center mb-6 mt-2 gap-8">
+            <div class="flex border border-gray-300 rounded-lg p-1">
+                <button class="day-btn w-full py-2 px-4 text-white rounded-md" onclick="navigateToPlanUserDay()">Ngày</button>
+                <button class="w-full py-2 px-4 bg-white text-gray-700 rounded-md" onclick="navigateToPlanUserWeek()">Tuần</button>
+
+                <script>
+                    function navigateToPlanUserDay() {
+                        const myDay = '@ViewBag.myDay'; // Lấy giá trị từ ViewBag.myDay
+                        const url = `/User/PlanUser?myDay=${encodeURIComponent(myDay)}`;
+                        window.location.href = url;
+                    }
+
+                    function navigateToPlanUserWeek() {
+                        const myDay = '@ViewBag.myDay'; // Lấy giá trị từ ViewBag.myDay
+                        const url = `/User/PlanUserWeek?myDay=${encodeURIComponent(myDay)}`;
+                        window.location.href = url;
+                    }
+                </script>
+            </div>
+            <div class="flex items-center space-x-4">
+
+                <button onclick="changeDate(-1)">   
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+
+                <input type="date" id="datePicker" 
+               value="@((ViewBag.myDay != null ? ((DateTime)ViewBag.myDay).ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd")))" 
+               onchange="submitDate()" class="bg-gray-100 p-2 rounded-full">
+
+                <button onclick="changeDate(1)">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+                <script>
+                    function changeDate(offset) {
+                        let currentDate = new Date('@(ViewBag.myDay?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))');
+                        currentDate.setDate(currentDate.getDate() + offset);
+                        window.location.href = `/User/PlanUser?myDay=${currentDate.toISOString().split('T')[0]}`;
+                    }
+
+                    function submitDate() {
+                        const datePicker = document.getElementById("datePicker");
+                        const selectedDate = datePicker.value;
+                        if (selectedDate) {
+                            window.location.href = `/User/PlanUser?myDay=${selectedDate}`;
+                        }
+                    }
+                </script>
+
+
+            </div>
+            <h1 class="text-xl font-bold">Hôm nay</h1>
+        </div>
+
+
+        <!-- Main Content -->
+        @{
+            double totaAllCalories = Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Energy, 2); // Thay bằng giá trị đã tính toán
+            double caloriesEaten = Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Energy, 2); // Thay bằng giá trị đã tính toán
+            double caloriesRemaining = totaAllCalories - caloriesEaten; // Tự động tính phần còn lại
+
+            // Tính phần trăm lượng calo đã tiêu thụ so với tổng lượng calo
+            double percentEaten = (caloriesEaten / totaAllCalories) * 100;
+        }
+
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <p>Calories Eaten: @caloriesEaten / @totaAllCalories Cal</p>
+
+        <!-- CSS cho thanh tiến trình -->
+        <style>
+            .progress-container {
+                width: 100%;
+                background-color: #e0e0e0;
+                border-radius: 8px;
+                height: 24px;
+                overflow: hidden;
+            }
+
+            .progress-bar {
+                height: 100%;
+                width: 0;
+                background-color: #4CAF50;
+                border-radius: 8px;
+                transition: width 0.3s ease;
+            }
+        </style>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Lấy phần trăm calo đã tiêu thụ từ Razor
+                var percentEaten = @percentEaten;
+
+                // Lấy phần tử thanh tiến trình
+                var progressBar = document.getElementById("progress-bar");
+
+                // Cập nhật chiều rộng của thanh tiến trình
+                progressBar.style.width = percentEaten + "%";
+
+                // Cập nhật màu sắc của thanh tiến trình dựa trên phần trăm
+                if (percentEaten <= 50) {
+                    progressBar.style.backgroundColor = "#FFBB33"; // Màu vàng nhạt cho dưới 50%
+                } else if (percentEaten <= 80) {
+                    progressBar.style.backgroundColor = "#FF8800"; // Màu cam cho từ 50% đến 80%
+                } else {
+                    progressBar.style.backgroundColor = "#FF4444"; // Màu đỏ cho trên 80%
+                }
+            });
+        </script>
+
+
+        <div class="flex space-x-6 relative min-h-screen">
+            <!-- Left: Meals -->
+            <div class="flex-1 space-y-6">
+                <!-- Header Left -->
+                <div class="flex justify-between">
+                    <div class="flex gap-32">
+                        <h2 class="text-lg font-bold">Bữa Ăn</h2>
+                        <div class="flex gap-1">
+                            <img src="~/icons/chart-pie.svg"
+                                 alt="Pie chart"
+                                 width="20px" />
+                            <h6>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Energy, 2) Calo</h6>
+                        </div>
+                    </div>
+                    <div class="flex gap-8">
+                        <button onclick="event.preventDefault(); document.getElementById('refreshTheMeal').submit();">
+                            <i class="fa-sharp fa-solid fa-rotate"></i>
+                        </button>
+
+                        <form asp-controller="User" asp-action="RefreshTheMeal" method="post" id="refreshTheMeal" style="display:none;">
+                            <input type="hidden" name="myDay" value="@ViewBag.myDay.ToString("yyyy-MM-dd")" />
+                        </form>
+
+                        <button><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                </div>
+                <!-- Meal Item  bua sang-->
+                @{
+                    int index = 0;
+                }
+
+                @foreach (var item in Model)
+                {
+                    <div class="meal-item rounded-2xl shadow p-4">
+                        <div class="flex flex-row mb-2 justify-between items-center">
+                            <div>
+                                <h2 class="text-lg font-bold">@item.NameSlotOfTheDay</h2>
+                                <div class="flex gap-2">
+                                    <img src="~/icons/chart-pie.svg" alt="Pie chart" width="20px" />
+                                    <p class="text-blue-500 font-semibold">@item.TotalCaloriesPerMeal calo</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-8">
+                                <button>
+                                    <i class="fa-solid fa-backward"></i>
+                                </button>
+
+                               
+                                <script>
+                                    function toggleMenu() {
+                                        var menu = document.getElementById("popupMenu");
+                                        menu.classList.toggle("hidden");
+                                    }
+
+                                    // Đóng menu khi nhấp bên ngoài
+                                    document.addEventListener("click", function (event) {
+                                        var menu = document.getElementById("popupMenu");
+                                        var button = document.querySelector("button[onclick='toggleMenu()']");
+                                        if (!menu.contains(event.target) && !button.contains(event.target)) {
+                                            menu.classList.add("hidden");
+                                        }
+                                    });
+                                </script>
+
+                            </div>
+                        </div>
+
+                        @foreach (var item2 in item.foodDataOfSlot)
+                        {
+                            <p style="margin-bottom: 10px;"> </p>
+
+                            <div class="relative inline-block">
+                                <!-- Nút ba chấm để mở popup -->
+                                <button onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item2.SettingDetail, @item2.OrderSettingDetail, '@ViewBag.myDay')" class="focus:outline-none">
+                                    <i class="fa-solid fa-ellipsis-vertical text-gray-500 hover:text-gray-300"></i>
+                                </button>
+                            </div>
+
+                            @if (item2.foodIdData.Length == 0)
+                            {
+                                <p style="
+                                margin-bottom: 10px;
+                                color: #FF6B6B;
+                                font-weight: bold;
+                                font-size: 1.1em;
+                                text-align: center;
+                                background-color: #FFEAEA;
+                                padding: 10px;
+                                border-radius: 8px;">
+                                Không tìm được món phù hợp
+                                </p>
+                            }
+                            else
+                            {
+                                @foreach (var item3 in item2.foodIdData)
+                                {
+                                    <ul class="space-y-2 ml-4">
+                                        <li class="flex items-center space-x-2 gap-4">
+
+                                            <input onclick="toggleMenuCheckFoodEaten('@item.SlotOfTheDay', '@item2.SettingDetail', '@item3.idFood', '@item3.statusSymbol', '@ViewBag.userId', '@ViewBag.myDay' , '@item3.positionFood', '@item2.OrderSettingDetail')" type="checkbox" class="h-6 w-6"
+                                            @(item3.statusSymbol.Equals("+") ? "checked" : "")
+                                            @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
+
+                                            <div class="flex items-center gap-3" onclick="getMealDetail(@item3.idFood)">
+                                                <img src="~/images/@item3.foodData.Urlimage"
+                                                     alt="meal"
+                                                     class="rounded-lg w-18 h-16" />
+                                            </div>
+                                            <div class="flex flex-col" onclick="getMealDetail(@item3.idFood)">
+                                                <span class="text-lg font-medium"> @item3.foodData.Name </span>
+                                                <span>@Math.Round(item3.foodData.IngredientDetails100gReduceDTO.Energy, 2) Calo</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+@*                                     <form asp-controller="User" asp-action="foodDetails" asp-route-foodId="@item3.idFood" method="get" id="GetMealDetail" style="display:none;">
+                                        <button type="submit">GetMealDetail</button>
+                                    </form> *@
+
+                                    <script>
+                                        function getMealDetail(id) {
+                                            const url = `/foodDetails/${id}`;
+                                            window.location.href = url;
+                                        }
+                                    </script>
+
+                                    <p style="margin-bottom: 3px;" />
+                                }
+                            }
+                        }
+                    </div>
+                    index++;
+                }
+            </div>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script>
+
+                function toggleMenuCheckFoodEaten(slotOfTheDay, settingDetail, idFood, statusSymbol, userId, myDay, positionFood, orderNumber) {
+
+                    var data = {
+                        userId: parseInt(userId),
+                        myDay: formatDateToISOWithoutTimezone(myDay),
+                        slotOfTheDay: parseInt(slotOfTheDay),
+                        settingDetail: parseInt(settingDetail),
+                        idFood: parseInt(idFood),
+                        statusSymbol: statusSymbol,
+                        positionFood: parseInt(positionFood),
+                        orderNumber: parseInt(orderNumber)
+                    };
+
+                    console.log(data);
+
+                    $.ajax({
+                        url: "https://localhost:7045/api/GenerateMeal/APICompleteTheDish", // URL của API
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        success: function (response) {
+                            console.log("Response from server:", response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error occurred:", error);
+                        }
+                    });
+
+                    //alert(' slotOfTheDay ' + slotOfTheDay + ' settingDetail ' + settingDetail + ' idFood ' + idFood + ' statusSymbol ' + statusSymbol + ' userId ' + userId + ' myDay ' + myDay + ' positionFood ' + positionFood);
+                }
+
+
+                function formatDateToISOWithoutTimezone(dateString) {
+                    const date = new Date(dateString);
+
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+                    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+                }
+
+                function ChanceFoodTheMeal(slotOfTheDay, settingDetail, orderSettingDetail, myDaySelect) {
+                    // Xây dựng URL với các tham số
+                    const url = `/User/ChangeAnotherDish?SlotOfTheDay=${encodeURIComponent(slotOfTheDay)}&SettingDetail=${encodeURIComponent(settingDetail)}&OrderSettingDetail=${encodeURIComponent(orderSettingDetail)}&MyDaySelect=${encodeURIComponent(myDaySelect)}`;
+
+                    // Chuyển hướng trình duyệt sang URL
+                    window.location.href = url;
+                }
+
+            </script>
+
+
+            <script>
+                function toggleMenu(index) {
+                    // Đóng tất cả các popup khác trước khi mở cái mới
+                    document.querySelectorAll("[id^='popupMenu-']").forEach(function (menu) {
+                        menu.classList.add("hidden");
+                    });
+
+                    // Bật/tắt popup có ID tương ứng với nút được nhấn
+                    var menu = document.getElementById("popupMenu-" + index);
+                    if (menu) {
+                        menu.classList.toggle("hidden");
+                    }
+                }
+
+                // Đóng menu khi nhấp bên ngoài
+                document.addEventListener("click", function (event) {
+                    var isClickInside = event.target.closest("[id^='popupMenu-']") || event.target.closest("button[onclick^='toggleMenu']");
+                    if (!isClickInside) {
+                        document.querySelectorAll("[id^='popupMenu-']").forEach(function (menu) {
+                            menu.classList.add("hidden");
+                        });
+                    }
+                });
+            </script>
+
+
+
+
+            <!-- Nút ba chấm để mở popup -->
+@*             <button  class="relative focus:outline-none">
+                <i class="fa-solid fa-ellipsis-vertical text-gray-500 hover:text-gray-300"></i>
+            </button> *@
+
+            <!-- Popup menu -->
+            
+
+            <script>
+                function toggleMenu2() {
+                    var menu = document.getElementById("popupMenu2");
+                    menu.classList.toggle("hidden");
+                }
+
+                // Đóng menu khi nhấp bên ngoài
+                document.addEventListener("click", function (event) {
+                    var menu = document.getElementById("popupMenu2");
+                    var button = document.querySelector("button[onclick='toggleMenu2()']");
+                    if (!menu.contains(event.target) && !button.contains(event.target)) {
+                        menu.classList.add("hidden");
+                    }
+                });
+            </script>
+
+
+
+            <!-- Right: Nutrition Info -->
+            <div class="w-2/5 bg-white rounded-lg shadow p-4 h-full">
+                <div class="flex flex-row justify-between">
+                    <h3 class="text-lg font-bold mb-4">Dinh dưỡng</h3>
+                    <div class="flex border border-gray-300 rounded-lg p-1">
+                        <button id="day-btn"
+                                class="day-btn w-full py-2 px-4 text-white rounded-md">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </button>
+                        <button id="week-btn"
+                                class="w-full py-2 px-4 bg-white text-gray-700 rounded-md">
+                            <i class="fa-solid fa-chart-bar"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-4 flex justify-center">
+                    <!-- Pie chart placeholder -->
+                    <canvas id="myChart" style="width: 300px !important; height: 300px !important"></canvas>
+
+                </div>
+                <div class="grid grid-cols-3 gap-4 p-4">
+                    <div class="flex flex-col gap-1">
+                        <p class="font-bold disabled text-white">Lượng calo</p>
+                        <p class="font-bold">Lượng calo</p>
+                        <div class="flex items-center" style="margin-bottom: 13px;">
+                            <span class="inline-block w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>
+                            <span>Carbohydrate</span>
+                        </div>
+                        <div class="flex items-center" style="margin-bottom: 13px;">
+                            <span class="inline-block w-3 h-3 rounded-full bg-blue-500 mr-2"></span>
+                            <span>Chất béo</span>
+                        </div>
+                        <div class="flex items-center mb-5" style="margin-bottom: 13px;">
+                            <span class="inline-block w-3 h-3 rounded-full bg-purple-500 mr-2"></span>
+                            <span>Chất đạm</span>
+                        </div>
+                        <p>Chất xơ</p>
+                        <p>Natri</p>
+                        <p>Cholesterol</p>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="flex flex-col gap-1 text-right">
+                        <p class="font-bold">Tổng số Đã Ăn</p>
+                        <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Energy, 2)</p>
+                        <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Carbohydrate, 2) gam</p>
+                        <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Fat, 2) g</p>
+                        <p class=" mb-5">@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Fiber, 2) gam</p>
+                        <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Fat, 2) g</p>
+                        <p>Chưa có g</p>
+                        <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Cholesterol, 2) g</p>
+                    </div>
+
+                    <!-- Right Column (Mục tiêu) -->
+                    <div class="flex flex-col gap-1 text-right">
+                        <p class="font-bold">Mục Tiêu</p>
+                        <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Energy, 2)</p>
+                        <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Carbohydrate, 2) gam</p>
+                        <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Fat, 2) g</p>
+                        <p class=" mb-5">@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Fiber, 2) gam</p>
+                        <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Fat, 2) g</p>
+                        <p>Chưa có g</p>
+                        <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Cholesterol, 2) g</p>
+                    </div>
+                </div>
+
+                <button onclick="showModal()" class="mt-4 w-full bg-green-500 text-white py-2 rounded-2xl border border-black">
+                    Thông tin dinh dưỡng chi tiết
+                </button>
+            </div>
+            <div class="absolute bottom-24 -right-8">
+                <img src="~/images/heart-gym-remove-bg.png" />
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Button to Open the Modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#foodSelectionModal">
+        Open Food Selection
+    </button>
+
+    <!-- The Modal -->
+    <div class="modal fade" id="foodSelectionModal" tabindex="-1" aria-labelledby="foodSelectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="foodSelectionModalLabel">Food Selection</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body d-flex">
+                    <!-- Food List -->
+                    <div class="food-list w-50 pe-3 border-end">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Search...">
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex align-items-center">
+                                <img src="salmon-beet-salad.jpg" alt="Salmon Beet Salad" class="img-thumbnail me-2" style="width: 30px;">
+                                Salmon Beet Salad
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <img src="spinach-scramble.jpg" alt="Spinach Scramble" class="img-thumbnail me-2" style="width: 30px;">
+                                Simple Spinach Scramble
+                            </li>
+                            <!-- Add more items as necessary -->
+                        </ul>
+                    </div>
+
+                    <!-- Filter Options -->
+                    <div class="filter-options w-50 ps-3">
+                        <h6>Filters</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="foodExclusions">
+                            <label class="form-check-label" for="foodExclusions">Apply Food Exclusions</label>
+                        </div>
+
+                        <h6 class="mt-3">Nutrition Focus</h6>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary">High Protein</button>
+                            <button type="button" class="btn btn-outline-secondary">Low Carb</button>
+                            <button type="button" class="btn btn-outline-secondary">Low Fat</button>
+                            <!-- Add more filters as needed -->
+                        </div>
+
+                        <h6 class="mt-3">Meal Type</h6>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary">Main Dish</button>
+                            <button type="button" class="btn btn-outline-secondary">Side Dish</button>
+                            <!-- Add more options as necessary -->
+                        </div>
+
+                        <!-- Additional Filter Categories -->
+                        <!-- Add your filter categories similar to above structure -->
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Bootstrap CSS and JS if not already included -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+
+    <!-- Popup Modal -->
+    <div id="nutritionModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 ease-out">
+        <!-- Thêm lớp overflow-y-auto và max-h-screen để cho phép cuộn khi cần -->
+        <div class="bg-gray-900 text-white rounded-lg p-6 w-full max-w-lg overflow-y-auto max-h-screen transform scale-95 transition-transform duration-300 ease-out">
+            <!-- Close Button -->
+            <button class="text-white text-xl font-bold float-right" onclick="hideModal()">&times;</button>
+
+            <!-- Modal Header -->
+            <h2 class="text-2xl font-bold mb-4">Detailed Nutrition</h2>
+            <a href="#" class="text-blue-400 mb-6 inline-block">My Nutrition Targets ✏️</a>
+
+            <!-- Nutrition Info Table -->
+            <div class="grid grid-cols-3 gap-4 text-left">
+                <div><strong>Nutrient</strong></div>
+                <div><strong>Amount</strong></div>
+                <div><strong>Target</strong></div>
+
+                <div>Calories</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Energy, 2)</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Energy, 2)</div>
+
+                <div class="flex items-center">
+                    <span class="inline-block w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                    Carbs
+                </div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Carbohydrate, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Carbohydrate, 2) g</div>
+
+                <div class="flex items-center">
+                    <span class="inline-block w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+                    Fat
+                </div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Fat, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Fat, 2) g</div>
+
+                <div class="flex items-center">
+                    <span class="inline-block w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
+                    Protein
+                </div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gReduceDTO.Protein, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gReduceDTO.Protein, 2) g</div>
+
+                <!-- Add more rows as needed -->
+            </div>
+
+            <!-- Vitamins and Minerals Section -->
+            <h3 class="text-lg font-bold mt-6 mb-2">Vitamins and Minerals</h3>
+            <div class="grid grid-cols-3 gap-4 text-left">
+                <div><strong>Nutrient</strong></div>
+                <div><strong>Amount</strong></div>
+                <div><strong>Daily Value</strong></div>
+
+                <div>Calcium</div>
+                <div>505.1 mg</div>
+                <div>51%</div>
+
+
+                <div>Iron</div>
+                <div>11.9 mg</div>
+                <div>149%</div>
+
+                <!-- Add more rows as needed -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showModal() {
+            var modal = document.getElementById("nutritionModal");
+            modal.classList.remove("opacity-0", "pointer-events-none");
+            modal.classList.add("opacity-100", "pointer-events-auto");
+            var content = modal.querySelector(".transform");
+            content.classList.remove("scale-95");
+            content.classList.add("scale-100");
+        }
+
+        function hideModal() {
+            var modal = document.getElementById("nutritionModal");
+            modal.classList.add("opacity-0", "pointer-events-none");
+            modal.classList.remove("opacity-100", "pointer-events-auto");
+            var content = modal.querySelector(".transform");
+            content.classList.add("scale-95");
+            content.classList.remove("scale-100");
+        }
+
+        // Đóng modal khi click bên ngoài nội dung
+        document.addEventListener("click", function (event) {
+            var modal = document.getElementById("nutritionModal");
+            if (event.target === modal) {
+                hideModal();
+            }
+        });
+    </script>
+
+
+
+
+
+</body>
+<script src="~/js/mainPlanUser.js"></script>
+</html>

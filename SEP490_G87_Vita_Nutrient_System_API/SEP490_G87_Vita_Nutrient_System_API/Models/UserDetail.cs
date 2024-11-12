@@ -27,5 +27,9 @@ public partial class UserDetail
 
     public bool? IsPremium { get; set; }
 
+    public double? ActivityLevel { get; set; }
+
+    public int? Calo { get; set; }
+
     public virtual User User { get; set; } = null!;
 }

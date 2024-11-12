@@ -1,0 +1,140 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<KeyNote> keyNotes = ViewBag.keyNotes;
+    List<TypeOfCalculation> typesOfCalculation = ViewBag.typesOfCalculation;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+<link rel="stylesheet" href="~/css/editingredient.css" />
+<link rel="stylesheet" href="~/css/toast.css" />
+
+@model IngredientDetails100g
+
+<div class="row" style="width: 100%;">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
+                <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+                <form asp-action="doupdateingredient" asp-controller="admin" method="post">
+                    <h4 class="card-title" style="font-size: 1.5rem;">Edit ingredient</h4>
+                    <input type="hidden" asp-for="Id" value="@Model.Id" />
+                    <input type="hidden" asp-for="Urlimage" value="@Model.Urlimage" />
+                    <div class="row">
+                        <div class="col-3 ingre-img">
+                            @if (Model.Urlimage == null || Model.Urlimage.Length == 0)
+                            {
+                                <img src="~/images/foods/default_food.png" alt="default" style="border-radius: 5px; width: 100%;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/@Model.Urlimage" alt="@Model.Name"
+                                     onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="border-radius: 5px; width: 100%;" />
+                            }
+                        </div>
+
+                        <div class="col-9 basic-info">
+                            <div class="form-group row">
+                                <label for="inputIngreName" class="col-sm-2 col-form-label">Name</label>
+                                <div class="col-sm-10">
+                                    <input asp-for="Name" type="text" class="form-control" id="inputIngreName" placeholder="Ingredient Name" value="@Model.Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputIngreDesc" class="col-sm-2 col-form-label">Description</label>
+                                <div class="col-sm-10">
+                                    <input asp-for="Describe" type="text" class="form-control" id="inputIngreDesc" placeholder="Description" value="@Model.Describe">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputIngreKeyNote" class="col-sm-2 col-form-label">Key note</label>
+                                <div class="col-sm-10">
+                                    <select asp-for="KeyNoteId" class="form-select ms-auto" name="keynoteId" id="inputIngreKeyNote">
+                                        @foreach (KeyNote keyNote in keyNotes)
+                                        {
+                                            if (Model.KeyNoteId == keyNote.Id)
+                                            {
+                                                <option value="@keyNote.Id" selected>@keyNote.KeyList</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@keyNote.Id">@keyNote.KeyList</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputIngreTypeOfCalc" class="col-sm-2 col-form-label">Type of calculation</label>
+
+                                <div class="col-sm-10">
+                                    <select asp-for="TypeOfCalculationId" class="form-select ms-auto" name="typeOfCalculationId" id="inputIngreTypeOfCalc">
+                                        @foreach (TypeOfCalculation t in typesOfCalculation)
+                                        {
+                                            if (Model.TypeOfCalculationId == t.TypeId)
+                                            {
+                                                <option value="@t.TypeId" selected>@t.CalculationForm</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@t.TypeId">@t.CalculationForm</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hr">
+                        <div class="hr-content">Detail nutrition</div>
+                    </div>
+
+                    <div class="detail-nutrition">
+                        @{
+                            var properties = typeof(SEP490_G87_Vita_Nutrient_System_Client.Models.IngredientDetails100g)
+                            .GetProperties()
+                            .SkipWhile(p => p.Name != "Energy");
+
+                                @foreach (var x in properties)
+                            {
+                                string propertyName = x.Name;
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">@propertyName</label>
+                                        <div class="col-sm-10">
+                                            @{
+                                                var value = x.GetValue(Model);
+                                                var formattedValue = value != null
+                                                ? (value is double || value is float
+                                                ? ((double)value).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
+                                                : Convert.ToInt32(value).ToString())
+                                                : "0";
+                                            }
+
+                                            <input id="@propertyName" name="@propertyName" type="number" step="0.01" class="form-control"
+                                               value="@formattedValue"
+                                               min="0" max="9999" required>
+                                        </div>
+                                    </div>
+                            }
+                        }
+                    </div>
+
+                    <div class="d-flex" style="font-size: 20px;">
+                        <button type="submit" class="ms-auto" style="padding: 0px 5px; color: white; background: green;">
+                            <i class="mdi mdi-content-save"></i> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="toast"></div>
+
+<script src="~/js/toast.js"></script>

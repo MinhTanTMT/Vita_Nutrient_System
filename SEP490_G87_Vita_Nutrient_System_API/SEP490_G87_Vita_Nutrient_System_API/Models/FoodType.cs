@@ -13,5 +13,5 @@ public partial class FoodType
 
     public virtual ICollection<FoodList> FoodLists { get; set; } = new List<FoodList>();
 
-    public virtual ICollection<NutritionTargetsDaily> NutritionTargetsDailies { get; set; } = new List<NutritionTargetsDaily>();
+    public virtual ICollection<DietType> DietTypes { get; set; } = new List<DietType>();
 }

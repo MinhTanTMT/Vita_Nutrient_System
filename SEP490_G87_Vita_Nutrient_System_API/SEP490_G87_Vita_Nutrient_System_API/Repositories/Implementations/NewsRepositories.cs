@@ -30,7 +30,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Content = article.Content,
                     IsActive = article.IsActive,
                     DateCreated = article.DateCreated,
-                    HeaderImage = article.HeaderImage
+                    HeaderImage = article.HeaderImage,
+                    Rate = article.Rate,
+                    NumberRate = article.NumberRate
                 })
                 .ToListAsync();
         }
@@ -51,10 +53,33 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 Content = article.Content,
                 IsActive = article.IsActive,
                 DateCreated = article.DateCreated,
-                HeaderImage = article.HeaderImage
+                HeaderImage = article.HeaderImage,
+                Rate = article.Rate,
+                NumberRate = article.NumberRate
             };
         }
 
+        public async Task<IEnumerable<ArticlesNewsDTO>> GetLatestArticlesAsync(int count)
+        {
+            return await _context.ArticlesNews
+                .Where(article => article.IsActive == true)
+                .OrderByDescending(article => article.DateCreated)
+                .Take(count)
+                .Select(article => new ArticlesNewsDTO
+                {
+                    Id = article.Id,
+                    UserId = article.UserId,
+                    NameCreater = article.NameCreater,
+                    Title = article.Title,
+                    Content = article.Content,
+                    IsActive = article.IsActive,
+                    DateCreated = article.DateCreated,
+                    HeaderImage = article.HeaderImage,
+                    Rate = article.Rate,
+                    NumberRate = article.NumberRate
+                })
+                .ToListAsync();
+        }
         public async Task CreateArticleAsync(ArticlesNewsDTO articleDto)
         {
             try
@@ -100,11 +125,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             article.Content = articleDto.Content;
             article.IsActive = articleDto.IsActive;
             article.DateCreated = articleDto.DateCreated;
-            article.HeaderImage = articleDto.HeaderImage;
-
+            // Chỉ cập nhật HeaderImage nếu có đường dẫn mới
+            if (!string.IsNullOrEmpty(articleDto.HeaderImage))
+            {
+                article.HeaderImage = articleDto.HeaderImage;
+            }
             await _context.SaveChangesAsync();
         }
-
 
         public async Task DeleteArticleAsync(int id)
         {
@@ -115,6 +142,52 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task AddOrUpdateEvaluationAsync(NewsEvaluationDTO evaluationDto)
+        {
+            var existingEvaluation = await _context.NewsEvaluations
+                .FirstOrDefaultAsync(e => e.ArticlesNewsId == evaluationDto.ArticlesNewsId && e.UserId == evaluationDto.UserId);
 
+            var article = await _context.ArticlesNews.FirstOrDefaultAsync(a => a.Id == evaluationDto.ArticlesNewsId);
+
+            if (existingEvaluation != null)
+            {
+                // Nếu đã có đánh giá, cập nhật điểm đánh giá và điều chỉnh lại điểm trung bình
+                double totalRating = (double)((article.Rate * article.NumberRate) - existingEvaluation.Ratting + evaluationDto.Ratting);
+                existingEvaluation.Ratting = evaluationDto.Ratting;
+                article.Rate = totalRating / article.NumberRate;
+            }
+            else
+            {
+                // Thêm đánh giá mới và cập nhật số lượng cùng điểm trung bình
+                var evaluation = new NewsEvaluation
+                {
+                    ArticlesNewsId = evaluationDto.ArticlesNewsId,
+                    UserId = evaluationDto.UserId,
+                    Ratting = evaluationDto.Ratting
+                };
+
+                await _context.NewsEvaluations.AddAsync(evaluation);
+
+                article.NumberRate = (article.NumberRate ?? 0) + 1;
+                article.Rate = ((article.Rate ?? 0) * (article.NumberRate - 1) + evaluationDto.Ratting) / article.NumberRate;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task<IEnumerable<NewsEvaluationDTO>> GetEvaluationsByArticleIdAsync(int articleId)
+        {
+            return await _context.NewsEvaluations
+                .Where(e => e.ArticlesNewsId == articleId)
+                .Select(e => new NewsEvaluationDTO
+                {
+                    Id = e.Id,
+                    ArticlesNewsId = e.ArticlesNewsId,
+                    UserId = e.UserId,
+                    Ratting = e.Ratting
+                })
+                .ToListAsync();
+        }
     }
 }

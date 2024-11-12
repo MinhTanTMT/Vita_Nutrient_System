@@ -43,6 +43,8 @@ public partial class User
 
     public virtual ICollection<Msg> Msgs { get; set; } = new List<Msg>();
 
+    public virtual ICollection<NewsEvaluation> NewsEvaluations { get; set; } = new List<NewsEvaluation>();
+
     public virtual ICollection<NutritionRoute> NutritionRouteCreateBies { get; set; } = new List<NutritionRoute>();
 
     public virtual ICollection<NutritionRoute> NutritionRouteUsers { get; set; } = new List<NutritionRoute>();

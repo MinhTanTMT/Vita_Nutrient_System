@@ -11,6 +11,10 @@ using System.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using System.Collections.Generic;
+using System;
+using Castle.Core.Configuration;
+using Humanizer;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
@@ -31,120 +35,231 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-        [HttpGet("APGenerateMealController")]
-        public async Task<IActionResult> APIGenerateMealController()
+
+        [HttpGet("APCheckGenerateMealController")]
+        public async Task<IActionResult> APCheckGenerateMealController()
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+
+            FoodListDTO item1 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
+            FoodListDTO item2 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
+            FoodListDTO item3 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3));
+            List<FoodListDTO> FoodListDTO = new List<FoodListDTO>();
+            FoodListDTO.Add(item1);
+            FoodListDTO.Add(item2);
+            FoodListDTO.Add(item3);
+            return Ok(await generateMealRepositories.CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(FoodListDTO), 1));
+        }
+
+
+        [HttpGet("APIGenerateMealController")]
+        public async Task<IActionResult> APIGenerateMealController(int MealSettingsDetailsId)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+
+            List<int> ints = new List<int>()
+            {
+                3,1, 5
+            };
+            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
+        }
+
+
+        [HttpGet("APIChangeTheDishToSuitTheTarget")]
+        public async Task<IActionResult> APIChangeTheDishToSuitTheTarget(int[] idFoodOfListAlreadyExists, int MealSettingsDetailsId)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            List<int> ints = new List<int>()
+            {
+                4,4, 3
+            };
+            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
+        }
+
+
+        [HttpGet("APIRun")]
+        public async Task<IActionResult> APIRun()
         {
 
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            //return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(1));
-
 
             //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            //return Ok(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(1)));
-
-            //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            //return Ok(await generateMealRepositories.CheckForUserMealSettingsDetails(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(1)), 1));
-
-            //MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(1);
-            //NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
-
-            //List<int> idFoodListSystem = await _context.FoodLists.Include(x => x.FoodSelections).Include(x => x.FoodAndDiseases).Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant && x.FoodSelections.FirstOrDefault(y => y.UserId == 1 && y.FoodListId == 1).IsBlock == true).Select(x => x.FoodListId).ToListAsync();
-            //List<int> idFoodListSystem = _context.FoodLists.Include(x => x.FoodSelections).Where(x => x.FoodTypeId == nutritionTargetsDaily.FoodTypeIdWant && x.FoodSelections.FirstOrDefault(y => y.UserId == 1 && y.FoodListId == 1).IsBlock == false && x.FoodAndDiseases.FirstOrDefault(x => x.ListOfDiseasesId == 1 && x.FoodListId == 1).IsGoodOrBad == true).Select(x => x.FoodListId).ToList();
+            //return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
 
 
-
-            //var mealSettingsDetail = _context.MealSettingsDetails.Include(x => x.MealSettings).FirstOrDefaultAsync(x => x.Id == 1).Select(x => new
-            //{
-            //    x.MealSettingsId,
-            //    x.MealSettings.UserId,
-            //    x.Id
-            //});
-
-            var mealSettingsDetail = _context.MealSettingsDetails.Include(x => x.MealSettings).FirstOrDefaultAsync(x => x.Id == 1);
+            List<DietWithFoodType> courseList = _context.DietTypes
+            .SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
+            {
+                DietTypeId = a.DietTypeId,
+                FoodTypeId = b.FoodTypeId
+            })
+            .ToList();
 
 
-            //return Ok(await generateMealRepositories.FilterTheTypeDiseaseBlockList(nutritionTargetsDaily));
 
-            return Ok(mealSettingsDetail);
-
+            return Ok(courseList);
         }
 
 
 
-
-        ///// <summary>
-        ///// test Check Split
-        ///// </summary>
-        ///// <returns></returns>
-        //        [HttpGet("APGenerateMealController")]
-        //public async Task<IActionResult> APIGenerateMealController()
-        //{
-
-        //    GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-
-        //    MealSettingsDetailDTO mealSettingsDetail = new MealSettingsDetailDTO()
-        //    {
-        //        Size = "Bữa lớn",
-        //        WantCookingId = 1,
-        //        TypeFavoriteFood = "2"
-        //    };
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
 
 
+        [HttpGet("APIListMealOfTheDay")]
+        public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APIListMealOfTheDay(DateTime myDay, int idUser)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            await generateMealRepositories.CreateMealSetting(idUser);
+
+            IEnumerable<DataFoodListMealOfTheDay> dataFoodListMealOfTheDays;
+
+            dataFoodListMealOfTheDays = await generateMealRepositories.ListMealOfTheDay(myDay, idUser);
+
+            if (dataFoodListMealOfTheDays.Count() > 0)
+            {
+                return Ok(dataFoodListMealOfTheDays);
+            }
+            else if (myDay.DayOfYear < DateTime.Now.DayOfYear)
+            {
+                return Ok(dataFoodListMealOfTheDays);
+            }
+            else
+            {
+                if (await generateMealRepositories.FillInDishIdInDailyDish(idUser, myDay))
+                {
+                    dataFoodListMealOfTheDays = await generateMealRepositories.ListMealOfTheDay(myDay, idUser);
+                    if (dataFoodListMealOfTheDays.Count() > 0)
+                    {
+                        return Ok(dataFoodListMealOfTheDays);
+                    }
+                    else
+                    {
+                        return Ok(dataFoodListMealOfTheDays);
+                    }
+                }
+                else
+                {
+                    return Ok(dataFoodListMealOfTheDays);
+                }
+            }
+        }
 
 
-        //    string[] result = await generateMealRepositories.SplitAndProcessFirst("#WantCooking=1#SlotOfTheDay:1;2;#Size=Bữa lớn");
-
-        //    string checkKQ = "Null";
-
-        //    foreach (var item in result)
-        //    {
-
-        //        if (item.Contains("="))
-        //        {
-        //            Dictionary<string, string> dataProcess1 = await generateMealRepositories.SplitAndProcess1(item);
-
-        //            if (generateMealRepositories.IsNumeric(dataProcess1.Values.FirstOrDefault().ToString()))
-        //            {
-        //                if (dataProcess1.Keys.FirstOrDefault().Equals("WantCooking"))
-        //                {
-        //                    if (dataProcess1.Values.FirstOrDefault().Equals(mealSettingsDetail.WantCookingId.ToString()))
-        //                    {
-        //                        checkKQ += "OK2" + mealSettingsDetail.WantCookingId;
-
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            {
-        //                if (dataProcess1.Keys.FirstOrDefault().Equals("Size"))
-        //                {
-
-        //                    //return Ok(dataProcess1.Keys.FirstOrDefault().Equals("Size"));
+        [HttpGet("APIListMealOfTheWeek")]
+        public async Task<ActionResult<IEnumerable<DataFoodAllDayOfWeek>>> APIListMealOfTheWeek(DateTime myDay, int idUser)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            await generateMealRepositories.CreateMealSetting(idUser);
+            IEnumerable<DataFoodAllDayOfWeek> dataFoodAllDayOfWeek = await generateMealRepositories.ListMealOfTheWeek(myDay, idUser);
+            return Ok(dataFoodAllDayOfWeek);
+        }
 
 
-        //                    if (dataProcess1.Values.FirstOrDefault().Equals(mealSettingsDetail.Size))
-        //                    {
-        //                        checkKQ += "OK1" + mealSettingsDetail.Size;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        if (item.Contains(":"))
-        //        {
-        //            Dictionary<string, int[]> dataProcess2 = await generateMealRepositories.SplitAndProcess2(item);
-        //            if (dataProcess2.Keys.FirstOrDefault().Equals("SlotOfTheDay"))
-        //            {
-        //                if (dataProcess2.Values.FirstOrDefault().Contains(Int32.Parse(mealSettingsDetail.TypeFavoriteFood)))
-        //                {
-        //                    checkKQ += "OK3" + mealSettingsDetail.TypeFavoriteFood;
-        //                };
-        //            }
-        //        }
-        //    }
 
-        //    return Ok(checkKQ);
+        [HttpGet("APIRefreshTheMeal")]
+        public async Task<IActionResult> APIRefreshTheMealy(DateTime myDay, int idUser)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
-        //}
+            if (myDay.DayOfYear >= DateTime.Now.DayOfYear)
+            {
+                return Ok(await generateMealRepositories.FillInDishIdInDailyDish(idUser, myDay));
+            }
+            else
+            {
+                return Ok(false);
+            }   
+        }
+
+
+        [HttpPost("APICompleteTheDish")]
+        public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APICompleteTheDish([FromBody] FoodStatusUpdateModel model)
+        {
+            
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            if (model.MyDay.DayOfYear == DateTime.Now.DayOfYear)
+            {
+                if (model.StatusSymbol.Equals("-"))
+                {
+                    return Ok(await generateMealRepositories.CompleteTheDish(model, "+", null, null));
+                }
+                else if (model.StatusSymbol.Equals("+"))
+                {
+                    return Ok(await generateMealRepositories.CompleteTheDish(model, "-", null, null));
+                }
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }  
+        }
+
+
+        [HttpPost("APICreateListOfAlternativeDishes")]
+        public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APICreateListOfAlternativeDishes([FromBody] AlternativeDishesRequest request)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            return Ok(await generateMealRepositories.CreateListOfAlternativeDishes(request.ListIdFood, request.MealSettingsDetailsId, request.NumberOfCreation));
+        }
+
+
+
+        [HttpPost("APIgetThisListOfDishes")]
+        public async Task<IActionResult> APIgetThisListOfDishes(
+        [FromBody] DataFoodListMealOfTheDay dataFoodListMealOfTheDay,
+        [FromQuery] int userId,
+        [FromQuery] DateTime myDay)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            return Ok(await generateMealRepositories.GetThisListOfDishesInputMealDay(dataFoodListMealOfTheDay, userId, myDay));
+        }
+
+
+
+        [HttpPost("APISelectReplaceCurrentFood")]
+        public async Task<IActionResult> APISelectReplaceCurrentFood(
+        [FromBody] FoodStatusUpdateModel model,
+        [FromQuery] int idFoodSelect)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            return Ok(await generateMealRepositories.CompleteTheDish(model, null, idFoodSelect, null));
+        }
+
+
+        [HttpGet("APIFirstMealSetting")]
+        public async Task<IActionResult> APIFirstMealSetting(int idUser)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            return Ok(await generateMealRepositories.CreateMealSetting(idUser));
+        }
+
 
     }
+
+    public class AlternativeDishesRequest
+    {
+        public List<int>? ListIdFood { get; set; }
+        public int MealSettingsDetailsId { get; set; }
+        public int NumberOfCreation { get; set; }
+    }
+
 }

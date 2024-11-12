@@ -82,7 +82,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
             else
             {
-                return BadRequest("Error");
+                List<TransactionsSystem> transactionsSystemsNull = new List<TransactionsSystem>();
+                return Ok(transactionsSystemsNull);
             }
         }
         

@@ -2,6 +2,7 @@
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
 {
@@ -116,6 +117,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
 
             //From ExpertPackage to ExpertPackageResponse
             CreateMap<ExpertPackage, ExpertPackageResponse>();
+
+            //From Food to FoodResponse
+            CreateMap<FoodList, FoodResponse>()
+            .ForMember(dest => dest.FoodListId, opt => opt.MapFrom(src => src.FoodListId))
+            .ForMember(dest => dest.FoodType, opt => opt.MapFrom(src => src.FoodType));
+            CreateMap<FoodType, FoodTypeResponse>();
+
+            //from IngredientDetails100g to IngredientResponse
+            CreateMap<IngredientDetails100g, IngredientResponse>();
+
+            //from AddIngredientRequest to IngredientDetails100g 
+            CreateMap<AddIngredientRequest, IngredientDetails100g>();
+
+            //from UpdateIngredientRequest to IngredientDetails100g 
+            CreateMap<UpdateIngredientRequest, IngredientDetails100g>();
+
+            //from KeyNote to KeyNoteResponse
+            CreateMap<KeyNote, KeyNoteResponse>();
+
+            //from TypeOfCalculation to TypeOfCalculationResponse
+            CreateMap<TypeOfCalculation, TypeOfCalculationResponse>();
         }
     }
 }

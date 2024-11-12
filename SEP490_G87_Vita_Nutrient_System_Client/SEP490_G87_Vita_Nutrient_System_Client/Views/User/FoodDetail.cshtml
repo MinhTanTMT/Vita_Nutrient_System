@@ -1,0 +1,225 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    FoodList food = ViewBag.food;
+    List<FoodRecipe> recipes = ViewBag.recipes;
+    string foodSlots = ViewBag.foodSlots;
+    List<dynamic> ingredients = ViewBag.ingredients;
+}
+
+<link rel="stylesheet" href="~/css/fooddetails.css">
+<link rel="stylesheet" href="~/css/ratingCircle.css">
+
+<style>
+    .rating-display{
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    /* Styles for the stars rating */
+    .stars {
+        display: flex;
+    }
+
+    .star {
+        font-size: 24px;
+        line-height: 25px;
+        padding-bottom: 5px;
+        color: #ddd; /* Default (dimmed) color for stars */
+    }
+
+        .star.filled {
+            color: gold; /* Color for filled stars */
+        }
+</style>
+
+<div class="row" style="width: 100%;">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div style="background:#f9fbfd;">
+                    <div class="card-title" style="padding: 16px 0 0 16px;">
+                        @food.Name
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            @if (food.Urlimage == null || food.Urlimage.Length == 0)
+                            {
+                                <img src="~/images/foods/default_food.png" alt="default" style="border-radius: 5px; width: 100%;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/@food.Urlimage" alt="@food.Name"
+                                     onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="border-radius: 5px; width: 100%;" />
+                            }
+
+                            <div class="rating-display" style="padding-bottom: 16px;">
+                                <!-- Circle Rating -->
+                                <div class="rating">@food.Rate</div>
+
+                                <!-- Stars Rating -->
+                                <div class="">
+                                    <div class="stars" id="starsContainer"></div>
+
+                                    <div style="font-size: small; color: gray;">
+                                        (Đánh giá @(Math.Floor((double)food.Rate) / 10)/10 từ @food.NumberRate thành viên)
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="food-info col-6">
+                            <div>
+                                <label>Mô tả: </label>
+                                <p>@food.Describe</p>
+                            </div>
+
+                            <div>
+                                <label>Loại: </label>
+                                <p>@food.FoodType.Name</p>
+                            </div>
+
+                            <div>
+                                <label>Thời gian chuẩn bị: </label>
+                                <p>@food.PreparationTime (mins)</p>
+                            </div>
+
+                            <div>
+                                <label>Thời gian nấu: </label>
+                                <p>@food.CookingTime (mins)</p>
+                            </div>
+
+                            <div>
+                                <label>Độ khó: </label>
+                                <p>@Enum.GetName(typeof(SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums.CookingDifficultyLevel), food.CookingDifficultyId)</p>
+                            </div>
+
+                            <div style="padding-top: 10px; font-size:x-large;">
+                                <i class="mdi mdi-calendar-check"></i>
+                                Planned for @foodSlots
+                            </div>
+
+                            <div style="padding-left: 12px;">
+                                <div style="font-size: large; font-weight: 500; padding: 10px 0 5px 0;">
+                                    <i class="mdi mdi-chevron-right"></i>
+                                    Nguyên liệu chuẩn bị
+                                </div>
+
+                                <div>
+                                    @if (ingredients is null || ingredients.Count == 0)
+                                    {
+                                        <p>Chưa cập nhật danh sách nguyên liệu cho món ăn này. Xin thông cảm :( !!</p>
+                                    }
+                                    else
+                                    {
+                                        foreach (var x in ingredients)
+                                        {
+                                            <div class="d-flex" style="padding: 3px 0px 3px 25px;">
+                                                <p id="ingre-@x.id" style="display: none;">@x.id</p>
+                                                <div class="ingre-img" style="margin-right: 15px;">
+                                                    @if (x.urlimage == null ||  ((string) x.urlimage).Length == 0)
+                                                    {
+                                                        <img src="~/images/foods/default_food.png" alt="default" style="width: 60px; height: auto; border-radius: 5px;" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/images/@x.urlimage" alt="@x.name"
+                                                             onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 60px; height: auto; border-radius: 5px;" />
+                                                    }
+                                                </div>
+                                                <div class="ingre-name" style="min-width: 80px;">
+                                                    @x.name
+                                                </div>
+                                                <div style="margin: 0 15px;">-</div>
+                                                <div class="ingre-amount">
+                                                    @x.amount
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                </br></br>
+
+                <div class="hr">
+                    <div class="hr-content">Các bước nấu</div>
+                </div>
+
+                <div class="card-body">
+                    <div class="food-recipes">
+
+                        @for(int i = 0; i < recipes.Count; i++)
+                        {
+                            FoodRecipe r = recipes[i];
+                            @if(i == recipes.Count - 1 && i != 0)
+                            {
+                                <div class="font-weight-bold p-5 text-decoration-underline">
+                                    Bước cuối
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="font-weight-bold p-5 text-decoration-underline">
+                                    Bước @(i + 1)
+                                </div>
+                            }
+                            
+                            <div class="step-content row">
+                                <div class="col-4 step-img">
+                                    @if (r.Urlimage == null || r.Urlimage.Length == 0)
+                                    {
+                                        <img src="~/images/foods/default_food.png" alt="default" style="width: 200px; height: auto; border-radius: 5px;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/@r.Urlimage" alt="step @(i+1)"
+                                             onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 200px; height: auto; border-radius: 5px;" />
+                                    }
+                                </div>
+
+                                <div class="col-8 step-describe">
+                                    @r.Describe
+                                </div>
+                            </div>
+                        }
+
+                        <div style="font-size: 20px; font-weight: bold; text-align: center; margin-top: 50px; padding: 2px 0;">
+                            DONE! Enjoy your meal!
+                        </div>
+                        <div style="text-align: center; padding: 5px 0; font-size: 20px;"><i class="mdi mdi-heart"></i></div>
+                        <div style="width: 95%; height: 1px; background: #ccc; margin: 0px 10px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function displayRating(x) {
+        // Display stars based on the rating
+        const starsContainer = document.getElementById("starsContainer");
+        starsContainer.innerHTML = ""; // Clear previous stars
+
+        const fullStars = Math.floor(x / 10); // Determine the number of filled stars
+        for (let i = 1; i <= 10; i++) {
+            const star = document.createElement("span");
+            star.classList.add("star");
+            star.textContent = "★";
+            if (i <= fullStars) star.classList.add("filled"); // Make star filled if within rating
+            starsContainer.appendChild(star);
+        }
+    }
+
+    // Set the rating value here
+    displayRating(@food.Rate); // Example rating of 75
+</script>
+<script src="~/js/ratingCircle.js"></script>

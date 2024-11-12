@@ -1,0 +1,167 @@
+﻿<link rel="stylesheet" href="/css/EditNutritionTargetsDaily.css" />
+@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionTargetOfMeal
+
+<div class="container">
+    <h2>Mục tiêu dinh dưỡng</h2>
+
+    <form asp-action="EditNutritionTargetsDaily" method="post">
+        <input asp-for="ExerciseIntensityId" type="hidden" />
+        <input asp-for="NutritionTargetsDailyId" type="hidden" />
+        <!-- Title -->
+        <div class="form-group">
+            <label asp-for="Title">Title</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <!-- Calories -->
+        <div class="form-group calories-comparison">
+            <label>Calories</label>
+            <div class="calories-display">
+                <!-- Ô nhập cho Calo của MealSettingsDetail -->
+                <input asp-for="Calories" class="form-control d-inline-block calories-input" style="width: 80px;" />
+
+                <!-- Biểu tượng cảnh báo nếu có sự chênh lệch giữa Model.Calories và ViewBag.Calories -->
+                @if (Model.Calories != ViewBag.Calories)
+                {
+                    <span class="warning-icon" title="Calories không khớp!">⚠️</span>
+                }
+
+                <!-- Calo của NutritionTargetsDaily hiển thị dưới dạng văn bản -->
+                <span class="calories-value">/ @ViewBag.Calories</span>
+            </div>
+            <span class="text-danger"></span>
+        </div>
+
+
+        <!-- Target Macros -->
+        <h4>Mục tiêu Macro</h4>
+        <div class="form-group">
+            <label>Tính toán macro</label>
+        </div>
+
+        <!-- Carbs -->
+        <div class="form-group">
+            <label>
+                <span style="color: #f1c40f; font-size: 16px;">•</span> Carbs (g)
+            </label>
+            <div class="carbs-values">
+                <input asp-for="CarbsMin" class="carbs-input" type="number" readonly value="0" />
+                <span class="to-text">to</span>
+                <input asp-for="CarbsMax" class="carbs-input" type="number" readonly id="carbsMaxInput" />
+            </div>
+            <input type="range" min="0" max="@ViewBag.CarbsMax" value="@Model.CarbsMax" class="slider" id="carbsSlider" />
+        </div>
+
+        <!-- Fats -->
+        <div class="form-group">
+            <label>
+                <span style="color: #00b3b3; font-size: 16px;">•</span> Fats (g)
+            </label>
+            <div class="fats-values">
+                <input asp-for="FatsMin" class="fats-input" type="number" readonly value="0" />
+                <span class="to-text">to</span>
+                <input asp-for="FatsMax" class="fats-input" type="number" readonly id="fatsMaxInput" />
+            </div>
+            <input type="range" min="0" max="@ViewBag.FatsMax" value="@Model.FatsMax" class="slider" id="fatsSlider" />
+        </div>
+
+        <!-- Protein -->
+        <div class="form-group">
+            <label>
+                <span style="color: #800080; font-size: 16px;">•</span> Protein (g)
+            </label>
+            <div class="protein-values">
+                <input asp-for="ProteinMin" class="protein-input" type="number" readonly value="0" />
+                <span class="to-text">to</span>
+                <input asp-for="ProteinMax" class="protein-input" type="number" readonly id="proteinMaxInput" />
+            </div>
+            <input type="range" min="0" max="@ViewBag.ProteinMax" value="@Model.ProteinMax" class="slider" id="proteinSlider" />
+        </div>
+
+        <!-- Micronutrients -->
+        <h4>Vi chất dinh dưỡng</h4>
+
+        <!-- Minimum Fiber -->
+        <div class="form-group">
+            <label asp-for="MinimumFiber">Chất xơ tối thiểu (g)</label>
+            <input asp-for="MinimumFiber" type="number" class="form-control" />
+            <span asp-validation-for="MinimumFiber" class="text-danger"></span>
+        </div>
+        <!-- Limit Daily Sodium -->
+        <div class="checkbox-group">
+            <label for="limitDailySodium">Hạn chế lượng natri hàng ngày</label>
+            <div class="toggle-switch">
+                <input type="checkbox" id="limitDailySodium" name="LimitDailySodium" class="toggle-input"
+                       value="true" @(Model.LimitDailySodium ? "checked" : "") />
+                <label for="limitDailySodium" class="toggle-label"></label>
+            </div>
+        </div>
+
+        <!-- Limit Daily Cholesterol -->
+        <div class="checkbox-group">
+            <label for="limitDailyCholesterol">Hạn chế Cholesterol hàng ngày</label>
+            <div class="toggle-switch">
+                <input type="checkbox" id="limitDailyCholesterol" name="LimitDailyCholesterol" class="toggle-input"
+                       value="true" @(Model.LimitDailyCholesterol ? "checked" : "") />
+                <label for="limitDailyCholesterol" class="toggle-label"></label>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="DietTypeIdWant">Chế độ ăn uống chính</label>
+            <select asp-for="FoodTypeIdWant" class="form-control" asp-items="@(new SelectList(ViewBag.DietTypes, "DietTypeId", "Name", Model.FoodTypeIdWant))">
+            </select>
+        </div>
+        <!-- Save Button -->
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a href="@Url.Action("MealSettingsDetailToList", "Meal")" class="btn btn-secondary">Hủy</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Carbs slider
+    const carbsSlider = document.getElementById('carbsSlider');
+    const carbsMaxInput = document.getElementById('carbsMaxInput');
+
+    carbsSlider.addEventListener('input', function () {
+        carbsMaxInput.value = this.value;
+        const percent = (this.value / @ViewBag.CarbsMax) * 100;
+        carbsSlider.style.background = `linear-gradient(to right, #f1c40f 0%, #f1c40f ${percent}%, #d3d3d3 ${percent}%)`;
+    });
+
+    // Fats slider
+    const fatsSlider = document.getElementById('fatsSlider');
+    const fatsMaxInput = document.getElementById('fatsMaxInput');
+
+    fatsSlider.addEventListener('input', function () {
+        fatsMaxInput.value = this.value;
+        const percent = (this.value / @ViewBag.FatsMax) * 100;
+        fatsSlider.style.background = `linear-gradient(to right, #00b3b3 0%, #00b3b3 ${percent}%, #d3d3d3 ${percent}%)`;
+    });
+
+    // Protein slider
+    const proteinSlider = document.getElementById('proteinSlider');
+    const proteinMaxInput = document.getElementById('proteinMaxInput');
+
+    proteinSlider.addEventListener('input', function () {
+        proteinMaxInput.value = this.value;
+        const percent = (this.value / @ViewBag.ProteinMax) * 100;
+        proteinSlider.style.background = `linear-gradient(to right, #800080 0%, #800080 ${percent}%, #d3d3d3 ${percent}%)`;
+    });
+
+    // Khởi tạo màu nền cho các thanh trượt dựa trên giá trị hiện tại của Model
+    function initializeSliderBackground(slider, max, color) {
+        const percent = (slider.value / max) * 100;
+        slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${percent}%, #d3d3d3 ${percent}%)`;
+    }
+
+    initializeSliderBackground(carbsSlider, @ViewBag.CarbsMax, '#f1c40f');
+    initializeSliderBackground(fatsSlider, @ViewBag.FatsMax, '#00b3b3');
+    initializeSliderBackground(proteinSlider, @ViewBag.ProteinMax, '#800080');
+
+</script>
