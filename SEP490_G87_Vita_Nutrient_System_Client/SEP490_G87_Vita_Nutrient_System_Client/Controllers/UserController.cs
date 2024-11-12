@@ -261,7 +261,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else
             {
-                return Redirect("Loi me roi");
+                return Redirect("Loi me roi" + myDay);
             }
 
         }
@@ -280,6 +280,32 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContent content = res.Content;
+                return Redirect($"PlanUserWeek?myDay={myDay}");
+            }
+            else
+            {
+                return Redirect("Loi me roi");
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshTheMealAllWeek(DateTime myDay)
+        {
+
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            string role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!role.Equals("UserPremium"))
+            {
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+            }
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheAllMeal?myDay={myDay}&idUser={userId}");
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {

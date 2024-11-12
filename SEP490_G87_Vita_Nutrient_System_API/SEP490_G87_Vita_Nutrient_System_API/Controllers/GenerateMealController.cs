@@ -178,6 +178,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
+        [HttpGet("APIRefreshTheAllMeal")]
+        public async Task<IActionResult> APIRefreshTheAllMeal(DateTime myDay, int idUser)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            return Ok(await generateMealRepositories.RegenerateListMealOfTheWeek(myDay, idUser));
+
+        }
+
+
         [HttpPost("APICompleteTheDish")]
         public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APICompleteTheDish([FromBody] FoodStatusUpdateModel model)
         {

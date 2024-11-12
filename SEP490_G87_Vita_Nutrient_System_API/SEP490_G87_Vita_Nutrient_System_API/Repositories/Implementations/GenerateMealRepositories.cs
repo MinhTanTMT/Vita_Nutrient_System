@@ -569,10 +569,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 _context.SaveChanges();
                 getNutritionRouteId = CreaterNutritionRoute.Id;
             }
-            else
-            {
-                getNutritionRouteId = activeNutritionRoute.Id;
-            }
+            else getNutritionRouteId = activeNutritionRoute.Id;
 
             if (MealSettingDataOfUser != null)
             {
@@ -591,7 +588,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             mealSettingsDetailDayBefore = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.NutritionRouteId == getNutritionRouteId && x.DateExecute == DateOnly.FromDateTime(TheDayBefore));
 
                         }
-                        else return false;
+                        else
+                        {
+                            await insertStringDataIntoMealOfTheDay(getNutritionRouteId, MyDay, "");
+                            return false;
+                        }   
                     } else return false;
                 }
                 else // loai co petium nhieu nhat 7 bua moi ngay
@@ -609,7 +610,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             TheDayBefore = new DateTime(DateTime.Now.Year, 1, 1).AddDays((MyDay.DayOfYear - 7) - 1);
                             mealSettingsDetailDayBefore = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.NutritionRouteId == getNutritionRouteId && x.DateExecute == DateOnly.FromDateTime(TheDayBefore));
                         }
-                        else return false;
+                        else
+                        {
+                            await insertStringDataIntoMealOfTheDay(getNutritionRouteId, MyDay, "");
+                            return false;
+                        }
                     }
                     else return false;
                 }
@@ -664,30 +669,37 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     }
                 }
 
-                MealOfTheDay mealSettingsDetail = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.NutritionRouteId == getNutritionRouteId && x.DateExecute == DateOnly.FromDateTime(MyDay));
-                if (mealSettingsDetail != null)
-                {
-                    mealSettingsDetail.DataFoodListId = stringListId.ToString();
-                    mealSettingsDetail.IsEditByUser = true;
-                    _context.SaveChanges();
-                }
-                else
-                {
-                    MealOfTheDay NewSettingsDetail = new MealOfTheDay()
-                    {
-                        NutritionRouteId = getNutritionRouteId,
-                        DataFoodListId = stringListId.ToString(),
-                        DateExecute = DateOnly.FromDateTime(MyDay),
-                        IsEditByUser = true
-                    };
-                    _context.MealOfTheDays.Add(NewSettingsDetail);
-                    _context.SaveChanges();
-                }
+                await insertStringDataIntoMealOfTheDay(getNutritionRouteId, MyDay, stringListId.ToString());
                 return true;
-
             }
             return false;
         }
+
+
+        public async Task<bool> insertStringDataIntoMealOfTheDay(int getNutritionRouteId ,DateTime MyDay, string stringListId)
+        {
+            MealOfTheDay mealSettingsDetail = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.NutritionRouteId == getNutritionRouteId && x.DateExecute == DateOnly.FromDateTime(MyDay));
+            if (mealSettingsDetail != null)
+            {
+                mealSettingsDetail.DataFoodListId = stringListId.ToString();
+                mealSettingsDetail.IsEditByUser = true;
+                _context.SaveChanges();
+            }
+            else
+            {
+                MealOfTheDay NewSettingsDetail = new MealOfTheDay()
+                {
+                    NutritionRouteId = getNutritionRouteId,
+                    DataFoodListId = stringListId.ToString(),
+                    DateExecute = DateOnly.FromDateTime(MyDay),
+                    IsEditByUser = true
+                };
+                _context.MealOfTheDays.Add(NewSettingsDetail);
+                _context.SaveChanges();
+            }
+            return true;
+        }
+
 
 
 
@@ -789,6 +801,36 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return dataFoodAllDayOfWeek;
         }
+
+
+
+
+        public async Task<bool> RegenerateListMealOfTheWeek(DateTime myDay, int idUser)
+        {
+            var dataDayOfTheWeekStart = await _context.MealSettings.Include(x => x.DayOfTheWeekStart).FirstOrDefaultAsync(x => x.UserId == idUser);
+            if (dataDayOfTheWeekStart != null)
+            {
+                DayOfWeek DayOfWeekStart = await ConvertToDayOfWeek(dataDayOfTheWeekStart.DayOfTheWeekStart.Name ?? "Thứ Hai");
+                int daysDifference = (7 + (myDay.DayOfWeek - DayOfWeekStart)) % 7;
+                DateTime startOfWeek = myDay.AddDays(-daysDifference);
+                List<DateTime> weekAllDays = new List<DateTime>();
+                for (int i = 0; i < 7; i++)
+                {
+                    weekAllDays.Add(startOfWeek.AddDays(i));
+                }
+
+                foreach (var day in weekAllDays)
+                {
+                    if (day.DayOfYear >= DateTime.Now.DayOfYear) await FillInDishIdInDailyDish(idUser, day);
+                }
+            }
+            return true;
+        }
+
+
+
+
+
 
 
         public async Task<IEnumerable<DataFoodListMealOfTheDay>> ListMealOfTheDay(DateTime myDay, int idUser)
