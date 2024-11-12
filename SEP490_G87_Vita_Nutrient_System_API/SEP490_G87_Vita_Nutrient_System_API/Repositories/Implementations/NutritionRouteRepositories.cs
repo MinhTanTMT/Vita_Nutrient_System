@@ -13,26 +13,34 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
 
         // Get all nutrition routes
-        public async Task<IEnumerable<NutritionRouteDTO>> GetAllNutritionRoutesAsync()
+        public async Task<IEnumerable<NutritionRouteDTO>> GetAllNutritionRoutesByCreateByIdAsync(int createById)
         {
-            return await _context.NutritionRoutes.Select(route => new NutritionRouteDTO
-            {
-                Id = route.Id,
-                UserId = route.UserId,
-                CreateById = route.CreateById,
-                Name = route.Name,
-                Describe = route.Describe,
-                StartDate = route.StartDate,
-                EndDate = route.EndDate,
-                IsDone = route.IsDone
-            }).ToListAsync();
+            return await _context.NutritionRoutes
+                .Where(route => route.CreateById == createById) // Lọc theo createById
+                .Include(route => route.CreateBy)
+                .Include(route => route.User)
+                .Select(route => new NutritionRouteDTO
+                {
+                    Id = route.Id,
+                    UserId = route.UserId,
+                    CreateById = route.CreateById,
+                    UserName = route.User.FirstName + " " + route.User.LastName,
+                    CreateByName = route.CreateBy.FirstName + " " + route.CreateBy.LastName,
+                    Name = route.Name,
+                    Describe = route.Describe,
+                    StartDate = route.StartDate,
+                    EndDate = route.EndDate,
+                    IsDone = route.IsDone
+                }).ToListAsync();
         }
+
+
 
         // Get nutrition route by ID
         public async Task<NutritionRouteDTO> GetNutritionRouteByIdAsync(int id)
         {
             var route = await _context.NutritionRoutes.FindAsync(id);
-            if (route == null) return null;
+           
 
             return new NutritionRouteDTO
             {

@@ -1,0 +1,114 @@
+﻿/* Global Font Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Container Styling */
+.container {
+    max-width: 100%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Page Title Styling */
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Form Styling */
+.edit-form .form-group {
+    max-width: 80%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.edit-form label {
+    font-weight: 500;
+    color: #555;
+}
+
+.edit-form .form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    box-shadow: none;
+    transition: border-color 0.3s ease-in-out;
+}
+
+    .edit-form .form-control:focus {
+        border-color: #4CAF50;
+    }
+
+/* Current Image Styling */
+.current-image {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.image-preview {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    border: 2px solid #ddd;
+}
+
+/* Action Buttons Styling */
+.action-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+}
+
+.btn-primary {
+    background-color: #1E88E5;
+    color: #fff;
+    border: none;
+}
+
+    .btn-primary:hover {
+        background-color: #1565C0;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+.text-muted {
+    font-size: 14px;
+    color: #FF5722;
+    display: block;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+    .text-muted:before {
+        content: "\f06a";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        color: #FF5722;
+        margin-right: 5px;
+    }

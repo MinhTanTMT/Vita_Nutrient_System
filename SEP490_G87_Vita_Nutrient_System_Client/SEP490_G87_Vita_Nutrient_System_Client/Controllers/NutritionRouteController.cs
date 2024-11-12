@@ -21,10 +21,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
-        // GET: NutritionRoute/GetAll
-        public async Task<IActionResult> GetAll()
+        // GET: NutritionRoute/GetAllByCreateById/{createById}
+        public async Task<IActionResult> GetAllByCreateById()
         {
-            HttpResponseMessage response = await client.GetAsync("api/nutritionroute");
+            var createById = int.Parse(User.FindFirst("UserId")?.Value);
+            HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/user/{createById}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -33,6 +34,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             return View("Error");
         }
+
 
         // GET: NutritionRoute/Details/{id}
         public async Task<IActionResult> Details(int id)
@@ -64,7 +66,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response = await client.PostAsync("api/nutritionroute", content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction(nameof(GetAll));
+                    return RedirectToAction(nameof(GetAllByCreateById));
                 }
             }
             return View(nutritionRoute);
@@ -99,7 +101,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response = await client.PutAsync($"api/nutritionroute/{id}", content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction(nameof(GetAll));
+                    return RedirectToAction(nameof(GetAllByCreateById));
                 }
             }
             return View(nutritionRoute);
@@ -126,7 +128,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             HttpResponseMessage response = await client.DeleteAsync($"api/nutritionroute/{id}");
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction(nameof(GetAll));
+                return RedirectToAction(nameof(GetAllByCreateById));
             }
             return View("Error");
         }

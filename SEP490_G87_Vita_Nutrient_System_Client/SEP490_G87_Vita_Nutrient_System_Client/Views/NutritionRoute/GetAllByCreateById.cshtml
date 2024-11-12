@@ -11,12 +11,13 @@
     <table class="table custom-table align-middle">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Tên Lộ Trình</th>
-                <th>Mô Tả</th>
-                <th>Ngày Bắt Đầu</th>
-                <th>Ngày Kết Thúc</th>
-                <th>Trạng Thái</th>
+                <th>Id</th>
+                <th>Tên lộ trình</th>
+                <th>Người tạo</th>
+                <th>Người sử dụng</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+                <th>Trạng thái</th>
                 <th style="text-align: center;">Hành Động</th>
             </tr>
         </thead>
@@ -24,17 +25,18 @@
             @foreach (var route in Model)
             {
                 <tr>
-                    <td class="text-center">@route.Id</td>
+                    <td>@route.Id</td>
                     <td>@route.Name</td>
-                    <td>@route.Describe</td>
-                    <td class="text-center">@route.StartDate?.ToString("dd/MM/yyyy")</td>
-                    <td class="text-center">@route.EndDate?.ToString("dd/MM/yyyy")</td>
+                    <td>@route.CreateByName</td>
+                    <td>@route.UserName</td>
+                    <td>@route.StartDate?.ToString("dd/MM/yyyy")</td>
+                    <td>@route.EndDate?.ToString("dd/MM/yyyy")</td>
                     <td>
                         <span class="badge @(route.IsDone == true ? "badge-active" : "badge-inactive")">
-                            @(route.IsDone == true ? "Hoạt động" : "Không hoạt động")
+                            @(route.IsDone == true ? "Hoàn thành" : "Chưa hoàn thành")
                         </span>
                     </td>
-                    
+
                     <td class="text-center">
                         <a asp-action="Details" asp-route-id="@route.Id" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> Chi Tiết</a>
                         <a asp-action="Edit" asp-route-id="@route.Id" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Chỉnh Sửa</a>

@@ -7,10 +7,20 @@
     <form asp-action="NutritionCheck" method="post">
         <div class="form-row">
             <div class="form-group">
-                <input type="date" name="birthDate" placeholder="Ngày sinh vd: 19/05/1890(*)" required value="@ViewBag.BirthDate" />
+                <label for="birthDate">Ngày sinh: (VD:19/05/1980)</label>
+                <input type="date" id="birthDate" name="birthDate" required value="@ViewBag.BirthDate" />
+                @if (!string.IsNullOrEmpty(ViewBag.BirthDateError))
+                {
+                    <span class="error">@ViewBag.BirthDateError</span>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.AgeError))
+                {
+                    <span class="error">@ViewBag.AgeError</span>
+                }
             </div>
             <div class="form-group">
-                <select name="gender" required>
+                <label for="gender">Giới tính:</label>
+                <select id="gender" name="gender" required>
                     @if (ViewBag.Gender == "Nữ")
                     {
                         <option value="Nam">Nam</option>
@@ -22,27 +32,34 @@
                         <option value="Nữ">Nữ</option>
                     }
                 </select>
+                @if (!string.IsNullOrEmpty(ViewBag.GenderError))
+                {
+                    <span class="error">@ViewBag.GenderError</span>
+                }
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
-                <input type="number" name="weight" placeholder="Nhập cân nặng (kg)" step="0.1" required value="@ViewBag.Weight" />
+                <label for="weight">Cân nặng (kg):</label>
+                <input type="number" id="weight" name="weight" placeholder="Nhập cân nặng (kg)" step="0.1" required value="@ViewBag.Weight" />
+                @if (!string.IsNullOrEmpty(ViewBag.WeightError))
+                {
+                    <span class="error">@ViewBag.WeightError</span>
+                }
             </div>
             <div class="form-group">
-                <input type="number" name="height" placeholder="Nhập chiều cao (cm)" step="0.1" required value="@ViewBag.Height" />
+                <label for="height">Chiều cao (cm):</label>
+                <input type="number" id="height" name="height" placeholder="Nhập chiều cao (cm)" step="0.1" required value="@ViewBag.Height" />
+                @if (!string.IsNullOrEmpty(ViewBag.HeightError))
+                {
+                    <span class="error">@ViewBag.HeightError</span>
+                }
             </div>
         </div>
 
         <button type="submit" class="btn btn-primary">KIỂM TRA</button>
     </form>
-
-    @if (!string.IsNullOrEmpty(ViewBag.AgeError))
-    {
-        <div class="alert alert-danger">
-            @ViewBag.AgeError
-        </div>
-    }
 
     @if (Model != null && Model.BMI > 0)
     {
@@ -204,7 +221,7 @@
                         </tbody>
                     </table>
                     <p class="data-source">
-                        <em>Thông tin phân vị BMI được lấy từ nguồn <strong>WHO Growth Reference Data for 5–19 Years</strong>.</em>
+                        <em>Thông tin phân vị BMI được lấy từ nguồn <a href="https://www.who.int/tools/growth-reference-data-for-5to19-years/indicators/bmi-for-age" target="_blank"><strong>WHO Growth Reference Data for 5–19 Years</strong></a>.</em>
                     </p>
                 }
 
@@ -460,4 +477,10 @@
             color: #3333ff;
         }
 
+    .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+        display: block;
+    }
 </style>

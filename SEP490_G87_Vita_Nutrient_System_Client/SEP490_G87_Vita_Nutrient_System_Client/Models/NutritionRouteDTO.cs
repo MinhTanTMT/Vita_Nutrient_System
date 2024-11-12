@@ -25,7 +25,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Models
         [DataType(DataType.Date, ErrorMessage = "Ngày kết thúc không hợp lệ.")]
         [CompareDates("StartDate", ErrorMessage = "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.")]
         public DateTime? EndDate { get; set; }
-
         public bool? IsDone { get; set; }
+        public string? UserName { get; set; }       
+        public string? CreateByName { get; set; }   
     }
 }

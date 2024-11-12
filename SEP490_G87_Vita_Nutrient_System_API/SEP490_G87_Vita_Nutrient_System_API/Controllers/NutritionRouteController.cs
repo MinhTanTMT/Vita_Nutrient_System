@@ -13,13 +13,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     {
         private readonly INutritionRouteRepositories _nutritionRouteRepositories = new NutritionRouteRepositories();
 
-        // GET: api/NutritionRoute
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetAllNutritionRoutes()
+        // GET: api/nutritionroute/user/{createById}
+        [HttpGet("user/{createById}")]
+        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetAllNutritionRoutesByCreateById(int createById)
         {
-            var routes = await _nutritionRouteRepositories.GetAllNutritionRoutesAsync();
+            var routes = await _nutritionRouteRepositories.GetAllNutritionRoutesByCreateByIdAsync(createById);
             return Ok(routes);
         }
+
 
         // GET: api/nutritionroute/{id}
         [HttpGet("{id}")]

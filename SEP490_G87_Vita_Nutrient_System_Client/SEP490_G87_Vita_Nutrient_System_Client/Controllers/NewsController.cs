@@ -106,18 +106,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-
 
         // GET: Details of a single article for users
         [HttpGet]
         public async Task<IActionResult> DetailsForUsers(int id)
         {
+            ViewData["ApiBaseUrl"] = client.BaseAddress;
             try
             {
                 var response = await client.GetAsync($"api/news/{id}");
@@ -138,7 +132,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
 
         // POST: Create a new article
         [HttpPost]

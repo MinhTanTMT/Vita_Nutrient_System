@@ -1,0 +1,82 @@
+﻿
+/* Global Font Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Container Styling */
+.container {
+    max-width: 100%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Page Title Styling */
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #d32f2f;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Article Details */
+.article-details {
+    margin-bottom: 20px;
+}
+
+.article-title {
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+}
+
+.article-details p {
+    font-size: 16px;
+    color: #555;
+    margin: 5px 0;
+}
+
+/* Action Buttons Styling */
+.action-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+}
+
+.btn-danger {
+    background-color: #d32f2f;
+    color: #fff;
+    border: none;
+}
+
+    .btn-danger:hover {
+        background-color: #b71c1c;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+.modal-title {
+    font-family: 'Roboto', sans-serif;
+}

@@ -297,11 +297,38 @@ public IActionResult NutritionCheck(DateTime birthDate, double weight, double he
 {
     int age = DateTime.Today.Year - birthDate.Year;
     if (birthDate > DateTime.Today.AddYears(-age)) age--;
+            bool isValid = true;
+            // Kiểm tra ngày sinh không được lớn hơn ngày hiện tại
+            if (birthDate > DateTime.Today)
+            {
+                ViewBag.BirthDateError = "Ngày sinh không hợp lệ. Vui lòng chọn một ngày trong quá khứ.";
+                isValid = false;
+            }
 
             // Nếu tuổi dưới 5 hoặc chiều cao, cân nặng không hợp lý, trả về lỗi
-            if (age < 5 || height <= 0 || weight <= 0)
+            if (age < 5 || age > 100 || height <= 0 || weight <= 0)
             {
-                ViewBag.AgeError = "Phần mềm này chỉ áp dụng cho người từ 5 tuổi trở lên với chiều cao và cân nặng hợp lý.";
+                ViewBag.AgeError = "Phần mềm này chỉ áp dụng cho người từ 5 đến 100 tuổi với chiều cao và cân nặng hợp lý.";
+                isValid = false;
+            }
+
+            if (weight <= 0 || weight > 300)
+            {
+                ViewBag.WeightError = "Cân nặng không hợp lệ (phải nằm trong khoảng 1 - 300 kg).";
+                isValid = false;
+            }
+
+            if (height < 50 || height > 250)
+            {
+                ViewBag.HeightError = "Chiều cao không hợp lệ (phải nằm trong khoảng 50 - 250 cm).";
+                isValid = false;
+            }
+            if (!isValid)
+            {
+                ViewBag.BirthDate = birthDate.ToString("yyyy-MM-dd");
+                ViewBag.Weight = weight;
+                ViewBag.Height = height;
+                ViewBag.Gender = gender;
                 return View();
             }
 
