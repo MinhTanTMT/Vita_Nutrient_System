@@ -75,11 +75,11 @@
                                 <div class="user-action" style="color: blue;" onclick="toggleLike(@fs.UserId, @fs.FoodListId)">
                                     @if (fs.IsLike == true)
                                     {
-                                        <i class="mdi mdi-thumb-up like-icon"></i>
+                                        <i id="like-icon" class="mdi mdi-thumb-up"></i>
                                     }
                                     else
                                     {
-                                        <i class="mdi mdi-thumb-up-outline"></i>
+                                        <i id="like-icon" class="mdi mdi-thumb-up-outline"></i>
                                     }
                                 </div>
                                 <div class="user-action">

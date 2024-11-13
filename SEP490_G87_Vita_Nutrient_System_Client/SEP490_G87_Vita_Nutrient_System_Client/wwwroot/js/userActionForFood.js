@@ -1,6 +1,5 @@
 ﻿async function toggleLike(userId, foodId) {
     try {
-        console.log("duy1");
         // Gọi API
         const response = await fetch("https://localhost:7045/api/UserFoodAction/UserLikeOrUnlikeFood", {
             method: "POST",
@@ -13,7 +12,7 @@
         // Kiểm tra phản hồi từ API
         if (response.ok) {
             // Nếu OK, cập nhật icon
-            var likeIcon = document.querySelector("div i.like-icon");
+            var likeIcon = document.getElementById("like-icon");
             if (likeIcon.classList.contains("mdi-thumb-up-outline")) {
                 likeIcon.classList.remove("mdi-thumb-up-outline");
                 likeIcon.classList.add("mdi-thumb-up");
