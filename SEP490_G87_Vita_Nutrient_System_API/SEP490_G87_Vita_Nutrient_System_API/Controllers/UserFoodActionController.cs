@@ -20,7 +20,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             if(fs is null)
             {
-                return Ok("Not found!");
+                return Ok();
             }
 
             FoodSelectionDTO result = new FoodSelectionDTO

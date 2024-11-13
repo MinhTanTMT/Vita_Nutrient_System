@@ -84,7 +84,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             FoodSelection fs = _context.FoodSelections
                 .SingleOrDefault(f => f.UserId == UserId && f.FoodListId == FoodId);
 
-            fs.RecurringId = recurId;
+            fs.RecurringId = recurId == -1? null : recurId;
 
             _context.Entry<FoodSelection>(fs).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             _context.SaveChanges();

@@ -75,6 +75,25 @@ async function blockFood(userId, foodId) {
     }
 }
 
+async function handleRecurChange(userId, foodId, recurId) {
+    try {
+        const response = await fetch("https://localhost:7045/api/UserFoodAction/UserSetRecurFood", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userId: userId, foodId: foodId, recurId: recurId })
+        });
+
+        if (!response.ok) {
+            showToast("Unexpected error occurred!");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        showToast("Unexpected error occurred!");
+    }
+}
+
 function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast-message";
