@@ -82,14 +82,14 @@
                                         <i id="like-icon" class="mdi mdi-thumb-up-outline"></i>
                                     }
                                 </div>
-                                <div class="user-action">
+                                <div class="user-action" onclick="toggleSave(@fs.UserId, @fs.FoodListId)">
                                     @if (fs.IsCollection == true)
                                     {
-                                        <i class="mdi mdi-bookmark"></i>
+                                        <i id="save-icon" class="mdi mdi-bookmark"></i>
                                     }
                                     else
                                     {
-                                        <i class="mdi mdi-bookmark-outline"></i>
+                                        <i id="save-icon" class="mdi mdi-bookmark-outline"></i>
                                     }
                                 </div>
                                 <div class="user-action" style="color: red;">
