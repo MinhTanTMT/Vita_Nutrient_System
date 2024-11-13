@@ -13,7 +13,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     {
         private readonly IFoodSelectionRepositories repositories = new FoodSelectionRepositories();
 
-        [HttpGet("GetUserFoodAction/{UserId}/{FoodId}")]
+        [HttpGet("GetUserFoodAction")]
         public async Task<ActionResult> GetUserFoodAction(int UserId, int FoodId)
         {
             FoodSelection fs = repositories.Get(UserId, FoodId);

@@ -454,7 +454,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     await client.GetAsync(client.BaseAddress + "/Ingredient/GetPreparationIngredientsByFoodId/" + foodId);
 
                 HttpResponseMessage response3 =
-                    await client.GetAsync(client.BaseAddress + "/UserFoodAction/GetUserFoodAction/" + userId + "/" + foodId);
+                    await client.GetAsync(client.BaseAddress + "/UserFoodAction/GetUserFoodAction?UserId=" + userId + "&FoodId=" + foodId);
                 HttpContent content3 = response3.Content;
                 string data3 = await content3.ReadAsStringAsync();
                 FoodSelection fs = JsonConvert.DeserializeObject<FoodSelection>(data3);
