@@ -54,6 +54,27 @@ async function toggleSave(userId, foodId) {
     }
 }
 
+async function blockFood(userId, foodId) {
+    try {
+        const response = await fetch("https://localhost:7045/api/UserFoodAction/UserBlockFood", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userId: userId, foodId: foodId })
+        });
+
+        if (response.ok) {
+            window.location.href = "https://localhost:7069/foodsList";
+        } else {
+            showToast("Unexpected error occurred!");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        showToast("Unexpected error occurred!");
+    }
+}
+
 function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast-message";
