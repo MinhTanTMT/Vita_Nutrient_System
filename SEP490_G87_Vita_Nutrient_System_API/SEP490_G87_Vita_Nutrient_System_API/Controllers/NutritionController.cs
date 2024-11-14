@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos.Disease;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos.Food;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos.FoodAndDisease;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 
@@ -61,7 +64,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("get-food-list")]
-        public async Task<ActionResult<List<FoodList>>> GetFoodLists([FromQuery] string? search)
+        public async Task<ActionResult<List<GetFoodListDTO>>> GetFoodLists([FromQuery] string? search)
         {
             var result = await _nutritionRepo.GetFoodLists(search);
             return Ok(result);
@@ -79,24 +82,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         // POST: api/FoodList
-        [HttpPost("create-food")]
-        public async Task<ActionResult<FoodList>> PostFoodList(FoodList foodList)
+        [HttpPost("save-food")]
+        public async Task<ActionResult<FoodList>> PostFoodList(SaveFoodDTO foodList)
         {
-            await _nutritionRepo.CreateFoodList(foodList);
+            await _nutritionRepo.SaveFoodList(foodList);
 
             return CreatedAtAction("GetFoodList", new { id = foodList.FoodListId }, foodList);
-        }
-
-        // PUT: api/FoodList/{id}
-        [HttpPut("FoodList/{id}")]
-        public async Task<IActionResult> PutFoodList(FoodList foodList)
-        {
-            var result = await _nutritionRepo.UpdateFoodList(foodList);
-            if (result == 0)
-            {
-                return BadRequest();
-            }
-            return Ok(result);
         }
 
         // DELETE: api/FoodList/{id}
@@ -121,64 +112,36 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("ListOfDisease/{id}")]
         public async Task<ActionResult<ListOfDisease>> GetDisease(int id)
         {
-            return await _nutritionRepo.GetDiseases(id);
-        }
-
-        // POST: api/ListOfDisease
-        [HttpPost("create-disease")]
-        public async Task<ActionResult<ListOfDisease>> CreateDisease(ListOfDisease disease)
-        {
-            await _nutritionRepo.CreateDisease(disease);
-
-            return CreatedAtAction("GetDisease", new { id = disease.Id }, disease);
-        }
-
-        // PUT: api/ListOfDisease/{id}
-        [HttpPut("listOfDisease/{id}")]
-        public async Task<IActionResult> PutDisease(ListOfDisease disease)
-        {
-            await _nutritionRepo.UpdateDisease(disease);
-
-            return NoContent();
-        }
-
-        // DELETE: api/ListOfDisease/{id}
-        [HttpDelete("delete-disease{id}")]
-        public async Task<IActionResult> DeleteDisease(int id)
-        {
-            var result = await _nutritionRepo.DeleteDisease(id);
-
-            if (result == 0)
+            var result = await _nutritionRepo.GetDiseases(id);
+            if (result == null)
             {
-                return NotFound();
+                return NotFound("Disease is not exist!");
             }
-
             return Ok(result);
         }
 
-        [HttpPost("create-food-and-disease")]
-        public async Task<IActionResult> CreateFoodAndDisease([FromBody] FoodAndDisease foodAndDisease)
+        // POST: api/ListOfDisease
+        [HttpPost("save-disease")]
+        public async Task<ActionResult<ListOfDisease>> SaveDisease(SaveDiseaseDTO disease)
         {
-            var result = await _nutritionRepo.CreateFoodAndDiseases(foodAndDisease);
+            var result = await _nutritionRepo.SaveDisease(disease);
+            if(result == null)
+            {
+                return Conflict("Save failed!");
+            }
+            return CreatedAtAction("GetDisease", new { id = disease.Id }, disease);
+        }
+
+        [HttpPost("create-food-and-disease")]
+        public async Task<IActionResult> CreateFoodAndDisease([FromBody] SaveFoodAndDiseaseDTO foodAndDisease)
+        {
+            var result = await _nutritionRepo.SaveFoodAndDiseases(foodAndDisease);
             if (result == null)
             {
                 return Conflict("The combination of food and disease already exists.");
             }
 
             return CreatedAtAction(nameof(CreateFoodAndDisease), result);
-        }
-
-        [HttpPut("update-food-and-disease")]
-        public async Task<IActionResult> UpdateFoodAndDisease([FromBody] FoodAndDisease foodAndDisease)
-        {
-            var result = await _nutritionRepo.UpdateFoodAndDisease(foodAndDisease);
-
-            if (result == null)
-            {
-                return NotFound("The specified food and disease combination does not exist.");
-            }
-
-            return Ok(result);
         }
 
         [HttpDelete("delete-food-and-disease{foodId}/{diseaseId}")]
