@@ -61,11 +61,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
 
         // Create a new nutrition route
-        public async Task CreateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto)
+        public async Task<bool> CreateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto, string userPhoneNumber)
         {
+            // Tìm người dùng theo số điện thoại
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Phone == userPhoneNumber);
+            if (user == null)
+            {
+                return false; 
+            }
+
+            // Create new NutritionRoute entity
             var route = new NutritionRoute
             {
-                UserId = nutritionRouteDto.UserId,
+                UserId = user.UserId, // ID của người dùng tìm thấy
                 CreateById = nutritionRouteDto.CreateById,
                 Name = nutritionRouteDto.Name,
                 Describe = nutritionRouteDto.Describe,
@@ -76,6 +84,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             _context.NutritionRoutes.Add(route);
             await _context.SaveChangesAsync();
+            return true;
         }
 
         // Update an existing nutrition route

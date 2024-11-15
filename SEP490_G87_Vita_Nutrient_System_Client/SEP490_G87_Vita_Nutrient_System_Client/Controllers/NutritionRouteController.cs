@@ -58,19 +58,34 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         // POST: NutritionRoute/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NutritionRoute nutritionRoute)
+        public async Task<IActionResult> Create(NutritionRoute nutritionRoute, string userPhoneNumber)
         {
             if (ModelState.IsValid)
             {
+                // Thêm CreateById dựa trên người đang đăng nhập
+                nutritionRoute.CreateById = int.Parse(User.FindFirst("UserId")?.Value);
+
                 var content = new StringContent(JsonSerializer.Serialize(nutritionRoute), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync("api/nutritionroute", content);
+
+                // Gọi API tạo NutritionRoute, bao gồm cả userPhoneNumber trong query string
+                HttpResponseMessage response = await client.PostAsync($"api/nutritionroute?userPhoneNumber={userPhoneNumber}", content);
+
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(GetAll));
                 }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    ModelState.AddModelError(string.Empty, "Không tìm thấy người sử dụng với số điện thoại đã cung cấp.");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Có lỗi xảy ra khi tạo lộ trình dinh dưỡng.");
+                }
             }
             return View(nutritionRoute);
         }
+
 
         // GET: NutritionRoute/Edit/{id}
         public async Task<IActionResult> Edit(int id)
@@ -135,8 +150,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return NotFound();
         }
 
-        // POST: NutritionRoute/DeleteConfirmed/{id}
-        [HttpPost, ActionName("Delete")]
+        // POST: NutritionRoute/Delete/{id}
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

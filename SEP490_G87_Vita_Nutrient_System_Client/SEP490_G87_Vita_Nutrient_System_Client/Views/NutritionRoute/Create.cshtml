@@ -6,6 +6,11 @@
     <h2 class="page-title text-center mb-4">Tạo Lộ Trình Dinh Dưỡng Mới</h2>
     <form asp-controller="NutritionRoute" asp-action="Create" method="post" enctype="multipart/form-data" class="create-form">
         <div class="form-group">
+            <label for="userPhoneNumber">Số Điện Thoại Người Sử Dụng</label>
+            <input type="text" name="userPhoneNumber" class="form-control" required />
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
             <label for="Name">Tên Lộ Trình</label>
             <input type="text" asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
@@ -39,6 +44,7 @@
         </div>
     </form>
 </div>
+
 <style>
     .container {
         max-width: 70%;

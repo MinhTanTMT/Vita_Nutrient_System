@@ -36,19 +36,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
         // POST: api/nutritionroute
         [HttpPost]
-        public async Task<ActionResult> CreateNutritionRoute([FromBody] NutritionRouteDTO nutritionRouteDto)
+        public async Task<ActionResult> CreateNutritionRoute([FromBody] NutritionRouteDTO nutritionRouteDto, [FromQuery] string userPhoneNumber)
         {
             if (nutritionRouteDto == null || !ModelState.IsValid)
             {
                 return BadRequest("Dữ liệu lộ trình dinh dưỡng không hợp lệ.");
             }
 
-            if (nutritionRouteDto.UserId == 0)
+            if (string.IsNullOrEmpty(userPhoneNumber)) 
             {
-                return BadRequest("UserId không hợp lệ.");
+                return BadRequest("Số điện thoại của người sử dụng không được để trống.");
             }
 
-            await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto);
+            var isCreated = await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto, userPhoneNumber);
+            if (!isCreated)
+            {
+                return NotFound("Không tìm thấy người sử dụng với số điện thoại đã cung cấp.");
+            }
+
             return Ok();
         }
 
