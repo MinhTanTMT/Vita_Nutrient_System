@@ -21,15 +21,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
-        // GET: NutritionRoute/GetAllByCreateById/{createById}
-        public async Task<IActionResult> GetAllByCreateById()
+        // GET: NutritionRoute/GetAll/{createById}
+        public async Task<IActionResult> GetAll()
         {
             var createById = int.Parse(User.FindFirst("UserId")?.Value);
             HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/user/{createById}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var routes = JsonSerializer.Deserialize<List<NutritionRouteDTO>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var routes = JsonSerializer.Deserialize<List<NutritionRoute>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return View(routes);
             }
             return View("Error");
@@ -43,7 +43,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var route = JsonSerializer.Deserialize<NutritionRouteDTO>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var route = JsonSerializer.Deserialize<NutritionRoute>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return View(route);
             }
             return NotFound();
@@ -58,7 +58,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         // POST: NutritionRoute/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NutritionRouteDTO nutritionRoute)
+        public async Task<IActionResult> Create(NutritionRoute nutritionRoute)
         {
             if (ModelState.IsValid)
             {
@@ -66,7 +66,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response = await client.PostAsync("api/nutritionroute", content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction(nameof(GetAllByCreateById));
+                    return RedirectToAction(nameof(GetAll));
                 }
             }
             return View(nutritionRoute);
@@ -79,7 +79,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var route = JsonSerializer.Deserialize<NutritionRouteDTO>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var route = JsonSerializer.Deserialize<NutritionRoute>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return View(route);
             }
             return NotFound();
@@ -88,7 +88,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         // POST: NutritionRoute/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, NutritionRouteDTO nutritionRoute)
+        public async Task<IActionResult> Edit(int id, NutritionRoute nutritionRoute)
         {
             if (id != nutritionRoute.Id)
             {
@@ -97,11 +97,26 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (ModelState.IsValid)
             {
-                var content = new StringContent(JsonSerializer.Serialize(nutritionRoute), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync($"api/nutritionroute/{id}", content);
-                if (response.IsSuccessStatusCode)
+                // Lấy thông tin lộ trình dinh dưỡng hiện tại từ API
+                HttpResponseMessage responseGet = await client.GetAsync($"api/nutritionroute/{id}");
+                if (responseGet.IsSuccessStatusCode)
                 {
-                    return RedirectToAction(nameof(GetAllByCreateById));
+                    var data = await responseGet.Content.ReadAsStringAsync();
+                    var existingRoute = JsonSerializer.Deserialize<NutritionRoute>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (existingRoute != null)
+                    {
+                        // Đảm bảo UserName không bị sửa đổi
+                        nutritionRoute.UserName = existingRoute.UserName;
+
+                        // Chỉ cập nhật những trường cần thiết
+                        var content = new StringContent(JsonSerializer.Serialize(nutritionRoute), Encoding.UTF8, "application/json");
+                        HttpResponseMessage responsePut = await client.PutAsync($"api/nutritionroute/{id}", content);
+                        if (responsePut.IsSuccessStatusCode)
+                        {
+                            return RedirectToAction(nameof(GetAll));
+                        }
+                    }
                 }
             }
             return View(nutritionRoute);
@@ -114,7 +129,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var route = JsonSerializer.Deserialize<NutritionRouteDTO>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var route = JsonSerializer.Deserialize<NutritionRoute>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return View(route);
             }
             return NotFound();
@@ -128,7 +143,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             HttpResponseMessage response = await client.DeleteAsync($"api/nutritionroute/{id}");
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction(nameof(GetAllByCreateById));
+                return RedirectToAction(nameof(GetAll));
             }
             return View("Error");
         }

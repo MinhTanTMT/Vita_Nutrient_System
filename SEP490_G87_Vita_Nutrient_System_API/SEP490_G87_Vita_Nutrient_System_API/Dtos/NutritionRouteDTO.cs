@@ -17,7 +17,9 @@
         public DateTime? EndDate { get; set; }
 
         public bool? IsDone { get; set; }
+
         public string? UserName { get; set; }
+
         public string? CreateByName { get; set; }
     }
 }

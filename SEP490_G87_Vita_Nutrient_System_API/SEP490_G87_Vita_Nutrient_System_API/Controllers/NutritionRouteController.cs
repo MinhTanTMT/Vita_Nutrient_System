@@ -63,6 +63,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             try
             {
+                // Lấy NutritionRoute hiện tại từ database để cập nhật thông tin UserName và các trường khác
+                var existingRoute = await _nutritionRouteRepositories.GetNutritionRouteByIdAsync(id);
+
+                if (existingRoute == null)
+                {
+                    return NotFound("Không tìm thấy lộ trình dinh dưỡng.");
+                }
+
+                // Chỉ cập nhật các trường cần thiết, giữ nguyên UserName
+                nutritionRouteDto.UserName = existingRoute.UserName;
+
                 await _nutritionRouteRepositories.UpdateNutritionRouteAsync(nutritionRouteDto);
             }
             catch (KeyNotFoundException)
@@ -76,6 +87,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok();
         }
+
 
         // DELETE: api/NutritionRoute/5
         [HttpDelete("{id}")]

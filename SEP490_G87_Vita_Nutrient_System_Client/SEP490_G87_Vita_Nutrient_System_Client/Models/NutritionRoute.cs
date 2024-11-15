@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
-    public class NutritionRouteDTO
+    public class NutritionRoute
     {
         public int Id { get; set; }
 

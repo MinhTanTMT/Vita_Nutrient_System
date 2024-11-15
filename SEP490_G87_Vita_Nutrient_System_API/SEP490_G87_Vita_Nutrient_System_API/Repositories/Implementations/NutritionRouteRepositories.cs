@@ -39,8 +39,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         // Get nutrition route by ID
         public async Task<NutritionRouteDTO> GetNutritionRouteByIdAsync(int id)
         {
-            var route = await _context.NutritionRoutes.FindAsync(id);
-           
+            var route = await _context.NutritionRoutes
+                .Include(r => r.User) // Bao gồm thông tin của User
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (route == null) return null;
 
             return new NutritionRouteDTO
             {
@@ -51,9 +54,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 Describe = route.Describe,
                 StartDate = route.StartDate,
                 EndDate = route.EndDate,
-                IsDone = route.IsDone
+                IsDone = route.IsDone,
+                UserName = route.User.FirstName + " " + route.User.LastName
             };
         }
+
 
         // Create a new nutrition route
         public async Task CreateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto)
@@ -76,18 +81,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         // Update an existing nutrition route
         public async Task UpdateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto)
         {
-            var route = await _context.NutritionRoutes.FindAsync(nutritionRouteDto.Id);
+            var route = await _context.NutritionRoutes
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == nutritionRouteDto.Id);
+
             if (route == null) return;
 
+            // Cập nhật các thuộc tính có thể sửa đổi
             route.Name = nutritionRouteDto.Name;
             route.Describe = nutritionRouteDto.Describe;
             route.StartDate = nutritionRouteDto.StartDate;
             route.EndDate = nutritionRouteDto.EndDate;
             route.IsDone = nutritionRouteDto.IsDone;
 
+            // Thiết lập UserName dựa trên thông tin từ cơ sở dữ liệu, không cho phép người dùng sửa
+            nutritionRouteDto.UserName = route.User.FirstName + " " + route.User.LastName;
+
             _context.NutritionRoutes.Update(route);
             await _context.SaveChangesAsync();
         }
+
 
         // Delete a nutrition route
         public async Task DeleteNutritionRouteAsync(int id)

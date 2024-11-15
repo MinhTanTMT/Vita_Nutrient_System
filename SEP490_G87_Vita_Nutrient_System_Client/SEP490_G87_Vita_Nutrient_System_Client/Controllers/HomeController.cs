@@ -31,14 +31,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<ArticlesNewsDTO> latestArticles = new List<ArticlesNewsDTO>();
+            List<ArticlesNews> latestArticles = new List<ArticlesNews>();
 
             // Gọi API để lấy 3 bài viết mới nhất
             HttpResponseMessage response = await client.GetAsync("/api/news/latest");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                latestArticles = JsonConvert.DeserializeObject<List<ArticlesNewsDTO>>(data);
+                latestArticles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
             }
             else
             {

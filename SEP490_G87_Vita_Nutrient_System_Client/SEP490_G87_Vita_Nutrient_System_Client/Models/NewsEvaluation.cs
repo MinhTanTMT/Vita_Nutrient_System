@@ -1,6 +1,6 @@
 ﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
-    public class NewsEvaluationDTO
+    public class NewsEvaluation
     {
         public int Id { get; set; }
         public int ArticlesNewsId { get; set; }
