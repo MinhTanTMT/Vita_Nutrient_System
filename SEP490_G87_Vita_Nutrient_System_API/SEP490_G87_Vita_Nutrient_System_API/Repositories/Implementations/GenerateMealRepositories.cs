@@ -701,9 +701,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-
-
-
         public async Task<string> TakeDataIntoMealOfTheDayBefore(DataFoodListMealOfTheDay dataFoodListMealOfTheDay)
         {
 
@@ -738,6 +735,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
+        
         // dang lam viec
         public async Task<bool> FillInDishIdInWeekDish(int idUser, DateTime myDay)
         {
@@ -826,37 +824,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return true;
         }
-
-
-
-
-
-
-
-        public async Task<IEnumerable<DataFoodListMealOfTheDay>> ListMealOfTheDay(DateTime myDay, int idUser)
-        {
-
-            List<DataFoodListMealOfTheDay> dataFoodListMealOfTheDays = new List<DataFoodListMealOfTheDay>();
-
-            NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= myDay && nr.EndDate >= myDay && nr.UserId == idUser && nr.IsDone == false);
-            if (activeNutritionRoute != null)
-            {
-                MealOfTheDay mealOfTheDay = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.DateExecute == DateOnly.FromDateTime(myDay) && x.NutritionRouteId == activeNutritionRoute.Id);
-                if (mealOfTheDay != null)
-                {
-                    string[] arrayData = await SplitAndProcessFirst(mealOfTheDay.DataFoodListId ?? "");
-                    if (arrayData.Length > 0)
-                    {
-                        for (int i = 0; i < arrayData.Length - 1; i++)
-                        {
-                            dataFoodListMealOfTheDays.Add(await SplitAndProcessDataMealOfTheDay(arrayData[i]));
-                        }
-                    }
-                }
-            }
-            return dataFoodListMealOfTheDays;
-        }
-
 
         public async Task<DayOfWeek> ConvertToDayOfWeek(string dayString)
         {
@@ -1004,6 +971,45 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// /////////////////////////////////
+        /// </summary>
+        /// <returns></returns>
+
+        public async Task<IEnumerable<DataFoodListMealOfTheDay>> ListMealOfTheDay(DateTime myDay, int idUser)
+        {
+
+            List<DataFoodListMealOfTheDay> dataFoodListMealOfTheDays = new List<DataFoodListMealOfTheDay>();
+
+            NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= myDay && nr.EndDate >= myDay && nr.UserId == idUser && nr.IsDone == false);
+            if (activeNutritionRoute != null)
+            {
+                MealOfTheDay mealOfTheDay = await _context.MealOfTheDays.FirstOrDefaultAsync(x => x.DateExecute == DateOnly.FromDateTime(myDay) && x.NutritionRouteId == activeNutritionRoute.Id);
+                if (mealOfTheDay != null)
+                {
+                    string[] arrayData = await SplitAndProcessFirst(mealOfTheDay.DataFoodListId ?? "");
+                    if (arrayData.Length > 0)
+                    {
+                        for (int i = 0; i < arrayData.Length - 1; i++)
+                        {
+                            dataFoodListMealOfTheDays.Add(await SplitAndProcessDataMealOfTheDay(arrayData[i]));
+                        }
+                    }
+                }
+            }
+            return dataFoodListMealOfTheDays;
+        }
+
+
+        public async Task<bool> CheckDataMealOfTheToday(DataFoodListMealOfTheDay dataFoodListMealOfTheDay)
+        {
+            // can ham kiem tra
+
+            // neu sai lay mon moi
+
+            return true;
         }
 
 

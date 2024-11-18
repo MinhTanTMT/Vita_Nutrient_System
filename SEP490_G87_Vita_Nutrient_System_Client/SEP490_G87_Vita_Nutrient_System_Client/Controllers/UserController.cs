@@ -56,19 +56,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else
             {
-                if (myDay == null || myDay <= DateTime.Now)
-                {
-                    if (myDay == null) myDay = DateTime.Now;
-                    HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheWeek?myDay={myDay}&idUser={userId}");
-                    if (res.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        HttpContent content = res.Content;
-                        string data = await content.ReadAsStringAsync();
-                        rootObjectFoodListWeek = JsonConvert.DeserializeObject<List<DataFoodAllDayOfWeek>>(data);
-                    }
-                    else return RedirectToAction("Error2");
-                }
-                else return RedirectToAction("PageUpgratePremium");
+                //if (myDay == null || myDay <= DateTime.Now)
+                //{
+                //    if (myDay == null) myDay = DateTime.Now;
+                //    HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
+                //    if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                //    {
+                //        HttpContent content = res.Content;
+                //        string data = await content.ReadAsStringAsync();
+                //        rootObjectFoodListWeek = JsonConvert.DeserializeObject<List<DataFoodAllDayOfWeek>>(data);
+                //    }
+                //    else return RedirectToAction("Error2");
+                //}
+                return RedirectToAction("PageUpgratePremium");
             }
 
 
