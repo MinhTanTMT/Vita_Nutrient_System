@@ -6,9 +6,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
 {
     public interface INutritionRouteRepositories
     {
-        Task<IEnumerable<NutritionRouteDTO>> GetAllNutritionRoutesAsync();
+        Task<IEnumerable<NutritionRouteDTO>> GetAllNutritionRoutesByCreateByIdAsync(int userId);
         Task<NutritionRouteDTO> GetNutritionRouteByIdAsync(int id);
-        Task CreateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto);
+        Task<bool> CreateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto, string userPhoneNumber);
         Task UpdateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto);
         Task DeleteNutritionRouteAsync(int id);
     }

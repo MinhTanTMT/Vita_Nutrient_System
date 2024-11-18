@@ -1,4 +1,4 @@
-﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNewsDTO
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNews
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/pica@8.0.0/dist/pica.min.js"></script>
@@ -71,8 +71,12 @@
         });
 </script>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
 <style>
-    
     /* Global Font Styling */
     body {
         font-family: 'Roboto', sans-serif;
@@ -187,10 +191,5 @@
             color: #FF5722;
             margin-right: 5px;
         }
-</style>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+</style>

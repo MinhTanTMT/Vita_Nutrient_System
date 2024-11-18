@@ -13,13 +13,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     {
         private readonly INutritionRouteRepositories _nutritionRouteRepositories = new NutritionRouteRepositories();
 
-        // GET: api/NutritionRoute
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetAllNutritionRoutes()
+        // GET: api/nutritionroute/user/{createById}
+        [HttpGet("user/{createById}")]
+        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetAllNutritionRoutesByCreateById(int createById)
         {
-            var routes = await _nutritionRouteRepositories.GetAllNutritionRoutesAsync();
+            var routes = await _nutritionRouteRepositories.GetAllNutritionRoutesByCreateByIdAsync(createById);
             return Ok(routes);
         }
+
 
         // GET: api/nutritionroute/{id}
         [HttpGet("{id}")]
@@ -35,19 +36,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
         // POST: api/nutritionroute
         [HttpPost]
-        public async Task<ActionResult> CreateNutritionRoute([FromBody] NutritionRouteDTO nutritionRouteDto)
+        public async Task<ActionResult> CreateNutritionRoute([FromBody] NutritionRouteDTO nutritionRouteDto, [FromQuery] string userPhoneNumber)
         {
             if (nutritionRouteDto == null || !ModelState.IsValid)
             {
                 return BadRequest("Dữ liệu lộ trình dinh dưỡng không hợp lệ.");
             }
 
-            if (nutritionRouteDto.UserId == 0)
+            if (string.IsNullOrEmpty(userPhoneNumber)) 
             {
-                return BadRequest("UserId không hợp lệ.");
+                return BadRequest("Số điện thoại của người sử dụng không được để trống.");
             }
 
-            await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto);
+            var isCreated = await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto, userPhoneNumber);
+            if (!isCreated)
+            {
+                return NotFound("Không tìm thấy người sử dụng với số điện thoại đã cung cấp.");
+            }
+
             return Ok();
         }
 
@@ -62,6 +68,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             try
             {
+                // Lấy NutritionRoute hiện tại từ database để cập nhật thông tin UserName và các trường khác
+                var existingRoute = await _nutritionRouteRepositories.GetNutritionRouteByIdAsync(id);
+
+                if (existingRoute == null)
+                {
+                    return NotFound("Không tìm thấy lộ trình dinh dưỡng.");
+                }
+
+                // Chỉ cập nhật các trường cần thiết, giữ nguyên UserName
+                nutritionRouteDto.UserName = existingRoute.UserName;
+
                 await _nutritionRouteRepositories.UpdateNutritionRouteAsync(nutritionRouteDto);
             }
             catch (KeyNotFoundException)
@@ -75,6 +92,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok();
         }
+
 
         // DELETE: api/NutritionRoute/5
         [HttpDelete("{id}")]
