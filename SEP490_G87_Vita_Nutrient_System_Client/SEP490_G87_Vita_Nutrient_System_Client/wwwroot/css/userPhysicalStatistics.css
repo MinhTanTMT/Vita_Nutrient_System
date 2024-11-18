@@ -1,71 +1,82 @@
 ﻿.container {
-    max-width: 600px;
+    max-width: 700px; /* Tăng chiều rộng để form thoáng hơn */
     margin: 0 auto;
-    padding: 20px;
+    padding: 30px; /* Tăng padding để tạo không gian rộng rãi hơn */
     background-color: #f7f3f9;
-    border-radius: 10px;
-    border: 2px solid #b0a4b5; /* Darker border */
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Darker shadow */
+    border-radius: 15px; /* Tăng bo tròn */
+    border: 3px solid #b0a4b5; /* Tăng độ dày viền */
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.25); /* Tăng shadow để form nổi bật */
 }
 
 .title {
     text-align: center;
     color: #333;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 25px; /* Tăng khoảng cách giữa tiêu đề và form */
+    font-size: 24px; /* Tăng kích thước tiêu đề */
 }
 
 .personal-info-form .form-group {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
+    flex-direction: column; /* Sắp xếp tất cả phần tử theo chiều dọc */
+    margin-bottom: 20px; /* Tăng khoảng cách giữa các nhóm */
 }
 
 .col-label {
-    width: 35%;
     font-weight: bold;
     color: #555;
     text-align: left;
-}
-
-.col-input {
-    width: 65%;
-    display: flex;
-    align-items: center;
+    margin-bottom: 8px; /* Tăng khoảng cách giữa nhãn và input */
+    font-size: 16px; /* Tăng kích thước font của nhãn */
 }
 
 .form-control {
     width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
+    padding: 12px; /* Tăng padding cho input */
+    border-radius: 8px; /* Làm bo tròn các input */
+    border: 2px solid #ddd; /* Tăng độ dày viền input */
     box-sizing: border-box;
+    font-size: 16px;
 }
 
     .form-control::placeholder {
         color: #aaa;
     }
 
+    .form-control:focus {
+        outline: none;
+        border-color: #6c63ff; /* Đổi màu viền khi focus */
+        box-shadow: 0px 0px 5px rgba(108, 99, 255, 0.5); /* Hiệu ứng sáng nhẹ */
+    }
+
+.text-danger {
+    font-size: 14px;
+    color: red;
+    margin-top: 5px; /* Khoảng cách giữa input và lỗi */
+    display: block; /* Hiển thị lỗi bên dưới input */
+    text-align: left; /* Căn trái thông báo lỗi */
+}
+
 .btn-primary {
-    padding: 10px 20px;
-    background-color: #007bff;
+    padding: 12px 25px; /* Tăng kích thước nút */
+    background-color: #6c63ff; /* Màu tím nổi bật */
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px; /* Bo tròn nút */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 20px; /* Tạo khoảng cách giữa nút và phần form */
+    font-size: 16px; /* Tăng kích thước chữ trên nút */
 }
 
     .btn-primary:hover {
-        background-color: #0056b3;
+        background-color: #5146d8;
     }
 
-
-/* CSS cho modal */
+/* Modal */
 .modal {
-    display: none;
+    display: none; /* Mặc định ẩn */
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -77,35 +88,90 @@
 
 .modal-content {
     background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 8px;
-    width: 40%;
+    margin: 10% auto;
+    padding: 30px; /* Tăng padding cho nội dung modal */
+    border-radius: 10px;
+    width: 50%; /* Đặt modal rộng thoải mái */
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.25); /* Tăng bóng mờ */
 }
+
+    .modal-content h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: #333;
+        font-size: 20px; /* Tăng kích thước tiêu đề modal */
+    }
 
 .close {
     float: right;
     font-size: 28px;
     font-weight: bold;
+    color: #333;
     cursor: pointer;
+    transition: color 0.3s ease;
 }
 
-.dot.yellow {
-    background-color: #ffc107;
+    .close:hover {
+        color: #000;
+    }
+
+/* Tooltip Styling */
+.tooltip {
+    position: relative;
 }
 
-.dot.blue {
-    background-color: #17a2b8;
+    .tooltip:hover::after {
+        content: attr(title); /* Hiển thị nội dung tooltip */
+        position: absolute;
+        top: 110%; /* Đặt tooltip bên dưới input */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #ffc107; /* Màu nền tooltip */
+        color: #000; /* Màu chữ tooltip */
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 14px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        white-space: nowrap;
+        z-index: 10;
+    }
+
+    .tooltip:hover::before {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: #ffc107 transparent transparent transparent;
+        z-index: 10;
+    }
+
+/* Alert */
+.alert {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: none;
 }
 
-.dot.purple {
-    background-color: #6f42c1;
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
-.dot {
-    width: 10px;
-    height: 10px;
-    display: inline-block;
-    border-radius: 50%;
-    margin-right: 8px;
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Transition cho alert */
+.alert.show {
+    display: block;
+    transition: all 0.3s ease;
 }

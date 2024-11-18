@@ -1,0 +1,60 @@
+﻿@model List<DietType>
+<link rel="stylesheet" href="/css/dietTypeList.css" />
+
+<div class="container mt-4">
+    <h3>Chế độ ăn uống chính</h3>
+    <p>Chúng tôi sẽ căn cứ các bữa ăn của bạn vào loại chế độ ăn chính này. Chọn "Bất kỳ thứ gì" để tùy chỉnh chế độ ăn uống độc đáo của riêng bạn từ đầu và thiết lập các loại trừ cụ thể khỏi Màn hình menu "Loại trừ".</p>
+
+    <form id="dietTypeForm">
+        @foreach (var diet in Model)
+        {
+            <div class="card mb-3">
+                <div class="card-body d-flex align-items-center">
+                    <div>
+                        <div class="form-check">
+                            <input class="form-check-input diet-radio"
+                                   type="radio"
+                                   name="dietType"
+                                   value="@diet.DietTypeId"
+                                   id="dietType_@diet.DietTypeId"
+                            @(ViewBag.CurrentDietTypeId == diet.DietTypeId ? "checked" : "") />
+                            <label class="form-check-label" for="dietType_@diet.DietTypeId">
+                                <strong>@diet.Name</strong>
+                                <p class="text-muted">@diet.Describe</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </form>
+</div>
+
+<script>
+    // Thêm sự kiện change vào các radio button
+    document.querySelectorAll('.diet-radio').forEach(radio => {
+        radio.addEventListener('change', function () {
+            const selectedDietTypeId = this.value;
+
+            // Gửi yêu cầu cập nhật chế độ ăn khi thay đổi
+            fetch('@Url.Action("UpdateDietType", "Meal")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: JSON.stringify({ FoodTypeIdWant: selectedDietTypeId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Không làm gì nếu thành công
+                    if (!data.success) {
+                        console.error("Có lỗi xảy ra:", data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Có lỗi xảy ra:", error.message);
+                });
+        });
+    });
+</script>

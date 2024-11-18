@@ -101,7 +101,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public async Task<NutritionTargetOfMealDTO> UpdateNutritionTargetAsync(NutritionTargetOfMealDTO nutritionTargetOfMealDTO)
         {
             var existingTarget = await _context.NutritionTargetsDailies.FirstOrDefaultAsync(nt => nt.Id == nutritionTargetOfMealDTO.NutritionTargetsDailyId);
-
+            var mealSetting = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.NutritionTargetsDailyId == nutritionTargetOfMealDTO.NutritionTargetsDailyId);
             if (existingTarget == null)
             {
                 return null;
@@ -120,8 +120,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             existingTarget.ExerciseIntensityId = nutritionTargetOfMealDTO.ExerciseIntensityId;
             existingTarget.FoodTypeIdWant = nutritionTargetOfMealDTO.FoodTypeIdWant;
             existingTarget.AvoidIngredient = nutritionTargetOfMealDTO.AvoidIngredient;
-
+            mealSetting.CarbsMax = nutritionTargetOfMealDTO.ViewBagCarbsMax;
+            mealSetting.FatsMax = nutritionTargetOfMealDTO.ViewBagFatsMax;
+            mealSetting.ProteinMax = nutritionTargetOfMealDTO.ViewBagProteinMax;
+            mealSetting.MinimumFiber = nutritionTargetOfMealDTO.MinimumFiber;
             _context.NutritionTargetsDailies.Update(existingTarget);
+            _context.MealSettingsDetails.Update(mealSetting);
             await _context.SaveChangesAsync();
 
             return nutritionTargetOfMealDTO;

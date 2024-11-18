@@ -6,7 +6,7 @@
 }
 
 <div class="container">
-    <h2 class="title">Thông kế chỉ số cá nhân</h2>
+    <h2 class="title">Thống kế chỉ số cá nhân</h2>
 
     <form asp-action="UserPhysicalStatistics" method="post" class="personal-info-form" id="userInfoForm">
         @Html.AntiForgeryToken()
@@ -20,26 +20,43 @@
             </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group">
             <label for="Height" class="col-label">Chiều cao(cm):</label>
             <div class="col-input">
-                <input asp-for="Height" class="form-control" />
+                <input asp-for="Height" class="form-control"
+                       oninvalid="this.setCustomValidity('Vui lòng nhập chiều cao từ 50 cm đến 250 cm.')"
+                       oninput="this.setCustomValidity('')"
+                       title="Vui lòng nhập chiều cao từ 50 cm đến 250 cm."
+                       min="50" max="250" required />
             </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group">
             <label for="Weight" class="col-label">Cân nặng(kg):</label>
             <div class="col-input">
-                <input asp-for="Weight" class="form-control" />
+                <input asp-for="Weight" class="form-control"
+                       oninvalid="this.setCustomValidity('Vui lòng nhập cân nặng từ 10 kg đến 300 kg.')"
+                       oninput="this.setCustomValidity('')"
+                       title="Vui lòng nhập cân nặng từ 10 kg đến 300 kg."
+                       min="10" max="300" required />
             </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group">
             <label for="Age" class="col-label">Tuổi(năm):</label>
             <div class="col-input">
-                <input asp-for="Age" class="form-control" />
+                <input asp-for="Age" class="form-control"
+                       oninvalid="this.setCustomValidity('Chỉ hỗ trợ nhập tuổi từ 5 đến 100.')"
+                       oninput="this.setCustomValidity('')"
+                       title="Chỉ hỗ trợ nhập tuổi từ 5 đến 100."
+                       min="5" max="100" required />
             </div>
         </div>
+
+
+
+
+
 
         <div class="form-group row">
             <label for="ActivityLevel" class="col-label">Mức độ hoạt động:</label>
@@ -82,14 +99,80 @@
 </div>
 
 <script>
+    // Thêm sự kiện `blur` để kiểm tra từng trường nhập khi người dùng rời khỏi input
+    document.querySelectorAll(".form-control").forEach((input) => {
+        input.addEventListener("blur", function () {
+            validateInput(this); // Gọi hàm kiểm tra khi rời khỏi trường nhập
+        });
+    });
+
+    // Hàm kiểm tra giá trị của từng trường nhập
+    function validateInput(input) {
+        const inputName = input.getAttribute("name"); // Lấy tên trường nhập
+        const value = parseFloat(input.value) || 0; // Lấy giá trị nhập, mặc định là 0 nếu không có
+
+        // Kiểm tra từng trường dựa vào tên
+        if (inputName === "Height") {
+            if (value < 50 || value > 250) {
+                input.setCustomValidity("Vui lòng nhập chiều cao từ 50 cm đến 250 cm.");
+                input.reportValidity(); // Hiển thị tooltip lỗi
+                input.classList.add("invalid"); // Thêm class invalid
+            } else {
+                input.setCustomValidity(""); // Xóa lỗi nếu hợp lệ
+                input.classList.remove("invalid");
+            }
+        }
+
+        if (inputName === "Weight") {
+            if (value < 10 || value > 300) {
+                input.setCustomValidity("Vui lòng nhập cân nặng từ 10 kg đến 300 kg.");
+                input.reportValidity(); // Hiển thị tooltip lỗi
+                input.classList.add("invalid");
+            } else {
+                input.setCustomValidity("");
+                input.classList.remove("invalid");
+            }
+        }
+
+        if (inputName === "Age") {
+            if (value < 5 || value > 100) {
+                input.setCustomValidity("Chỉ hỗ trợ nhập tuổi từ 5 đến 100.");
+                input.reportValidity(); // Hiển thị tooltip lỗi
+                input.classList.add("invalid");
+            } else {
+                input.setCustomValidity("");
+                input.classList.remove("invalid");
+            }
+        }
+    }
+
+    // Hàm khi nhấn nút "Cập nhật mục tiêu"
     function showNutritionalGoals() {
-        const height = parseFloat(document.querySelector('input[name="Height"]').value) || 0;
-        const weight = parseFloat(document.querySelector('input[name="Weight"]').value) || 0;
-        const age = parseFloat(document.querySelector('input[name="Age"]').value) || 0;
+        const inputs = document.querySelectorAll(".form-control");
+        let hasError = false;
+
+        // Kiểm tra lại toàn bộ input khi nhấn nút
+        inputs.forEach((input) => {
+            validateInput(input);
+            if (input.classList.contains("invalid")) {
+                hasError = true; // Đánh dấu nếu có lỗi
+            }
+        });
+
+        // Nếu có lỗi, không thực hiện tiếp
+        if (hasError) return;
+
+        // Nếu không có lỗi, tính toán mục tiêu
+        const height = parseFloat(document.querySelector('input[name="Height"]').value);
+        const weight = parseFloat(document.querySelector('input[name="Weight"]').value);
+        const age = parseFloat(document.querySelector('input[name="Age"]').value);
         const gender = document.querySelector('select[name="Gender"]').value === "true";
         const activityLevel = parseFloat(document.querySelector('select[name="ActivityLevel"]').value) || 1.2;
 
-        let bmr = gender ? (10 * weight) + (6.25 * height) - (5 * age) + 5 : (10 * weight) + (6.25 * height) - (5 * age) - 161;
+        let bmr = gender
+            ? (10 * weight) + (6.25 * height) - (5 * age) + 5
+            : (10 * weight) + (6.25 * height) - (5 * age) - 161;
+
         let tdee = bmr * activityLevel;
 
         const carbs = Math.round(tdee * 0.4 / 4);
@@ -101,8 +184,12 @@
         document.getElementById("fatsValue").textContent = fats;
         document.getElementById("proteinsValue").textContent = proteins;
 
+        // Hiển thị bảng modal
         document.getElementById("nutritionalGoalsModal").style.display = "block";
     }
+
+
+
 
     function closeModal() {
         document.getElementById("nutritionalGoalsModal").style.display = "none";
