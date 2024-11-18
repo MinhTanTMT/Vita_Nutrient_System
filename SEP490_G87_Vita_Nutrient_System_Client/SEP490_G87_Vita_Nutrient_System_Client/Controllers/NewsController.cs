@@ -23,7 +23,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // GET: List of all articles
         [HttpGet]
-        public async Task<IActionResult> Index(string searchTitle)
+        public async Task<IActionResult> Index(string searchTitle, int pageNumber = 1, int pageSize = 2)
         {
             try
             {
@@ -33,12 +33,23 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     var data = await response.Content.ReadAsStringAsync();
                     var articles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+
+                    // Tìm kiếm theo tiêu đề
                     if (!string.IsNullOrEmpty(searchTitle))
                     {
                         articles = articles.Where(a => a.Title != null && a.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase)).ToList();
-                        ViewData["searchTitle"] = searchTitle; // Lưu từ khóa tìm kiếm vào ViewData để hiển thị lại trong input
+                        ViewData["searchTitle"] = searchTitle;
                     }
-                    return View(articles);
+
+                    // Phân trang
+                    int totalItems = articles.Count;
+                    var paginatedArticles = articles.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                    // Thông tin phân trang
+                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    ViewData["CurrentPage"] = pageNumber;
+
+                    return View(paginatedArticles);
                 }
 
                 ModelState.AddModelError(string.Empty, "Error retrieving data from server.");
@@ -47,13 +58,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
+
             return View(new List<ArticlesNews>());
         }
 
 
+
         // GET: List of all articles for users
         [HttpGet]
-        public async Task<IActionResult> IndexForUsers(string searchTitle)
+        public async Task<IActionResult> IndexForUsers(string searchTitle, int pageNumber = 1, int pageSize = 2)
         {
             try
             {
@@ -63,12 +76,26 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     var data = await response.Content.ReadAsStringAsync();
                     var articles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+
+                    // Chỉ hiển thị bài viết đang hoạt động
+                    articles = articles.Where(a => a.IsActive == true).ToList();
+
+                    // Tìm kiếm theo tiêu đề
                     if (!string.IsNullOrEmpty(searchTitle))
                     {
                         articles = articles.Where(a => a.Title != null && a.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase)).ToList();
-                        ViewData["searchTitle"] = searchTitle; // Lưu từ khóa tìm kiếm vào ViewData để hiển thị lại trong input
+                        ViewData["searchTitle"] = searchTitle;
                     }
-                    return View(articles); // Sử dụng View riêng cho user
+
+                    // Phân trang
+                    int totalItems = articles.Count;
+                    var paginatedArticles = articles.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                    // Thông tin phân trang
+                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    ViewData["CurrentPage"] = pageNumber;
+
+                    return View(paginatedArticles);
                 }
 
                 ModelState.AddModelError(string.Empty, "Error retrieving data from server.");

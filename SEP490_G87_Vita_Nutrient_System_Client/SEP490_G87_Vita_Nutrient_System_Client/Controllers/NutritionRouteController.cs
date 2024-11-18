@@ -21,18 +21,46 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
-        // GET: NutritionRoute/GetAll/{createById}
-        public async Task<IActionResult> GetAll()
+        // GET: NutritionRoute/GetAll
+        public async Task<IActionResult> GetAll(string search, int pageNumber = 1, int pageSize = 2)
         {
-            var createById = int.Parse(User.FindFirst("UserId")?.Value);
-            HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/user/{createById}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var data = await response.Content.ReadAsStringAsync();
-                var routes = JsonSerializer.Deserialize<List<NutritionRoute>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return View(routes);
+                var createById = int.Parse(User.FindFirst("UserId")?.Value);
+                HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/user/{createById}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var routes = JsonSerializer.Deserialize<List<NutritionRoute>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    // Tìm kiếm theo từ khóa
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        routes = routes.Where(r =>
+                            (r.Name != null && r.Name.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
+                            (r.UserName != null && r.UserName.Contains(search, StringComparison.OrdinalIgnoreCase))
+                        ).ToList();
+
+                        ViewData["search"] = search;
+                    }
+
+                    // Phân trang
+                    int totalItems = routes.Count;
+                    var paginatedRoutes = routes.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                    // Truyền thông tin phân trang vào ViewData
+                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    ViewData["CurrentPage"] = pageNumber;
+
+                    return View(paginatedRoutes);
+                }
             }
-            return View("Error");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Có lỗi xảy ra: {ex.Message}");
+            }
+
+            return View(new List<NutritionRoute>()); // Trả về danh sách trống nếu có lỗi
         }
 
 

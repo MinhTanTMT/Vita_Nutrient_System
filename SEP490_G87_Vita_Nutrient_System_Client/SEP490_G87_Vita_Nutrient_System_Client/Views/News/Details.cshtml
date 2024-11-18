@@ -1,7 +1,7 @@
 ﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNews
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="/css/news/details.css" />
+
 
 <div class="container">
     <h2 class="page-title">@Model.Title</h2>
@@ -48,3 +48,110 @@
     </div>
 </div>
 
+<style>
+    /* Global Font Styling */
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Container Styling */
+    .container {
+        max-width: 100%;
+        margin: 30px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Page Title Styling */
+    .page-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Details Row Styling */
+    .details-row {
+        margin-bottom: 20px;
+    }
+
+        .details-row div {
+            margin-bottom: 10px;
+        }
+
+    /* Details List Styling */
+    .details-list dt {
+        font-weight: 500;
+        color: #555;
+    }
+
+    .details-list dd {
+        margin-bottom: 15px;
+        font-weight: 400;
+        color: #333;
+    }
+
+    /* Badge Styling */
+    .badge {
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        color: #fff;
+    }
+
+    .badge-active {
+        background-color: #28a745;
+    }
+
+    .badge-inactive {
+        background-color: #dc3545;
+    }
+
+    /* Action Links Styling */
+    .action-links {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .action-links .btn {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: 'Roboto', sans-serif;
+        }
+
+    .btn-primary {
+        background-color: #1E88E5;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #1565C0;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+    .btn-danger {
+        background-color: #f44336;
+        color: white;
+    }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+</style>
