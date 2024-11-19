@@ -770,6 +770,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     nutritionTarget.FatsMax = 0;
                     nutritionTarget.CarbsMax = 0;
                     nutritionTarget.ProteinMax = 0;
+                    nutritionTarget.FatsMin = 0;
+                    nutritionTarget.CarbsMin = 0;
+                    nutritionTarget.ProteinMin = 0;
                     _context.NutritionTargetsDailies.Update(nutritionTarget);
                 }
             }

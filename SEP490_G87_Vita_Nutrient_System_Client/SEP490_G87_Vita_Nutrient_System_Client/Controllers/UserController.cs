@@ -558,7 +558,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 return Json(new { success = false, message = "Dữ liệu không hợp lệ." });
             }
-
+            if (model.Height < 50 || model.Height > 250)
+            {
+                return Json(new { success = false, message = "Vui lòng nhập chiều cao từ 50 cm đến 250 cm." });
+            }
+            if (model.Weight < 10 || model.Weight > 300)
+            {
+                return Json(new { success = false, message = "Vui lòng nhập cân nặng từ 10 kg đến 300 kg." });
+            }
+            if (model.Age < 5 || model.Age > 100)
+            {
+                return Json(new { success = false, message = "Chỉ hỗ trợ nhập tuổi từ 5 đến 100." });
+            }
             var userDetailsDTO = new UserPhysicalStatistics
             {
                 UserId = userId,

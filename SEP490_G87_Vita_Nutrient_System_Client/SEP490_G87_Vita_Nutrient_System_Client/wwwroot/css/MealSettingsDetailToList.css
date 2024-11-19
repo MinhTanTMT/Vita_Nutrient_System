@@ -37,6 +37,9 @@
 
 /* Meal item styling within each day */
 .meal-item {
+    display: flex;
+    align-items: center; /* Align items vertically center */
+    justify-content: space-between; /* Space out the content */
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -45,13 +48,59 @@
     text-align: left;
 }
 
+    /* Meal item heading */
     .meal-item h6 {
         font-weight: bold;
         margin-bottom: 5px;
     }
 
+    /* Meal item paragraph */
     .meal-item p {
         margin: 0;
         font-size: 0.9em;
         color: #666;
+    }
+
+/* Meal actions button container */
+.meal-actions {
+    display: flex;
+    align-items: center; /* Center icons vertically */
+    gap: 5px; /* Space between icons */
+}
+
+    /* Styling for each button in meal-actions */
+    .meal-actions .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px; /* Fixed width for uniformity */
+        height: 30px; /* Fixed height for uniformity */
+        padding: 0; /* Remove padding to center icon */
+        margin: 0;
+        border-radius: 4px;
+        font-size: 16px; /* Icon font size */
+        color: #666; /* Default icon color */
+    }
+
+        /* Change color on hover */
+        .meal-actions .btn:hover i {
+            color: #333; /* Darker color on hover */
+        }
+
+    /* Specific style for each icon */
+    .meal-actions .fa-pencil-alt {
+        color: gray; /* Gray pencil icon */
+    }
+
+    .meal-actions .fa-search {
+        color: #333; /* Darker color for search */
+    }
+
+    .meal-actions .fa-arrow-up,
+    .meal-actions .fa-arrow-down {
+        color: #666; /* Default arrow color */
+    }
+
+    .meal-actions .fa-times {
+        color: red; /* Red color for delete */
     }
