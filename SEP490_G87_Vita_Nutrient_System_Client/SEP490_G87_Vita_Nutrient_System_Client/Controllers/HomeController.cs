@@ -288,123 +288,123 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
 
-public IActionResult NutritionCheck()
-{
-    return View();
-}
-[HttpPost]
-public IActionResult NutritionCheck(DateTime birthDate, double weight, double height, string gender)
-{
-    int age = DateTime.Today.Year - birthDate.Year;
-    if (birthDate > DateTime.Today.AddYears(-age)) age--;
-            bool isValid = true;
-            // Kiểm tra ngày sinh không được lớn hơn ngày hiện tại
-            if (birthDate > DateTime.Today)
-            {
-                ViewBag.BirthDateError = "Ngày sinh không hợp lệ. Vui lòng chọn một ngày trong quá khứ.";
-                isValid = false;
-            }
+    public IActionResult NutritionCheck()
+    {
+        return View();
+    }
+    [HttpPost]
+    public IActionResult NutritionCheck(DateTime birthDate, double weight, double height, string gender)
+    {
+        int age = DateTime.Today.Year - birthDate.Year;
+        if (birthDate > DateTime.Today.AddYears(-age)) age--;
+                bool isValid = true;
+                // Kiểm tra ngày sinh không được lớn hơn ngày hiện tại
+                if (birthDate > DateTime.Today)
+                {
+                    ViewBag.BirthDateError = "Ngày sinh không hợp lệ. Vui lòng chọn một ngày trong quá khứ.";
+                    isValid = false;
+                }
 
-            // Nếu tuổi dưới 5 hoặc chiều cao, cân nặng không hợp lý, trả về lỗi
-            if (age < 5 || age > 100 || height <= 0 || weight <= 0)
-            {
-                ViewBag.AgeError = "Phần mềm này chỉ áp dụng cho người từ 5 đến 100 tuổi với chiều cao và cân nặng hợp lý.";
-                isValid = false;
-            }
+                // Nếu tuổi dưới 5 hoặc chiều cao, cân nặng không hợp lý, trả về lỗi
+                if (age < 5 || age > 100)
+                {
+                    ViewBag.AgeError = "Phần mềm này chỉ áp dụng cho người từ 5 đến 100 tuổi hợp lý.";
+                    isValid = false;
+                }
 
-            if (weight <= 0 || weight > 300)
-            {
-                ViewBag.WeightError = "Cân nặng không hợp lệ (phải nằm trong khoảng 1 - 300 kg).";
-                isValid = false;
-            }
+                if (weight < 10 || weight > 300)
+                {
+                    ViewBag.WeightError = "Cân nặng không hợp lệ (phải nằm trong khoảng 10 - 300 kg).";
+                    isValid = false;
+                }
 
-            if (height < 50 || height > 250)
-            {
-                ViewBag.HeightError = "Chiều cao không hợp lệ (phải nằm trong khoảng 50 - 250 cm).";
-                isValid = false;
-            }
-            if (!isValid)
-            {
+                if (height < 50 || height > 250)
+                {
+                    ViewBag.HeightError = "Chiều cao không hợp lệ (phải nằm trong khoảng 50 - 250 cm).";
+                    isValid = false;
+                }
+                if (!isValid)
+                {
+                    ViewBag.BirthDate = birthDate.ToString("yyyy-MM-dd");
+                    ViewBag.Weight = weight;
+                    ViewBag.Height = height;
+                    ViewBag.Gender = gender;
+                    return View();
+                }
+
+                double bmi = weight / Math.Pow(height / 100, 2);
+                int percentile = 0;
+                string status;
+                string evaluation;
+
+                if (age >= 19) // Tiêu chí cho người trưởng thành
+                {
+                    if (gender == "Nam")
+                    {
+                        if (bmi < 16) { status = "GẦY ĐỘ III"; evaluation = "<16Kg/m²"; }
+                        else if (bmi < 17) { status = "GẦY ĐỘ II"; evaluation = "16Kg/m² - <17Kg/m²"; }
+                        else if (bmi < 18.5) { status = "GẦY ĐỘ I"; evaluation = "17Kg/m² - <18.5Kg/m²"; }
+                        else if (bmi < 23) { status = "BÌNH THƯỜNG"; evaluation = "18.5Kg/m² - <23Kg/m²"; }
+                        else if (bmi < 25) { status = "THỪA CÂN"; evaluation = "23Kg/m² - <25Kg/m²"; }
+                        else if (bmi < 30) { status = "BÉO PHÌ ĐỘ I"; evaluation = "25Kg/m² - <30Kg/m²"; }
+                        else if (bmi < 35) { status = "BÉO PHÌ ĐỘ II"; evaluation = "30Kg/m² - <35Kg/m²"; }
+                        else { status = "BÉO PHÌ ĐỘ III"; evaluation = "≥35Kg/m²"; }
+                    }
+                    else // Nữ
+                    {
+                        if (bmi < 15.5) { status = "GẦY ĐỘ III"; evaluation = "<15.5Kg/m²"; }
+                        else if (bmi < 16.5) { status = "GẦY ĐỘ II"; evaluation = "15.5Kg/m² - <16.5Kg/m²"; }
+                        else if (bmi < 18) { status = "GẦY ĐỘ I"; evaluation = "16.5Kg/m² - <18Kg/m²"; }
+                        else if (bmi < 22.5) { status = "BÌNH THƯỜNG"; evaluation = "18Kg/m² - <22.5Kg/m²"; }
+                        else if (bmi < 24.5) { status = "THỪA CÂN"; evaluation = "22.5Kg/m² - <24.5Kg/m²"; }
+                        else if (bmi < 29.5) { status = "BÉO PHÌ ĐỘ I"; evaluation = "24.5Kg/m² - <29.5Kg/m²"; }
+                        else if (bmi < 34.5) { status = "BÉO PHÌ ĐỘ II"; evaluation = "29.5Kg/m² - <34.5Kg/m²"; }
+                        else { status = "BÉO PHÌ ĐỘ III"; evaluation = "≥34.5Kg/m²"; }
+                    }
+                }
+                else // Tiêu chí cho trẻ em và thanh thiếu niên
+                {
+                    percentile = GetBMIPercentileForAgeAndGender(age, bmi, gender);
+                    if (percentile < 5)
+                    {
+                        status = "THIẾU CÂN";
+                        evaluation = $"Hãy cải thiện chế độ dinh dưỡng để đạt mức cân nặng phù hợp.";
+                    }
+                    else if (percentile <= 85)
+                    {
+                        status = "BÌNH THƯỜNG";
+                        evaluation = $"Hãy duy trì chế độ ăn uống và luyện tập hiện tại.";
+                    }
+                    else if (percentile <= 95)
+                    {
+                        status = "NGUY CƠ THỪA CÂN";
+                        evaluation = $"Cần điều chỉnh chế độ ăn uống và luyện tập để tránh thừa cân.";
+                    }
+                    else
+                    {
+                        status = "THỪA CÂN";
+                        evaluation = $"Cần có chế độ ăn uống và vận động phù hợp để cải thiện sức khỏe.";
+                    }
+
+                }
+
+                var result = new BMIResult
+                {
+                    BMI = Math.Round(bmi, 2),
+                    Percentile = percentile,
+                    Status = status,
+                    Evaluation = evaluation,
+                    Gender = gender
+                };
+
                 ViewBag.BirthDate = birthDate.ToString("yyyy-MM-dd");
                 ViewBag.Weight = weight;
                 ViewBag.Height = height;
                 ViewBag.Gender = gender;
-                return View();
+                ViewBag.Age = age;
+
+                return View("NutritionCheck", result);
             }
-
-            double bmi = weight / Math.Pow(height / 100, 2);
-            int percentile = 0;
-            string status;
-            string evaluation;
-
-            if (age >= 19) // Tiêu chí cho người trưởng thành
-            {
-                if (gender == "Nam")
-                {
-                    if (bmi < 16) { status = "GẦY ĐỘ III"; evaluation = "<16Kg/m²"; }
-                    else if (bmi < 17) { status = "GẦY ĐỘ II"; evaluation = "16Kg/m² - <17Kg/m²"; }
-                    else if (bmi < 18.5) { status = "GẦY ĐỘ I"; evaluation = "17Kg/m² - <18.5Kg/m²"; }
-                    else if (bmi < 23) { status = "BÌNH THƯỜNG"; evaluation = "18.5Kg/m² - <23Kg/m²"; }
-                    else if (bmi < 25) { status = "THỪA CÂN"; evaluation = "23Kg/m² - <25Kg/m²"; }
-                    else if (bmi < 30) { status = "BÉO PHÌ ĐỘ I"; evaluation = "25Kg/m² - <30Kg/m²"; }
-                    else if (bmi < 35) { status = "BÉO PHÌ ĐỘ II"; evaluation = "30Kg/m² - <35Kg/m²"; }
-                    else { status = "BÉO PHÌ ĐỘ III"; evaluation = "≥35Kg/m²"; }
-                }
-                else // Nữ
-                {
-                    if (bmi < 15.5) { status = "GẦY ĐỘ III"; evaluation = "<15.5Kg/m²"; }
-                    else if (bmi < 16.5) { status = "GẦY ĐỘ II"; evaluation = "15.5Kg/m² - <16.5Kg/m²"; }
-                    else if (bmi < 18) { status = "GẦY ĐỘ I"; evaluation = "16.5Kg/m² - <18Kg/m²"; }
-                    else if (bmi < 22.5) { status = "BÌNH THƯỜNG"; evaluation = "18Kg/m² - <22.5Kg/m²"; }
-                    else if (bmi < 24.5) { status = "THỪA CÂN"; evaluation = "22.5Kg/m² - <24.5Kg/m²"; }
-                    else if (bmi < 29.5) { status = "BÉO PHÌ ĐỘ I"; evaluation = "24.5Kg/m² - <29.5Kg/m²"; }
-                    else if (bmi < 34.5) { status = "BÉO PHÌ ĐỘ II"; evaluation = "29.5Kg/m² - <34.5Kg/m²"; }
-                    else { status = "BÉO PHÌ ĐỘ III"; evaluation = "≥34.5Kg/m²"; }
-                }
-            }
-            else // Tiêu chí cho trẻ em và thanh thiếu niên
-            {
-                percentile = GetBMIPercentileForAgeAndGender(age, bmi, gender);
-                if (percentile < 5)
-                {
-                    status = "THIẾU CÂN";
-                    evaluation = $"Hãy cải thiện chế độ dinh dưỡng để đạt mức cân nặng phù hợp.";
-                }
-                else if (percentile <= 85)
-                {
-                    status = "BÌNH THƯỜNG";
-                    evaluation = $"Hãy duy trì chế độ ăn uống và luyện tập hiện tại.";
-                }
-                else if (percentile <= 95)
-                {
-                    status = "NGUY CƠ THỪA CÂN";
-                    evaluation = $"Cần điều chỉnh chế độ ăn uống và luyện tập để tránh thừa cân.";
-                }
-                else
-                {
-                    status = "THỪA CÂN";
-                    evaluation = $"Cần có chế độ ăn uống và vận động phù hợp để cải thiện sức khỏe.";
-                }
-
-            }
-
-            var result = new BMIResult
-            {
-                BMI = Math.Round(bmi, 2),
-                Percentile = percentile,
-                Status = status,
-                Evaluation = evaluation,
-                Gender = gender
-            };
-
-            ViewBag.BirthDate = birthDate.ToString("yyyy-MM-dd");
-            ViewBag.Weight = weight;
-            ViewBag.Height = height;
-            ViewBag.Gender = gender;
-            ViewBag.Age = age;
-
-            return View("NutritionCheck", result);
-        }
 
         private int GetBMIPercentileForAgeAndGender(int age, double bmi, string gender)
         {
@@ -482,7 +482,22 @@ public IActionResult NutritionCheck(DateTime birthDate, double weight, double he
             return percentile;
         }
 
+        [HttpGet]
+        public IActionResult AboutUs()
+        {
+            // Tạo danh sách thông tin thành viên nhóm
+            var teamMembers = new List<dynamic>
+    {
+        new { Name = "Trinh Minh Tan", Role = "Leader" },
+        new { Name = "Ngo Manh Tung", Role = "Member" },
+        new { Name = "Nguyen Tien Dung", Role = "Member" },
+        new { Name = "Do Van Son", Role = "Member" },
+        new { Name = "Vu Minh Chien", Role = "Member" }
+    };
 
+            // Truyền danh sách vào View
+            return View(teamMembers);
+        }
 
 
 
