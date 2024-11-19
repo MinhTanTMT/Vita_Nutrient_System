@@ -11,6 +11,9 @@ using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics.Metrics;
 using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.Security.Cryptography.Xml;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -37,15 +40,20 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-
                 string? accountNumber = HttpContext.Session.GetString("accountNumberQRPay");
                 int? limit = Int32.Parse(HttpContext.Session.GetString("limitQRPay"));
                 decimal? amountInPay = decimal.Parse(HttpContext.Session.GetString("amountInPayQRPay"));
                 string? contentBankPay = HttpContext.Session.GetString("contentBankPayQRPay");
-                decimal? amountInImg = decimal.Parse(HttpContext.Session.GetString("amountInImgQRPay"));
+                //decimal? amountInImg = decimal.Parse(HttpContext.Session.GetString("amountInImgQRPay"));
+
+                long? amountWithoutDecimal = HttpContext.Session.GetString("amountInPayQRPay") is string amountInPayString
+    && decimal.TryParse(amountInPayString, out decimal amountInImg)
+        ? (long)(amountInPay * (decimal)Math.Pow(10, BitConverter.GetBytes(decimal.GetBits(amountInImg)[3])[2]))
+        : 0;
+
                 string? contentBankImg = HttpContext.Session.GetString("contentBankImgQRPay");
 
-                if (accountNumber != null && limit != null && amountInPay != null && contentBankPay != null && amountInImg != null && contentBankImg != null)
+                if (accountNumber != null && limit != null && amountInPay != null && contentBankPay != null && amountWithoutDecimal != null && contentBankImg != null)
                 {
                     HttpContext.Session.Remove("accountNumberQRPay");
                     HttpContext.Session.Remove("limitQRPay");
@@ -55,7 +63,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     HttpContext.Session.Remove("contentBankImgQRPay");
 
                     string checkQRPaySuccess = client.BaseAddress + $"/BankPayment/APICheckQRPaySuccessful?accountNumber={accountNumber}&limit={limit}&content={contentBankPay}&amountIn={amountInPay}";
-                    HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetQRPayDefaultSystem?amount={amountInImg}&content={contentBankImg}");
+                    HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetQRPayDefaultSystem?amount={amountWithoutDecimal}&content={contentBankImg}");
 
                     if (res.StatusCode == System.Net.HttpStatusCode.OK)
                     {
@@ -70,7 +78,53 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 }
                 ViewBag.AlertMessage = "Error";
-                return View();
+                return Redirect("Error");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
+                return Redirect("Error");
+            }
+        }
+
+
+        //[HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult AdminStatistics()
+        {
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult PremiumUpgradeSuggestion()
+        {
+            return View();
+        }
+        
+
+        [HttpGet]
+        public async Task<IActionResult> NutritionistServicesAsync()
+        {
+            try
+            {
+                int month = DateTime.Now.Month;
+                int year = DateTime.Now.Year;
+                Decimal[][] graphData;
+                HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/BankPayment/APIGetAllNutritionistServices");
+
+                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = res.Content;
+                    string data = await content.ReadAsStringAsync();
+                    IEnumerable<AllNutritionistServices> transactionsSystemData = JsonConvert.DeserializeObject<IEnumerable<AllNutritionistServices>>(data);
+
+                    return View(transactionsSystemData);
+                }
+
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
+                return View(null);
+
             }
             catch (Exception ex)
             {
@@ -79,12 +133,100 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        //[HttpGet, Authorize(Roles = "Admin")]
-        [HttpGet]
-        public IActionResult AdminStatistics()
+
+        [HttpPost]
+        public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration)
         {
-            return View();
+            var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+            string? accountNumber = configuration.GetValue<string>("accountNumberQRPay");
+            int? limit = configuration.GetValue<int>("limitQRPay");
+
+            HttpContext.Session.SetString("NutritionistId", NutritionistId.ToString());
+            HttpContext.Session.SetString("Describe", Describe ?? "");
+            HttpContext.Session.SetString("Price", Price.ToString());
+            HttpContext.Session.SetString("Duration", Duration.ToString());
+
+            HttpContext.Session.SetString("accountNumberQRPay", accountNumber ?? "");
+            HttpContext.Session.SetString("limitQRPay", limit.ToString() ?? "20");
+            HttpContext.Session.SetString("amountInPayQRPay", Price.ToString());
+            HttpContext.Session.SetString("amountInImgQRPay", Price.ToString());
+
+            string contentGeneratePassword = GeneratePassword(6);
+            HttpContext.Session.SetString("contentBankPayQRPay", contentGeneratePassword);
+            HttpContext.Session.SetString("contentBankImgQRPay", contentGeneratePassword);
+
+            return Redirect("QRCodePaymentPage");
         }
+
+
+        [HttpPost]
+        public IActionResult PaymentTransferSuccessful()
+        {
+
+
+
+            return RedirectToAction("QRCodePaymentPage");
+        }
+
+
+        
+
+        public static string GeneratePassword(int length, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = true)
+        {
+            if (length <= 0)
+            {
+                throw new ArgumentException("Password length must be greater than 0.");
+            }
+
+            // Các bộ ký tự có thể sử dụng
+            const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+            const string numberChars = "0123456789";
+            const string specialChars = "!@#$%^&*()-_=+[]{}|;:,.<>?/";
+
+            // Chuỗi ký tự được chọn để tạo mật khẩu
+            string characterPool = "";
+
+            if (includeUppercase)
+            {
+                characterPool += uppercaseChars;
+            }
+
+            if (includeLowercase)
+            {
+                characterPool += lowercaseChars;
+            }
+
+            if (includeNumbers)
+            {
+                characterPool += numberChars;
+            }
+
+            if (includeSpecialChars)
+            {
+                characterPool += specialChars;
+            }
+
+            if (string.IsNullOrEmpty(characterPool))
+            {
+                throw new ArgumentException("At least one character type must be selected.");
+            }
+
+            // Tạo mật khẩu
+            var random = new Random();
+            var passwordBuilder = new StringBuilder();
+
+            for (int i = 0; i < length; i++)
+            {
+                int randomIndex = random.Next(characterPool.Length);
+                passwordBuilder.Append(characterPool[randomIndex]);
+            }
+
+            return passwordBuilder.ToString();
+        }
+
 
 
         [HttpGet]

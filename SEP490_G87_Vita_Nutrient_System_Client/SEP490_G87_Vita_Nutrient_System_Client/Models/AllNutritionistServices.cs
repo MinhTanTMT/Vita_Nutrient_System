@@ -1,6 +1,6 @@
 ﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
-    public partial class NutritionistDetail
+    public class AllNutritionistServices
     {
         public int Id { get; set; }
 
@@ -18,6 +18,8 @@
 
         public int? NumberRate { get; set; }
 
-
+        public virtual ICollection<ExpertPackage> ExpertPackages { get; set; } = new List<ExpertPackage>();
     }
+
+
 }

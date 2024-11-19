@@ -249,7 +249,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("PremiumUpgradeSuggestion");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
@@ -276,7 +276,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("PremiumUpgradeSuggestion");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
@@ -341,6 +341,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     if (dataFoodListMealOfTheDays != null)
                     {
+                        ViewBag.clientBaseAddress = client.BaseAddress.ToString();
                         ViewBag.myDay = myDaySelect;
                         ViewBag.userId = userId;
                         ViewBag.APIgetThisListOfDishes = client.BaseAddress + $"/GenerateMeal/APIgetThisListOfDishes?userId={userId}&myDay={myDaySelect}";
