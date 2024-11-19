@@ -487,13 +487,13 @@
                                                     <input type="text" value="@item.Describe" class="form-control" name="Describe" required />
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="IsGoodOrBad" value="true" id="isGoodOrBad" @(item.IsGoodOrBad ? "checked" : null)>
+                                                    <input class="form-check-input" type="checkbox" name="IsGoodOrBad" value="true" id="isGoodOrBad" @(item.IsGoodOrBad ? "checked" : "")>
                                                     <label class="form-check-label" for="isGoodOrBad">Good for Disease</label>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Create</button>
+                                                <button type="submit" class="btn btn-primary">Update</button>
                                             </div>
                                         </form>
                                     </div>

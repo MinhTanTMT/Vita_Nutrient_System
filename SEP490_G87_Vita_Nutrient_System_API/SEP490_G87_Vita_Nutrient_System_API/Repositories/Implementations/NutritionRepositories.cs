@@ -466,6 +466,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             var check = await _context.FoodAndDiseases.FirstOrDefaultAsync(t => t.ListOfDiseasesId == model.ListOfDiseasesId && t.FoodListId == model.FoodListId);
             if (check != null)
             {
+                if(model.IsGoodOrBad == null)
+                {
+                    model.IsGoodOrBad = false;
+                }
                 check.ListOfDiseasesId = model.ListOfDiseasesId;
                 check.FoodListId = model.FoodListId;
                 check.Describe = model.Describe;
@@ -475,6 +479,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             else
             {
+                if (model.IsGoodOrBad == null)
+                {
+                    model.IsGoodOrBad = false;
+                }
                 check = new FoodAndDisease()
                 {
                     ListOfDiseasesId = model.ListOfDiseasesId,
