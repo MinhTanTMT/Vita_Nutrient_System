@@ -22,7 +22,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         // GET: NutritionRoute/GetAll
-        public async Task<IActionResult> GetAll(string search, int pageNumber = 1, int pageSize = 2)
+        public async Task<IActionResult> GetAll(string search, int pageNumber = 1, int pageSize = 10)
         {
             try
             {

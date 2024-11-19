@@ -5,7 +5,7 @@
         <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Purple Admin</title>
+    <title>Vita Nutrient System</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="~/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="~/vendors/css/vendor.bundle.base.css">
@@ -473,19 +473,48 @@
                     <div class="page-header">
                         @RenderBody()
                     </div>
-
-                    <!-- content-wrapper ends -->
-                    <!-- partial:partials/_footer.html -->
-                    <footer class="footer">
-                        <div class="container-fluid d-flex justify-content-between">
-                            <span>© 2024 Vita Nutrient System. All Rights Reserved.</span>
-
-                        </div>
-                    </footer>
                     <!-- partial -->
                 </div>
-                <!-- main-panel ends -->
+                <!-- content-wrapper ends -->
+                <!-- partial:partials/_footer.html -->
+                <footer class="footer fixed-footer" style="background-color: #ffffff; padding: 20px 0; border-top: 1px solid #e0e0e0; font-family: Roboto, sans-serif;">
+                    <div class="footer-container text-center">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
+                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Nó hoạt động như thế nào</a></li>
+                                    <li><a href="@Url.Action("AboutUs", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Giới thiệu về chúng tôi</a></li>
+                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Mã quà tặng</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
+                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Chính sách bảo mật</a></li>
+                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Điều khoản dịch vụ</a></li>
+                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Liên hệ với chúng tôi</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Bản quyền -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <span style="font-size: 15px; font-weight: 600; color: #333;">
+                                    Bản quyền © 2024 thuộc về Vita Nutrient System
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Ghi chú -->
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <p style="font-size: 14px; color: #666; line-height: 1.6;">
+                                    Các thông tin trên website chỉ mang tính chất tham khảo, không thay thế cho việc chẩn đoán hoặc điều trị y khoa. Vita Nutrient System không chịu trách nhiệm về những trường hợp tự ý áp dụng mà không có chỉ định của bác sĩ.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
 
+                <!-- main-panel ends -->
             </div>
             <!-- page-body-wrapper ends -->
         </div>
