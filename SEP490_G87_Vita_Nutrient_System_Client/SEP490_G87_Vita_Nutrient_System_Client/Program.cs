@@ -2,7 +2,7 @@
 
 namespace SEP490_G87_Vita_Nutrient_System_Client
 {
-    public class Program()
+    public class Program
     {
         public static void Main(string[] args)
         {
@@ -17,7 +17,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
                 options.Cookie.IsEssential = true;
             });
 
-
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -28,16 +27,23 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Session timeout
                 });
 
-
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
+            Console.WriteLine("Environment: " + app.Environment.EnvironmentName);
+
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -53,5 +59,4 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             app.Run();
         }
     }
-
 }
