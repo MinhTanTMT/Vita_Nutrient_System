@@ -469,6 +469,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
                 HttpResponseMessage response =
                     await client.GetAsync(client.BaseAddress + "/Food/GetFoodById/" + foodId);
 
@@ -477,6 +479,32 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 HttpResponseMessage response2 =
                     await client.GetAsync(client.BaseAddress + "/Ingredient/GetPreparationIngredientsByFoodId/" + foodId);
+
+                HttpResponseMessage response3 =
+                    await client.GetAsync(client.BaseAddress + "/UserFoodAction/GetUserFoodAction?UserId=" + userId + "&FoodId=" + foodId);
+                HttpContent content3 = response3.Content;
+                string data3 = await content3.ReadAsStringAsync();
+                FoodSelection fs = JsonConvert.DeserializeObject<FoodSelection>(data3);
+
+                if(fs != null && fs.IsBlock == true)
+                {
+                    return await FoodList();
+                }
+                else if(fs is null)
+                {
+                    fs = new FoodSelection
+                    {
+                        UserId = userId,
+                        FoodListId = foodId,
+                        IsBlock = false,
+                        IsCollection = false,
+                        IsLike = false,
+                        Rate = null,
+                        RecurringId = null
+                    };
+                }
+
+                ViewBag.fs = fs;
 
                 if (response2.StatusCode == System.Net.HttpStatusCode.OK)
                 {
