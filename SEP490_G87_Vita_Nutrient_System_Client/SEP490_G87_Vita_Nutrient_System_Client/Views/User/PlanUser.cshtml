@@ -95,6 +95,7 @@
 
         <p>Calories Eaten: @caloriesEaten / @totaAllCalories Cal</p>
 
+
         <!-- CSS cho thanh tiến trình -->
         <style>
             .progress-container {
@@ -113,6 +114,8 @@
                 transition: width 0.3s ease;
             }
         </style>
+
+
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 // Lấy phần trăm calo đã tiêu thụ từ Razor
@@ -126,11 +129,11 @@
 
                 // Cập nhật màu sắc của thanh tiến trình dựa trên phần trăm
                 if (percentEaten <= 50) {
-                    progressBar.style.backgroundColor = "#FFBB33"; // Màu vàng nhạt cho dưới 50%
+                    progressBar.style.backgroundColor = "#FF4444"; // Màu đỏ nhạt cho dưới 50%
                 } else if (percentEaten <= 80) {
                     progressBar.style.backgroundColor = "#FF8800"; // Màu cam cho từ 50% đến 80%
                 } else {
-                    progressBar.style.backgroundColor = "#FF4444"; // Màu đỏ cho trên 80%
+                    progressBar.style.backgroundColor = "#FFBB33"; // Màu vàng cho trên 80%
                 }
             });
         </script>
@@ -151,7 +154,43 @@
                         </div>
                     </div>
                     <div class="flex gap-8">
-                        <button onclick="event.preventDefault(); document.getElementById('refreshTheMeal').submit();">
+
+                        <style>
+                            /* Đặt tên class tùy chỉnh */
+                            button.custom-tooltip {
+                                position: relative; /* Định vị nút để tooltip có thể xuất hiện theo nút */
+                                cursor: pointer;
+                            }
+
+                                /* Tooltip text */
+                                button.custom-tooltip::after {
+                                    content: attr(data-tooltip); /* Lấy nội dung từ data-tooltip */
+                                    visibility: hidden;
+                                    background-color: black;
+                                    color: white;
+                                    text-align: center;
+                                    border-radius: 5px;
+                                    padding: 5px;
+                                    position: absolute;
+                                    z-index: 10;
+                                    bottom: 125%; /* Hiển thị tooltip phía trên nút */
+                                    left: 50%;
+                                    transform: translateX(-50%);
+                                    opacity: 0;
+                                    transition: opacity 0.3s;
+                                    white-space: nowrap; /* Giữ tooltip không xuống dòng */
+                                }
+
+                                /* Hiển thị tooltip khi hover */
+                                button.custom-tooltip:hover::after {
+                                    visibility: visible;
+                                    opacity: 1;
+                                }
+                        </style>
+
+                        <button class="custom-tooltip"
+                                onclick="event.preventDefault(); document.getElementById('refreshTheMeal').submit();"
+                                data-tooltip="Làm mới bữa ăn">
                             <i class="fa-sharp fa-solid fa-rotate"></i>
                         </button>
 
@@ -236,9 +275,43 @@
                                     <ul class="space-y-2 ml-4">
                                         <li class="flex items-center space-x-2 gap-4">
 
-                                            <input onclick="toggleMenuCheckFoodEaten('@item.SlotOfTheDay', '@item2.SettingDetail', '@item3.idFood', '@item3.statusSymbol', '@ViewBag.userId', '@ViewBag.myDay' , '@item3.positionFood', '@item2.OrderSettingDetail')" type="checkbox" class="h-6 w-6"
-                                            @(item3.statusSymbol.Equals("+") ? "checked" : "")
-                                            @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
+                                            <style>
+                                                .custom-tooltip-container {
+                                                    position: relative;
+                                                    display: inline-block;
+                                                }
+
+                                                    .custom-tooltip-container .tooltip-text {
+                                                        visibility: hidden;
+                                                        background-color: black;
+                                                        color: white;
+                                                        text-align: center;
+                                                        border-radius: 5px;
+                                                        padding: 5px;
+                                                        position: absolute;
+                                                        z-index: 10;
+                                                        bottom: 125%; /* Hiển thị tooltip phía trên */
+                                                        left: 50%;
+                                                        transform: translateX(-50%);
+                                                        opacity: 0;
+                                                        transition: opacity 0.3s;
+                                                        white-space: nowrap; /* Giữ tooltip trên một dòng */
+                                                    }
+
+                                                    .custom-tooltip-container:hover .tooltip-text {
+                                                        visibility: visible;
+                                                        opacity: 1;
+                                                    }
+                                            </style>
+
+                                            <div class="custom-tooltip-container">
+                                                <input onclick="toggleMenuCheckFoodEaten('@item.SlotOfTheDay', '@item2.SettingDetail', '@item3.idFood', '@item3.statusSymbol', '@ViewBag.userId', '@ViewBag.myDay' , '@item3.positionFood', '@item2.OrderSettingDetail')"
+                                                       type="checkbox"
+                                                       class="h-6 w-6"
+                                                @(item3.statusSymbol.Equals("+") ? "checked" : "")
+                                                @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
+                                                <span class="tooltip-text"> Đánh dấu để tính toán tiến trình </span>
+                                            </div>
 
                                             <div class="flex items-center gap-3" onclick="getMealDetail(@item3.idFood)">
                                                 <img src="~/images/@item3.foodData.Urlimage"
@@ -251,10 +324,6 @@
                                             </div>
                                         </li>
                                     </ul>
-
-@*                                     <form asp-controller="User" asp-action="foodDetails" asp-route-foodId="@item3.idFood" method="get" id="GetMealDetail" style="display:none;">
-                                        <button type="submit">GetMealDetail</button>
-                                    </form> *@
 
                                     <script>
                                         function getMealDetail(id) {
