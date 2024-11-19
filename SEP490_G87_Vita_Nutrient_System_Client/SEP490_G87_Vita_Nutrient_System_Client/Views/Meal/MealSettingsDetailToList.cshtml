@@ -76,6 +76,10 @@
                                 </p>
                             </div>
                             <div class="meal-actions d-flex">
+                                <!-- Biểu tượng bút màu xám để chuyển hướng đến trang chỉnh sửa -->
+                                <a href="@Url.Action("EditMealSettingsDetailActive", "Meal", new { id = meal.Id })" class="btn btn-light btn-sm mr-1">
+                                    <i class="fas fa-pencil-alt" style="color: gray;"></i>
+                                </a>
                                 <button class="btn btn-light btn-sm mr-1" onclick="openEditNutrition(@meal.NutritionTargetsDailyId)">
                                     <i class="fa fa-search"></i>
                                 </button>
@@ -143,6 +147,9 @@
                                     </p>
                                 </div>
                                 <div class="meal-actions d-flex">
+                                                <a href="@Url.Action("EditMealSettingsDetailActive", "Meal", new { id = meal.Id })" class="btn btn-light btn-sm mr-1">
+                                       <i class="fas fa-pencil-alt" style="color: gray;"></i>
+                                    </a>
                                     <!-- Bật/tắt nút lên/xuống dựa trên OrderNumber -->
                                     <button class="btn btn-light btn-sm mr-1" onclick="openEditNutrition(@meal.NutritionTargetsDailyId)">
                                        <i class="fa fa-search"></i>
@@ -221,14 +228,12 @@
         });
     }
 
-    function updateDayOfTheWeek() {
-        const dayOfTheWeekStartId = document.getElementById("dayOfTheWeekStartId").value;
-
+    function updateDayOfTheWeek(dayOfTheWeekStartId) {
         $.ajax({
             url: '@Url.Action("UpdateDayOfTheWeek", "Meal")',
             type: 'POST',
             contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify({ DayOfTheWeekStartId: parseInt(dayOfTheWeekStartId) }),
+            data: JSON.stringify({ Id: parseInt(dayOfTheWeekStartId) }), // Chỉnh thuộc tính cho đúng với model
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
@@ -240,6 +245,7 @@
             }
         });
     }
+
 
     function updateFoodType(foodTypeId) {
         $.ajax({
