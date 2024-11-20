@@ -4,8 +4,6 @@
     {
         public short Id { get; set; }
 
-        public int NutritionistDetailsId { get; set; }
-
         public string? Name { get; set; }
 
         public string? Describe { get; set; }
