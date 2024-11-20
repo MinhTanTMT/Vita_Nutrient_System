@@ -107,35 +107,37 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        public async Task<TransactionsSystem> ModifyDataTransactionsSystem(TransactionsSystem data)
+        public async Task<TransactionsSystemDTO> ModifyDataTransactionsSystem(TransactionsSystemDTO data)
         {
-            // Tìm kiếm bản ghi hiện tại
             var dataTransactionsSystem = _context.TransactionsSystems.FirstOrDefault(x => x.Id == data.Id);
-
             if (dataTransactionsSystem == null)
             {
-                // Thêm mới nếu không tồn tại
                 var newTransaction = new TransactionsSystem
                 {
+                    UserPayId = data.UserPayId,
+                    PayeeId = data.PayeeId,
+                    AccountNumber = data.AccountNumber,
+                    AmountOut = data.AmountOut,
                     AmountIn = data.AmountIn,
-                    TransactionContent = data.TransactionContent
+                    TransactionContent = data.TransactionContent,
+                    Status = data.Status
                 };
 
                 await _context.TransactionsSystems.AddAsync(newTransaction);
                 await _context.SaveChangesAsync();
 
-                // Lúc này, newTransaction đã có đầy đủ các thuộc tính từ cơ sở dữ liệu
-                return newTransaction;
+                TransactionsSystemDTO transactionsSystemDTO = mapper.Map<TransactionsSystem, TransactionsSystemDTO>(newTransaction);
+                return transactionsSystemDTO;
+
+
             }
             else
             {
-                // Xử lý logic khi tồn tại bản ghi
-                dataTransactionsSystem.AmountIn = data.AmountIn;
-                dataTransactionsSystem.TransactionContent = data.TransactionContent;
-
+                dataTransactionsSystem.Status = data.Status;
                 await _context.SaveChangesAsync();
 
-                return dataTransactionsSystem;
+                TransactionsSystemDTO transactionsSystemDTO = mapper.Map<TransactionsSystem, TransactionsSystemDTO>(dataTransactionsSystem);
+                return transactionsSystemDTO;
             }
         }
 
@@ -274,12 +276,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             try
             {
-
                 IEnumerable<Transaction> dataTransaction = await GetTheLastTransactionsOfBankAccountNumber(accountNumber, limit);
                 TransactionsSystem dataTransactionsSystem = await _context.TransactionsSystems.OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.TransactionContent.Equals(content) && x.AmountIn == amountIn);
                 if (dataTransactionsSystem != null && dataTransaction != null)
                 {
-                    Transaction contentCompare = dataTransaction.FirstOrDefault(x => x.transaction_content.Contains(dataTransactionsSystem.TransactionContent) && Decimal.Parse(x.amount_in) == dataTransactionsSystem.AmountIn);
+                    Transaction contentCompare = dataTransaction.FirstOrDefault(x => x.transaction_content.Contains(dataTransactionsSystem.TransactionContent) && Math.Round(Decimal.Parse(x.amount_in), 2) == Math.Round(dataTransactionsSystem.AmountIn ?? 0, 2));
                     if (contentCompare != null)
                     {
                         TransactionsSystem intsertData = await _context.TransactionsSystems.FindAsync(dataTransactionsSystem.Id);

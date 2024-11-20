@@ -52,25 +52,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             //return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
 
-            Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
 
-            BankPaymentRepositories repositories = new BankPaymentRepositories();
-
-            
-            var newTransaction = new TransactionsSystem
-            {
-                UserPayId = 1,
-                PayeeId = 1,
-                AmountIn = 99999,
-                TransactionContent = "AAAAAAAAAAAAA"
-            };
-
-            await _context.TransactionsSystems.AddAsync(newTransaction);
-            await _context.SaveChangesAsync();
-
-            // Lúc này, newTransaction đã có đầy đủ các thuộc tính từ cơ sở dữ liệu
-
-            return Ok(newTransaction);
+            return Ok();
 
 
         }
@@ -81,7 +64,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             if (await repositories.CheckQRPaySuccessfulByContent(accountNumber, limit, content, amountIn))
             {
-
                 return Ok("Successful");
             }
             else
@@ -94,23 +76,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-        //[HttpGet("APICheckQRPaySuccessful")]
-        //public async Task<ActionResult<dynamic>> CancelUnsuccessfulTransaction(string accountNumber, int limit, string content, decimal amountIn)
-        //{
-        //    if (await repositories.CheckQRPaySuccessfulByContent(accountNumber, limit, content, amountIn))
-        //    {
-
-        //        return Ok("Successful");
-        //    }
-        //    else
-        //    {
-
-        //        return BadRequest("Error");
-        //    }
-
-        //    return Ok("Successful");
-        //}
-
+        [HttpPost("APIModifyDataTransactionsSystem")]
+        public async Task<ActionResult<TransactionsSystemDTO>> APIModifyDataTransactionsSystem(TransactionsSystemDTO transactionsSystem)
+        {
+            return Ok(await repositories.ModifyDataTransactionsSystem(transactionsSystem));
+        }
 
 
         [HttpGet("APIGetAllTransactionsSystemOfMonth")]

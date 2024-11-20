@@ -20,6 +20,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<IEnumerable<TransactionsSystem>> GetAllTransactionsSystemOfMonth(int month, int year, int userMainId);
         Task<Decimal[][]> GetAllTransactionsSystemForGraphData(int year, int userMainId);
         Task<bool> SendMail();
+        Task<TransactionsSystemDTO> ModifyDataTransactionsSystem(TransactionsSystemDTO data);
 
     }
 }

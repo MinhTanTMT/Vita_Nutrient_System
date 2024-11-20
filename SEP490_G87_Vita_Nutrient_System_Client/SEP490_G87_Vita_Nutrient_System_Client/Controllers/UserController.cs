@@ -184,8 +184,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             ViewBag.foodListMissedCalculated = foodListMissed.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListMissed) : TotalAllTheIngredientsOfTheDish(nullData);
 
             return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
-
-
         }
 
 
