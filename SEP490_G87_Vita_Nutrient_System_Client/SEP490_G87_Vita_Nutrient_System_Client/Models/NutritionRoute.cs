@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
-    public partial class NutritionRoute
+    public class NutritionRoute
     {
         public int Id { get; set; }
 
@@ -26,7 +26,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Models
         [CompareDates("StartDate", ErrorMessage = "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.")]
         public DateTime? EndDate { get; set; }
         public bool? IsDone { get; set; }
-        public string? UserName { get; set; }       
-        public string? CreateByName { get; set; }   
+        public string? FullName { get; set; }       
+        public string? CreateByName { get; set; }
+        public string? UrlImage { get; set; }
     }
 }

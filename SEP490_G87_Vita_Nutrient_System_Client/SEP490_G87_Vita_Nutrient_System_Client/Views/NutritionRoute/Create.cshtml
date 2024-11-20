@@ -6,9 +6,9 @@
     <h2 class="page-title text-center mb-4">Tạo Lộ Trình Dinh Dưỡng Mới</h2>
     <form asp-controller="NutritionRoute" asp-action="Create" method="post" enctype="multipart/form-data" class="create-form">
         <div class="form-group">
-            <label for="userPhoneNumber">Số Điện Thoại Người Sử Dụng</label>
-            <input type="text" name="userPhoneNumber" class="form-control" required />
-            <span class="text-danger"></span>
+            <label for="FullName">Họ và tên người sử dụng</label>
+            <span class="user-name">@Model.FullName</span>
+            <input type="hidden" asp-for="UserId" />
         </div>
         <div class="form-group">
             <label for="Name">Tên Lộ Trình</label>
@@ -40,7 +40,7 @@
         </div>
         <div class="form-group action-buttons text-center mb-4">
             <input type="submit" value="Tạo lộ trình" class="btn btn-primary" />
-            <a asp-action="GetAll" class="btn btn-secondary">Quay lại danh sách</a>
+            <a asp-action="GetRouteByUser" asp-route-userId="@Model.UserId" class="btn btn-secondary">Quay lại danh sách</a>
         </div>
     </form>
 </div>
@@ -115,5 +115,12 @@
 
     .shadow {
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .user-name {
+        font-size: 1.1em;
+        color: #1d4ed8;
+        font-weight: 500;
+        margin-left: 10px;
     }
 </style>

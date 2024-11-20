@@ -176,7 +176,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             try
             {
-                int userId = 1; // Giả sử UserId là 1
+                int userId = int.Parse(User.FindFirst("UserId")?.Value); // Giả sử UserId là 1
 
                 // Kiểm tra và xử lý tệp hình ảnh
                 if (HeaderImage != null && HeaderImage.Length > 0)
@@ -271,7 +271,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             try
             {
-                int userId = 1; // Giả sử UserId là 1
+                int userId = int.Parse(User.FindFirst("UserId")?.Value); // Giả sử UserId là 1
 
                 // Kiểm tra xem người dùng có chọn hình ảnh mới không
                 if (HeaderImage != null && HeaderImage.Length > 0)

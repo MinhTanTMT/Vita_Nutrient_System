@@ -21,28 +21,80 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
-        // GET: NutritionRoute/GetAll
-        public async Task<IActionResult> GetAll(string search, int pageNumber = 1, int pageSize = 10)
+        // GET: NutritionRoute/GetUsersByCreateId
+        public async Task<IActionResult> GetUsersByCreateId(string search, int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                // Lấy CreateById từ thông tin người dùng hiện tại
+                var createById = int.Parse(User.FindFirst("UserId")?.Value);
+
+                // Gửi yêu cầu đến API
+                HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/createBy/{createById}/users");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var users = JsonSerializer.Deserialize<List<User>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    // Tìm kiếm từ khóa nếu có
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        users = users.Where(u =>
+                            (u.FullName != null && u.FullName.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
+                            (u.Phone != null && u.Phone.Contains(search, StringComparison.OrdinalIgnoreCase))
+                        ).ToList();
+                        ViewData["search"] = search;
+                    }
+
+                    // Phân trang
+                    int totalItems = users.Count;
+                    var paginatedUsers = users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                    // Truyền thông tin phân trang vào ViewData
+                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    ViewData["CurrentPage"] = pageNumber;
+
+                    return View(paginatedUsers);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Có lỗi xảy ra: {ex.Message}");
+            }
+
+            // Trả về danh sách rỗng nếu có lỗi
+            return View(new List<User>());
+        }
+
+        public async Task<IActionResult> GetRouteByUser(int userId, string search, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
                 var createById = int.Parse(User.FindFirst("UserId")?.Value);
-                HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/user/{createById}");
+                HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/createBy/{createById}/user/{userId}");
+
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
                     var routes = JsonSerializer.Deserialize<List<NutritionRoute>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (routes == null || !routes.Any())
+                    {
+                        ViewData["TotalPages"] = 0;
+                        ViewData["CurrentPage"] = pageNumber;
+                        return View(new List<NutritionRoute>());
+                    }
 
-                    // Tìm kiếm theo từ khóa
+
+                    /*// Tìm kiếm theo từ khóa
                     if (!string.IsNullOrEmpty(search))
                     {
                         routes = routes.Where(r =>
                             (r.Name != null && r.Name.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
-                            (r.UserName != null && r.UserName.Contains(search, StringComparison.OrdinalIgnoreCase))
+                            (r.FullName != null && r.FullName.Contains(search, StringComparison.OrdinalIgnoreCase))
                         ).ToList();
 
                         ViewData["search"] = search;
-                    }
+                    }*/
 
                     // Phân trang
                     int totalItems = routes.Count;
@@ -52,7 +104,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
 
-                    return View(paginatedRoutes);
+                    return View(paginatedRoutes);                     
                 }
             }
             catch (Exception ex)
@@ -60,7 +112,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ModelState.AddModelError(string.Empty, $"Có lỗi xảy ra: {ex.Message}");
             }
 
-            return View(new List<NutritionRoute>()); // Trả về danh sách trống nếu có lỗi
+            return View(new List<NutritionRoute>()); 
         }
 
 
@@ -86,7 +138,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         // POST: NutritionRoute/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NutritionRoute nutritionRoute, string userPhoneNumber)
+        public async Task<IActionResult> Create(NutritionRoute nutritionRoute)
         {
             if (ModelState.IsValid)
             {
@@ -96,15 +148,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 var content = new StringContent(JsonSerializer.Serialize(nutritionRoute), Encoding.UTF8, "application/json");
 
                 // Gọi API tạo NutritionRoute, bao gồm cả userPhoneNumber trong query string
-                HttpResponseMessage response = await client.PostAsync($"api/nutritionroute?userPhoneNumber={userPhoneNumber}", content);
+                HttpResponseMessage response = await client.PostAsync($"api/nutritionroute", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction(nameof(GetAll));
-                }
-                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    ModelState.AddModelError(string.Empty, "Không tìm thấy người sử dụng với số điện thoại đã cung cấp.");
+                    return RedirectToAction(nameof(GetRouteByUser));
                 }
                 else
                 {
@@ -150,14 +198,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     if (existingRoute != null)
                     {
                         // Đảm bảo UserName không bị sửa đổi
-                        nutritionRoute.UserName = existingRoute.UserName;
+                        nutritionRoute.FullName = existingRoute.FullName;
 
                         // Chỉ cập nhật những trường cần thiết
                         var content = new StringContent(JsonSerializer.Serialize(nutritionRoute), Encoding.UTF8, "application/json");
                         HttpResponseMessage responsePut = await client.PutAsync($"api/nutritionroute/{id}", content);
                         if (responsePut.IsSuccessStatusCode)
                         {
-                            return RedirectToAction(nameof(GetAll));
+                            return RedirectToAction("GetRouteByUser", new { userId = nutritionRoute.UserId });
                         }
                     }
                 }
@@ -181,12 +229,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         // POST: NutritionRoute/Delete/{id}
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int userId)
         {
             HttpResponseMessage response = await client.DeleteAsync($"api/nutritionroute/{id}");
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction(nameof(GetAll));
+                return RedirectToAction("GetRouteByUser", new { userId = userId });
             }
             return View("Error");
         }
