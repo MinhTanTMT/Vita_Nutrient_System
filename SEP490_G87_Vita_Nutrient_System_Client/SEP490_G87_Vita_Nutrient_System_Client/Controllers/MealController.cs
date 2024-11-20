@@ -267,6 +267,43 @@ using System.Net.Http;
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> DietTypeList()
+        {
+            List<DietType> dietTypes = new List<DietType>();
+            short currentDietTypeId = 0; // Biến lưu chế độ ăn hiện tại
+
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            try
+            {
+                // Lấy danh sách các chế độ ăn
+                HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Food/GetDietType");
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonData = await response.Content.ReadAsStringAsync();
+                    dietTypes = JsonConvert.DeserializeObject<List<DietType>>(jsonData);
+                }
+
+                // Lấy chế độ ăn hiện tại của người dùng
+                HttpResponseMessage mealSettingResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
+                if (mealSettingResponse.IsSuccessStatusCode)
+                {
+                    var mealSettingData = await mealSettingResponse.Content.ReadAsStringAsync();
+                    var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
+                    currentDietTypeId = mealSetting.FoodTypeIdWant; // Lưu chế độ ăn hiện tại
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
+            }
+
+            ViewBag.CurrentDietTypeId = currentDietTypeId; // Truyền chế độ ăn hiện tại qua ViewBag
+            return View(dietTypes);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> UpdateDayOfTheWeek([FromBody] DayOfTheWeek dto)
         {
@@ -557,6 +594,68 @@ using System.Net.Http;
             }
 
 
+        [HttpGet]
+        public async Task<IActionResult> EditMealSettingsDetailActive(int id)
+        {
+            CreateMealSettingsDetail mealSettingsDetail = null;
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Meals/FindMealSettingsDetailById/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonData = await response.Content.ReadAsStringAsync();
+                    mealSettingsDetail = JsonConvert.DeserializeObject<CreateMealSettingsDetail>(jsonData);
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Không thể lấy dữ liệu từ API.";
+                    return RedirectToAction("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
+                return RedirectToAction("Meal");
+            }
+
+            if (mealSettingsDetail == null)
+            {
+                ViewBag.ErrorMessage = "Không tìm thấy MealSettingsDetail.";
+                return RedirectToAction("Error");
+            }
+
+            await LoadDropDownLists();
+
+            return View(mealSettingsDetail);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditMealSettingsDetailActiveAsync(int id, CreateMealSettingsDetail model)
+        {
+            try
+            {
+                HttpContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PutAsync($"{client.BaseAddress}/Meals/EditMealSettingsDetail/{id}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                        return RedirectToAction("MealSettingsDetailToList");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = $"Lỗi khi cập nhật thông tin bữa ăn";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
+            }
+
+            await LoadDropDownLists();
+            return View("EditMealSettingsDetail", model);
+        }
 
         [HttpPost]
         public async Task<IActionResult> DeleteMealSettingsDetail(int id, short dayOfTheWeekId)

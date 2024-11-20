@@ -27,5 +27,8 @@
         public short FoodTypeIdWant { get; set; }
 
         public string? AvoidIngredient { get; set; }
+        public short? ViewBagCarbsMax { get; set; }
+        public short? ViewBagFatsMax { get; set; }
+        public short? ViewBagProteinMax { get; set; }
     }
 }

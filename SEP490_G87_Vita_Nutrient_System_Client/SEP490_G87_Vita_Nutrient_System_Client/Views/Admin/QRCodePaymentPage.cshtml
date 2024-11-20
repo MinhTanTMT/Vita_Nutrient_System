@@ -1,73 +1,105 @@
-﻿
+﻿<div class="container mx-auto px-6 py-10">
+    <!-- Header -->
+    <div class="text-center bg-green-600 text-white py-4 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold">QR Pay - Thanh toán nhanh</h1>
+        <p class="text-lg mt-2">Quét mã QR để hoàn tất thanh toán</p>
+    </div>
 
-            <div class="row">
-              <div class="col-12 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">QR Pay</h4>
-                    <div class="d-flex">
-                      <div class="d-flex align-items-center me-4 text-muted font-weight-light">
-                        <i class="mdi mdi-account-outline icon-sm me-2"></i>
-                        <span>jack Menqu</span>
-                      </div>
-                      <div class="d-flex align-items-center text-muted font-weight-light">
-                        <i class="mdi mdi-clock icon-sm me-2"></i>
-                        <span>October 3rd, 2018</span>
-                      </div>
-                    </div>
-                    <div class="row mt-3">        
-                      <div class="col-6 pe-1">
+    <!-- Nội dung -->
+    <div class="mt-8 grid gap-4 grid-cols-1 md:grid-cols-2">
+        <!-- Mã QR -->
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 class="text-xl font-semibold mb-4">Mã QR Của Bạn</h2>
+            @if (ViewBag.LinkQRImage != null)
+            {
+                <img src="@ViewBag.LinkQRImage" class="rounded-lg mx-auto mb-4 w-full max-w-sm" alt="QR Code">
+            }
+            <p class="text-gray-600">Quét mã QR bằng ứng dụng ngân hàng để hoàn tất thanh toán.</p>
+        </div>
 
-                          @if (ViewBag.LinkQRImage != null)
-                            {
-                                    <img src="@ViewBag.LinkQRImage" class="mb-2 mw-100 w-100 rounded" alt="image">
-                            }
-                        
-                      </div>
-                      <div class="col-6 ps-1">
-                        <img src="~/images/paybank/logo-bank2.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
-                        <img src="~/images/paybank/logo-mbbank.jpg" class="mw-100 w-100 rounded" alt="image">
-                      </div>
-                    </div>
-                 
-                  </div>
-                </div>
-              </div>
+        <!-- Logo Ngân Hàng -->
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 class="text-xl font-semibold mb-4">Hỗ trợ các ngân hàng</h2>
+            <div class="flex justify-center gap-4">
+                <img src="~/images/paybank/logo-bank2.jpg" class="rounded-lg w-32 h-auto" alt="Bank 2 Logo">
+                <img src="~/images/paybank/logo-mbbank.jpg" class="rounded-lg w-32 h-auto" alt="MBBank Logo">
             </div>
-            @if (ViewBag.AlertMessage != null)
-{
-    <script>
-        alert("@System.Web.HttpUtility.JavaScriptStringEncode(ViewBag.AlertMessage)");
-    </script>
-}
+        </div>
+    </div>
+
+    <!-- Thông báo -->
+    <div id="success-message" class="hidden mt-8 text-center bg-green-100 border border-green-500 text-green-700 px-4 py-3 rounded-lg">
+        Thanh toán thành công! Bạn sẽ được chuyển về trang chủ sau ít giây...
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript">
-        const apiURL = "@ViewBag.CheckQRPaySuccess".replace(/&amp;/g, '&');
-        $(document).ready(function () {
-            // Hàm gọi API để kiểm tra thanh toán
-            var intervalId = setInterval(function () {
-                getAPICheckQRPaySuccessful();
-            }, 1000); // Gọi API mỗi giây
+    const apiURLcheckQRPaySuccess = "@ViewBag.CheckQRPaySuccess".replace(/&amp;/g, '&');
+    const apiURLinsertPaidPersonData = "@ViewBag.InsertPaidPersonData".replace(/&amp;/g, '&');
+    
+    const userListManagement = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["UserListManagement"]));
 
-            // Xử lý khi trang web bị đóng hoặc làm mới, xóa interval khi điều này xảy ra
-            $(window).on('beforeunload', function () {
-                clearInterval(intervalId); // Dừng gọi API khi trang bị đóng hoặc làm mới
-            });
+    $(document).ready(function () {
+        // Hàm gọi API để kiểm tra thanh toán
+        var intervalId = setInterval(function () {
+            getAPICheckQRPaySuccessful();
+        }, 1000); // Gọi API mỗi giây
+
+        // Xử lý khi trang web bị đóng hoặc làm mới, xóa interval khi điều này xảy ra
+        $(window).on('beforeunload', function () {
+            clearInterval(intervalId); // Dừng gọi API khi trang bị đóng hoặc làm mới
         });
 
+        // Hàm xử lý kiểm tra thanh toán
         function getAPICheckQRPaySuccessful() {
             $.ajax({
-                url: apiURL,
+                url: apiURLcheckQRPaySuccess,
                 method: 'GET',
-                success: function(response) {
-                    console.log('Success:', response);
-                alert('Thanh toán thành công');
-            },
-                error: function(xhr, status, error) {
+                success: function (response) {
+                    // Dừng lệnh gọi liên tục
+                    clearInterval(intervalId);
+
+                    // Gọi API thứ hai để tạo UserListManagement
+                    const data = {
+                        NutritionistId: userListManagement.NutritionistId ?? 1,
+                        UserId: userListManagement.UserId,
+                        Describe: userListManagement.Describe,
+                        StartDate: new Date(userListManagement.StartDate).toISOString(),
+                        EndDate: new Date(userListManagement.EndDate).toISOString(),
+                        IsDone: userListManagement.IsDone
+                    };
+
+                    console.log('Data Send: ' + JSON.stringify(data));
+
+                    $.ajax({
+                        url: apiURLinsertPaidPersonData,
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        success: function (result) {
+
+                            console.log('Data Nhan Ve: ' + JSON.stringify(result));
+
+                            // Hiển thị thông báo thành công
+                            $('#success-message').removeClass('hidden');
+
+                            // Chuyển về trang chủ sau 5 giây
+                            setTimeout(function () {
+                                window.location.href = '/Home/Index';
+                            }, 5000);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error when calling secondary API:', error);
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
                     if (xhr.status === 400) {
                         console.log('Bad Request: ', xhr.responseText);
                     }
                 }
-            })
+            });
         }
-    </script>
+    });
+</script>

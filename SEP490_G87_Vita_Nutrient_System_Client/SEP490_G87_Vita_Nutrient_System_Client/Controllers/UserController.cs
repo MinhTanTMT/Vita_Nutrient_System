@@ -56,19 +56,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else
             {
-                if (myDay == null || myDay <= DateTime.Now)
-                {
-                    if (myDay == null) myDay = DateTime.Now;
-                    HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheWeek?myDay={myDay}&idUser={userId}");
-                    if (res.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        HttpContent content = res.Content;
-                        string data = await content.ReadAsStringAsync();
-                        rootObjectFoodListWeek = JsonConvert.DeserializeObject<List<DataFoodAllDayOfWeek>>(data);
-                    }
-                    else return RedirectToAction("Error2");
-                }
-                else return RedirectToAction("PageUpgratePremium");
+                //if (myDay == null || myDay <= DateTime.Now)
+                //{
+                //    if (myDay == null) myDay = DateTime.Now;
+                //    HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIListMealOfTheDay?myDay={myDay}&idUser={userId}");
+                //    if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                //    {
+                //        HttpContent content = res.Content;
+                //        string data = await content.ReadAsStringAsync();
+                //        rootObjectFoodListWeek = JsonConvert.DeserializeObject<List<DataFoodAllDayOfWeek>>(data);
+                //    }
+                //    else return RedirectToAction("Error2");
+                //}
+                return RedirectToAction("PageUpgratePremium");
             }
 
 
@@ -249,7 +249,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("PremiumUpgradeSuggestion");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
@@ -261,7 +261,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else
             {
-                return Redirect("Loi me roi");
+                return Redirect("Loi me roi" + myDay);
             }
 
         }
@@ -276,10 +276,36 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("PremiumUpgradeSuggestion");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContent content = res.Content;
+                return Redirect($"PlanUserWeek?myDay={myDay}");
+            }
+            else
+            {
+                return Redirect("Loi me roi");
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshTheMealAllWeek(DateTime myDay)
+        {
+
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            string role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!role.Equals("UserPremium"))
+            {
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+            }
+
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheAllMeal?myDay={myDay}&idUser={userId}");
 
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -315,6 +341,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     if (dataFoodListMealOfTheDays != null)
                     {
+                        ViewBag.clientBaseAddress = client.BaseAddress.ToString();
                         ViewBag.myDay = myDaySelect;
                         ViewBag.userId = userId;
                         ViewBag.APIgetThisListOfDishes = client.BaseAddress + $"/GenerateMeal/APIgetThisListOfDishes?userId={userId}&myDay={myDaySelect}";
@@ -442,6 +469,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
                 HttpResponseMessage response =
                     await client.GetAsync(client.BaseAddress + "/Food/GetFoodById/" + foodId);
 
@@ -450,6 +479,32 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 HttpResponseMessage response2 =
                     await client.GetAsync(client.BaseAddress + "/Ingredient/GetPreparationIngredientsByFoodId/" + foodId);
+
+                HttpResponseMessage response3 =
+                    await client.GetAsync(client.BaseAddress + "/UserFoodAction/GetUserFoodAction?UserId=" + userId + "&FoodId=" + foodId);
+                HttpContent content3 = response3.Content;
+                string data3 = await content3.ReadAsStringAsync();
+                FoodSelection fs = JsonConvert.DeserializeObject<FoodSelection>(data3);
+
+                if(fs != null && fs.IsBlock == true)
+                {
+                    return await FoodList();
+                }
+                else if(fs is null)
+                {
+                    fs = new FoodSelection
+                    {
+                        UserId = userId,
+                        FoodListId = foodId,
+                        IsBlock = false,
+                        IsCollection = false,
+                        IsLike = false,
+                        Rate = null,
+                        RecurringId = null
+                    };
+                }
+
+                ViewBag.fs = fs;
 
                 if (response2.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -558,7 +613,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 return Json(new { success = false, message = "Dữ liệu không hợp lệ." });
             }
-
+            if (model.Height < 50 || model.Height > 250)
+            {
+                return Json(new { success = false, message = "Vui lòng nhập chiều cao từ 50 cm đến 250 cm." });
+            }
+            if (model.Weight < 10 || model.Weight > 300)
+            {
+                return Json(new { success = false, message = "Vui lòng nhập cân nặng từ 10 kg đến 300 kg." });
+            }
+            if (model.Age < 5 || model.Age > 100)
+            {
+                return Json(new { success = false, message = "Chỉ hỗ trợ nhập tuổi từ 5 đến 100." });
+            }
             var userDetailsDTO = new UserPhysicalStatistics
             {
                 UserId = userId,

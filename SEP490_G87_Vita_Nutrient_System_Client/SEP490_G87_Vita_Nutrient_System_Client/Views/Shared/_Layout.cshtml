@@ -355,6 +355,19 @@
                                     </a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PremiumUpgradeSuggestion", "Admin")">
+                                        <span class="menu-title"> Đăng kí Premium </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("NutritionistServices", "Admin")">
+                                                    <span class="menu-title"> Đăng kí chuyên gia </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                                
                             }
                             else if (role.Equals("User"))
@@ -368,6 +381,12 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("NutritionalGoals", "User")">
                                         <span class="menu-title">Mục Tiêu Dinh Dưỡng</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("DietTypeList", "Meal")">
+                                        <span class="menu-title">Chế Độ Ăn Uống Chính</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
@@ -405,8 +424,19 @@
                                     </a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("PremiumUpgradeSuggestion", "Admin")">
+                                        <span class="menu-title"> Đăng kí Premium </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
 
-
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("NutritionistServices", "Admin")">
+                                        <span class="menu-title"> Đăng kí chuyên gia </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                             }
                             else
                             {

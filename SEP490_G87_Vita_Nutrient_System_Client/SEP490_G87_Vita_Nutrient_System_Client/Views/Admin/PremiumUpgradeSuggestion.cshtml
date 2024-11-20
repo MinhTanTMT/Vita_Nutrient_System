@@ -1,0 +1,113 @@
+﻿<div class="container">
+    <!-- Header -->
+    <div class="header bg-green-600 text-white text-center py-6">
+        <h1 class="text-3xl font-bold">Nâng cấp lên Premium ngay hôm nay!</h1>
+        <p class="mt-2 text-lg">Khám phá thêm thực đơn dinh dưỡng chuyên sâu dành riêng cho bạn.</p>
+    </div>
+
+    <!-- Gợi ý lý do nâng cấp -->
+    <div class="bg-white py-6 px-4 rounded-lg shadow mt-6 text-center">
+        <h2 class="text-2xl font-bold text-gray-800">Vì sao bạn nên nâng cấp lên Premium?</h2>
+        <p class="mt-4 text-gray-600">Với Premium, bạn sẽ nhận được:</p>
+        <ul class="mt-4 space-y-3 text-gray-600">
+            <li>✔ Thực đơn dinh dưỡng cá nhân hóa phù hợp với sức khỏe và mục tiêu của bạn.</li>
+            <li>✔ Hỗ trợ từ chuyên gia dinh dưỡng hàng đầu.</li>
+            <li>✔ Phân tích chi tiết về chế độ ăn kèm biểu đồ trực quan.</li>
+            <li>✔ Tiếp cận kho công thức nấu ăn phong phú, bổ dưỡng.</li>
+            <li>✔ Ưu đãi độc quyền và nhiều tính năng hấp dẫn khác.</li>
+        </ul>
+    </div>
+
+    <!-- Các gói Premium -->
+    <div class="grid mt-8">
+        <!-- Gói 1 tháng -->
+        <div class="card">
+            <h3>1 tháng</h3>
+            <p>99.000đ</p>
+            <p>Đầy đủ tính năng Premium trong 1 tháng.</p>
+            <button>Đăng ký ngay</button>
+        </div>
+
+        <!-- Gói 6 tháng -->
+        <div class="card">
+            <h3>6 tháng</h3>
+            <p>499.000đ</p>
+            <p>Tiết kiệm hơn 100.000đ khi mua 6 tháng.</p>
+            <button>Đăng ký ngay</button>
+        </div>
+
+        <!-- Gói 12 tháng -->
+        <div class="card">
+            <h3>12 tháng</h3>
+            <p>899.000đ</p>
+            <p>Tiết kiệm nhất với gói dài hạn.</p>
+            <button>Đăng ký ngay</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Đặt chiều rộng tối đa cho container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+
+    /* Bố cục dạng lưới với các phần tử đồng đều */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Card cho các gói Premium */
+    .card {
+        background-color: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+        /* Căn chỉnh tiêu đề và nội dung */
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Nút đăng ký */
+        .card button {
+            background-color: #28a745;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .card button:hover {
+                background-color: #218838;
+            }
+
+    /* Lợi ích Premium */
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+        ul li:before {
+            content: "✔";
+            color: #28a745;
+            margin-right: 0.5rem;
+        }
+</style>

@@ -119,9 +119,9 @@
         function changeAllTheDishesCurrentMeal(jsonListFoodId, settingDetail) {
             // Xóa dữ liệu cũ trước khi load danh sách mới
             selectedItems = [];
-
+            const apiURL = "@ViewBag.clientBaseAddress".replace(/&amp;/g, '&');
             $.ajax({
-                url: 'https://localhost:7045/api/GenerateMeal/APICreateListOfAlternativeDishes',
+                url: apiURL + '/GenerateMeal/APICreateListOfAlternativeDishes',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -195,8 +195,9 @@
         function changeOneDishCurrentMeal(jsonListFoodId, foodListId, positionFood, settingDetail) {
             jsonListFoodId.splice(positionFood, 1);
             console.log("Data jsonListFoodId:", jsonListFoodId);
+            const apiURL = "@ViewBag.clientBaseAddress".replace(/&amp;/g, '&');
             $.ajax({
-                url: 'https://localhost:7045/api/GenerateMeal/APICreateListOfAlternativeDishes',
+                url: apiURL + '/GenerateMeal/APICreateListOfAlternativeDishes',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
