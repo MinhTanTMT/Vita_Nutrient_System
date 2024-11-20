@@ -55,7 +55,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<UserDetail> GetUserDetailByUserIdAsync(int userId);
         void UpdateUser(User user);
         User? GetNutritionistDetailsInfo(int id);
-        ExpertPackage GetNutritionistPackages(int id);
+        ExpertPackage GetNutritionistPackages(short id);
 
         ////////////////////////////////////////////////////////////
         /// Tùng

@@ -209,8 +209,103 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
+        //[HttpPost]
+        //public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration)
+        //{
+        //    var configuration = new ConfigurationBuilder()
+        //    .AddJsonFile("appsettings.json")
+        //    .Build();
+        //    string? accountNumber = configuration.GetValue<string>("accountNumberQRPay");
+        //    int? limit = configuration.GetValue<int>("limitQRPay");
 
-        [HttpGet, Authorize]
+        //    HttpContext.Session.SetString("NutritionistId", NutritionistId.ToString());
+        //    HttpContext.Session.SetString("Describe", Describe ?? "");
+        //    HttpContext.Session.SetString("Price", Price.ToString());
+        //    HttpContext.Session.SetString("Duration", Duration.ToString());
+
+        //    HttpContext.Session.SetString("accountNumberQRPay", accountNumber ?? "");
+        //    HttpContext.Session.SetString("limitQRPay", limit.ToString() ?? "20");
+        //    HttpContext.Session.SetString("amountInPayQRPay", Price.ToString());
+        //    HttpContext.Session.SetString("amountInImgQRPay", Price.ToString());
+
+        //    string contentGeneratePassword = GeneratePassword(6);
+        //    HttpContext.Session.SetString("contentBankPayQRPay", contentGeneratePassword);
+        //    HttpContext.Session.SetString("contentBankImgQRPay", contentGeneratePassword);
+
+        //    return Redirect("QRCodePaymentPage");
+        //}
+
+
+
+        [HttpPost]
+        public IActionResult PaymentTransferSuccessful()
+        {
+
+
+
+            return RedirectToAction("QRCodePaymentPage");
+        }
+
+
+        
+
+        public static string GeneratePassword(int length, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = true)
+        {
+            if (length <= 0)
+            {
+                throw new ArgumentException("Password length must be greater than 0.");
+            }
+
+            // Các bộ ký tự có thể sử dụng
+            const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+            const string numberChars = "0123456789";
+            const string specialChars = "!@#$%^&*()-_=+[]{}|;:,.<>?/";
+
+            // Chuỗi ký tự được chọn để tạo mật khẩu
+            string characterPool = "";
+
+            if (includeUppercase)
+            {
+                characterPool += uppercaseChars;
+            }
+
+            if (includeLowercase)
+            {
+                characterPool += lowercaseChars;
+            }
+
+            if (includeNumbers)
+            {
+                characterPool += numberChars;
+            }
+
+            if (includeSpecialChars)
+            {
+                characterPool += specialChars;
+            }
+
+            if (string.IsNullOrEmpty(characterPool))
+            {
+                throw new ArgumentException("At least one character type must be selected.");
+            }
+
+            // Tạo mật khẩu
+            var random = new Random();
+            var passwordBuilder = new StringBuilder();
+
+            for (int i = 0; i < length; i++)
+            {
+                int randomIndex = random.Next(characterPool.Length);
+                passwordBuilder.Append(characterPool[randomIndex]);
+            }
+
+            return passwordBuilder.ToString();
+        }
+
+
+
+        [HttpGet]
         public async Task<IActionResult> AdminDashboardAsync()
         {
             try
@@ -577,21 +672,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     {
                         HttpContent content1 = response1.Content;
                         string data1 = await content1.ReadAsStringAsync();
-                        List<dynamic> packagesData = JsonConvert.DeserializeObject<List<dynamic>>(data1);
+                        dynamic packagesData = JsonConvert.DeserializeObject<dynamic>(data1);
 
-                        List<ExpertPackage> packages = packagesData.Select(
-                            p => new ExpertPackage
+                        ExpertPackage package = new ExpertPackage
                             {
-                                Id = p.id,
-                                NutritionistDetailsId = p.nutritionistDetailsId,
-                                Name = p.name,
-                                Describe = p.describe,
-                                Price = p.price,
-                                Duration = p.duration
-                            })
-                            .ToList();
+                                Id = packagesData.id,
+                                NutritionistDetailsId = packagesData.nutritionistDetailsId,
+                                Name = packagesData.name,
+                                Describe = packagesData.describe,
+                                Price = packagesData.price,
+                                Duration = packagesData.duration
+                            };
 
-                        ViewBag.packages = packages;
+                        ViewBag.package = package;
                     }
 
                     return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
