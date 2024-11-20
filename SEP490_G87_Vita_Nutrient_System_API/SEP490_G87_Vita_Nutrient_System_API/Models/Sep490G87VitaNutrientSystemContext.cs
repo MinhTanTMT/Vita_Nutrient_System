@@ -87,8 +87,12 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var ConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("DefaultConnection");
-        optionsBuilder.UseSqlServer(ConnectionString);
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+        }
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -192,18 +196,13 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<ExpertPackage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ExpertPa__3214EC07F56CC7DA");
+            entity.HasKey(e => e.Id).HasName("PK__ExpertPa__3214EC07ED91BD68");
 
             entity.ToTable("ExpertPackages", "UserData");
 
             entity.Property(e => e.Describe).HasMaxLength(500);
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Price).HasColumnType("money");
-
-            entity.HasOne(d => d.NutritionistDetails).WithMany(p => p.ExpertPackages)
-                .HasForeignKey(d => d.NutritionistDetailsId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ExpertPac__Nutri__5EBF139D");
         });
 
         modelBuilder.Entity<FoodAndDisease>(entity =>
@@ -554,18 +553,23 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<NutritionistDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Nutritio__3214EC07F9BB174A");
+            entity.HasKey(e => e.Id).HasName("PK__Nutritio__3214EC07EF0E5D92");
 
             entity.ToTable("NutritionistDetails", "UserData");
 
-            entity.HasIndex(e => e.NutritionistId, "UQ__Nutritio__F4399C8D333D8E36").IsUnique();
+            entity.HasIndex(e => new { e.NutritionistId, e.ExpertPackagesId }, "UQ__Nutritio__9C31FC2D2E28013D").IsUnique();
 
             entity.Property(e => e.DescribeYourself).HasMaxLength(500);
 
-            entity.HasOne(d => d.Nutritionist).WithOne(p => p.NutritionistDetail)
-                .HasForeignKey<NutritionistDetail>(d => d.NutritionistId)
+            entity.HasOne(d => d.ExpertPackages).WithMany(p => p.NutritionistDetails)
+                .HasForeignKey(d => d.ExpertPackagesId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Nutrition__Nutri__5BE2A6F2");
+                .HasConstraintName("FK__Nutrition__Exper__4589517F");
+
+            entity.HasOne(d => d.Nutritionist).WithMany(p => p.NutritionistDetails)
+                .HasForeignKey(d => d.NutritionistId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Nutrition__Nutri__44952D46");
         });
 
         modelBuilder.Entity<Recipe>(entity =>

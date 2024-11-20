@@ -566,7 +566,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     IsDone = false,
                 };
                 _context.NutritionRoutes.Add(CreaterNutritionRoute);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 getNutritionRouteId = CreaterNutritionRoute.Id;
             }
             else getNutritionRouteId = activeNutritionRoute.Id;
@@ -683,7 +683,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 mealSettingsDetail.DataFoodListId = stringListId.ToString();
                 mealSettingsDetail.IsEditByUser = true;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -695,7 +695,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     IsEditByUser = true
                 };
                 _context.MealOfTheDays.Add(NewSettingsDetail);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             return true;
         }
@@ -1093,7 +1093,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     }
 
                     mealOfTheDay.DataFoodListId = stringListId.ToString().Remove(stringListId.ToString().Length - 1);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     return true;
                 }
             }

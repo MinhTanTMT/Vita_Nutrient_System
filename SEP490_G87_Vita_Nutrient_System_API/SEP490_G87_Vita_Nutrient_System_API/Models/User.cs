@@ -51,7 +51,7 @@ public partial class User
 
     public virtual ICollection<NutritionTargetsDaily> NutritionTargetsDailies { get; set; } = new List<NutritionTargetsDaily>();
 
-    public virtual NutritionistDetail? NutritionistDetail { get; set; }
+    public virtual ICollection<NutritionistDetail> NutritionistDetails { get; set; } = new List<NutritionistDetail>();
 
     public virtual Role? RoleNavigation { get; set; } = null!;
 

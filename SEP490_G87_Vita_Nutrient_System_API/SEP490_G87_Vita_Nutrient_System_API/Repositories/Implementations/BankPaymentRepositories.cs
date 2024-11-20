@@ -64,16 +64,36 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
         }
 
-
-        public async Task<IEnumerable<NutritionistDetailDTO>> GetAllNutritionistServices()
+        public async Task<IEnumerable<ExpertPackageDTO>> GetAllNutritionistServices()
         {           
-            List<NutritionistDetail> data = _context.NutritionistDetails.Include(x => x.ExpertPackages).ToList();
+            List<ExpertPackage> data = _context.ExpertPackages.Include(x => x.NutritionistDetails).ToList();
             if (data == null)
             {
                 return null;
             }
-            List<NutritionistDetailDTO> dataDTOs = data.Select(p => mapper.Map<NutritionistDetail, NutritionistDetailDTO>(p)).ToList();
+            List<ExpertPackageDTO> dataDTOs = data.Select(p => mapper.Map<ExpertPackage, ExpertPackageDTO>(p)).ToList();
             return dataDTOs;
+        }
+
+
+        public async Task<bool> InsertPaidPersonData(UserListManagementDTO userListManagement, int typeInsert)
+        {
+            //NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= MyDay && nr.EndDate >= MyDay && nr.UserId == idUser && nr.IsDone == false);
+
+            var data = _context.UserListManagements.FirstOrDefault(x => x.UserId == userListManagement.UserId && x.NutritionistId == userListManagement.NutritionistId && x.StartDate <= userListManagement.StartDate && x.EndDate >= userListManagement.StartDate);
+            
+            if(data == null)
+            {
+                await _context.UserListManagements.AddAsync(new UserListManagement { NutritionistId = userListManagement.NutritionistId ,UserId = userListManagement.UserId, Describe = userListManagement.Describe, StartDate = userListManagement.StartDate, EndDate = userListManagement.EndDate, IsDone = userListManagement.IsDone });
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+            }
+
+
+
+            return true;
         }
 
 
