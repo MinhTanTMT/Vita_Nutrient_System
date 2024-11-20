@@ -142,7 +142,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             string contentGeneratePassword = adminSevices.GeneratePassword(12);
             HttpContext.Session.SetString("contentBankPayQRPay", contentGeneratePassword);
             HttpContext.Session.SetString("contentBankImgQRPay", contentGeneratePassword);
-
             return Redirect("QRCodePaymentPage");
         }
 
