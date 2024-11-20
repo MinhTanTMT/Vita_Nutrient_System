@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNewsDTO>
+﻿@model IEnumerable<SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNews>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
@@ -6,13 +6,13 @@
     <h1 class="page-title">Danh sách bài viết</h1>
     <form asp-action="Index" method="get" class="mb-3">
         <div class="input-group">
-            <input type="text" name="searchTitle" class="form-control" placeholder="Tìm kiếm theo tiêu đề" value="@ViewData["searchTitle"]" />
+            <input type="text" name="searchTitle" class="form-control" placeholder="Tìm kiếm theo tiêu đề..." value="@ViewData["searchTitle"]" />
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
         </div>
     </form>
-    <p>
+    <div class="text-start mb-3">
         <a asp-action="Create" class="btn btn-primary btn-lg">Tạo bài viết mới</a>
-    </p>
+    </div>
 
     <table class="table custom-table">
         <thead>
@@ -30,7 +30,7 @@
         <tbody>
             @foreach (var article in Model)
             {
-                <tr>
+                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = article.Id })">
                     <td>@article.Id</td>
                     <td>
                         @if (!string.IsNullOrEmpty(article.HeaderImage))
@@ -55,8 +55,9 @@
                         {
                             <div class="star-rating">
                                 @{
-                                    int fullStars = (int)Math.Floor(article.Rate ?? 0);
-                                    bool hasHalfStar = (article.Rate % 1) >= 0.5;
+                                    double roundedRate = Math.Round(article.Rate ?? 0, 2);
+                                    int fullStars = (int)Math.Floor(roundedRate);
+                                    bool hasHalfStar = (roundedRate % 1) >= 0.5;
                                 }
 
                                 @for (int i = 1; i <= 5; i++)
@@ -74,7 +75,7 @@
                                         <i class="fa fa-star text-secondary"></i>
                                     }
                                 }
-                                <p>@article.Rate/5 - (@article.NumberRate bình chọn)</p>
+                                <p>@roundedRate/5 - (@article.NumberRate bình chọn)</p>
                             </div>
                         }
                         else
@@ -82,8 +83,7 @@
                             <p>Chưa có đánh giá</p>
                         }
                     </td>
-                    <td>
-                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@article.Id"><i class="fas fa-eye"></i> Chi tiết</a>
+                    <td style="text-align: center;">
                         <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@article.Id"><i class="fas fa-edit"></i> Chỉnh sửa</a>
                         <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@article.Id"><i class="fas fa-trash"></i> Xóa</a>
                     </td>
@@ -91,8 +91,32 @@
             }
         </tbody>
     </table>
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+            {
+                <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-searchTitle="@ViewData["searchTitle"]">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
-
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".clickable-row");
+        rows.forEach(row => {
+            row.style.cursor = "pointer";
+            row.addEventListener("click", function () {
+                const href = this.getAttribute("data-href");
+                if (href) {
+                    window.location.href = href;
+                }
+            });
+        });
+    });
+</script>
 <style>
 
     .container {
@@ -148,7 +172,7 @@
         text-align: center;
         font-family: 'Roboto', sans-serif;
     }
-    
+
     /* Create Button Styling */
     .create-button {
         display: block;
@@ -172,7 +196,7 @@
         width: 150px; /* Adjust width as needed */
         height: 100px; /* Adjust height as needed */
         object-fit: cover;
-        border-radius: 0 !important; 
+        border-radius: 0 !important;
         border: 2px solid #ddd;
         transition: transform 0.3s ease;
     }
@@ -181,7 +205,13 @@
             transform: scale(1.1);
         }
 
+    .clickable-row {
+        cursor: pointer;
+    }
 
+        .clickable-row:hover {
+            transition: background-color 0.3s ease;
+        }
     /* Badge Styling */
     .badge {
         padding: 8px 12px;
@@ -213,13 +243,13 @@
     }
 
     .btn-primary {
-        background-color: #1E88E5;
-        border-color: #1E88E5;
+        background-color: #5cb85c;
+        border-color: #4cae4c;
         color: #fff;
     }
 
         .btn-primary:hover {
-            background-color: #1565C0;
+            background-color: #4cae4c;
         }
 
     .btn-warning {
@@ -245,4 +275,22 @@
     .star-rating {
         font-size: 1em;
     }
+
+    .pagination {
+        margin-top: 20px;
+    }
+
+        .pagination .page-item.active .page-link {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            color: #fff;
+        }
+
+        .pagination .page-link {
+            color: #4CAF50;
+        }
+
+            .pagination .page-link:hover {
+                background-color: #f3f3f3;
+            }
 </style>

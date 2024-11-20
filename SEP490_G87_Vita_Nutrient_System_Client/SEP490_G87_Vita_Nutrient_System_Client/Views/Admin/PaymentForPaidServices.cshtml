@@ -1,0 +1,61 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+    var redirectUrl = Url.Action("Index", "Home"); // Thay bằng URL bạn muốn chuyển đến
+    var redirectDelay = 5000; // Thời gian chờ (ms) trước khi chuyển hướng (5 giây)
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        // Chuyển hướng sau khi hết thời gian chờ
+        setTimeout(function () {
+            window.location.href = '@redirectUrl';
+        }, @redirectDelay);
+    </script>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+    <!-- Container chính -->
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-10 rounded-lg shadow-lg text-center max-w-lg">
+            <div class="flex items-center justify-center mb-6">
+                <!-- Biểu tượng check -->
+                <div class="bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center">
+                    <i class="fas fa-check text-3xl"></i> <!-- Yêu cầu Font Awesome -->
+                </div>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Thanh toán thành công!</h1>
+            <p class="text-gray-600 text-lg mb-6">Cảm ơn bạn đã nâng cấp lên Premium. Tài khoản của bạn đã được kích hoạt.</p>
+            <p class="text-gray-500 mb-8">Bạn sẽ được chuyển hướng về trang chủ trong <span id="countdown"></span> giây.</p>
+            <a href="@redirectUrl" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full text-lg font-semibold">Quay lại trang chủ</a>
+        </div>
+    </div>
+
+    <!-- Script cập nhật đồng hồ đếm ngược -->
+    <script>
+        let countdown = @redirectDelay / 1000; // Chuyển đổi ms sang giây
+        const countdownElement = document.getElementById("countdown");
+        countdownElement.textContent = countdown;
+
+        const timer = setInterval(function () {
+            countdown -= 1;
+            countdownElement.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(timer);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

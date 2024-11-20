@@ -33,8 +33,6 @@ public partial class User
 
     public virtual ICollection<BankInformation> BankInformations { get; set; } = new List<BankInformation>();
 
-    public virtual ICollection<ConversationParticipant> ConversationParticipants { get; set; } = new List<ConversationParticipant>();
-
     public virtual ICollection<FoodSelection> FoodSelections { get; set; } = new List<FoodSelection>();
 
     public virtual MealSetting? MealSetting { get; set; }
@@ -51,9 +49,13 @@ public partial class User
 
     public virtual ICollection<NutritionTargetsDaily> NutritionTargetsDailies { get; set; } = new List<NutritionTargetsDaily>();
 
-    public virtual NutritionistDetail? NutritionistDetail { get; set; }
+    public virtual ICollection<NutritionistDetail> NutritionistDetails { get; set; } = new List<NutritionistDetail>();
 
     public virtual Role? RoleNavigation { get; set; } = null!;
+
+    public virtual ICollection<Room> RoomNutritions { get; set; } = new List<Room>();
+
+    public virtual ICollection<Room> RoomUsers { get; set; } = new List<Room>();
 
     public virtual ICollection<TransactionsSystem> TransactionsSystemPayees { get; set; } = new List<TransactionsSystem>();
 

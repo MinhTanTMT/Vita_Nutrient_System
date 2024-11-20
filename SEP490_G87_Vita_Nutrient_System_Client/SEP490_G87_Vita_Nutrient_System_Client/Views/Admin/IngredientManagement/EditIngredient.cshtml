@@ -107,7 +107,18 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">@propertyName</label>
                                         <div class="col-sm-10">
-                                            <input id="@propertyName" name="@propertyName" type="number" step="0.01" class="form-control" value="@x.GetValue(Model)" min="0" required>
+                                            @{
+                                                var value = x.GetValue(Model);
+                                                var formattedValue = value != null
+                                                ? (value is double || value is float
+                                                ? ((double)value).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
+                                                : Convert.ToInt32(value).ToString())
+                                                : "0";
+                                            }
+
+                                            <input id="@propertyName" name="@propertyName" type="number" step="0.01" class="form-control"
+                                               value="@formattedValue"
+                                               min="0" max="9999" required>
                                         </div>
                                     </div>
                             }

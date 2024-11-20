@@ -36,57 +36,70 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
 
-        [HttpGet("APCheckGenerateMealController")]
-        public async Task<IActionResult> APCheckGenerateMealController()
-        {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+        //[HttpGet("APCheckGenerateMealController")]
+        //public async Task<IActionResult> APCheckGenerateMealController()
+        //{
+        //    GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
 
-            FoodListDTO item1 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
-            FoodListDTO item2 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
-            FoodListDTO item3 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3));
-            List<FoodListDTO> FoodListDTO = new List<FoodListDTO>();
-            FoodListDTO.Add(item1);
-            FoodListDTO.Add(item2);
-            FoodListDTO.Add(item3);
-            return Ok(await generateMealRepositories.CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(FoodListDTO), 1));
-        }
+        //    FoodListDTO item1 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
+        //    FoodListDTO item2 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4));
+        //    FoodListDTO item3 = await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3));
+        //    List<FoodListDTO> FoodListDTO = new List<FoodListDTO>();
+        //    FoodListDTO.Add(item1);
+        //    FoodListDTO.Add(item2);
+        //    FoodListDTO.Add(item3);
+        //    return Ok(await generateMealRepositories.CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(FoodListDTO), 1));
+        //}
 
 
-        [HttpGet("APIGenerateMealController")]
-        public async Task<IActionResult> APIGenerateMealController(int MealSettingsDetailsId)
-        {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+        //[HttpGet("APIGenerateMealController")]
+        //public async Task<IActionResult> APIGenerateMealController(int MealSettingsDetailsId)
+        //{
+        //    GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
 
-            List<int> ints = new List<int>()
-            {
-                3,1, 5
-            };
-            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
+        //    List<int> ints = new List<int>()
+        //    {
+        //        3,1, 5
+        //    };
+        //    return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
+        //}
 
-        }
 
+        //[HttpGet("APIChangeTheDishToSuitTheTarget")]
+        //public async Task<IActionResult> APIChangeTheDishToSuitTheTarget(int[] idFoodOfListAlreadyExists, int MealSettingsDetailsId)
+        //{
+        //    GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
-        [HttpGet("APIChangeTheDishToSuitTheTarget")]
-        public async Task<IActionResult> APIChangeTheDishToSuitTheTarget(int[] idFoodOfListAlreadyExists, int MealSettingsDetailsId)
-        {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-
-            List<int> ints = new List<int>()
-            {
-                4,4, 3
-            };
-            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
-        }
+        //    List<int> ints = new List<int>()
+        //    {
+        //        4,4, 3
+        //    };
+        //    return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(ints, MealSettingsDetailsId));
+        //}
 
 
         [HttpGet("APIRun")]
         public async Task<IActionResult> APIRun()
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
 
+
+            //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            //return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
+
+
+            List<DietWithFoodType> courseList = _context.DietTypes
+            .SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
+            {
+                DietTypeId = a.DietTypeId,
+                FoodTypeId = b.FoodTypeId
+            })
+            .ToList();
+
+
+
+            return Ok(courseList);
         }
 
 
@@ -112,6 +125,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             {
                 return Ok(dataFoodListMealOfTheDays);
             }
+            else if (myDay.DayOfYear < DateTime.Now.DayOfYear)
+            {
+                return Ok(dataFoodListMealOfTheDays);
+            }
             else
             {
                 if (await generateMealRepositories.FillInDishIdInDailyDish(idUser, myDay))
@@ -123,21 +140,50 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                     }
                     else
                     {
-                        return BadRequest();
+                        return Ok(dataFoodListMealOfTheDays);
                     }
                 }
                 else
                 {
-                    return BadRequest();
+                    return Ok(dataFoodListMealOfTheDays);
                 }
             }
         }
 
-        [HttpGet("APIRefreshTheMeal")]
-        public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APIRefreshTheMealy(DateTime myDay, int idUser)
+
+        [HttpGet("APIListMealOfTheWeek")]
+        public async Task<ActionResult<IEnumerable<DataFoodAllDayOfWeek>>> APIListMealOfTheWeek(DateTime myDay, int idUser)
         {
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.FillInDishIdInDailyDish(idUser, myDay));
+            await generateMealRepositories.CreateMealSetting(idUser);
+            IEnumerable<DataFoodAllDayOfWeek> dataFoodAllDayOfWeek = await generateMealRepositories.ListMealOfTheWeek(myDay, idUser);
+            return Ok(dataFoodAllDayOfWeek);
+        }
+
+
+
+        [HttpGet("APIRefreshTheMeal")]
+        public async Task<IActionResult> APIRefreshTheMealy(DateTime myDay, int idUser)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            if (myDay.DayOfYear >= DateTime.Now.DayOfYear)
+            {
+                return Ok(await generateMealRepositories.FillInDishIdInDailyDish(idUser, myDay));
+            }
+            else
+            {
+                return Ok(false);
+            }   
+        }
+
+
+        [HttpGet("APIRefreshTheAllMeal")]
+        public async Task<IActionResult> APIRefreshTheAllMeal(DateTime myDay, int idUser)
+        {
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            return Ok(await generateMealRepositories.RegenerateListMealOfTheWeek(myDay, idUser));
+
         }
 
 
@@ -152,13 +198,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return BadRequest();
             }
 
-            if (model.StatusSymbol.Equals("-"))
+            if (model.MyDay.DayOfYear == DateTime.Now.DayOfYear)
             {
-                return Ok(await generateMealRepositories.CompleteTheDish(model, "+", null, null));
-            }else if (model.StatusSymbol.Equals("+"))
-            {
-                return Ok(await generateMealRepositories.CompleteTheDish(model, "-", null, null));
-            }else
+                if (model.StatusSymbol.Equals("-"))
+                {
+                    return Ok(await generateMealRepositories.CompleteTheDish(model, "+", null, null));
+                }
+                else if (model.StatusSymbol.Equals("+"))
+                {
+                    return Ok(await generateMealRepositories.CompleteTheDish(model, "-", null, null));
+                }
+                return Ok();
+            }
+            else
             {
                 return BadRequest();
             }  
@@ -208,15 +260,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
             return Ok(await generateMealRepositories.CreateMealSetting(idUser));
         }
-
-
-    }
-
-    public class AlternativeDishesRequest
-    {
-        public List<int>? ListIdFood { get; set; }
-        public int MealSettingsDetailsId { get; set; }
-        public int NumberOfCreation { get; set; }
     }
 
 }

@@ -1,6 +1,7 @@
-﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNewsDTO
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.ArticlesNews
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
 
 <div class="container">
     <h2 class="page-title">Tạo mới bài viết</h2>
@@ -36,6 +37,7 @@
         <div class="form-group">
             <label asp-for="HeaderImage" class="control-label">Hình ảnh đầu bài</label>
             <input asp-for="HeaderImage" type="file" class="form-control" />
+            <small class="text-muted">Vui lòng chọn ảnh có kích cỡ nằm ngang theo tỷ lệ 4:3 để hiển thị tối ưu nhất.</small>
             <span asp-validation-for="HeaderImage" class="text-danger"></span>
         </div>
 
@@ -61,8 +63,11 @@
 </script>
 
 
-<style>
-    
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+ <style>
+
     /* Global Font Styling */
     body {
         font-family: 'Roboto', sans-serif;
@@ -150,8 +155,21 @@
         .btn-secondary:hover {
             background-color: #5a6268;
         }
-</style>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    .text-muted {
+        font-size: 14px;
+        color: #FF5722;
+        display: block;
+        margin-top: 5px;
+        font-style: italic;
+    }
+
+        .text-muted:before {
+            content: "\f06a";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: #FF5722;
+            margin-right: 5px;
+        }
+
+ </style>

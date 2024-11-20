@@ -2,9 +2,8 @@
 {
     public class GetLikeFoodDTO
     {
-        public int UserId { get; set; }
         public string? Search { get; set; } = null;
-        public int Page { get; set; }
-        public int PageSize { get; set; }
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
     }
 }

@@ -1,8 +1,10 @@
-﻿using Azure;
+﻿using AutoMapper;
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using SEP490_G87_Vita_Nutrient_System_API.Mapper;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using System.ComponentModel;
@@ -26,6 +28,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         private readonly string ValueBank;
         private readonly int QRPayDefaultSystem;
 
+
+        private MapperConfiguration config;
+        private IMapper mapper;
+
+
         public BankPaymentRepositories()
         {
 
@@ -43,10 +50,92 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 clientQRBank.BaseAddress = URIQRBase;
                 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
                 clientBank.DefaultRequestHeaders.Accept.Add(contentType);
+
+                config = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
+                mapper = config.CreateMapper();
             }
             catch (Exception ex)
             {
 
+            }
+        }
+
+        public async Task<IEnumerable<ExpertPackageDTO>> GetAllNutritionistServices()
+        {           
+            List<ExpertPackage> data = _context.ExpertPackages.Include(x => x.NutritionistDetails).ToList();
+            if (data == null)
+            {
+                return null;
+            }
+            List<ExpertPackageDTO> dataDTOs = data.Select(p => mapper.Map<ExpertPackage, ExpertPackageDTO>(p)).ToList();
+            return dataDTOs;
+        }
+
+        public async Task<bool> InsertPaidPersonData(UserListManagementDTO userListManagement, int typeInsert)
+        {
+            var data = _context.UserListManagements.FirstOrDefault(x =>
+                x.UserId == userListManagement.UserId
+                && x.NutritionistId == userListManagement.NutritionistId
+                && x.StartDate <= userListManagement.StartDate
+                && x.EndDate >= userListManagement.StartDate);
+
+            if (data == null)
+            {
+                await _context.UserListManagements.AddAsync(new UserListManagement
+                {
+                    NutritionistId = userListManagement.NutritionistId,
+                    UserId = userListManagement.UserId,
+                    Describe = userListManagement.Describe,
+                    StartDate = userListManagement.StartDate,
+                    EndDate = userListManagement.EndDate,
+                    IsDone = userListManagement.IsDone
+                });
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                if (data.EndDate.HasValue && userListManagement.StartDate.HasValue && userListManagement.EndDate.HasValue)
+                {
+                    TimeSpan additionalTime = userListManagement.EndDate.Value - userListManagement.StartDate.Value;
+                    data.EndDate = data.EndDate.Value + additionalTime;
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+
+
+        public async Task<TransactionsSystem> ModifyDataTransactionsSystem(TransactionsSystem data)
+        {
+            // Tìm kiếm bản ghi hiện tại
+            var dataTransactionsSystem = _context.TransactionsSystems.FirstOrDefault(x => x.Id == data.Id);
+
+            if (dataTransactionsSystem == null)
+            {
+                // Thêm mới nếu không tồn tại
+                var newTransaction = new TransactionsSystem
+                {
+                    AmountIn = data.AmountIn,
+                    TransactionContent = data.TransactionContent
+                };
+
+                await _context.TransactionsSystems.AddAsync(newTransaction);
+                await _context.SaveChangesAsync();
+
+                // Lúc này, newTransaction đã có đầy đủ các thuộc tính từ cơ sở dữ liệu
+                return newTransaction;
+            }
+            else
+            {
+                // Xử lý logic khi tồn tại bản ghi
+                dataTransactionsSystem.AmountIn = data.AmountIn;
+                dataTransactionsSystem.TransactionContent = data.TransactionContent;
+
+                await _context.SaveChangesAsync();
+
+                return dataTransactionsSystem;
             }
         }
 
@@ -80,9 +169,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-
-
-
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactionsFromDateToDate(DateTime startDate, DateTime endDate)
@@ -422,5 +508,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return true;
         }
+
+
+
+
     }
 }

@@ -10,7 +10,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
     public class NewsController : Controller
     {
-        private readonly HttpClient client = null;
+        private readonly HttpClient client;
 
         public NewsController(IConfiguration configuration)
         {
@@ -23,7 +23,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // GET: List of all articles
         [HttpGet]
-        public async Task<IActionResult> Index(string searchTitle)
+        public async Task<IActionResult> Index(string searchTitle, int pageNumber = 1, int pageSize = 2)
         {
             try
             {
@@ -32,13 +32,24 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var articles = JsonConvert.DeserializeObject<List<ArticlesNewsDTO>>(data);
+                    var articles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+
+                    // Tìm kiếm theo tiêu đề
                     if (!string.IsNullOrEmpty(searchTitle))
                     {
                         articles = articles.Where(a => a.Title != null && a.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase)).ToList();
-                        ViewData["searchTitle"] = searchTitle; // Lưu từ khóa tìm kiếm vào ViewData để hiển thị lại trong input
+                        ViewData["searchTitle"] = searchTitle;
                     }
-                    return View(articles);
+
+                    // Phân trang
+                    int totalItems = articles.Count;
+                    var paginatedArticles = articles.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                    // Thông tin phân trang
+                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    ViewData["CurrentPage"] = pageNumber;
+
+                    return View(paginatedArticles);
                 }
 
                 ModelState.AddModelError(string.Empty, "Error retrieving data from server.");
@@ -47,13 +58,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
-            return View(new List<ArticlesNewsDTO>());
+
+            return View(new List<ArticlesNews>());
         }
+
 
 
         // GET: List of all articles for users
         [HttpGet]
-        public async Task<IActionResult> IndexForUsers(string searchTitle)
+        public async Task<IActionResult> IndexForUsers(string searchTitle, int pageNumber = 1, int pageSize = 2)
         {
             try
             {
@@ -62,13 +75,27 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var articles = JsonConvert.DeserializeObject<List<ArticlesNewsDTO>>(data);
+                    var articles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+
+                    // Chỉ hiển thị bài viết đang hoạt động
+                    articles = articles.Where(a => a.IsActive == true).ToList();
+
+                    // Tìm kiếm theo tiêu đề
                     if (!string.IsNullOrEmpty(searchTitle))
                     {
                         articles = articles.Where(a => a.Title != null && a.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase)).ToList();
-                        ViewData["searchTitle"] = searchTitle; // Lưu từ khóa tìm kiếm vào ViewData để hiển thị lại trong input
+                        ViewData["searchTitle"] = searchTitle;
                     }
-                    return View(articles); // Sử dụng View riêng cho user
+
+                    // Phân trang
+                    int totalItems = articles.Count;
+                    var paginatedArticles = articles.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                    // Thông tin phân trang
+                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    ViewData["CurrentPage"] = pageNumber;
+
+                    return View(paginatedArticles);
                 }
 
                 ModelState.AddModelError(string.Empty, "Error retrieving data from server.");
@@ -77,7 +104,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
-            return View(new List<ArticlesNewsDTO>());
+            return View(new List<ArticlesNews>());
         }
 
 
@@ -93,8 +120,34 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
+                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
                     return View(article);
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+                return View();
+            }
+        }
+
+
+        // GET: Details of a single article for users
+        [HttpGet]
+        public async Task<IActionResult> DetailsForUsers(int id)
+        {
+            ViewData["ApiBaseUrl"] = client.BaseAddress;
+            try
+            {
+                var response = await client.GetAsync($"api/news/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
+                    return View(article); // Sử dụng View riêng cho user
                 }
 
                 return NotFound();
@@ -112,37 +165,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View();
         }
 
-
-
-        // GET: Details of a single article for users
-        [HttpGet]
-        public async Task<IActionResult> DetailsForUsers(int id)
-        {
-            try
-            {
-                var response = await client.GetAsync($"api/news/{id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
-                    return View(article); // Sử dụng View riêng cho user
-                }
-
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-                return View();
-            }
-        }
-
-
-
         // POST: Create a new article
         [HttpPost]
-        public async Task<IActionResult> Create(ArticlesNewsDTO article, IFormFile HeaderImage)
+        public async Task<IActionResult> Create(ArticlesNews article, IFormFile HeaderImage)
         {
             if (!ModelState.IsValid)
             {
@@ -176,7 +201,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
 
                 // Tạo dữ liệu DTO để gửi qua API mà không có ID tự tăng
-                var createData = new ArticlesNewsDTO()
+                var createData = new ArticlesNews()
                 {
                     UserId = userId,
                     NameCreater = article.NameCreater,
@@ -221,7 +246,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
+                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
                     return View(article);
                 }
 
@@ -236,7 +261,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // POST: Update an article
         [HttpPost]
-        public async Task<IActionResult> Edit(ArticlesNewsDTO article, IFormFile HeaderImage)
+        public async Task<IActionResult> Edit(ArticlesNews article, IFormFile HeaderImage)
         {
             ModelState.Remove("HeaderImage");
             if (!ModelState.IsValid)
@@ -275,7 +300,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     article.HeaderImage = existingArticle.HeaderImage;
                 }
 
-                ArticlesNewsDTO modifyData = new ArticlesNewsDTO()
+                ArticlesNews modifyData = new ArticlesNews()
                 {
                     Id = article.Id,
                     UserId = userId,
@@ -306,13 +331,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         // Phương thức phụ để lấy bài viết hiện tại từ cơ sở dữ liệu
-        private async Task<ArticlesNewsDTO> GetArticleById(int id)
+        private async Task<ArticlesNews> GetArticleById(int id)
         {
             var response = await client.GetAsync($"api/news/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
+                return JsonConvert.DeserializeObject<ArticlesNews>(data);
             }
             return null;
         }
@@ -329,7 +354,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNewsDTO>(data);
+                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
                     return View(article); // Hiển thị bài viết để xác nhận xóa
                 }
 
@@ -367,7 +392,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEvaluation(int articleId, int rating)
+        public async Task<IActionResult> AddOrUpdateEvaluation(int articleId, int rating)
         {
             var userId = int.Parse(User.FindFirst("UserId")?.Value);
 
@@ -375,39 +400,57 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             var existingEvaluation = await CheckUserEvaluation(articleId, userId);
             if (existingEvaluation != null)
             {
-                return BadRequest("Bạn đã đánh giá bài viết này.");
-            }
+                // Nếu đã có đánh giá, cập nhật đánh giá mới
+                existingEvaluation.Ratting = (short)rating;
+                var jsonContent = JsonConvert.SerializeObject(existingEvaluation);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            var evaluationDto = new NewsEvaluationDTO
-            {
-                ArticlesNewsId = articleId,
-                UserId = userId,
-                Ratting = (short)rating
-            };
+                HttpResponseMessage response = await client.PutAsync($"/api/news/{articleId}/evaluations/{existingEvaluation.Id}", content);
 
-            var jsonContent = JsonConvert.SerializeObject(evaluationDto);
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await client.PostAsync($"/api/news/{articleId}/evaluations", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return Ok();
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Lỗi khi cập nhật đánh giá.");
+                }
             }
             else
             {
-                return BadRequest("Lỗi khi gửi đánh giá.");
+                // Tạo đánh giá mới nếu chưa có
+                var evaluationDto = new NewsEvaluation
+                {
+                    ArticlesNewsId = articleId,
+                    UserId = userId,
+                    Ratting = (short)rating
+                };
+
+                var jsonContent = JsonConvert.SerializeObject(evaluationDto);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync($"/api/news/{articleId}/evaluations", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Lỗi khi gửi đánh giá.");
+                }
             }
         }
 
+
         // Phương thức phụ để kiểm tra xem người dùng đã đánh giá bài viết chưa
-        private async Task<NewsEvaluationDTO> CheckUserEvaluation(int articleId, int userId)
+        private async Task<NewsEvaluation> CheckUserEvaluation(int articleId, int userId)
         {
             var response = await client.GetAsync($"/api/news/{articleId}/evaluations/{userId}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<NewsEvaluationDTO>(data);
+                return JsonConvert.DeserializeObject<NewsEvaluation>(data);
             }
             return null;
         }

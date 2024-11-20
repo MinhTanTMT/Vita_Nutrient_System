@@ -3,6 +3,17 @@ using SEP490_G87_Vita_Nutrient_System_API.Models;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList
 {
+
+    public class DataFoodAllDayOfWeek
+    {      
+        public int DayOfTheWeekId { get; set; }
+        public short? DayOfTheWeekIdStart { get; set; }
+        public DateTime DayOfWeek { get; set; }
+        public string? NameDayOfWeek { get; set; }
+        public DataFoodListMealOfTheDay[] dataListFoodMealOfTheDay { get; set; }
+    }
+
+
     public class DataFoodListMealOfTheDay
     {
         public short SlotOfTheDay { get; set; }

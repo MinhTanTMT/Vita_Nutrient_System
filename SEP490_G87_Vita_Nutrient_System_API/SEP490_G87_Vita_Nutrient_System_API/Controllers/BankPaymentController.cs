@@ -13,6 +13,7 @@ using System.Net.Mail;
 using System.Reflection.Metadata;
 using System.Threading;
 using static System.Net.WebRequestMethods;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
@@ -42,14 +43,35 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult<string>> APIGetQRPayDefaultSystem(int? idBankInformation, decimal amount, string content)
         {
             return Ok(await repositories.GetQRPayImage(idBankInformation, amount, content));
-        }
+        } 
 
 
         [HttpGet("APITest")]
-        public async Task<ActionResult<string>> APITest()
+        public async Task<ActionResult<TransactionsSystem>> APITest( )
         {
 
-            return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
+            //return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
+
+            Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
+
+            BankPaymentRepositories repositories = new BankPaymentRepositories();
+
+            
+            var newTransaction = new TransactionsSystem
+            {
+                UserPayId = 1,
+                PayeeId = 1,
+                AmountIn = 99999,
+                TransactionContent = "AAAAAAAAAAAAA"
+            };
+
+            await _context.TransactionsSystems.AddAsync(newTransaction);
+            await _context.SaveChangesAsync();
+
+            // Lúc này, newTransaction đã có đầy đủ các thuộc tính từ cơ sở dữ liệu
+
+            return Ok(newTransaction);
+
 
         }
 
@@ -67,9 +89,30 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
                 return BadRequest("Error");
             }
+
+            //return Ok("Successful");
         }
-        
-        
+
+
+        //[HttpGet("APICheckQRPaySuccessful")]
+        //public async Task<ActionResult<dynamic>> CancelUnsuccessfulTransaction(string accountNumber, int limit, string content, decimal amountIn)
+        //{
+        //    if (await repositories.CheckQRPaySuccessfulByContent(accountNumber, limit, content, amountIn))
+        //    {
+
+        //        return Ok("Successful");
+        //    }
+        //    else
+        //    {
+
+        //        return BadRequest("Error");
+        //    }
+
+        //    return Ok("Successful");
+        //}
+
+
+
         [HttpGet("APIGetAllTransactionsSystemOfMonth")]
         public async Task<ActionResult<IEnumerable<TransactionsSystem>>> APIGetAllTransactionsSystemOfMonth(int month, int year, int userMainId)
         {
@@ -102,5 +145,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             return Ok(repositories.SendMail());
         }
+
+
+        [HttpGet("APIGetAllNutritionistServices")]
+        public async Task<ActionResult<IEnumerable<ExpertPackage>>> APIGetAllNutritionistServices()
+        {
+            BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
+
+            return Ok(await bankPaymentRepositories.GetAllNutritionistServices());
+        }
+
+
+
+        [HttpPost("APIInsertPaidPersonData")]
+        public async Task<IActionResult> APIInsertPaidPersonData(
+        [FromBody] UserListManagementDTO userListManagement,
+        [FromQuery] int typeInsert)
+        {
+            BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
+            return Ok(await bankPaymentRepositories.InsertPaidPersonData(userListManagement, typeInsert));
+        }
+
     }
 }

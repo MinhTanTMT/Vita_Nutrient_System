@@ -25,24 +25,55 @@
         <!-- Header -->
         <div class="flex justify-start items-center mb-6 mt-2 gap-8">
             <div class="flex border border-gray-300 rounded-lg p-1">
-                <button id="day-btn" class="day-btn w-full py-2 px-4 text-white rounded-md">
-                    Ngày
-                </button>
-                <button id="week-btn"
-                        class="w-full py-2 px-4 bg-white text-gray-700 rounded-md">
-                    Tuần
-                </button>
+                <button class="day-btn w-full py-2 px-4 text-white rounded-md" onclick="navigateToPlanUserDay()">Ngày</button>
+                <button class="w-full py-2 px-4 bg-white text-gray-700 rounded-md" onclick="navigateToPlanUserWeek()">Tuần</button>
+
+                <script>
+                    function navigateToPlanUserDay() {
+                        const myDay = '@ViewBag.myDay'; // Lấy giá trị từ ViewBag.myDay
+                        const url = `/User/PlanUser?myDay=${encodeURIComponent(myDay)}`;
+                        window.location.href = url;
+                    }
+
+                    function navigateToPlanUserWeek() {
+                        const myDay = '@ViewBag.myDay'; // Lấy giá trị từ ViewBag.myDay
+                        const url = `/User/PlanUserWeek?myDay=${encodeURIComponent(myDay)}`;
+                        window.location.href = url;
+                    }
+                </script>
             </div>
             <div class="flex items-center space-x-4">
-                <button>
+
+                <button onclick="changeDate(-1)">   
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <button class="bg-gray-100 p-2 rounded-full">
-                    <i class="fa-regular fa-calendar"></i>
-                </button>
-                <button>
+
+
+                <input type="date" id="datePicker" 
+               value="@((ViewBag.myDay != null ? ((DateTime)ViewBag.myDay).ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd")))" 
+               onchange="submitDate()" class="bg-gray-100 p-2 rounded-full">
+
+                <button onclick="changeDate(1)">
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
+
+                <script>
+                    function changeDate(offset) {
+                        let currentDate = new Date('@(ViewBag.myDay?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))');
+                        currentDate.setDate(currentDate.getDate() + offset);
+                        window.location.href = `/User/PlanUser?myDay=${currentDate.toISOString().split('T')[0]}`;
+                    }
+
+                    function submitDate() {
+                        const datePicker = document.getElementById("datePicker");
+                        const selectedDate = datePicker.value;
+                        if (selectedDate) {
+                            window.location.href = `/User/PlanUser?myDay=${selectedDate}`;
+                        }
+                    }
+                </script>
+
+
             </div>
             <h1 class="text-xl font-bold">Hôm nay</h1>
         </div>
@@ -64,6 +95,7 @@
 
         <p>Calories Eaten: @caloriesEaten / @totaAllCalories Cal</p>
 
+
         <!-- CSS cho thanh tiến trình -->
         <style>
             .progress-container {
@@ -82,6 +114,8 @@
                 transition: width 0.3s ease;
             }
         </style>
+
+
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 // Lấy phần trăm calo đã tiêu thụ từ Razor
@@ -95,11 +129,11 @@
 
                 // Cập nhật màu sắc của thanh tiến trình dựa trên phần trăm
                 if (percentEaten <= 50) {
-                    progressBar.style.backgroundColor = "#FFBB33"; // Màu vàng nhạt cho dưới 50%
+                    progressBar.style.backgroundColor = "#FF4444"; // Màu đỏ nhạt cho dưới 50%
                 } else if (percentEaten <= 80) {
                     progressBar.style.backgroundColor = "#FF8800"; // Màu cam cho từ 50% đến 80%
                 } else {
-                    progressBar.style.backgroundColor = "#FF4444"; // Màu đỏ cho trên 80%
+                    progressBar.style.backgroundColor = "#FFBB33"; // Màu vàng cho trên 80%
                 }
             });
         </script>
@@ -120,16 +154,49 @@
                         </div>
                     </div>
                     <div class="flex gap-8">
-                        <button onclick="event.preventDefault(); document.getElementById('refreshTheMeal').submit();">
+
+                        <style>
+                            /* Đặt tên class tùy chỉnh */
+                            button.custom-tooltip {
+                                position: relative; /* Định vị nút để tooltip có thể xuất hiện theo nút */
+                                cursor: pointer;
+                            }
+
+                                /* Tooltip text */
+                                button.custom-tooltip::after {
+                                    content: attr(data-tooltip); /* Lấy nội dung từ data-tooltip */
+                                    visibility: hidden;
+                                    background-color: black;
+                                    color: white;
+                                    text-align: center;
+                                    border-radius: 5px;
+                                    padding: 5px;
+                                    position: absolute;
+                                    z-index: 10;
+                                    bottom: 125%; /* Hiển thị tooltip phía trên nút */
+                                    left: 50%;
+                                    transform: translateX(-50%);
+                                    opacity: 0;
+                                    transition: opacity 0.3s;
+                                    white-space: nowrap; /* Giữ tooltip không xuống dòng */
+                                }
+
+                                /* Hiển thị tooltip khi hover */
+                                button.custom-tooltip:hover::after {
+                                    visibility: visible;
+                                    opacity: 1;
+                                }
+                        </style>
+
+                        <button class="custom-tooltip"
+                                onclick="event.preventDefault(); document.getElementById('refreshTheMeal').submit();"
+                                data-tooltip="Làm mới bữa ăn">
                             <i class="fa-sharp fa-solid fa-rotate"></i>
                         </button>
 
                         <form asp-controller="User" asp-action="RefreshTheMeal" method="post" id="refreshTheMeal" style="display:none;">
-                            <button type="submit">refreshTheMeal</button>
+                            <input type="hidden" name="myDay" value="@ViewBag.myDay.ToString("yyyy-MM-dd")" />
                         </form>
-
-
-                        <!-- NutChuyen-->
 
                         <button><i class="fa-solid fa-ellipsis-vertical"></i></button>
                     </div>
@@ -182,7 +249,7 @@
 
                             <div class="relative inline-block">
                                 <!-- Nút ba chấm để mở popup -->
-                                <button onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item2.SettingDetail, @item2.OrderSettingDetail)" class="focus:outline-none">
+                                <button onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item2.SettingDetail, @item2.OrderSettingDetail, '@ViewBag.myDay')" class="focus:outline-none">
                                     <i class="fa-solid fa-ellipsis-vertical text-gray-500 hover:text-gray-300"></i>
                                 </button>
                             </div>
@@ -208,9 +275,43 @@
                                     <ul class="space-y-2 ml-4">
                                         <li class="flex items-center space-x-2 gap-4">
 
-                                            <input onclick="toggleMenuCheckFoodEaten('@item.SlotOfTheDay', '@item2.SettingDetail', '@item3.idFood', '@item3.statusSymbol', '@ViewBag.userId', '@ViewBag.myDay' , '@item3.positionFood', '@item2.OrderSettingDetail')" type="checkbox" class="h-6 w-6"
-                                            @(item3.statusSymbol.Equals("+") ? "checked" : "")
-                                            @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
+                                            <style>
+                                                .custom-tooltip-container {
+                                                    position: relative;
+                                                    display: inline-block;
+                                                }
+
+                                                    .custom-tooltip-container .tooltip-text {
+                                                        visibility: hidden;
+                                                        background-color: black;
+                                                        color: white;
+                                                        text-align: center;
+                                                        border-radius: 5px;
+                                                        padding: 5px;
+                                                        position: absolute;
+                                                        z-index: 10;
+                                                        bottom: 125%; /* Hiển thị tooltip phía trên */
+                                                        left: 50%;
+                                                        transform: translateX(-50%);
+                                                        opacity: 0;
+                                                        transition: opacity 0.3s;
+                                                        white-space: nowrap; /* Giữ tooltip trên một dòng */
+                                                    }
+
+                                                    .custom-tooltip-container:hover .tooltip-text {
+                                                        visibility: visible;
+                                                        opacity: 1;
+                                                    }
+                                            </style>
+
+                                            <div class="custom-tooltip-container">
+                                                <input onclick="toggleMenuCheckFoodEaten('@item.SlotOfTheDay', '@item2.SettingDetail', '@item3.idFood', '@item3.statusSymbol', '@ViewBag.userId', '@ViewBag.myDay' , '@item3.positionFood', '@item2.OrderSettingDetail')"
+                                                       type="checkbox"
+                                                       class="h-6 w-6"
+                                                @(item3.statusSymbol.Equals("+") ? "checked" : "")
+                                                @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
+                                                <span class="tooltip-text"> Đánh dấu để tính toán tiến trình </span>
+                                            </div>
 
                                             <div class="flex items-center gap-3" onclick="getMealDetail(@item3.idFood)">
                                                 <img src="~/images/@item3.foodData.Urlimage"
@@ -223,10 +324,6 @@
                                             </div>
                                         </li>
                                     </ul>
-
-                                    <form asp-controller="User" asp-action="foodDetails" asp-route-foodId="@item3.idFood" method="get" id="GetMealDetail" style="display:none;">
-                                        <button type="submit">GetMealDetail</button>
-                                    </form>
 
                                     <script>
                                         function getMealDetail(id) {
@@ -292,9 +389,9 @@
                     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
                 }
 
-                function ChanceFoodTheMeal(slotOfTheDay, settingDetail, orderSettingDetail) {
+                function ChanceFoodTheMeal(slotOfTheDay, settingDetail, orderSettingDetail, myDaySelect) {
                     // Xây dựng URL với các tham số
-                    const url = `/User/ChangeAnotherDish?SlotOfTheDay=${encodeURIComponent(slotOfTheDay)}&SettingDetail=${encodeURIComponent(settingDetail)}&OrderSettingDetail=${encodeURIComponent(orderSettingDetail)}`;
+                    const url = `/User/ChangeAnotherDish?SlotOfTheDay=${encodeURIComponent(slotOfTheDay)}&SettingDetail=${encodeURIComponent(settingDetail)}&OrderSettingDetail=${encodeURIComponent(orderSettingDetail)}&MyDaySelect=${encodeURIComponent(myDaySelect)}`;
 
                     // Chuyển hướng trình duyệt sang URL
                     window.location.href = url;
@@ -354,10 +451,6 @@
                     }
                 });
             </script>
-
-
-
-
 
 
 

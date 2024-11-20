@@ -17,5 +17,9 @@
         public double? Rate { get; set; }
 
         public int? NumberRate { get; set; }
+
+        public short ExpertPackagesId { get; set; }
+
+
     }
 }

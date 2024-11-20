@@ -1,16 +1,26 @@
 ﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.BMIResult
 <div class="container nutrition-check">
-    <h2>KIỂM TRA TÌNH TRẠNG DINH DƯỠNG</h2>
+    <h2>KIỂM TRA CHỈ SỐ BMI</h2>
     <div class="divider"></div>
     <p class="sub-text">Vui lòng điền đầy đủ thông tin</p>
 
     <form asp-action="NutritionCheck" method="post">
         <div class="form-row">
             <div class="form-group">
-                <input type="date" name="birthDate" placeholder="Ngày sinh vd: 19/05/1890(*)" required value="@ViewBag.BirthDate" />
+                <label for="birthDate">Ngày sinh: (VD:19/05/1980)</label>
+                <input type="date" id="birthDate" name="birthDate" required value="@ViewBag.BirthDate" />
+                @if (!string.IsNullOrEmpty(ViewBag.BirthDateError))
+                {
+                    <span class="error">@ViewBag.BirthDateError</span>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.AgeError))
+                {
+                    <span class="error">@ViewBag.AgeError</span>
+                }
             </div>
             <div class="form-group">
-                <select name="gender" required>
+                <label for="gender">Giới tính:</label>
+                <select id="gender" name="gender" required>
                     @if (ViewBag.Gender == "Nữ")
                     {
                         <option value="Nam">Nam</option>
@@ -22,51 +32,202 @@
                         <option value="Nữ">Nữ</option>
                     }
                 </select>
+                @if (!string.IsNullOrEmpty(ViewBag.GenderError))
+                {
+                    <span class="error">@ViewBag.GenderError</span>
+                }
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
-                <input type="number" name="weight" placeholder="Nhập cân nặng (kg)" step="0.1" required value="@ViewBag.Weight" />
+                <label for="weight">Cân nặng (kg):</label>
+                <input type="number" id="weight" name="weight" placeholder="Nhập cân nặng (kg)" step="0.1" required value="@ViewBag.Weight" />
+                @if (!string.IsNullOrEmpty(ViewBag.WeightError))
+                {
+                    <span class="error">@ViewBag.WeightError</span>
+                }
             </div>
             <div class="form-group">
-                <input type="number" name="height" placeholder="Nhập chiều cao (cm)" step="0.1" required value="@ViewBag.Height" />
+                <label for="height">Chiều cao (cm):</label>
+                <input type="number" id="height" name="height" placeholder="Nhập chiều cao (cm)" step="0.1" required value="@ViewBag.Height" />
+                @if (!string.IsNullOrEmpty(ViewBag.HeightError))
+                {
+                    <span class="error">@ViewBag.HeightError</span>
+                }
             </div>
         </div>
 
         <button type="submit" class="btn btn-primary">KIỂM TRA</button>
     </form>
 
-    @if (!string.IsNullOrEmpty(ViewBag.AgeError))
-    {
-        <div class="alert alert-danger">
-            @ViewBag.AgeError
-        </div>
-    }
-
     @if (Model != null && Model.BMI > 0)
     {
-        <div class="result-section">
-            <h3>Kết Quả Kiểm Tra BMI</h3>
-            <p>Chỉ số BMI của bạn: <span class="bmi-value">@Model.BMI</span></p>
-            <p>Đánh giá: <span class="status">@Model.Status</span></p>
-            <p>Phạm vi: <span class="evaluation">@Model.Evaluation</span></p>
-            <p>Giới tính: <span class="gender"><strong>@Model.Gender</strong></span></p>
-            <p>Tuổi của bạn: <span class="age"><strong>@ViewBag.Age</strong></span></p>
-            <p>
-                Phương pháp đánh giá:
-                <span class="evaluation-method">
-                    @if (ViewBag.Age >= 19)
+        @if (Model != null && Model.BMI > 0)
+        {
+            <div class="result-section">
+                <h3>Kết Quả Kiểm Tra BMI</h3>
+                @if (ViewBag.Age >= 19)
+                {
+                    <p>Chỉ số BMI của bạn: <span class="bmi-value">@Model.BMI</span></p>
+                }
+                else
+                {
+                    <p>Chỉ số BMI của bạn: <span class="bmi-value">@Model.BMI</span></p>
+                    <p>Phân vị BMI của bạn: <span class="bmi-value">@Model.Percentile</span> (th percentile)</p>
+                }
+                <p>Đánh giá: <span class="status">@Model.Status</span></p>
+                <p>Phạm vi: <span class="evaluation">@Model.Evaluation</span></p>
+                <p>Giới tính: <span class="gender"><strong>@Model.Gender</strong></span></p>
+                <p>Tuổi của bạn: <span class="age"><strong>@ViewBag.Age</strong></span></p>
+                <p>
+                    Phương pháp đánh giá:
+                    <span class="evaluation-method">
+                        @if (ViewBag.Age >= 19)
+                        {
+                            @:Dành cho người trưởng thành
+                        }
+                        else
+                        {
+                            @:Dành cho trẻ em và thanh thiếu niên
+                        }
+                    </span>
+                </p>
+
+                <!-- Bảng chỉ số BMI dành cho người trưởng thành -->
+                @if (ViewBag.Age >= 19)
+                {
+                    @if (ViewBag.Gender == "Nam")
                     {
-                        @:Dành cho người trưởng thành
+                        <h4>Bảng Chỉ Số BMI Tham Khảo Cho Nam</h4>
+                        <table class="bmi-table">
+                            <thead>
+                                <tr>
+                                    <th>Phân loại</th>
+                                    <th>BMI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>GẦY ĐỘ III</td>
+                                    <td>&lt; 16 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>GẦY ĐỘ II</td>
+                                    <td>16 Kg/m² - &lt; 17 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>GẦY ĐỘ I</td>
+                                    <td>17 Kg/m² - &lt; 18.5 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>BÌNH THƯỜNG</td>
+                                    <td>18.5 Kg/m² - &lt; 23 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>THỪA CÂN</td>
+                                    <td>23 Kg/m² - &lt; 25 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>BÉO PHÌ ĐỘ I</td>
+                                    <td>25 Kg/m² - &lt; 30 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>BÉO PHÌ ĐỘ II</td>
+                                    <td>30 Kg/m² - &lt; 35 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>BÉO PHÌ ĐỘ III</td>
+                                    <td>≥ 35 Kg/m²</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     }
-                    else
+                    else if (ViewBag.Gender == "Nữ")
                     {
-                        @:Dành cho trẻ em và thanh thiếu niên
+                        <h4>Bảng Chỉ Số BMI Tham Khảo Cho Nữ</h4>
+                        <table class="bmi-table">
+                            <thead>
+                                <tr>
+                                    <th>Phân loại</th>
+                                    <th>BMI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>GẦY ĐỘ III</td>
+                                    <td>&lt; 15.5 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>GẦY ĐỘ II</td>
+                                    <td>15.5 Kg/m² - &lt; 16.5 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>GẦY ĐỘ I</td>
+                                    <td>16.5 Kg/m² - &lt; 18 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>BÌNH THƯỜNG</td>
+                                    <td>18 Kg/m² - &lt; 22.5 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>THỪA CÂN</td>
+                                    <td>22.5 Kg/m² - &lt; 24.5 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>BÉO PHÌ ĐỘ I</td>
+                                    <td>24.5 Kg/m² - &lt; 29.5 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>BÉO PHÌ ĐỘ II</td>
+                                    <td>29.5 Kg/m² - &lt; 34.5 Kg/m²</td>
+                                </tr>
+                                <tr>
+                                    <td>BÉO PHÌ ĐỘ III</td>
+                                    <td>≥ 34.5 Kg/m²</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     }
-                </span>
-            </p>
-        </div>
+                }
+                else
+                {
+                    <!-- Bảng chỉ số BMI dành cho trẻ em và thanh thiếu niên -->
+                    <h4>Bảng Chỉ Số BMI Tham Khảo Cho Trẻ Em và Thanh Thiếu Niên</h4>
+                    <table class="bmi-table">
+                        <thead>
+                            <tr>
+                                <th>Phân loại</th>
+                                <th>Phần trăm phân vị</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Thiếu cân</td>
+                                <td>Dưới 5th percentile</td>
+                            </tr>
+                            <tr>
+                                <td>Bình thường</td>
+                                <td>5th đến dưới 85th percentile</td>
+                            </tr>
+                            <tr>
+                                <td>Nguy cơ thừa cân</td>
+                                <td>85th đến dưới 95th percentile</td>
+                            </tr>
+                            <tr>
+                                <td>Thừa cân</td>
+                                <td>Trên 95th percentile</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="data-source">
+                        <em>Thông tin phân vị BMI được lấy từ nguồn <a href="https://www.who.int/tools/growth-reference-data-for-5to19-years/indicators/bmi-for-age" target="_blank"><strong>WHO Growth Reference Data for 5–19 Years</strong></a>.</em>
+                    </p>
+                }
+
+            </div>
+        }
+
     }
 
     <div class="note">
@@ -208,6 +369,14 @@
             font-weight: bold;
         }
 
+        .result-section h4 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            color: #3333ff;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
     .bmi-value {
         color: #007bff;
         font-weight: bold;
@@ -266,4 +435,52 @@
         display: inline-block;
     }
 
+    .bmi-table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+        .bmi-table th, .bmi-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .bmi-table th {
+            background-color: #3333ff;
+            color: #fff;
+        }
+
+        .bmi-table td {
+            background-color: #f9f9ff;
+        }
+
+        .bmi-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+    .data-source {
+        font-size: 14px;
+        color: #666;
+        margin-top: 15px;
+        text-align: center;
+    }
+
+        .data-source em {
+            font-style: italic;
+            color: #333;
+        }
+
+        .data-source strong {
+            font-weight: bold;
+            color: #3333ff;
+        }
+
+    .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+        display: block;
+    }
 </style>
