@@ -134,7 +134,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             var nutritionist = _context.Users
                 .Include(u => u.RoleNavigation)
-                .Include(u => u.NutritionistDetails)
+                .Include(u => u.NutritionistDetail)
                 .FirstOrDefault(u => u.UserId == id);
 
             if (nutritionist.Role != (int)UserRole.NUTRITIONIST)
@@ -149,13 +149,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.SaveChanges();
         }
 
-        public ExpertPackage GetNutritionistPackages(int id)
+        public ExpertPackage GetNutritionistPackages(short id)
         {
             return _context.ExpertPackages.Find(id);
-
         }
-
-
 
         ////////////////////////////////////////////////////////////
         /// Tùng
