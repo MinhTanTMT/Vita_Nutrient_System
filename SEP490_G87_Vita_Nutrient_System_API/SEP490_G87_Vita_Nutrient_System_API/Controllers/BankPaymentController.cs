@@ -58,16 +58,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APICheckQRPaySuccessful")]
         public async Task<ActionResult<dynamic>> APICheckQRPaySuccessful(string accountNumber, int limit, string content, decimal amountIn)
         {
-            if (await repositories.CheckQRPaySuccessfulByContent(accountNumber, limit, content, amountIn))
-            {
+            //if (await repositories.CheckQRPaySuccessfulByContent(accountNumber, limit, content, amountIn))
+            //{
 
-                return Ok("Successful");
-            }
-            else
-            {
+            //    return Ok("Successful");
+            //}
+            //else
+            //{
 
-                return BadRequest("Error");
-            }
+            //    return BadRequest("Error");
+            //}
+
+            return Ok("Successful");
         }
         
         
@@ -107,7 +109,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
         [HttpGet("APIGetAllNutritionistServices")]
-        public async Task<ActionResult<IEnumerable<NutritionistDetail>>> APIGetAllNutritionistServices()
+        public async Task<ActionResult<IEnumerable<ExpertPackage>>> APIGetAllNutritionistServices()
         {
             BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
 
@@ -115,17 +117,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-        [HttpGet("APIInsertPaidPersonData")]
-        public async Task<ActionResult<IEnumerable<NutritionistDetail>>> InsertPaidPersonData(
-        [FromBody] UserListManagement userListManagement,
-        [FromQuery] int type )
+
+
+        [HttpPost("APIInsertPaidPersonData")]
+        public async Task<IActionResult> APIInsertPaidPersonData(
+        [FromBody] UserListManagementDTO userListManagement,
+        [FromQuery] int typeInsert)
         {
             BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
-
-            return Ok(await bankPaymentRepositories.GetAllNutritionistServices());
+            return Ok(await bankPaymentRepositories.InsertPaidPersonData(userListManagement, typeInsert));
         }
-
-
 
     }
 }

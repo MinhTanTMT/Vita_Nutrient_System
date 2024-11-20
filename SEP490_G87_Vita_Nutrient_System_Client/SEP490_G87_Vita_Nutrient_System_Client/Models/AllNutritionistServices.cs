@@ -2,23 +2,17 @@
 {
     public class AllNutritionistServices
     {
-        public int Id { get; set; }
+        public short Id { get; set; }
 
-        public int NutritionistId { get; set; }
+        public string? Name { get; set; }
 
-        public string? DescribeYourself { get; set; }
+        public string? Describe { get; set; }
 
-        public short? Height { get; set; }
+        public decimal? Price { get; set; }
 
-        public short? Weight { get; set; }
+        public short? Duration { get; set; }
 
-        public short? Age { get; set; }
-
-        public double? Rate { get; set; }
-
-        public int? NumberRate { get; set; }
-
-        public virtual ICollection<ExpertPackage> ExpertPackages { get; set; } = new List<ExpertPackage>();
+        public virtual ICollection<NutritionistDetail> NutritionistDetails { get; set; } = new List<NutritionistDetail>();
     }
 
 

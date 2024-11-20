@@ -4,8 +4,6 @@
     {
         public short Id { get; set; }
 
-        public int NutritionistDetailsId { get; set; }
-
         public string? Name { get; set; }
 
         public string? Describe { get; set; }
@@ -14,6 +12,6 @@
 
         public short? Duration { get; set; }
 
-        //public virtual NutritionistDetailDTO NutritionistDetails { get; set; } = null!;
+        public virtual ICollection<NutritionistDetailDTO> NutritionistDetails { get; set; } = new List<NutritionistDetailDTO>();
     }
 }
