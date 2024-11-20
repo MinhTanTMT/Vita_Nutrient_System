@@ -1,4 +1,6 @@
-﻿namespace SEP490_G87_Vita_Nutrient_System_API.Dtos
+﻿using SEP490_G87_Vita_Nutrient_System_API.Models;
+
+namespace SEP490_G87_Vita_Nutrient_System_API.Dtos
 {
     public class NutritionistDetailDTO
     {
@@ -18,6 +20,6 @@
 
         public int? NumberRate { get; set; }
 
-        public virtual ICollection<ExpertPackageDTO> ExpertPackages { get; set; } = new List<ExpertPackageDTO>();
+        public short ExpertPackagesId { get; set; }
     }
 }

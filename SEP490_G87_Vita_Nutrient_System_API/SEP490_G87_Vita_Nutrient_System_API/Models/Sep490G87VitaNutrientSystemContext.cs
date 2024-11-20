@@ -19,10 +19,6 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     public virtual DbSet<BankInformation> BankInformations { get; set; }
 
-    public virtual DbSet<Conversation> Conversations { get; set; }
-
-    public virtual DbSet<ConversationParticipant> ConversationParticipants { get; set; }
-
     public virtual DbSet<CookingDifficulty> CookingDifficulties { get; set; }
 
     public virtual DbSet<DayOfTheWeek> DayOfTheWeeks { get; set; }
@@ -69,6 +65,8 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     public virtual DbSet<Role> Roles { get; set; }
 
+    public virtual DbSet<Room> Rooms { get; set; }
+
     public virtual DbSet<ScaleAmount> ScaleAmounts { get; set; }
 
     public virtual DbSet<SlotOfTheDay> SlotOfTheDays { get; set; }
@@ -87,8 +85,11 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var ConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("DefaultConnection");
-        optionsBuilder.UseSqlServer(ConnectionString);
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -131,37 +132,6 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
                 .HasConstraintName("FK__BankInfor__UserI__43D61337");
         });
 
-        modelBuilder.Entity<Conversation>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Conversa__3214EC072914FA57");
-
-            entity.ToTable("Conversations", "Business");
-
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.Name).HasMaxLength(50);
-        });
-
-        modelBuilder.Entity<ConversationParticipant>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Conversa__3214EC07BE4CCA8A");
-
-            entity.ToTable("ConversationParticipants", "Business");
-
-            entity.HasIndex(e => new { e.ConversationsId, e.UserId }, "UQ__Conversa__135EC2124A57C55D").IsUnique();
-
-            entity.Property(e => e.AddedAt).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Conversations).WithMany(p => p.ConversationParticipants)
-                .HasForeignKey(d => d.ConversationsId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Conversat__Conve__05D8E0BE");
-
-            entity.HasOne(d => d.User).WithMany(p => p.ConversationParticipants)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Conversat__UserI__06CD04F7");
-        });
-
         modelBuilder.Entity<CookingDifficulty>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__CookingD__3214EC076AA13725");
@@ -192,18 +162,13 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<ExpertPackage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ExpertPa__3214EC07F56CC7DA");
+            entity.HasKey(e => e.Id).HasName("PK__ExpertPa__3214EC07ED91BD68");
 
             entity.ToTable("ExpertPackages", "UserData");
 
             entity.Property(e => e.Describe).HasMaxLength(500);
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Price).HasColumnType("money");
-
-            entity.HasOne(d => d.NutritionistDetails).WithMany(p => p.ExpertPackages)
-                .HasForeignKey(d => d.NutritionistDetailsId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ExpertPac__Nutri__5EBF139D");
         });
 
         modelBuilder.Entity<FoodAndDisease>(entity =>
@@ -455,22 +420,22 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<Message>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Messages__3214EC07D9D4C8AF");
+            entity.HasKey(e => e.Id).HasName("PK__Messages__3214EC0744DBC818");
 
             entity.ToTable("Messages", "Business");
 
             entity.Property(e => e.Content).HasMaxLength(500);
-            entity.Property(e => e.SentAt).HasColumnType("datetime");
+            entity.Property(e => e.Timestamp).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Conversations).WithMany(p => p.Messages)
-                .HasForeignKey(d => d.ConversationsId)
+            entity.HasOne(d => d.FromUser).WithMany(p => p.Messages)
+                .HasForeignKey(d => d.FromUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Messages__Conver__09A971A2");
+                .HasConstraintName("FK__Messages__FromUs__4C364F0E");
 
-            entity.HasOne(d => d.Sender).WithMany(p => p.Messages)
-                .HasForeignKey(d => d.SenderId)
+            entity.HasOne(d => d.ToRoom).WithMany(p => p.Messages)
+                .HasForeignKey(d => d.ToRoomId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Messages__Sender__0A9D95DB");
+                .HasConstraintName("FK__Messages__ToRoom__4D2A7347");
         });
 
         modelBuilder.Entity<Msg>(entity =>
@@ -554,18 +519,23 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<NutritionistDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Nutritio__3214EC07F9BB174A");
+            entity.HasKey(e => e.Id).HasName("PK__Nutritio__3214EC07EF0E5D92");
 
             entity.ToTable("NutritionistDetails", "UserData");
 
-            entity.HasIndex(e => e.NutritionistId, "UQ__Nutritio__F4399C8D333D8E36").IsUnique();
+            entity.HasIndex(e => new { e.NutritionistId, e.ExpertPackagesId }, "UQ__Nutritio__9C31FC2D2E28013D").IsUnique();
 
             entity.Property(e => e.DescribeYourself).HasMaxLength(500);
 
-            entity.HasOne(d => d.Nutritionist).WithOne(p => p.NutritionistDetail)
-                .HasForeignKey<NutritionistDetail>(d => d.NutritionistId)
+            entity.HasOne(d => d.ExpertPackages).WithMany(p => p.NutritionistDetails)
+                .HasForeignKey(d => d.ExpertPackagesId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Nutrition__Nutri__5BE2A6F2");
+                .HasConstraintName("FK__Nutrition__Exper__4589517F");
+
+            entity.HasOne(d => d.Nutritionist).WithMany(p => p.NutritionistDetails)
+                .HasForeignKey(d => d.NutritionistId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Nutrition__Nutri__44952D46");
         });
 
         modelBuilder.Entity<Recipe>(entity =>
@@ -603,6 +573,25 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.RoleName).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Room>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Rooms__3214EC07BC08F48F");
+
+            entity.ToTable("Rooms", "Business");
+
+            entity.Property(e => e.Name).HasMaxLength(50);
+
+            entity.HasOne(d => d.Nutrition).WithMany(p => p.RoomNutritions)
+                .HasForeignKey(d => d.NutritionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Rooms__Nutrition__4865BE2A");
+
+            entity.HasOne(d => d.User).WithMany(p => p.RoomUsers)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Rooms__UserId__4959E263");
         });
 
         modelBuilder.Entity<ScaleAmount>(entity =>

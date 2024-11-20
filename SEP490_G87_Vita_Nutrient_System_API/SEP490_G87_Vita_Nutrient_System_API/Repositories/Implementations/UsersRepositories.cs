@@ -132,15 +132,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public User? GetNutritionistDetailsInfo(int id)
         {
-            var nutritionist = _context.Users
-                .Include(u => u.RoleNavigation)
-                .Include(u => u.NutritionistDetail)
-                .FirstOrDefault(u => u.UserId == id);
+            //var nutritionist = _context.Users
+            //    .Include(u => u.RoleNavigation)
+            //    .Include(u => u.NutritionistDetail)
+            //    .FirstOrDefault(u => u.UserId == id);
 
-            if (nutritionist.Role != (int)UserRole.NUTRITIONIST)
-                return null;
+            //if (nutritionist.Role != (int)UserRole.NUTRITIONIST)
+            //    return null;
 
-            return nutritionist;
+            //return nutritionist;
+
+
+            return null; // Bổ sung tránh lỗi
+
         }
 
         public void UpdateUser(User user)
@@ -151,7 +155,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public IQueryable<ExpertPackage> GetNutritionistPackages(int id)
         {
-            return _context.ExpertPackages.Where(p => p.NutritionistDetailsId == id);
+            //return _context.ExpertPackages.Where(p => p.NutritionistDetailsId == id);
+
+            return null; // Bổ sung tránh lỗi
+
         }
 
 
