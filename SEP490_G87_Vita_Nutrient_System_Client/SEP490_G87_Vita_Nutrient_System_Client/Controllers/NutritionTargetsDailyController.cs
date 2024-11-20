@@ -23,16 +23,38 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             NutritionTargetOfMeal nutritionTargetsDaily = null;
             NutritionTargetsDaily additionalNutritionData = null;
-
+            List<IngredientDetails100g> ingredients = new List<IngredientDetails100g>();
             try
             {
+                // Gọi API để lấy danh sách Ingredients
+                HttpResponseMessage ingredientResponse = await client.GetAsync($"{client.BaseAddress}/Ingredient/GetAllIngredients");
+                if (ingredientResponse.IsSuccessStatusCode)
+                {
+                    var ingredientJson = await ingredientResponse.Content.ReadAsStringAsync();
+                     ingredients = JsonConvert.DeserializeObject<List<IngredientDetails100g>>(ingredientJson);
+
+                    // Truyền danh sách Ingredients đến View thông qua ViewBag
+                    ViewBag.Ingredients = ingredients;
+                }
+                else
+                {
+                    ViewBag.Ingredients = new List<IngredientDetails100g>();
+                }
                 // Gọi API để lấy thông tin dinh dưỡng chính của meal
                 HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/NutritionTargetsDaily/GetNutritionTargetsDailyOfMeal/{id}");
-
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonData = await response.Content.ReadAsStringAsync();
                     nutritionTargetsDaily = JsonConvert.DeserializeObject<NutritionTargetOfMeal>(jsonData);
+
+                    // Xử lý danh sách AvoidIngredient
+                    var avoidIds = nutritionTargetsDaily?.AvoidIngredient?.Split(';') ?? Array.Empty<string>();
+                    var selectedIngredients = ingredients
+                        .Where(i => avoidIds.Contains(i.Id.ToString()))
+                        .ToList();
+
+                    // Truyền danh sách các thực phẩm đã chọn đến ViewBag
+                    ViewBag.SelectedIngredients = selectedIngredients;
                 }
                 else
                 {
@@ -75,13 +97,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return RedirectToAction("MealSettingsDetailToList", "Meal");
             }
 
-            if (nutritionTargetsDaily == null)
-            {
-                TempData["ErrorMessage"] = "Không tìm thấy nutritionTargetsDaily.";
-                return RedirectToAction("Error");
-            }
 
-            // Trả về model chính cho view và dữ liệu bổ sung qua ViewBag
+            
             return View(nutritionTargetsDaily);
         }
 

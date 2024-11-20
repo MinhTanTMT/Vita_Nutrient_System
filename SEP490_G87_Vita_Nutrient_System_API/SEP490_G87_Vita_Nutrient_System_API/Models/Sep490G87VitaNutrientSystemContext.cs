@@ -91,7 +91,6 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
         }
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ArticlesNews>(entity =>
@@ -519,23 +518,25 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<NutritionistDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Nutritio__3214EC07EF0E5D92");
+            entity.HasKey(e => e.Id).HasName("PK__Nutritio__3214EC077AAE0E39");
 
             entity.ToTable("NutritionistDetails", "UserData");
 
-            entity.HasIndex(e => new { e.NutritionistId, e.ExpertPackagesId }, "UQ__Nutritio__9C31FC2D2E28013D").IsUnique();
+            entity.HasIndex(e => new { e.NutritionistId, e.ExpertPackagesId }, "UQ__Nutritio__9C31FC2DB10104B2").IsUnique();
+
+            entity.HasIndex(e => e.NutritionistId, "UQ__Nutritio__F4399C8DAFF5E92D").IsUnique();
 
             entity.Property(e => e.DescribeYourself).HasMaxLength(500);
 
             entity.HasOne(d => d.ExpertPackages).WithMany(p => p.NutritionistDetails)
                 .HasForeignKey(d => d.ExpertPackagesId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Nutrition__Exper__4589517F");
+                .HasConstraintName("FK__Nutrition__Exper__52E34C9D");
 
-            entity.HasOne(d => d.Nutritionist).WithMany(p => p.NutritionistDetails)
-                .HasForeignKey(d => d.NutritionistId)
+            entity.HasOne(d => d.Nutritionist).WithOne(p => p.NutritionistDetail)
+                .HasForeignKey<NutritionistDetail>(d => d.NutritionistId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Nutrition__Nutri__44952D46");
+                .HasConstraintName("FK__Nutrition__Nutri__51EF2864");
         });
 
         modelBuilder.Entity<Recipe>(entity =>

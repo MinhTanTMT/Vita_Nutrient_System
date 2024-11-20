@@ -246,6 +246,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
         }
 
+        [HttpPost("SaveUserAndCreateMeals")]
+        public async Task<IActionResult> SaveUserAndCreateMeals([FromBody] MealAndUserPhysicalStatisticsDTO userStats)
+        {
+            try
+            {
+                if (userStats == null)
+                {
+                    return BadRequest(new { message = "Thông tin người dùng không hợp lệ." });
+                }
+
+                await repositories.SaveUserAndCreateMealsAsync(userStats);
+                return Ok(new { message = "Lưu thông tin người dùng và tạo bữa ăn thành công." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = $"Lỗi khi xử lý: {ex.Message}" });
+            }
+        }
 
     }
 }
