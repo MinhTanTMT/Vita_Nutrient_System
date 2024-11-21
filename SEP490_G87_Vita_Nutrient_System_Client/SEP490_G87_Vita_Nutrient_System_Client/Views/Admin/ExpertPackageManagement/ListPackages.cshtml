@@ -9,6 +9,11 @@
 }
 
 <link rel="stylesheet" href="~/css/listPackages.css">
+<link rel="stylesheet" href="~/css/toast.css" />
+
+
+<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
+<input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
 
 <div class="row" style="width: 100%;">
     <div class="col-12 grid-margin">
@@ -166,3 +171,6 @@
 </div>
 
 <script src="~/js/listPackage.js"></script>
+<div id="toast"></div>
+
+<script src="~/js/toast.js"></script>

@@ -98,7 +98,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return Ok("Cannot delete because there are nutritionists that have the package!");
+                    return BadRequest("Cannot delete because there are nutritionists that have the package!");
                 }
             }
         }
