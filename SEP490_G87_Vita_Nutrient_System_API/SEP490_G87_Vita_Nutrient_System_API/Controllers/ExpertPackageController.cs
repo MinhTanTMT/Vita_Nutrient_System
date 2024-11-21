@@ -29,6 +29,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+
         //get package details
         [HttpGet("GetExpertPackage/{packageId}")]
         public async Task<ActionResult> GetExpertPackage(short packageId)
@@ -37,10 +38,69 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(_mapper.Map<ExpertPackageResponse>(package));
         }
-        //edit package
+
 
         //add package
+        [HttpPost("AddExpertPackage")]
+        public async Task<ActionResult> AddExpertPackage([FromBody] ExpertPackageResponse package)
+        {
+            ExpertPackage p = new ExpertPackage
+            {
+                Name = package.Name,
+                Describe = package.Describe,
+                Price = package.Price,
+                Duration = package.Duration,
+            };
+
+            repositories.AddExpertPackage(p);
+
+            return Ok("Add package successful!");
+        }
+
+        //edit package
+        [HttpPut("UpdateExpertPackage")]
+        public async Task<ActionResult> UpdateExpertPackage([FromBody] ExpertPackageResponse package)
+        {
+            ExpertPackage p = repositories.GetExpertPackage(package.Id);
+
+            if(p is null)
+            {
+                return Ok("Package not found!");
+            }
+            else
+            {
+                p.Name = package.Name;
+                p.Describe = package.Describe;
+                p.Price = package.Price;
+                p.Duration = package.Duration;
+
+                repositories.UpdateExpertPackage(p);
+                return Ok("Update package successful!");
+            }
+        }
 
         //delete package
+        [HttpDelete("DeleteExpertPackage/{packageId}")]
+        public async Task<ActionResult> DeleteExpertPackage(short packageId)
+        {
+            ExpertPackage p = repositories.GetExpertPackage(packageId);
+
+            if (p is null)
+            {
+                return Ok("Package not found!");
+            }
+            else
+            {
+                try
+                {
+                    repositories.RemoveExpertPackage(packageId);
+                    return Ok("Delete package successful!");
+                }
+                catch (Exception ex)
+                {
+                    return Ok("Cannot delete because there are nutritionists that have the package!");
+                }
+            }
+        }
     }
 }
