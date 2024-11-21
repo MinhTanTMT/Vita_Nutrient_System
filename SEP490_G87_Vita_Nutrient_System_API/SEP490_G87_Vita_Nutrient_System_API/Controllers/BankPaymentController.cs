@@ -13,6 +13,7 @@ using System.Net.Mail;
 using System.Reflection.Metadata;
 using System.Threading;
 using static System.Net.WebRequestMethods;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
@@ -102,5 +103,29 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             return Ok(repositories.SendMail());
         }
+
+
+
+        [HttpGet("APIGetAllNutritionistServices")]
+        public async Task<ActionResult<IEnumerable<NutritionistDetail>>> APIGetAllNutritionistServices()
+        {
+            BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
+
+            return Ok(await bankPaymentRepositories.GetAllNutritionistServices());
+        }
+
+
+        [HttpGet("APIInsertPaidPersonData")]
+        public async Task<ActionResult<IEnumerable<NutritionistDetail>>> InsertPaidPersonData(
+        [FromBody] UserListManagement userListManagement,
+        [FromQuery] int type )
+        {
+            BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
+
+            return Ok(await bankPaymentRepositories.GetAllNutritionistServices());
+        }
+
+
+
     }
 }

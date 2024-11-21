@@ -75,8 +75,11 @@
             <div class="header">
                 <h2>Week of <span id="week-start-date"></span></h2>
                 <div class="actions">
-                    <button class="edit-button">Edit Week</button>
-                    <button class="generate-button">Regenerate Week</button>
+                    <form asp-controller="User" asp-action="RefreshTheMealAllWeek" method="post">
+                        <input type="hidden" name="myDay" value="@ViewBag.myDay" />
+                        <button type="submit" class="generate-button">Regenerate Week</button>
+                    </form>
+
                 </div>
             </div>
 

@@ -1,8 +1,10 @@
-﻿using Azure;
+﻿using AutoMapper;
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using SEP490_G87_Vita_Nutrient_System_API.Mapper;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using System.ComponentModel;
@@ -26,6 +28,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         private readonly string ValueBank;
         private readonly int QRPayDefaultSystem;
 
+
+        private MapperConfiguration config;
+        private IMapper mapper;
+
+
         public BankPaymentRepositories()
         {
 
@@ -43,11 +50,30 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 clientQRBank.BaseAddress = URIQRBase;
                 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
                 clientBank.DefaultRequestHeaders.Accept.Add(contentType);
+
+
+
+                config = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
+                mapper = config.CreateMapper();
+
+
             }
             catch (Exception ex)
             {
 
             }
+        }
+
+
+        public async Task<IEnumerable<NutritionistDetailDTO>> GetAllNutritionistServices()
+        {           
+            List<NutritionistDetail> data = _context.NutritionistDetails.Include(x => x.ExpertPackages).ToList();
+            if (data == null)
+            {
+                return null;
+            }
+            List<NutritionistDetailDTO> dataDTOs = data.Select(p => mapper.Map<NutritionistDetail, NutritionistDetailDTO>(p)).ToList();
+            return dataDTOs;
         }
 
 
@@ -422,5 +448,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return true;
         }
+
+
+
+
     }
 }
