@@ -19,7 +19,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userDetails.UserId);
             if (userEntity != null)
             {
-                userEntity.Gender = userDetails.Gender; // Cập nhật Gender trong User
+                userEntity.Gender = userDetails.Gender; 
                 _context.Users.Update(userEntity);
             }
             var userDetailEntity = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.UserId == userDetails.UserId);
@@ -64,8 +64,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         tdee = bmr * 1.2; 
                         break;
                 }
-
-                // Lưu giá trị TDEE vào trường Calo
                 userDetailEntity.Calo = (int)tdee;
                 _context.UserDetails.Update(userDetailEntity);
             }

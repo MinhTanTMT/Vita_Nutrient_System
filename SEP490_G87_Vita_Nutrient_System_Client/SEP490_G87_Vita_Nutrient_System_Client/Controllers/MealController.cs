@@ -735,9 +735,84 @@ using System.Net.Http;
                 ViewBag.NutritionTargetsDaily = new SelectList(nutritionTargetsDaily, "Id", "Title");
                 ViewBag.DaysOfWeek = new SelectList(dayOfTheWeek, "Id", "Name");
             }
+        [HttpGet]
+        public async Task<IActionResult> SaveUserAndCreateMeals()
+        {
+            try
+            {
+                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+                HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Food/GetDietType");
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonData = await response.Content.ReadAsStringAsync();
+                    var foodTypes = JsonConvert.DeserializeObject<List<DietType>>(jsonData)
+                        .Select(ft => new SelectListItem
+                        {
+                            Value = ft.DietTypeId.ToString(),
+                            Text = ft.Name,
+                            Selected = false
+                        }).ToList();
+                    ViewBag.FoodTypes = foodTypes;
+                }
+                else
+                {
+                    ViewBag.FoodTypes = new List<SelectListItem>();
+                }
+                var model = new MealAndUserPhysicalStatistics
+                {
+                    UserId = userId,
+                    NumberFood = 2, 
+                    FoodTypeIdWant = 1 
+                };
 
-
-
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                // Gán lỗi vào ViewBag để hiển thị
+                ViewBag.ErrorMessage = $"Lỗi trong quá trình tải trang: {ex.Message}";
+                return RedirectToAction("Error");
+            }
         }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveUserAndCreateMeals(MealAndUserPhysicalStatistics userStats)
+        {
+            // Kiểm tra model có hợp lệ không
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ErrorMessage = "Thông tin không hợp lệ. Vui lòng kiểm tra lại.";
+                return View(userStats); 
+            }
+
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(userStats), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync($"{client.BaseAddress}/Meals/SaveUserAndCreateMeals", content);
+
+                // Kiểm tra phản hồi từ API
+                if (response.IsSuccessStatusCode)
+                {
+                    // Thành công: Chuyển hướng đến danh sách bữa ăn
+                    return RedirectToAction("MealSettingsDetailToList");
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    ViewBag.ErrorMessage = $"Lỗi từ API: {error}";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
+            }
+            return View(userStats);
+        }
+
+
+
     }
+}
 
