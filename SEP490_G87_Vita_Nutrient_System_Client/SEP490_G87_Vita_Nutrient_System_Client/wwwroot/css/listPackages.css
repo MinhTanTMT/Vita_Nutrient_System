@@ -1,0 +1,10 @@
+﻿.action-icon{
+    font-size: 15px;
+    padding: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.action-icon:hover{
+    background: #f0f0f0;
+}
