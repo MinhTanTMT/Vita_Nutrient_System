@@ -149,3 +149,35 @@
         border-radius: 50%;
         cursor: pointer;
     }
+
+
+.ingredient-selector-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.excluded-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.excluded-item {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.remove-ingredient-button {
+    background: none;
+    border: none;
+    color: red;
+    margin-left: 10px;
+    cursor: pointer;
+}

@@ -68,7 +68,7 @@
                         <h4 class="card-title float-left">Dòng tiền hàng tháng</h4>
                             <div id="visit-sale-chart-legend" class="rounded-legend legend-horizontal legend-top-right float-right"></div>
                         </div>
-                        <canvas id="visit-sale-chart" class="mt-4"></canvas>
+                        <canvas id="visit-sale-chartTMT" class="mt-4"></canvas>
                     </div>
                 </div>
             </div>
@@ -503,9 +503,9 @@
               }
             })
     }
-    if ($("#visit-sale-chart").length) {
+    if ($("#visit-sale-chartTMT").length) {
       Chart.defaults.global.legend.labels.usePointStyle = true;
-      var ctx = document.getElementById('visit-sale-chart').getContext("2d");
+      var ctx = document.getElementById('visit-sale-chartTMT').getContext("2d");
 
       var gradientStrokeViolet = ctx.createLinearGradient(0, 0, 0, 181);
       gradientStrokeViolet.addColorStop(0, 'rgba(218, 140, 255, 1)');

@@ -3,6 +3,7 @@
   "WorkspaceRootPath": "D:\\day-hoc\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\day-hoc\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -61,14 +62,39 @@
     {
       "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\day-hoc\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\usersrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\usersrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\generatemealrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\generatemealrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+>>>>>>> BeforeMegerDungNT19_11
     },
     {
       "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\day-hoc\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\controllers\\generatemealcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\controllers\\generatemealcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\day-hoc\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\generatemealrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\generatemealrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\models\\sep490g87vitanutrientsystemcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\models\\sep490g87vitanutrientsystemcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\bankpaymentrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\bankpaymentrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\controllers\\bankpaymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\controllers\\bankpaymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+>>>>>>> BeforeMegerDungNT19_11
     }
   ],
   "DocumentGroupContainers": [
@@ -77,6 +103,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
+<<<<<<< HEAD
           "DockedWidth": 511,
           "SelectedChildIndex": 5,
           "Children": [
@@ -92,10 +119,104 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-14T11:31:01.271Z",
               "IsPinned": true
+=======
+          "DockedWidth": 401,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GenerateMealRepositories.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAowFEAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-21T10:29:27.099Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:127:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:126:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:122:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:123:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:125:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:124:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:127:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:121:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:126:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:17:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:16:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+>>>>>>> BeforeMegerDungNT19_11
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+<<<<<<< HEAD
               "Title": "NutritionRepositories.cs",
               "DocumentMoniker": "D:\\day-hoc\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRepositories.cs",
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRepositories.cs",
@@ -295,6 +416,79 @@
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-14T16:02:16.952Z"
+=======
+              "Title": "GenerateMealController.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAowE0AAABXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-21T10:29:15.155Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-11-20T15:38:30.968Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Sep490G87VitaNutrientSystemContext.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Models\\Sep490G87VitaNutrientSystemContext.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Models\\Sep490G87VitaNutrientSystemContext.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Models\\Sep490G87VitaNutrientSystemContext.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Models\\Sep490G87VitaNutrientSystemContext.cs",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAQwFsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T15:38:12.846Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "User.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Models\\User.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Models\\User.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Models\\User.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Models\\User.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAACkAAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T15:37:55.353Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BankPaymentController.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\BankPaymentController.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\BankPaymentController.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\BankPaymentController.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\BankPaymentController.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAgwDsAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T15:23:44.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BankPaymentRepositories.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAjwF8AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-19T10:18:26.314Z"
+>>>>>>> BeforeMegerDungNT19_11
             }
           ]
         }

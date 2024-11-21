@@ -43,14 +43,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult<string>> APIGetQRPayDefaultSystem(int? idBankInformation, decimal amount, string content)
         {
             return Ok(await repositories.GetQRPayImage(idBankInformation, amount, content));
-        }
+        } 
 
 
         [HttpGet("APITest")]
-        public async Task<ActionResult<string>> APITest()
+        public async Task<ActionResult<TransactionsSystem>> APITest( )
         {
 
-            return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
+            //return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
+
+
+            return Ok();
+
 
         }
 
@@ -60,7 +64,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             if (await repositories.CheckQRPaySuccessfulByContent(accountNumber, limit, content, amountIn))
             {
-
                 return Ok("Successful");
             }
             else
@@ -68,9 +71,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
                 return BadRequest("Error");
             }
+
+            //return Ok("Successful");
         }
-        
-        
+
+
+        [HttpPost("APIModifyDataTransactionsSystem")]
+        public async Task<ActionResult<TransactionsSystemDTO>> APIModifyDataTransactionsSystem(TransactionsSystemDTO transactionsSystem)
+        {
+            return Ok(await repositories.ModifyDataTransactionsSystem(transactionsSystem));
+        }
+
+
         [HttpGet("APIGetAllTransactionsSystemOfMonth")]
         public async Task<ActionResult<IEnumerable<TransactionsSystem>>> APIGetAllTransactionsSystemOfMonth(int month, int year, int userMainId)
         {
@@ -105,27 +117,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-
         [HttpGet("APIGetAllNutritionistServices")]
-        public async Task<ActionResult<IEnumerable<NutritionistDetail>>> APIGetAllNutritionistServices()
+        public async Task<ActionResult<IEnumerable<ExpertPackage>>> APIGetAllNutritionistServices()
         {
-            BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
-
-            return Ok(await bankPaymentRepositories.GetAllNutritionistServices());
+            return Ok(await repositories.GetAllNutritionistServices());
         }
 
 
-        [HttpGet("APIInsertPaidPersonData")]
-        public async Task<ActionResult<IEnumerable<NutritionistDetail>>> InsertPaidPersonData(
-        [FromBody] UserListManagement userListManagement,
-        [FromQuery] int type )
+
+        [HttpPost("APIInsertPaidPersonData")]
+        public async Task<IActionResult> APIInsertPaidPersonData(
+        [FromBody] UserListManagementDTO userListManagement,
+        [FromQuery] int typeInsert)
         {
-            BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
-
-            return Ok(await bankPaymentRepositories.GetAllNutritionistServices());
+            return Ok(await repositories.InsertPaidPersonData(userListManagement, typeInsert));
         }
-
-
 
     }
 }

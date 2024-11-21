@@ -12,11 +12,35 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
     {
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
 
-        // Get all nutrition routes
-        public async Task<IEnumerable<NutritionRouteDTO>> GetAllNutritionRoutesByCreateByIdAsync(int createById)
+
+        public async Task<IEnumerable<UserDTO>> GetAllUsersByCreateIdAsync(int createById)
         {
             return await _context.NutritionRoutes
-                .Where(route => route.CreateById == createById) // Lọc theo createById
+                .Where(route => route.CreateById == createById)
+                .Select(route => route.User) // Chỉ lấy thông tin người dùng
+                .Distinct() // Loại bỏ trùng lặp nếu một người dùng thuộc nhiều lộ trình
+                .Select(user => new UserDTO
+                {
+                    UserId = user.UserId,
+                    UrlImage = user.Urlimage,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    FullName = user.FirstName + " " + user.LastName,
+                    Address = user.Address,
+                    Phone = user.Phone,
+                    Height = user.UserDetail.Height,
+                    Weight = user.UserDetail.Weight,
+                    Age = user.Dob.HasValue ? (short)(DateTime.Now.Year - user.Dob.Value.Year - (DateTime.Now.DayOfYear < user.Dob.Value.DayOfYear ? 1 : 0)) : (short?)null
+                }).ToListAsync();
+        }
+
+
+
+        // Get nutrition route by CreateById and UserId
+        public async Task<IEnumerable<NutritionRouteDTO>> GetNutritionRoutesByCreateByIdAndUserIdAsync(int createById, int userId)
+        {
+            return await _context.NutritionRoutes
+                .Where(route => route.CreateById == createById && route.UserId == userId) // Lọc theo createById và userId
                 .Include(route => route.CreateBy)
                 .Include(route => route.User)
                 .Select(route => new NutritionRouteDTO
@@ -24,13 +48,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Id = route.Id,
                     UserId = route.UserId,
                     CreateById = route.CreateById,
-                    UserName = route.User.FirstName + " " + route.User.LastName,
+                    FullName = route.User.FirstName + " " + route.User.LastName,
                     CreateByName = route.CreateBy.FirstName + " " + route.CreateBy.LastName,
                     Name = route.Name,
                     Describe = route.Describe,
                     StartDate = route.StartDate,
                     EndDate = route.EndDate,
-                    IsDone = route.IsDone
+                    IsDone = route.IsDone,
+                    UrlImage = route.User.Urlimage
                 }).ToListAsync();
         }
 
@@ -55,25 +80,25 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 StartDate = route.StartDate,
                 EndDate = route.EndDate,
                 IsDone = route.IsDone,
-                UserName = route.User.FirstName + " " + route.User.LastName
+                FullName = route.User.FirstName + " " + route.User.LastName
             };
         }
 
 
         // Create a new nutrition route
-        public async Task<bool> CreateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto, string userPhoneNumber)
+        public async Task<bool> CreateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto)
         {
-            // Tìm người dùng theo số điện thoại
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Phone == userPhoneNumber);
+            // Kiểm tra người dùng với UserId
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == nutritionRouteDto.UserId);
             if (user == null)
             {
-                return false; 
+                return false; // Người dùng không tồn tại
             }
 
             // Create new NutritionRoute entity
             var route = new NutritionRoute
             {
-                UserId = user.UserId, // ID của người dùng tìm thấy
+                UserId = nutritionRouteDto.UserId, // ID của người dùng được truyền vào
                 CreateById = nutritionRouteDto.CreateById,
                 Name = nutritionRouteDto.Name,
                 Describe = nutritionRouteDto.Describe,
@@ -86,6 +111,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
+
 
         // Update an existing nutrition route
         public async Task UpdateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto)
@@ -104,7 +130,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             route.IsDone = nutritionRouteDto.IsDone;
 
             // Thiết lập UserName dựa trên thông tin từ cơ sở dữ liệu, không cho phép người dùng sửa
-            nutritionRouteDto.UserName = route.User.FirstName + " " + route.User.LastName;
+            nutritionRouteDto.FullName = route.User.FirstName + " " + route.User.LastName;
 
             _context.NutritionRoutes.Update(route);
             await _context.SaveChangesAsync();
@@ -114,9 +140,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         // Delete a nutrition route
         public async Task DeleteNutritionRouteAsync(int id)
         {
-            var route = await _context.NutritionRoutes.FindAsync(id);
+            var route = await _context.NutritionRoutes
+                .Include(r => r.MealOfTheDays) // Bao gồm các MealOfTheDay liên quan
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (route == null) return;
 
+            // Xóa tất cả các MealOfTheDay liên quan
+            _context.MealOfTheDays.RemoveRange(route.MealOfTheDays);
+
+            // Xóa NutritionRoute
             _context.NutritionRoutes.Remove(route);
             await _context.SaveChangesAsync();
         }

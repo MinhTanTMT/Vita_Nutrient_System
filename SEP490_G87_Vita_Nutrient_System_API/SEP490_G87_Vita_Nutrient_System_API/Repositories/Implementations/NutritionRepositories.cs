@@ -131,63 +131,62 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<PagedResult<UserDTO>> GetUsers(int userId, string? search, int page = 1, int pageSize = 10)
         {
-            var userListManagement = await _context.UserListManagements.Where(t => t.NutritionistId == userId).ToListAsync();
+            //var nutritionist = await _context.NutritionistDetails.FirstOrDefaultAsync(t => t.Nutritionist.UserId == userId);
+            //var query = await _context.Users
+            //            .AsNoTracking()
+            //            .Where(t => t.NutritionistDetail.NutritionistId == nutritionist.NutritionistId)
+            //            .Select(u => new UserDTO
+            //            {
+            //                UserId = u.UserId,
+            //                UrlImage = u.Urlimage,
+            //                FirstName = u.FirstName,
+            //                LastName = u.LastName,
+            //                UserDetail = u.UserDetail != null ? new UserDetailsDTO
+            //                {
+            //                    UserId = u.UserDetail.UserId,
+            //                    DescribeYourself = u.UserDetail.DescribeYourself,
+            //                    Height = u.UserDetail.Height,
+            //                    Weight = u.UserDetail.Weight,
+            //                    Age = u.UserDetail.Age,
+            //                    WantImprove = u.UserDetail.WantImprove,
+            //                    UnderlyingDisease = u.UserDetail.UnderlyingDisease,
+            //                    InforConfirmGood = u.UserDetail.InforConfirmGood,
+            //                    InforConfirmBad = u.UserDetail.InforConfirmBad,
+            //                    IsPremium = u.UserDetail.IsPremium
+            //                } : null
+            //            }).ToListAsync();
 
-            List<UserDTO> query = new List<UserDTO>();
+            //var userListManagement = await _context.UserListManagements.Where(t => t.EndDate > DateTime.UtcNow).ToListAsync();
 
-            foreach (var item in userListManagement)
-            {
-                query.Add(await _context.Users
-                        .AsNoTracking()
-                        .Select(u => new UserDTO
-                        {
-                            UserId = u.UserId,
-                            UrlImage = u.Urlimage,
-                            FirstName = u.FirstName,
-                            LastName = u.LastName,
-                            UserDetail = u.UserDetail != null ? new UserDetailsDTO
-                            {
-                                UserId = u.UserDetail.UserId,
-                                DescribeYourself = u.UserDetail.DescribeYourself,
-                                Height = u.UserDetail.Height,
-                                Weight = u.UserDetail.Weight,
-                                Age = u.UserDetail.Age,
-                                WantImprove = u.UserDetail.WantImprove,
-                                UnderlyingDisease = u.UserDetail.UnderlyingDisease,
-                                InforConfirmGood = u.UserDetail.InforConfirmGood,
-                                InforConfirmBad = u.UserDetail.InforConfirmBad,
-                                IsPremium = u.UserDetail.IsPremium
-                            } : null
-                        }).FirstOrDefaultAsync(t => t.UserId == item.UserId));
-            }
+            //foreach (var item in userListManagement)
+            //{
+            //    var userDel = await _context.Users.FirstOrDefaultAsync(t => t.UserId == item.UserId);
+            //    if (userDel != null)
+            //    {
+            //        _context.Remove(userDel);
+            //    }
+            //}
 
-            var userDelete = await _context.UserListManagements.Where(t => t.EndDate > DateTime.UtcNow).ToListAsync();
+            //await _context.SaveChangesAsync();
 
-            foreach (var item in userDelete)
-            {
-                _context.UserListManagements.Remove(item);
-            }
+            //if (!string.IsNullOrEmpty(search))
+            //{
+            //    query = query.Where(u => u.FirstName.Contains(search) || u.LastName.Contains(search)).ToList();
+            //}
 
-            await _context.SaveChangesAsync();
+            //int totalRecords = query.Count();
+            //int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(u => u.FirstName.Contains(search) || u.LastName.Contains(search)).ToList();
-            }
-
-            int totalRecords = query.Count();
-            int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-
-            var paginatedUsers = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            //var paginatedUsers = query
+            //    .Skip((page - 1) * pageSize)
+            //    .Take(pageSize)
+            //    .ToList();
 
             return new PagedResult<UserDTO>
             {
-                Items = paginatedUsers,
-                TotalPages = totalPages,
-                CurrentPage = page
+                //Items = paginatedUsers,
+                //TotalPages = totalPages,
+                //CurrentPage = page
             };
         }
 

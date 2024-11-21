@@ -7,44 +7,40 @@
         <p class="text-lg mt-4">Khám phá thêm dịch vụ dinh dưỡng chuyên sâu từ các chuyên gia hàng đầu.</p>
     </div>
 
-    <!-- Danh sách chuyên gia -->
+    <!-- Danh sách gói dịch vụ -->
     <div class="mt-12 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-
         @if (Model != null)
         {
             @foreach (var service in Model)
             {
                 <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
-                    <!-- Thông tin chuyên gia -->
+                    <!-- Thông tin gói dịch vụ -->
                     <div class="text-center mb-6">
-                        <h2 class="text-2xl font-semibold text-gray-800">Chuyên gia ID: @service.NutritionistId</h2>
-                        <p class="text-gray-600 mt-2 italic">"@service.DescribeYourself"</p>
+                        <h2 class="text-2xl font-semibold text-gray-800">@service.Name</h2>
+                        <p class="text-gray-600 mt-2 italic">"@service.Describe"</p>
+                        <p class="text-gray-600 mt-2"><strong>Giá:</strong> @service.Price VNĐ</p>
+                        <p class="text-gray-600"><strong>Thời lượng:</strong> @service.Duration ngày</p>
                     </div>
 
-                    <!-- Chi tiết chuyên gia -->
-                    <div class="space-y-2">
-                        <p class="text-gray-600"><strong>Chiều cao:</strong> @service.Height cm</p>
-                        <p class="text-gray-600"><strong>Cân nặng:</strong> @service.Weight kg</p>
-                        <p class="text-gray-600"><strong>Tuổi:</strong> @service.Age</p>
-                        <p class="text-gray-600"><strong>Đánh giá:</strong> @service.Rate ⭐️ (dựa trên @service.NumberRate đánh giá)</p>
-                    </div>
-
-                    <!-- Danh sách gói dịch vụ -->
+                    <!-- Danh sách chuyên gia -->
                     <div class="mt-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Gói dịch vụ:</h3>
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Danh sách chuyên gia:</h3>
                         <ul class="space-y-6">
-                            @foreach (var package in service.ExpertPackages)
+                            @foreach (var nutritionist in service.NutritionistDetails)
                             {
                                 <li class="bg-gray-100 p-4 rounded-lg shadow-md">
-                                    <h4 class="text-lg font-semibold text-gray-800">@package.Name</h4>
-                                    <p class="text-gray-600 mt-2"><strong>Mô tả:</strong> @package.Describe</p>
-                                    <p class="text-gray-600"><strong>Giá:</strong> @package.Price VNĐ</p>
-                                    <p class="text-gray-600"><strong>Thời lượng:</strong> @package.Duration ngày</p>
+                                    <h4 class="text-lg font-semibold text-gray-800">Chuyên gia ID: @nutritionist.NutritionistId</h4>
+                                    <p class="text-gray-600"><strong>Giới thiệu:</strong> @nutritionist.DescribeYourself</p>
+                                    <p class="text-gray-600"><strong>Chiều cao:</strong> @nutritionist.Height cm</p>
+                                    <p class="text-gray-600"><strong>Cân nặng:</strong> @nutritionist.Weight kg</p>
+                                    <p class="text-gray-600"><strong>Tuổi:</strong> @nutritionist.Age</p>
+                                    <p class="text-gray-600"><strong>Đánh giá:</strong> @nutritionist.Rate ⭐️ (dựa trên @nutritionist.NumberRate đánh giá)</p>
                                     <form asp-controller="Admin" asp-action="PaymentForPaidServices" method="post" class="mt-4">
-                                        <input type="hidden" name="NutritionistId" value="@service.NutritionistId" />
-                                        <input type="hidden" name="Describe" value="@package.Describe" />
-                                        <input type="hidden" name="Price" value="@package.Price" />
-                                        <input type="hidden" name="Duration" value="@package.Duration" />
+                                        <input type="hidden" name="NutritionistId" value="@nutritionist.NutritionistId" />
+                                        <input type="hidden" name="Describe" value="@service.Describe" />
+                                        <input type="hidden" name="Price" value="@service.Price" />
+                                        <input type="hidden" name="Duration" value="@service.Duration" />
+                                        <input type="hidden" name="TypeInsert" value="1" />
                                         <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium w-full">
                                             Đăng ký ngay
                                         </button>
@@ -56,7 +52,6 @@
                 </div>
             }
         }
- 
     </div>
 </div>
 
@@ -75,6 +70,4 @@
     }
 
     .shadow-lg {
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-    }
-</style>
+        box-shadow

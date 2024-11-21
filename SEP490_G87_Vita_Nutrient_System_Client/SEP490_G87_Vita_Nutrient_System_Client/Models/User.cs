@@ -32,4 +32,8 @@ public partial class User
     public virtual NutritionistDetail? NutritionistDetail { get; set; }
     public virtual UserRole? UserRole { get; set; }
 
+    public string? FullName { get; set; }
+    public short? Height { get; set; }
+    public short? Weight { get; set; }
+    public short? Age { get; set; }
 }

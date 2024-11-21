@@ -1,4 +1,6 @@
-﻿<div class="container">
+﻿@model IEnumerable<SystemPremiumPackage>
+
+<div class="container">
     <!-- Header -->
     <div class="header bg-green-600 text-white text-center py-6">
         <h1 class="text-3xl font-bold">Nâng cấp lên Premium ngay hôm nay!</h1>
@@ -20,29 +22,24 @@
 
     <!-- Các gói Premium -->
     <div class="grid mt-8">
-        <!-- Gói 1 tháng -->
-        <div class="card">
-            <h3>1 tháng</h3>
-            <p>99.000đ</p>
-            <p>Đầy đủ tính năng Premium trong 1 tháng.</p>
-            <button>Đăng ký ngay</button>
-        </div>
-
-        <!-- Gói 6 tháng -->
-        <div class="card">
-            <h3>6 tháng</h3>
-            <p>499.000đ</p>
-            <p>Tiết kiệm hơn 100.000đ khi mua 6 tháng.</p>
-            <button>Đăng ký ngay</button>
-        </div>
-
-        <!-- Gói 12 tháng -->
-        <div class="card">
-            <h3>12 tháng</h3>
-            <p>899.000đ</p>
-            <p>Tiết kiệm nhất với gói dài hạn.</p>
-            <button>Đăng ký ngay</button>
-        </div>
+        @foreach (var package in Model)
+        {
+            <div class="card">
+                <h3>@package.Duration tháng</h3>
+                <p>@String.Format("{0:N0}", package.Price) VNĐ</p>
+                <p>@package.Describe</p>
+                <form asp-controller="Admin" asp-action="PaymentForPaidServices" method="post">
+                    <input type="hidden" name="NutritionistId" value="@package.IdAdminSystem" />
+                    <input type="hidden" name="Describe" value="@package.Describe" />
+                    <input type="hidden" name="Price" value="@package.Price" />
+                    <input type="hidden" name="Duration" value="@package.Duration" />
+                    <input type="hidden" name="TypeInsert" value="0" />
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">
+                        Đăng ký ngay
+                    </button>
+                </form>
+            </div>
+        }
     </div>
 </div>
 
