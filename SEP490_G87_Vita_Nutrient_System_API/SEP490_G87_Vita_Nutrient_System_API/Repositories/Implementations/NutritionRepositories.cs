@@ -266,7 +266,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public async Task<List<GetFoodListDTO>> GetFoodLists(string search)
         {
             return await _context.FoodLists.Include(ft => ft.FoodType).Include(kn => kn.KeyNote).Include(cd => cd.CookingDifficulty)
-            .Where(f => (string.IsNullOrEmpty(search) || f.Name.Contains(search)) && f.IsActive == true).Select(fl => new GetFoodListDTO
+            .Where(f => (string.IsNullOrEmpty(search) || f.Name.Contains(search))).Select(fl => new GetFoodListDTO
             {
                 FoodListId = fl.FoodListId,
                 Name = fl.Name,
@@ -371,7 +371,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return 0;
             }
 
-            foodList.IsActive = false;
+            foodList.IsActive = !foodList.IsActive;
             await _context.SaveChangesAsync();
 
             return foodList.FoodListId;

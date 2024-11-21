@@ -142,9 +142,20 @@
                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateFoodModal_@food.FoodListId">
                                 Update
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteFood(@food.FoodListId)">
-                                Delete
-                            </button>
+                            @if (food.IsActive == true)
+                            {
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteFood(@food.FoodListId)">
+                                    Deactivate
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteFood(@food.FoodListId)">
+                                    Activate
+                                </button>
+                            }
+
+
 
                             <!-- Update Food Modal -->
                             <div class="modal fade" id="updateFoodModal_@food.FoodListId" tabindex="-1" aria-labelledby="updateFoodModalLabel_@food.FoodListId" aria-hidden="true">
@@ -509,7 +520,7 @@
 </div>
 <script>
     async function deleteFood(foodId) {
-        const confirmed = confirm("Are you sure you want to delete this food?");
+        const confirmed = confirm("Bạn có chắc muốn đổi trạng thái của món ăn này?");
         if (!confirmed) return;
 
         try {
@@ -518,16 +529,15 @@
             });
 
             if (response.ok) {
-                alert("Xóa thành công!");
-                // Reload lại trang để cập nhật danh sách sau khi xóa
+                alert("Đổi trạng thái thành công!");
                 location.reload();
             } else {
-                alert("Có lỗi xảy ra khi xóa food.");
-                console.error("Delete failed:", await response.text());
+                alert("Có lỗi xảy ra khi đổi trạng thái food.");
+                console.error("Switch failed:", await response.text());
             }
         } catch (error) {
-            console.error("Error deleting food:", error);
-            alert("Có lỗi xảy ra khi xóa food.");
+            console.error("Error switch food:", error);
+            alert("Có lỗi xảy ra khi đổi trạng thái food.");
         }
     }
 </script>
