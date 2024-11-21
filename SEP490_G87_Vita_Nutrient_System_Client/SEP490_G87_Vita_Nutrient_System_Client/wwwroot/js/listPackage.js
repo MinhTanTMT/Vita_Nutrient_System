@@ -37,9 +37,33 @@ function AddPackage() {
     var form = document.getElementById("addPackageForm");
 
     var name = form.elements['p_name'].value.trim();
+    var price = form.elements['p_price'].value;
+    var duration = form.elements['p_duration'].value;
 
     if (name === "") {
         showErrorToast("Vui lòng điền đầy đủ thông tin vào các ô.");
+    } else if (price < 0) {
+        showErrorToast("Price phải lớn hơn hoặc bằng 0.");
+    } else if (duration < 0) {
+        showErrorToast("Duration phải lớn hơn hoặc bằng 0.");
+    } else {
+        form.submit();
+    }
+}
+
+function EditPackage() {
+    var form = document.getElementById("updatePackageForm");
+
+    var name = form.elements['p_name'].value.trim();
+    var price = form.elements['p_price'].value;
+    var duration = form.elements['p_duration'].value;
+
+    if (name === "") {
+        showErrorToast("Vui lòng điền đầy đủ thông tin vào các ô.");
+    } else if (price < 0) {
+        showErrorToast("Price phải lớn hơn hoặc bằng 0.");
+    } else if (duration < 0) {
+        showErrorToast("Duration phải lớn hơn hoặc bằng 0.");
     } else {
         form.submit();
     }

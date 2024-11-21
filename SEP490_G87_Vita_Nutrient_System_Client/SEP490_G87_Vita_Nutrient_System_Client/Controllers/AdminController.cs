@@ -1113,6 +1113,44 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return await ListPackages();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdatePackage(int p_id, string p_name, string p_desc, decimal p_price, short p_duration)
+        {
+            try
+            {
+                var data = new
+                {
+                    id = p_id,
+                    name = p_name,
+                    describe = p_desc,
+                    price = p_price,
+                    duration = p_duration
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PutAsync(client.BaseAddress + "/ExpertPackage/UpdateExpertPackage", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update package failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update package successfully!";
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await ListPackages();
+        }
+
         [HttpGet("admin/expertpackagemanagement/deletepackage/{Id}")]
         public async Task<IActionResult> DeletePackage(int Id)
         {
