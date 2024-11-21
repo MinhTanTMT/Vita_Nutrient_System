@@ -1029,6 +1029,52 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return await IngredientsList();
         }
 
+        [HttpGet("admin/expertpackagemanagement/listpackages")]
+        public async Task<IActionResult> ListPackages(int page = 1, int pageSize = 10, string searchQuery = "")
+        {
+            try
+            {
+                // get list packages
+                HttpResponseMessage response =
+                        await client.GetAsync(client.BaseAddress + "/ExpertPackage/GetAllExpertPackage");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    List<ExpertPackage> packagesData = JsonConvert.DeserializeObject<List<ExpertPackage>>(data);
+
+                    // Search logic
+                    if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        packagesData = packagesData.Where(u =>
+                            u.Name.ToLower().Contains(searchQuery.ToLower())
+                        ).ToList();
+                    }
+
+                    // Pagination logic
+                    int totalPackages = packagesData.Count();
+                    var paginatedPackages = packagesData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    ViewBag.packages = paginatedPackages;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = (int)Math.Ceiling(totalPackages / (double)pageSize);
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get list packages! Please try again!";
+                }
+
+                ViewBag.SearchQuery = searchQuery;
+                return View("~/Views/Admin/ExpertPackageManagement/ListPackages.cshtml");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/Admin/ExpertPackageManagement/ListPackages.cshtml");
+            }
+        }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////

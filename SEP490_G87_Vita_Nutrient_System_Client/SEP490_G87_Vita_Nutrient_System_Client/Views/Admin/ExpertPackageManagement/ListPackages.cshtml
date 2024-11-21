@@ -1,0 +1,102 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<ExpertPackage> listPackages = ViewBag.packages;
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    string searchQuery = ViewBag.SearchQuery;
+}
+
+<link rel="stylesheet" href="~/css/listPackages.css">
+
+<div class="row" style="width: 100%;">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">List Packages</h4>
+
+                <!-- Search form -->
+                <form method="get" action="@Url.Action("ListPackages", "Admin")" style="padding: 8px 10px;">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
+                        <div class="input-group-append">
+                            <button class="btn btn-success btn-fw" type="submit">
+                                <i class="mdi mdi-magnify"></i>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                @if (listPackages == null || listPackages.Count == 0)
+                {
+                    <h1>There is no packages.</h1>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> Name </th>
+                                    <th> Description </th>
+                                    <th> Price </th>
+                                    <th> Duration </th>
+                                    <th> Action </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < listPackages.Count; i++)
+                                {
+                                    ExpertPackage u = listPackages[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@u.Name</td>
+                                        <td>@u.Describe</td>
+                                        <td> @u.Price </td>
+                                        <td> @u.Duration </td>
+                                        <td class="d-flex align-items-center justify-content-between"> 
+                                            <div class="action-icon" id="edit-@i">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </div>
+
+                                            <div class="action-icon" id="delete-@i">
+                                                <i class="mdi mdi-delete"></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination controls -->
+                    <nav aria-label="Page navigation" style="padding: 50px 0 0 0;">
+                        <ul class="pagination justify-content-center">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListPackages", new { page = currentPage - 1 })">Previous</a>
+                                </li>
+                            }
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("ListPackages", new { page = i })">@i</a>
+                                </li>
+                            }
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListPackages", new { page = currentPage + 1 })">Next</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            </div>
+        </div>
+    </div>
+</div>
