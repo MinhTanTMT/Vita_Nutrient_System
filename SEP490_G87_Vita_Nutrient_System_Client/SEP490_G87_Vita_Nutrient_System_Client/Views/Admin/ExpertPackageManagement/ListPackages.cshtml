@@ -57,14 +57,15 @@
                                         <td>@u.Describe</td>
                                         <td> @u.Price </td>
                                         <td> @u.Duration </td>
-                                        <td class="d-flex align-items-center justify-content-between"> 
-                                            <div class="action-icon" id="edit-@i">
+                                        <td class="d-flex align-items-center justify-content-between">
+                                            <div class="action-icon" id="edit-@i" onclick="openModalUpdate(@u.Id, '@u.Name', '@u.Describe', '@u.Price', @u.Duration);">
                                                 <i class="mdi mdi-pencil"></i>
                                             </div>
 
-                                            <div class="action-icon" id="delete-@i">
+                                            <a asp-controller="Admin" asp-action="DeletePackage" asp-route-Id="@u.Id" 
+                                            class="action-icon" onclick="return confirmDelete();">
                                                 <i class="mdi mdi-delete"></i>
-                                            </div>
+                                            </a>
                                         </td>
                                     </tr>
                                 }
@@ -100,3 +101,68 @@
         </div>
     </div>
 </div>
+
+<button type="button" class="fab" data-toggle="modal" data-target="#addPackageModal" onclick="openModalAdd()">
+    <i class="mdi mdi-plus"></i>
+</button>
+<!-- add package modal-->
+<div class="modal-overlay" id="modalOverlay">
+    <!-- Modal -->
+    <div class="modal1">
+        <div class="modal1-header">
+            <span>Add Expert Packages</span>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal1-body">
+            <form id="addPackageForm" asp-controller="Admin" asp-action="AddPackages" method="post">
+                <label>Name:</label>
+                <input class="ms-auto" type="text" name="p_name" required />
+
+                <label>Description:</label>
+                <input class="ms-auto" type="text" name="p_desc" />
+
+                <label>Price:</label>
+                <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
+
+                <label>Duration:</label>
+                <input class="ms-auto" type="number" value="0" min="0" name="p_duration" required />
+            </form>
+        </div>
+        <div class="modal1-footer">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('addPackageForm').submit();">Save</button>
+        </div>
+    </div>
+</div>
+<!-- update package modal-->
+<div class="modal-overlay" id="modalOverlay1">
+    <!-- Modal -->
+    <div class="modal1">
+        <div class="modal1-header">
+            <span>Update Expert Packages</span>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal1-body">
+            <form id="updatePackageForm" asp-controller="Admin" asp-action="UpdatePackages" method="post">
+                <input type="hidden" name="p_id" value="" />
+                <label>Name:</label>
+                <input class="ms-auto" type="text" name="p_name" required />
+
+                <label>Description:</label>
+                <input class="ms-auto" type="text" name="p_desc" />
+
+                <label>Price:</label>
+                <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
+
+                <label>Duration:</label>
+                <input class="ms-auto" type="number" value="0" min="0" name="p_duration" required />
+            </form>
+        </div>
+        <div class="modal1-footer">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('updatePackageForm').submit();">Save</button>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/listPackage.js"></script>
