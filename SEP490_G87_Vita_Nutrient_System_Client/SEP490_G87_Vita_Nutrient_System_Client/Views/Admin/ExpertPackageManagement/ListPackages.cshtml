@@ -148,7 +148,7 @@
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
         <div class="modal1-body">
-            <form id="updatePackageForm" asp-controller="Admin" asp-action="UpdatePackages" method="post">
+            <form id="updatePackageForm" asp-controller="Admin" asp-action="UpdatePackage" method="post">
                 <input type="hidden" name="p_id" value="" />
                 <label>Name:</label>
                 <input class="ms-auto" type="text" name="p_name" required />
@@ -165,7 +165,7 @@
         </div>
         <div class="modal1-footer">
             <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-            <button class="btn-save" onclick="document.getElementById('updatePackageForm').submit();">Save</button>
+            <button class="btn-save" onclick="EditPackage();">Save</button>
         </div>
     </div>
 </div>
