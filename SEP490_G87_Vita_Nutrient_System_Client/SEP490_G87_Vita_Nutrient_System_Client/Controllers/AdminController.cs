@@ -26,7 +26,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ///
 
         private readonly HttpClient client = null;
-        private AdminSevices adminSevices;
+        private readonly AdminSevices adminSevices;
         public AdminController()
         {
             adminSevices = new AdminSevices();
@@ -44,26 +44,20 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             try
             {
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
-                int typeInsert = 1;
+                int typeInsert = Int32.Parse(HttpContext.Session.GetString("TypeInsert"));
                 string? accountNumber = HttpContext.Session.GetString("accountNumberQRPay");
                 int? limit = Int32.Parse(HttpContext.Session.GetString("limitQRPay"));
                 decimal? amountInPay = decimal.Parse(HttpContext.Session.GetString("amountInPayQRPay"));
                 string? contentBankPay = HttpContext.Session.GetString("contentBankPayQRPay");
                 string? contentBankImg = HttpContext.Session.GetString("contentBankImgQRPay");
 
-                //int amountWithoutDecimal = HttpContext.Session.GetString("amountInPayQRPay") is string amountInPayString &&
-                //           decimal.TryParse(amountInPayString, out decimal amountInImg)
-                //? (int)(amountInPay * 1000) // Nhân 1000 để chuyển "100.0000" thành "100000"
-                //: 0;
-
                 int? amountWithoutDecimal = HttpContext.Session.GetString("amountInPayQRPay") is string amountInPayString &&
                     decimal.TryParse(amountInPayString, out decimal amountInImg)
-                ? (int)amountInPay // Chỉ lấy phần nguyên, bỏ qua phần thập phân
+                ? (int)amountInPay
                 : 0;
 
                 int? NutritionistId = Int32.Parse(HttpContext.Session.GetString("NutritionistId"));
                 string? Describe = HttpContext.Session.GetString("Describe");
-                //decimal? Price = decimal.Parse(HttpContext.Session.GetString("Price"));
                 int? Duration = Int32.Parse(HttpContext.Session.GetString("Duration"));
 
 
@@ -76,7 +70,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     HttpContext.Session.Remove("amountInImgQRPay");
                     HttpContext.Session.Remove("contentBankImgQRPay");
 
-
+                    HttpContext.Session.Remove("TypeInsert");
                     HttpContext.Session.Remove("NutritionistId");
                     HttpContext.Session.Remove("Describe");
                     HttpContext.Session.Remove("Duration");
@@ -92,26 +86,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         string data = await content.ReadAsStringAsync();
                         string linkQRImage = JsonConvert.DeserializeObject<string>(data);
 
-
-                        if (typeInsert == 1)
-                        {
-                            ViewData["UserListManagement"] = new UserListManagement { NutritionistId = NutritionistId ?? 0, UserId = userId, Describe = Describe, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(Duration ?? 0) , IsDone = false };
-                        }
-                        else
-                        {
-                            ViewData["UserListManagement"] = new UserListManagement { NutritionistId = NutritionistId ?? 0, UserId = userId, Describe = Describe, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(Duration ?? 0), IsDone = false };
-                        }
-
-                        int roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<int>("roleAdmin");
-                        TransactionsSystem transactionsSystem = new TransactionsSystem() 
+                        int roleAdmin = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<int>("roleAdmin");
+                        TransactionsSystem transactionsSystem = new TransactionsSystem()
                         {
                             UserPayId = userId,
-                            PayeeId = roleUser,
+                            PayeeId = roleAdmin,
                             AccountNumber = accountNumber,
                             AmountIn = amountInPay,
                             TransactionContent = contentBankPay
                         };
 
+                        if (typeInsert == 1) ViewData["UserListManagement"] = new UserListManagement { NutritionistId = NutritionistId ?? 0, UserId = userId, Describe = Describe, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(Duration ?? 0), IsDone = false };
+                        else ViewData["UserListManagement"] = new UserListManagement { NutritionistId = roleAdmin, UserId = userId, Describe = Describe, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(Duration ?? 0), IsDone = false };
+  
                         HttpResponseMessage res2 = await client.PostAsJsonAsync(client.BaseAddress + $"/BankPayment/APIModifyDataTransactionsSystem", transactionsSystem);
                         if (res.StatusCode == System.Net.HttpStatusCode.OK)
                         {
@@ -141,7 +128,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [HttpPost]
-        public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration)
+        public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration, int TypeInsert)
         {
             var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -151,7 +138,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             HttpContext.Session.SetString("NutritionistId", NutritionistId.ToString());
             HttpContext.Session.SetString("Describe", Describe ?? "");
-            //HttpContext.Session.SetString("Price", Price.ToString());
+            HttpContext.Session.SetString("TypeInsert", TypeInsert.ToString());
             HttpContext.Session.SetString("Duration", Duration.ToString());
 
             HttpContext.Session.SetString("accountNumberQRPay", accountNumber ?? "");
@@ -177,7 +164,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public IActionResult PremiumUpgradeSuggestion()
         {
-            return View();
+
+            // Lấy chuỗi JSON từ appsettings.json
+            var jsonString = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build()
+                .GetValue<string>("SystemPremiumPackagesJson");
+
+            // Deserialize JSON thành danh sách đối tượng
+            var systemPremiumPackages = JsonConvert.DeserializeObject<List<SystemPremiumPackage>>(jsonString);
+
+            // Truyền danh sách lên view
+            return View(systemPremiumPackages);
         }
         
 

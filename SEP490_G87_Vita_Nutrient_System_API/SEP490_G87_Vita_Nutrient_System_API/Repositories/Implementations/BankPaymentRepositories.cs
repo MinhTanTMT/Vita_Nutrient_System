@@ -73,6 +73,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<bool> InsertPaidPersonData(UserListManagementDTO userListManagement, int typeInsert)
         {
+            if(typeInsert == 0)
+            {
+                short roleUserPremium = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUserPremium");
+                var changeRoleUser = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userListManagement.UserId);
+                if (changeRoleUser != null) 
+                {
+                    changeRoleUser.Role = roleUserPremium;
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             var data = _context.UserListManagements.FirstOrDefault(x =>
                 x.UserId == userListManagement.UserId
                 && x.NutritionistId == userListManagement.NutritionistId
@@ -509,9 +520,5 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return true;
         }
-
-
-
-
     }
 }

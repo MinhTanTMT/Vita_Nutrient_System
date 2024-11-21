@@ -120,9 +120,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIGetAllNutritionistServices")]
         public async Task<ActionResult<IEnumerable<ExpertPackage>>> APIGetAllNutritionistServices()
         {
-            BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
-
-            return Ok(await bankPaymentRepositories.GetAllNutritionistServices());
+            return Ok(await repositories.GetAllNutritionistServices());
         }
 
 
@@ -132,8 +130,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [FromBody] UserListManagementDTO userListManagement,
         [FromQuery] int typeInsert)
         {
-            BankPaymentRepositories bankPaymentRepositories = new BankPaymentRepositories();
-            return Ok(await bankPaymentRepositories.InsertPaidPersonData(userListManagement, typeInsert));
+            return Ok(await repositories.InsertPaidPersonData(userListManagement, typeInsert));
         }
 
     }

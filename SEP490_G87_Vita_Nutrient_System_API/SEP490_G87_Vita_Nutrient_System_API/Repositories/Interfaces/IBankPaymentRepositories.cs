@@ -21,6 +21,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<Decimal[][]> GetAllTransactionsSystemForGraphData(int year, int userMainId);
         Task<bool> SendMail();
         Task<TransactionsSystemDTO> ModifyDataTransactionsSystem(TransactionsSystemDTO data);
-
+        Task<IEnumerable<ExpertPackageDTO>> GetAllNutritionistServices();
+        Task<bool> InsertPaidPersonData(UserListManagementDTO userListManagement, int typeInsert);
     }
 }
