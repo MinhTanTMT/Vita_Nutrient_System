@@ -1059,6 +1059,38 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        [HttpGet("admin/expertpackagemanagement/deletepackage/{Id}")]
+        public async Task<IActionResult> DeletePackage(int Id)
+        {
+            try
+            {
+                HttpResponseMessage response =
+                    await client.DeleteAsync(client.BaseAddress + "/ExpertPackage/DeleteExpertPackage/" + Id);
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    string errMsg = JsonConvert.DeserializeObject<string>(data);
+
+                    ViewBag.AlertMessage = errMsg;
+                }
+                else if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.SuccessMessage = "Delete package successfully!";
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot delete package! Please try again!";
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await ListPackages();
+        }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
