@@ -30,9 +30,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Phone = user.Phone,
                     Height = user.UserDetail.Height,
                     Weight = user.UserDetail.Weight,
-                    Age = user.UserDetail.Age
+                    Age = user.Dob.HasValue ? (short)(DateTime.Now.Year - user.Dob.Value.Year - (DateTime.Now.DayOfYear < user.Dob.Value.DayOfYear ? 1 : 0)) : (short?)null
                 }).ToListAsync();
         }
+
 
 
         // Get nutrition route by CreateById and UserId
@@ -139,9 +140,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         // Delete a nutrition route
         public async Task DeleteNutritionRouteAsync(int id)
         {
-            var route = await _context.NutritionRoutes.FindAsync(id);
+            var route = await _context.NutritionRoutes
+                .Include(r => r.MealOfTheDays) // Bao gồm các MealOfTheDay liên quan
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (route == null) return;
 
+            // Xóa tất cả các MealOfTheDay liên quan
+            _context.MealOfTheDays.RemoveRange(route.MealOfTheDays);
+
+            // Xóa NutritionRoute
             _context.NutritionRoutes.Remove(route);
             await _context.SaveChangesAsync();
         }
