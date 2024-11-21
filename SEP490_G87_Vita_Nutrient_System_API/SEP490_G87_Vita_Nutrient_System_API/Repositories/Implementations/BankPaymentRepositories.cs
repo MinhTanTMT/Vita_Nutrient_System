@@ -73,7 +73,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<bool> InsertPaidPersonData(UserListManagementDTO userListManagement, int typeInsert)
         {
-            if(typeInsert == 0)
+            if(typeInsert == 1)
             {
                 short roleUserPremium = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUserPremium");
                 var changeRoleUser = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userListManagement.UserId);
