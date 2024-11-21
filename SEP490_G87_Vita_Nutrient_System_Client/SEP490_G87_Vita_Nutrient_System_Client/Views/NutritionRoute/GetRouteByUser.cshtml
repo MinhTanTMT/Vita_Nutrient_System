@@ -12,8 +12,9 @@
         </div>
     </form> *@
     <div class="text-start mb-3">
-        <a asp-action="Create" class="btn btn-primary btn-lg">Tạo Lộ Trình Mới</a>
+        <a asp-action="Create" asp-route-userId="@ViewData["UserId"]" class="btn btn-primary btn-lg">Tạo Lộ Trình Mới</a>
     </div>
+
 
     <table class="table custom-table align-middle">
         <thead>

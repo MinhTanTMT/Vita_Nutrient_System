@@ -5,11 +5,12 @@
 <div class="container">
     <h2 class="page-title text-center mb-4">Tạo Lộ Trình Dinh Dưỡng Mới</h2>
     <form asp-controller="NutritionRoute" asp-action="Create" method="post" enctype="multipart/form-data" class="create-form">
-        <div class="form-group">
-            <label for="FullName">Họ và tên người sử dụng</label>
+        <div class="form-group mb-3 d-flex align-items-center">
+            <label class="form-label user-label mb-0">Người sử dụng:   </label>
             <span class="user-name">@Model.FullName</span>
             <input type="hidden" asp-for="UserId" />
         </div>
+
         <div class="form-group">
             <label for="Name">Tên Lộ Trình</label>
             <input type="text" asp-for="Name" class="form-control" />
