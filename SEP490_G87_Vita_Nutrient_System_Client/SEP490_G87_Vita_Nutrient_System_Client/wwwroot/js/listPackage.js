@@ -32,3 +32,15 @@ window.onclick = function (event) {
         closeModal();
     }
 }
+
+function AddPackage() {
+    var form = document.getElementById("addPackageForm");
+
+    var name = form.elements['p_name'].value.trim();
+
+    if (name === "") {
+        showErrorToast("Vui lòng điền đầy đủ thông tin vào các ô.");
+    } else {
+        form.submit();
+    }
+}

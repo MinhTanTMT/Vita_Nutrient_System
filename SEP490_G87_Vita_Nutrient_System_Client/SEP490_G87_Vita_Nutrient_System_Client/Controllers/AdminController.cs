@@ -1075,6 +1075,44 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddPackage(string p_name, string p_desc, decimal p_price, short p_duration)
+        {
+            try
+            {
+                var data = new
+                {
+                    id= 0,
+                    name= p_name,
+                    describe= p_desc,
+                    price= p_price,
+                    duration = p_duration
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/ExpertPackage/AddExpertPackage", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Add package failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Add package successfully!";
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await ListPackages();
+        }
+
         [HttpGet("admin/expertpackagemanagement/deletepackage/{Id}")]
         public async Task<IActionResult> DeletePackage(int Id)
         {

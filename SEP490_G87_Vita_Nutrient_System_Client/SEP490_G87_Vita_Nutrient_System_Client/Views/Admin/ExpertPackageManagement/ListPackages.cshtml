@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="~/css/toast.css" />
 
 
-<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
+<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" onchange="showErrorToast(e.target.value);" />
 <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
 
 <div class="row" style="width: 100%;">
@@ -119,12 +119,12 @@
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
         <div class="modal1-body">
-            <form id="addPackageForm" asp-controller="Admin" asp-action="AddPackages" method="post">
+            <form id="addPackageForm" asp-controller="Admin" asp-action="AddPackage" method="post">
                 <label>Name:</label>
                 <input class="ms-auto" type="text" name="p_name" required />
 
                 <label>Description:</label>
-                <input class="ms-auto" type="text" name="p_desc" />
+                <input class="ms-auto" type="text" name="p_desc" required />
 
                 <label>Price:</label>
                 <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
@@ -135,7 +135,7 @@
         </div>
         <div class="modal1-footer">
             <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-            <button class="btn-save" onclick="document.getElementById('addPackageForm').submit();">Save</button>
+            <button class="btn-save" onclick="AddPackage()">Save</button>
         </div>
     </div>
 </div>
@@ -154,7 +154,7 @@
                 <input class="ms-auto" type="text" name="p_name" required />
 
                 <label>Description:</label>
-                <input class="ms-auto" type="text" name="p_desc" />
+                <input class="ms-auto" type="text" name="p_desc" required />
 
                 <label>Price:</label>
                 <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
@@ -169,8 +169,7 @@
         </div>
     </div>
 </div>
-
-<script src="~/js/listPackage.js"></script>
 <div id="toast"></div>
 
+<script src="~/js/listPackage.js"></script>
 <script src="~/js/toast.js"></script>
