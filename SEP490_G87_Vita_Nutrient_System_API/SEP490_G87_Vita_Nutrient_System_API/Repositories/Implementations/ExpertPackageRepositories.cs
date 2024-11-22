@@ -1,4 +1,6 @@
-﻿using SEP490_G87_Vita_Nutrient_System_API.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
+using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
@@ -39,6 +41,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 _context.ExpertPackages.Remove(package);
                 _context.SaveChanges();
             }
+        }
+
+        public List<User> GetUsersByPackage(short id)
+        {
+            ExpertPackage e = _context.ExpertPackages
+                .Include(p => p.NutritionistDetails).SingleOrDefault(p => p.Id == id);
+
+            List<User> users = new List<User>();
+            
+            foreach(var n in e.NutritionistDetails)
+            {
+                users.Add(_context.Users.Find(n.NutritionistId));
+            }
+
+            return users;
         }
     }
 }

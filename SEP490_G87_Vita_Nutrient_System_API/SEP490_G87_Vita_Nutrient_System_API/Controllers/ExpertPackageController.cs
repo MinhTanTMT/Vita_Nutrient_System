@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
@@ -26,8 +27,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             List<ExpertPackage> packages = repositories.GetExpertPackages();
 
             List<ExpertPackageResponse> result = packages.Select(p => _mapper.Map<ExpertPackageResponse>(p)).ToList();
+            
+            List<ExpertPackageResponse1> result1 = new List<ExpertPackageResponse1>();
+            
+            for (int i = 0; i < result.Count; i++)
+            {
+                ExpertPackageResponse elm = result.ElementAt(i);
+                ExpertPackageResponse1 e = new();
+                e.Package = elm;
+                List<User> nutritionists = repositories.GetUsersByPackage(elm.Id);
+                e.Nutrititonists = nutritionists.Select(n => new ExpertPackageResponse1.User
+                {
+                    Id = n.UserId,
+                    Name = n.FirstName + " " + n.LastName,
+                    Account = n.Account
+                }).ToList();
 
-            return Ok(result);
+                result1.Add(e);
+            }
+
+            return Ok(result1);
         }
 
         //get package details
@@ -36,13 +55,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             ExpertPackage package = repositories.GetExpertPackage(packageId);
 
-            return Ok(_mapper.Map<ExpertPackageResponse>(package));
+            List<User> nutritionists = repositories.GetUsersByPackage(packageId);
+
+            ExpertPackageResponse1 result = new ExpertPackageResponse1();
+            result.Package = _mapper.Map<ExpertPackageResponse>(package);
+            result.Nutrititonists = nutritionists.Select(n => new ExpertPackageResponse1.User
+            {
+                Id = n.UserId,
+                Name = n.FirstName + " " + n.LastName,
+                Account = n.Account
+            }).ToList();
+
+            return Ok(result);
         }
 
 
         //add package
         [HttpPost("AddExpertPackage")]
-        public async Task<ActionResult> AddExpertPackage([FromBody] ExpertPackageResponse package)
+        public async Task<ActionResult> AddExpertPackage([FromBody] AddUpdatePackageRequest package)
         {
             ExpertPackage p = new ExpertPackage
             {
@@ -59,7 +89,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
         //edit package
         [HttpPut("UpdateExpertPackage")]
-        public async Task<ActionResult> UpdateExpertPackage([FromBody] ExpertPackageResponse package)
+        public async Task<ActionResult> UpdateExpertPackage([FromBody] AddUpdatePackageRequest package)
         {
             ExpertPackage p = repositories.GetExpertPackage(package.Id);
 

@@ -9,5 +9,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         void AddExpertPackage(ExpertPackage expertPackage);
         void RemoveExpertPackage(short id);
         void UpdateExpertPackage(ExpertPackage expertPackage);
+        List<User> GetUsersByPackage(short id);
     }
 }
