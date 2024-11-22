@@ -36,7 +36,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 ExpertPackageResponse1 e = new();
                 e.Package = elm;
                 List<User> nutritionists = repositories.GetUsersByPackage(elm.Id);
-                e.Nutrititonists = nutritionists.Select(n => new ExpertPackageResponse1.User
+                e.Nutritionists = nutritionists.Select(n => new ExpertPackageResponse1.User
                 {
                     Id = n.UserId,
                     Name = n.FirstName + " " + n.LastName,
@@ -59,7 +59,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             ExpertPackageResponse1 result = new ExpertPackageResponse1();
             result.Package = _mapper.Map<ExpertPackageResponse>(package);
-            result.Nutrititonists = nutritionists.Select(n => new ExpertPackageResponse1.User
+            result.Nutritionists = nutritionists.Select(n => new ExpertPackageResponse1.User
             {
                 Id = n.UserId,
                 Name = n.FirstName + " " + n.LastName,

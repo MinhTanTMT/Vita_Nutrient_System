@@ -17,7 +17,7 @@
     public class ExpertPackageResponse1
     {
         public ExpertPackageResponse Package { get; set; }
-        public List<User>? Nutrititonists {  get; set; }
+        public List<User>? Nutritionists {  get; set; }
 
         public class User
         {

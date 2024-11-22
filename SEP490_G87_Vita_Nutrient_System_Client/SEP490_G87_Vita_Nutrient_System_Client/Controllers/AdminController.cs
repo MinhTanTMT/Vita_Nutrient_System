@@ -974,13 +974,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
-                    List<ExpertPackage> packagesData = JsonConvert.DeserializeObject<List<ExpertPackage>>(data);
+                    List<ExpertPackageResponse> packagesData = JsonConvert.DeserializeObject<List<ExpertPackageResponse>>(data);
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
                     {
                         packagesData = packagesData.Where(u =>
-                            u.Name.ToLower().Contains(searchQuery.ToLower())
+                            u.Package.Name.ToLower().Contains(searchQuery.ToLower())
                         ).ToList();
                     }
 
