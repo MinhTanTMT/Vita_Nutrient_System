@@ -1,8 +1,9 @@
-﻿@*
+﻿@using Newtonsoft.Json
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    List<ExpertPackage> listPackages = ViewBag.packages;
+    List<ExpertPackageResponse> listPackages = ViewBag.packages;
     int currentPage = ViewBag.CurrentPage;
     int totalPages = ViewBag.TotalPages;
     string searchQuery = ViewBag.SearchQuery;
@@ -49,26 +50,29 @@
                                     <th> Description </th>
                                     <th> Price </th>
                                     <th> Duration </th>
-                                    <th> Action </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @for (int i = 0; i < listPackages.Count; i++)
                                 {
-                                    ExpertPackage u = listPackages[i];
+                                    ExpertPackageResponse u = listPackages[i];
                                     <tr>
+                                        @{
+                                            var userJson = JsonConvert.SerializeObject(u.Nutritionists);
+                                        }
                                         <td>@(i + 1)</td>
-                                        <td>@u.Name</td>
-                                        <td>@u.Describe</td>
-                                        <td> @u.Price </td>
-                                        <td> @u.Duration </td>
+                                        <td>@u.Package.Name</td>
+                                        <td>@u.Package.Describe</td>
+                                        <td> @u.Package.Price </td>
+                                        <td> @u.Package.Duration </td>
                                         <td class="d-flex align-items-center justify-content-between">
-                                            <div class="action-icon" id="edit-@i" onclick="openModalUpdate(@u.Id, '@u.Name', '@u.Describe', '@u.Price', @u.Duration);">
+                                            <div class="action-icon" id="edit-@i"
+                                                 onclick="openModalUpdate(@u.Package.Id, '@u.Package.Name', '@u.Package.Describe', '@u.Package.Price', '@u.Package.Duration', @userJson);">
                                                 <i class="mdi mdi-pencil"></i>
                                             </div>
 
-                                            <a asp-controller="Admin" asp-action="DeletePackage" asp-route-Id="@u.Id" 
-                                            class="action-icon" onclick="return confirmDelete();">
+                                            <a asp-controller="Admin" asp-action="DeletePackage" asp-route-Id="@u.Package.Id"
+                                               class="action-icon" onclick="return confirmDelete();">
                                                 <i class="mdi mdi-delete"></i>
                                             </a>
                                         </td>
@@ -147,26 +151,49 @@
             <span>Update Expert Packages</span>
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="openTab(event, 'tab1')">Basic Info</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">Nutritionists</button>
+        </div>
+
         <div class="modal1-body">
-            <form id="updatePackageForm" asp-controller="Admin" asp-action="UpdatePackage" method="post">
-                <input type="hidden" name="p_id" value="" />
-                <label>Name:</label>
-                <input class="ms-auto" type="text" name="p_name" required />
+            <div id="tab1" class="tab-content active">
+                <form id="updatePackageForm" asp-controller="Admin" asp-action="UpdatePackage" method="post">
+                    <input type="hidden" name="p_id" value="" />
+                    <label>Name:</label>
+                    <input class="ms-auto" type="text" name="p_name" required />
 
-                <label>Description:</label>
-                <input class="ms-auto" type="text" name="p_desc" required />
+                    <label>Description:</label>
+                    <input class="ms-auto" type="text" name="p_desc" required />
 
-                <label>Price:</label>
-                <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
+                    <label>Price:</label>
+                    <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
 
-                <label>Duration:</label>
-                <input class="ms-auto" type="number" value="0" min="0" name="p_duration" required />
-            </form>
+                    <label>Duration:</label>
+                    <input class="ms-auto" type="number" value="0" min="0" name="p_duration" required />
+                </form>
+
+                
+            </div>
+            
+            <div id="tab2" class="tab-content">
+                <form id="updatePackageNutriForm" asp-controller="Admin" asp-action="UpdatePackageNutri" method="post">
+                    <input type="hidden" name="p_id" value="" />
+                    
+                </form>
+
+                <div id="nutriTable">
+                </div>
+            </div>
+
+            <div class="modal1-footer">
+                <button class="btn-cancel" onclick="closeModal();">Cancel</button>
+                <button class="btn-save" onclick="EditPackage();">Save</button>
+            </div>
         </div>
-        <div class="modal1-footer">
-            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-            <button class="btn-save" onclick="EditPackage();">Save</button>
-        </div>
+        
     </div>
 </div>
 <div id="toast"></div>
