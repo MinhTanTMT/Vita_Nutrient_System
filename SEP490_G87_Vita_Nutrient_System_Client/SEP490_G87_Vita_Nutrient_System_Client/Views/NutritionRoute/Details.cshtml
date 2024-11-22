@@ -1,12 +1,11 @@
-﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionRoute
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.UserListManagement
 
 <div class="container mt-5">
     <h2 class="text-center mb-4"><strong>Chi Tiết Lộ Trình Dinh Dưỡng</strong></h2>
 
     <div class="detail-box p-4 mb-4">
-        <p><strong>Người Sử Dụng:</strong> @Model.FullName</p>
-        <p><strong>Tên Lộ Trình:</strong> @Model.Name</p>
-        <p><strong>Mô Tả:</strong> @Model.Describe</p>
+        <p><strong>Người Sử Dụng:</strong> @Model.UserName</p>
+        <p><strong>Tên Lộ Trình:</strong> @Model.Describe</p>
         <p><strong>Ngày Bắt Đầu:</strong> @Model.StartDate?.ToString("dd/MM/yyyy")</p>
         <p><strong>Ngày Kết Thúc:</strong> @Model.EndDate?.ToString("dd/MM/yyyy")</p>
         <p><strong>Trạng Thái:</strong> @(Model.IsDone == true ? "Hoàn Thành" : "Chưa Hoàn Thành")</p>
