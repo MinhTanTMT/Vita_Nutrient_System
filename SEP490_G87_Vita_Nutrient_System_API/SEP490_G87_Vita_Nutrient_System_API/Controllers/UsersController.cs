@@ -209,6 +209,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Update user status successfully!");
         }
 
+        [HttpPost("UpdateUserInfo")]
+        public async Task<ActionResult<string>> UpdateUserInfo([FromBody] UpdateUserInfoRequest request)
+        {
+            User u = repositories.GetUserById(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.FirstName = request.FirstName;
+            u.LastName = request.LastName;
+            u.Dob = request.DOB ?? new DateTime(2000, 01, 01);
+            u.Gender = request.Gender;
+            u.Address = request.Address;
+            u.Phone = request.Phone ?? "";
+            repositories.UpdateUser(u);
+
+            return Ok("Update user status successfully!");
+        }
+
         [HttpGet("{userId}/liked-foods")]
         public async Task<ActionResult<dynamic>> GetLikedFoods(int userId, [FromQuery] GetLikeFoodDTO model)
         {
