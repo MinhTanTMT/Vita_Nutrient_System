@@ -71,7 +71,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 //    }
                 //    else return RedirectToAction("Error2");
                 //}
-                return RedirectToAction("Admin/PremiumUpgradeSuggestion");
+                return RedirectToAction("NutritionistServices", "Admin");
             }
 
 
@@ -123,7 +123,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else return RedirectToAction("Error2");
                 }
-                else return RedirectToAction("Admin/PremiumUpgradeSuggestion");
+                else return RedirectToAction("NutritionistServices", "Admin");
+
             }
 
             List<SlotBranch> slotBranchesData = userSevices.GetListCollection(rootObjectFoodList);
@@ -177,7 +178,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("Admin/PremiumUpgradeSuggestion");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("NutritionistServices", "Admin");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
@@ -204,7 +205,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("Admin/PremiumUpgradeSuggestion");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("NutritionistServices", "Admin");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
@@ -230,7 +231,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("NutritionistServices", "Admin");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheAllMeal?myDay={myDay}&idUser={userId}");
@@ -246,7 +247,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
 
         }
-
 
 
         [HttpGet]
@@ -281,8 +281,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 }
             }
-
-
             return View("PlanUser");
         }
 

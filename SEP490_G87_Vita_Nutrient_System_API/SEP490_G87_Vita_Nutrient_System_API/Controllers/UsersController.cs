@@ -36,7 +36,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             else
             {
                 return Ok(dataReturn);
-            }    
+            }
         }
 
 
@@ -54,7 +54,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             {
                 return NotFound();
             }
-            
+
         }
 
 
@@ -66,12 +66,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
+        [HttpPost("RegisterLoginGoogle")]
+        public async Task<ActionResult<User>> APIGetRegisterLoginGoogle(User user)
+        {
+            var dataReturn = repositories.GetRegisterLoginGoogle(user);
+            return Ok(dataReturn);
+        }
+
+
+
         [HttpGet("GetUserById/{id}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
 
             var dataReturn = repositories.GetUserById(id);
-            
+
             if (dataReturn == null)
             {
                 return NotFound();
@@ -95,7 +104,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult<List<CommonUserResponse>>> GetUsersByRole(int roleId)
         {
             //kiem tra xem roleId duoc truyen vao co hop le hay khong
-            if(!Enum.IsDefined(typeof(UserRole), roleId))
+            if (!Enum.IsDefined(typeof(UserRole), roleId))
             {
                 return BadRequest("Invalid role id!");
             }
@@ -175,7 +184,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             User u = repositories.GetUserById(request.UserId);
             //kiem tra xem user ton tai hay ko
-            if(u == null)
+            if (u == null)
             {
                 return BadRequest("User not found!");
             }
@@ -221,7 +230,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("{userId}/blocked-foods")]
-        public async Task<IActionResult> GetBlockedFoods(int userId, [FromQuery]GetLikeFoodDTO model)
+        public async Task<IActionResult> GetBlockedFoods(int userId, [FromQuery] GetLikeFoodDTO model)
         {
             var paginatedFoods = await repositories.GetBlockedFoods(userId, model);
 

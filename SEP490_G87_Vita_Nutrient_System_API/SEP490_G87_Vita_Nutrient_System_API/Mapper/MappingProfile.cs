@@ -21,7 +21,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
             CreateMap<NutritionistDetail, NutritionistDetailDTO>();
             CreateMap<TransactionsSystem, TransactionsSystemDTO>();
 
-
             //From User to CommonUserResponse
             CreateMap<User, CommonUserResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId))

@@ -40,7 +40,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        //[HttpGet, Authorize]
+        [HttpGet, Authorize]
         public async Task<IActionResult> QRCodePaymentPageAsync()
         {
             try
@@ -129,7 +129,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration, int TypeInsert)
         {
             var configuration = new ConfigurationBuilder()
@@ -163,25 +163,25 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult PremiumUpgradeSuggestion()
-        {
+        //[HttpGet]
+        //public IActionResult PremiumUpgradeSuggestion()
+        //{
 
-            // Lấy chuỗi JSON từ appsettings.json
-            var jsonString = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build()
-                .GetValue<string>("SystemPremiumPackagesJson");
+        //    // Lấy chuỗi JSON từ appsettings.json
+        //    var jsonString = new ConfigurationBuilder()
+        //        .AddJsonFile("appsettings.json")
+        //        .Build()
+        //        .GetValue<string>("SystemPremiumPackagesJson");
 
-            // Deserialize JSON thành danh sách đối tượng
-            var systemPremiumPackages = JsonConvert.DeserializeObject<List<SystemPremiumPackage>>(jsonString);
+        //    // Deserialize JSON thành danh sách đối tượng
+        //    var systemPremiumPackages = JsonConvert.DeserializeObject<List<SystemPremiumPackage>>(jsonString);
 
-            // Truyền danh sách lên view
-            return View(systemPremiumPackages);
-        }
+        //    // Truyền danh sách lên view
+        //    return View(systemPremiumPackages);
+        //}
         
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<IActionResult> NutritionistServicesAsync()
         {
             try
@@ -237,77 +237,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         //    return Redirect("QRCodePaymentPage");
         //}
 
-
-
-        [HttpPost]
-        public IActionResult PaymentTransferSuccessful()
-        {
-
-
-
-            return RedirectToAction("QRCodePaymentPage");
-        }
-
-
-        
-
-        public static string GeneratePassword(int length, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = true)
-        {
-            if (length <= 0)
-            {
-                throw new ArgumentException("Password length must be greater than 0.");
-            }
-
-            // Các bộ ký tự có thể sử dụng
-            const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const string lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
-            const string numberChars = "0123456789";
-            const string specialChars = "!@#$%^&*()-_=+[]{}|;:,.<>?/";
-
-            // Chuỗi ký tự được chọn để tạo mật khẩu
-            string characterPool = "";
-
-            if (includeUppercase)
-            {
-                characterPool += uppercaseChars;
-            }
-
-            if (includeLowercase)
-            {
-                characterPool += lowercaseChars;
-            }
-
-            if (includeNumbers)
-            {
-                characterPool += numberChars;
-            }
-
-            if (includeSpecialChars)
-            {
-                characterPool += specialChars;
-            }
-
-            if (string.IsNullOrEmpty(characterPool))
-            {
-                throw new ArgumentException("At least one character type must be selected.");
-            }
-
-            // Tạo mật khẩu
-            var random = new Random();
-            var passwordBuilder = new StringBuilder();
-
-            for (int i = 0; i < length; i++)
-            {
-                int randomIndex = random.Next(characterPool.Length);
-                passwordBuilder.Append(characterPool[randomIndex]);
-            }
-
-            return passwordBuilder.ToString();
-        }
-
-
-
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<IActionResult> AdminDashboardAsync()
         {
             try

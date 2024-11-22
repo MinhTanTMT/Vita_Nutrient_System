@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -80,10 +81,34 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 FoodTypeId = b.FoodTypeId
             })
             .ToListAsync();
+  
+            List<short> allFoodTypeSelect = dataDietWithFoodType.Where(x => x.DietTypeId == nutritionTargetsDaily.FoodTypeIdWant).Select(x => x.FoodTypeId).ToList();
 
             // Thêm cái các món ăn like, recurent , isCollection// mặc định thì ren all món 
 
-            List<short> allFoodTypeSelect = dataDietWithFoodType.Where(x => x.DietTypeId == nutritionTargetsDaily.FoodTypeIdWant).Select(x => x.FoodTypeId).ToList();
+            IEnumerable<FoodSelection> foodSelectionOfUser = await _context.FoodSelections.Where(x => x.UserId == idUser).ToListAsync();
+            
+            
+            int foodSelectionType = 0;
+
+
+            if (foodSelectionType == 0)
+            {
+
+            }
+            else if (foodSelectionType == 1) 
+            { 
+            
+            }
+            else if (foodSelectionType == 2)
+            {
+
+            }
+            else
+            {
+
+            }
+
 
             IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => allFoodTypeSelect.Contains(x.FoodTypeId)).ToListAsync();
 
@@ -554,6 +579,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<bool> FillInDishIdInDailyDish(int idUser, DateTime MyDay)
         {
+            var data = _context.UserListManagements.FirstOrDefault(x =>
+                x.UserId == idUser
+                && x.StartDate <= MyDay
+                && x.EndDate >= MyDay);
+
             MealSetting MealSettingDataOfUser = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == idUser);
             int getNutritionRouteId;
             NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= MyDay && nr.EndDate >= MyDay && nr.UserId == idUser && nr.IsDone == false);
