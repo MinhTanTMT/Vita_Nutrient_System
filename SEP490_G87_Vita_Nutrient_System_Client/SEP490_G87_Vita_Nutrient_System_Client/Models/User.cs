@@ -28,6 +28,8 @@ public partial class User
     public bool? IsActive { get; set; }
 
 	public string Account { get; set; } = null!;
+
+    public string? AccountGoogle { get; set; }
     public virtual UserDetail? UserDetail { get; set; }
     public virtual NutritionistDetail? NutritionistDetail { get; set; }
     public virtual UserRole? UserRole { get; set; }

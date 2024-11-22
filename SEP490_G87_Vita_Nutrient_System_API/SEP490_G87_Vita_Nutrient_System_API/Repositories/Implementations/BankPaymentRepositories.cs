@@ -86,7 +86,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             var data = _context.UserListManagements.FirstOrDefault(x =>
                 x.UserId == userListManagement.UserId
-                && x.NutritionistId == userListManagement.NutritionistId
                 && x.StartDate <= userListManagement.StartDate
                 && x.EndDate >= userListManagement.StartDate);
 
@@ -106,6 +105,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             else
             {
+                data.NutritionistId = userListManagement.NutritionistId;
                 if (data.EndDate.HasValue && userListManagement.StartDate.HasValue && userListManagement.EndDate.HasValue)
                 {
                     TimeSpan additionalTime = userListManagement.EndDate.Value - userListManagement.StartDate.Value;

@@ -38,7 +38,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        //[HttpGet, Authorize]
+        [HttpGet, Authorize]
         public async Task<IActionResult> QRCodePaymentPageAsync()
         {
             try
@@ -127,7 +127,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration, int TypeInsert)
         {
             var configuration = new ConfigurationBuilder()
@@ -161,25 +161,25 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult PremiumUpgradeSuggestion()
-        {
+        //[HttpGet]
+        //public IActionResult PremiumUpgradeSuggestion()
+        //{
 
-            // Lấy chuỗi JSON từ appsettings.json
-            var jsonString = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build()
-                .GetValue<string>("SystemPremiumPackagesJson");
+        //    // Lấy chuỗi JSON từ appsettings.json
+        //    var jsonString = new ConfigurationBuilder()
+        //        .AddJsonFile("appsettings.json")
+        //        .Build()
+        //        .GetValue<string>("SystemPremiumPackagesJson");
 
-            // Deserialize JSON thành danh sách đối tượng
-            var systemPremiumPackages = JsonConvert.DeserializeObject<List<SystemPremiumPackage>>(jsonString);
+        //    // Deserialize JSON thành danh sách đối tượng
+        //    var systemPremiumPackages = JsonConvert.DeserializeObject<List<SystemPremiumPackage>>(jsonString);
 
-            // Truyền danh sách lên view
-            return View(systemPremiumPackages);
-        }
+        //    // Truyền danh sách lên view
+        //    return View(systemPremiumPackages);
+        //}
         
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<IActionResult> NutritionistServicesAsync()
         {
             try
@@ -210,19 +210,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-
-
-        [HttpPost]
-        public IActionResult PaymentTransferSuccessful()
-        {
-
-
-
-            return RedirectToAction("QRCodePaymentPage");
-        }
-
-
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<IActionResult> AdminDashboardAsync()
         {
             try

@@ -153,8 +153,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             {
                 return BadRequest();
             }
-
-            if (model.MyDay.DayOfYear == DateTime.Now.DayOfYear)
+            
+            // update vu tich trong 7 ngay
+            if (model.MyDay.DayOfYear <= DateTime.Now.DayOfYear && model.MyDay.DayOfYear >= (DateTime.Now.DayOfYear-7))
             {
                 if (model.StatusSymbol.Equals("-"))
                 {

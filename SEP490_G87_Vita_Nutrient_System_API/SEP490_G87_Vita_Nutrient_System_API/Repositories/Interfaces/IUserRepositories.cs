@@ -17,6 +17,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         dynamic GetUserRegister(User user);
         dynamic GetUserById(int id);
         dynamic ChangePassword(ChangePasswordDTO model);
+        dynamic GetRegisterLoginGoogle(User user);
         Task<PagedResult<FoodList>> GetLikedFoods(int userId, GetLikeFoodDTO model);
         Task<string> LikeOrUnlikeFood(int userId, int foodId);
         Task<string> UnblockFood(int userId, int foodId);

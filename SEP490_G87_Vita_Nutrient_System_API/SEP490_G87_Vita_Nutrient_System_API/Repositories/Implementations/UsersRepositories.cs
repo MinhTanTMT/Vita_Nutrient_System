@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
@@ -6,6 +7,8 @@ using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using System.Drawing.Printing;
 using Microsoft.AspNetCore.Mvc;
 using SEP490_G87_Vita_Nutrient_System_API.PageResult;
+using AutoMapper;
+using SEP490_G87_Vita_Nutrient_System_API.Mapper;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -13,10 +16,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
     {
 
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
+        private MapperConfiguration config;
+        private IMapper mapper;
 
         public UsersRepositories()
         {
-
+            config = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
+            mapper = config.CreateMapper();
         }
 
         ////////////////////////////////////////////////////////////
@@ -67,6 +73,48 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
 
         }
+
+        public dynamic GetRegisterLoginGoogle(User user)
+        {
+            var accGoogle = _context.Users.FirstOrDefault(x => x.AccountGoogle == user.AccountGoogle);
+
+            if (accGoogle == null)
+            {
+                _context.Users.Add(user);
+                _context.SaveChanges();
+
+                string roleName = _context.Roles.Find(user.Role).RoleName;
+                var UserLogin = new
+                {
+                    FullName = user.FirstName + " " + user.LastName,
+                    user.Urlimage,
+                    user.Account,
+                    RoleName = roleName,
+                    user.UserId,
+                    user.AccountGoogle
+                };
+                return UserLogin;
+            }
+            else
+            {
+                string roleName = _context.Roles.Find(accGoogle.Role).RoleName;
+                var UserLogin = new
+                {
+                    FullName = user.FirstName + " " + user.LastName,
+                    accGoogle.Urlimage,
+                    accGoogle.Account,
+                    RoleName = roleName,
+                    accGoogle.UserId,
+                    user.AccountGoogle
+                };
+                return UserLogin;
+            }
+
+
+            return null;
+
+        }
+
 
         public dynamic GetUserById(int id)
         {
@@ -195,7 +243,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         .Where(fs => fs.UserId == userId && (bool)fs.IsLike)
                         .Join(_context.FoodLists, fs => fs.FoodListId, f => f.FoodListId, (fs, f) => f);
 
-            if(query == null)
+            if (query == null)
             {
                 throw new ApplicationException("Not found!");
             }
@@ -217,7 +265,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 Items = paginatedFoods,
                 TotalPages = totalPages,
                 CurrentPage = model.Page
-            }; 
+            };
         }
 
         public async Task<string> LikeOrUnlikeFood(int userId, int foodId)
@@ -227,7 +275,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (foodSelection == null) return "Not found";
 
-            if(foodSelection.IsLike == null)
+            if (foodSelection.IsLike == null)
             {
                 foodSelection.IsLike = true;
             }
