@@ -90,6 +90,7 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
         {
             optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
         }
+
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -681,10 +682,17 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.ToTable("User", "UserData");
 
+            entity.HasIndex(e => e.Account, "UQ_Account").IsUnique();
+
+            entity.HasIndex(e => e.AccountGoogle, "UQ_AccountGoogle")
+                .IsUnique()
+                .HasFilter("([AccountGoogle] IS NOT NULL)");
+
             entity.Property(e => e.Account)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasDefaultValue("example@example.com");
+            entity.Property(e => e.AccountGoogle).HasMaxLength(255);
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Dob)
                 .HasColumnType("datetime")

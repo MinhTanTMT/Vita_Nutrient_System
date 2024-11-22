@@ -81,6 +81,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             })
             .ToListAsync();
 
+            // Thêm cái các món ăn like, recurent , isCollection// mặc định thì ren all món 
+
             List<short> allFoodTypeSelect = dataDietWithFoodType.Where(x => x.DietTypeId == nutritionTargetsDaily.FoodTypeIdWant).Select(x => x.FoodTypeId).ToList();
 
             IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => allFoodTypeSelect.Contains(x.FoodTypeId)).ToListAsync();

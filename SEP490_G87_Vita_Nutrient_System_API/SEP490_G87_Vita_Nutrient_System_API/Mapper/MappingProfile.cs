@@ -19,6 +19,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
             CreateMap<IngredientDetails100g, IngredientDetails100gDTO>();
             CreateMap<ExpertPackage, ExpertPackageDTO>();
             CreateMap<NutritionistDetail, NutritionistDetailDTO>();
+            CreateMap<TransactionsSystem, TransactionsSystemDTO>();
 
 
             //From User to CommonUserResponse

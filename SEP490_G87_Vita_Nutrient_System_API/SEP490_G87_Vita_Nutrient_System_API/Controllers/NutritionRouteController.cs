@@ -13,14 +13,23 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     {
         private readonly INutritionRouteRepositories _nutritionRouteRepositories = new NutritionRouteRepositories();
 
-        // GET: api/nutritionroute/user/{createById}
-        [HttpGet("user/{createById}")]
-        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetAllNutritionRoutesByCreateById(int createById)
+
+        [HttpGet("createBy/{createById}/users")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsersByCreateId(int createById)
         {
-            var routes = await _nutritionRouteRepositories.GetAllNutritionRoutesByCreateByIdAsync(createById);
-            return Ok(routes);
+            var users = await _nutritionRouteRepositories.GetAllUsersByCreateIdAsync(createById);
+            return Ok(users);
         }
 
+
+
+        // GET: api/nutritionroute/createBy/{createById}/user/{userId}
+        [HttpGet("createBy/{createById}/user/{userId}")]
+        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetNutritionRoutesByCreateByIdAndUserId(int createById, int userId)
+        {
+            var routes = await _nutritionRouteRepositories.GetNutritionRoutesByCreateByIdAndUserIdAsync(createById, userId);
+            return Ok(routes);
+        }
 
         // GET: api/nutritionroute/{id}
         [HttpGet("{id}")]
@@ -36,25 +45,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
         // POST: api/nutritionroute
         [HttpPost]
-        public async Task<ActionResult> CreateNutritionRoute([FromBody] NutritionRouteDTO nutritionRouteDto, [FromQuery] string userPhoneNumber)
+        public async Task<ActionResult> CreateNutritionRoute([FromBody] NutritionRouteDTO nutritionRouteDto)
         {
             if (nutritionRouteDto == null || !ModelState.IsValid)
             {
                 return BadRequest("Dữ liệu lộ trình dinh dưỡng không hợp lệ.");
             }
 
-            if (string.IsNullOrEmpty(userPhoneNumber)) 
-            {
-                return BadRequest("Số điện thoại của người sử dụng không được để trống.");
-            }
-
-            var isCreated = await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto, userPhoneNumber);
+            var isCreated = await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto);
             if (!isCreated)
             {
                 return NotFound("Không tìm thấy người sử dụng với số điện thoại đã cung cấp.");
             }
 
-            return Ok();
+            return Ok("Tạo lộ trình dinh dưỡng thành công.");
         }
 
         // PUT: api/nutritionroute/{id}
@@ -77,7 +81,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 }
 
                 // Chỉ cập nhật các trường cần thiết, giữ nguyên UserName
-                nutritionRouteDto.UserName = existingRoute.UserName;
+                nutritionRouteDto.FullName = existingRoute.FullName;
 
                 await _nutritionRouteRepositories.UpdateNutritionRouteAsync(nutritionRouteDto);
             }
