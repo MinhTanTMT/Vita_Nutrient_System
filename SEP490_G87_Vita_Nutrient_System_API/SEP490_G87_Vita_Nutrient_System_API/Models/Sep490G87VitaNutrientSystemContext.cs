@@ -84,13 +84,9 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
     public virtual DbSet<WantCooking> WantCookings { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
-        }
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("server =localhost; database = SEP490_G87_VitaNutrientSystem;uid=sa;pwd=admin;TrustServerCertificate=true");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ArticlesNews>(entity =>
@@ -681,10 +677,17 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.ToTable("User", "UserData");
 
+            entity.HasIndex(e => e.Account, "UQ_Account").IsUnique();
+
+            entity.HasIndex(e => e.AccountGoogle, "UQ_AccountGoogle")
+                .IsUnique()
+                .HasFilter("([AccountGoogle] IS NOT NULL)");
+
             entity.Property(e => e.Account)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasDefaultValue("example@example.com");
+            entity.Property(e => e.AccountGoogle).HasMaxLength(255);
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Dob)
                 .HasColumnType("datetime")
