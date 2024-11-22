@@ -71,7 +71,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 //    }
                 //    else return RedirectToAction("Error2");
                 //}
-                return RedirectToAction("PageUpgratePremium");
+                return RedirectToAction("Admin/PremiumUpgradeSuggestion");
             }
 
 
@@ -123,7 +123,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else return RedirectToAction("Error2");
                 }
-                else return RedirectToAction("PageUpgratePremium");
+                else return RedirectToAction("Admin/PremiumUpgradeSuggestion");
             }
 
             List<SlotBranch> slotBranchesData = userSevices.GetListCollection(rootObjectFoodList);
@@ -177,7 +177,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PremiumUpgradeSuggestion");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("Admin/PremiumUpgradeSuggestion");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
@@ -204,7 +204,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PremiumUpgradeSuggestion");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("Admin/PremiumUpgradeSuggestion");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
