@@ -487,23 +487,47 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             // Tạo danh sách thông tin thành viên nhóm
             var teamMembers = new List<dynamic>
-    {
-        new { Name = "Trinh Minh Tan", Role = "Leader" },
-        new { Name = "Ngo Manh Tung", Role = "Member" },
-        new { Name = "Nguyen Tien Dung", Role = "Member" },
-        new { Name = "Do Van Son", Role = "Member" },
-        new { Name = "Vu Minh Chien", Role = "Member" }
-    };
+            {
+                new { Name = "Trinh Minh Tan", Role = "Leader" },
+                new { Name = "Ngo Manh Tung", Role = "Member" },
+                new { Name = "Nguyen Tien Dung", Role = "Member" },
+                new { Name = "Do Van Son", Role = "Member" },
+                new { Name = "Vu Minh Chien", Role = "Member" }
+            };
 
             // Truyền danh sách vào View
             return View(teamMembers);
         }
 
 
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
+        public IActionResult TermsOfService()
+        {
+            return View();
+        }
+        
+        public IActionResult HowItWorks()
+        {
+            return View();
+        }
+
+        public IActionResult ContactUs()
+        {
+            return View();
+        }
+
+        public IActionResult GiftCodes()
+        {
+            return View();
+        }
 
         ////////////////////////////////////////////////////////////
         /// Chiến
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////ContactUs
         ///
 
 

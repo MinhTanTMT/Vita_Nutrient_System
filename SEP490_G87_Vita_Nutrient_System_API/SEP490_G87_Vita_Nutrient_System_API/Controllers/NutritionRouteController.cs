@@ -14,26 +14,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         private readonly INutritionRouteRepositories _nutritionRouteRepositories = new NutritionRouteRepositories();
 
 
-        [HttpGet("createBy/{createById}/users")]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsersByCreateId(int createById)
+        [HttpGet("{nutritionistId}/users")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsersByCreateId(int nutritionistId)
         {
-            var users = await _nutritionRouteRepositories.GetAllUsersByCreateIdAsync(createById);
+            var users = await _nutritionRouteRepositories.GetAllUsersByCreateIdAsync(nutritionistId);
             return Ok(users);
         }
 
 
 
-        // GET: api/nutritionroute/createBy/{createById}/user/{userId}
-        [HttpGet("createBy/{createById}/user/{userId}")]
-        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetNutritionRoutesByCreateByIdAndUserId(int createById, int userId)
+        // GET: api/nutritionroute/{nutritionistId}/user/{userId}
+        [HttpGet("{nutritionistId}/user/{userId}")]
+        public async Task<ActionResult<IEnumerable<UserListManagementDTO>>> GetNutritionRoutesByCreateByIdAndUserId(int nutritionistId, int userId)
         {
-            var routes = await _nutritionRouteRepositories.GetNutritionRoutesByCreateByIdAndUserIdAsync(createById, userId);
+            var routes = await _nutritionRouteRepositories.GetNutritionRoutesByNutritionistIdAndUserIdAsync(nutritionistId, userId);
             return Ok(routes);
         }
 
         // GET: api/nutritionroute/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<NutritionRouteDTO>> GetNutritionRouteById(int id)
+        public async Task<ActionResult<UserListManagementDTO>> GetNutritionRouteById(int id)
         {
             var route = await _nutritionRouteRepositories.GetNutritionRouteByIdAsync(id);
             if (route == null)
@@ -45,14 +45,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
         // POST: api/nutritionroute
         [HttpPost]
-        public async Task<ActionResult> CreateNutritionRoute([FromBody] NutritionRouteDTO nutritionRouteDto)
+        public async Task<ActionResult> CreateNutritionRoute([FromBody] UserListManagementDTO userListManagementDto)
         {
-            if (nutritionRouteDto == null || !ModelState.IsValid)
+            if (userListManagementDto == null || !ModelState.IsValid)
             {
                 return BadRequest("Dữ liệu lộ trình dinh dưỡng không hợp lệ.");
             }
 
-            var isCreated = await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto);
+            var isCreated = await _nutritionRouteRepositories.CreateNutritionRouteAsync(userListManagementDto);
             if (!isCreated)
             {
                 return NotFound("Không tìm thấy người sử dụng với số điện thoại đã cung cấp.");
@@ -63,9 +63,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
         // PUT: api/nutritionroute/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateNutritionRoute(int id, [FromBody] NutritionRouteDTO nutritionRouteDto)
+        public async Task<ActionResult> UpdateNutritionRoute(int id, [FromBody] UserListManagementDTO userListManagementDto)
         {
-            if (id != nutritionRouteDto.Id)
+            if (id != userListManagementDto.Id)
             {
                 return BadRequest("ID lộ trình dinh dưỡng không khớp.");
             }
@@ -81,9 +81,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 }
 
                 // Chỉ cập nhật các trường cần thiết, giữ nguyên UserName
-                nutritionRouteDto.FullName = existingRoute.FullName;
+                userListManagementDto.UserName = existingRoute.UserName;
 
-                await _nutritionRouteRepositories.UpdateNutritionRouteAsync(nutritionRouteDto);
+                await _nutritionRouteRepositories.UpdateNutritionRouteAsync(userListManagementDto);
             }
             catch (KeyNotFoundException)
             {
@@ -105,5 +105,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _nutritionRouteRepositories.DeleteNutritionRouteAsync(id);
             return NoContent();
         }
+
+        /*[HttpGet("{nutritionistId}/user/{userId}/unfinished")]
+        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId)
+        {
+            var routes = await _nutritionRouteRepositories.GetUsersWithUnfinishedRoutesAsync(nutritionistId, userId);
+            return Ok(routes); 
+        }*/
+
+        [HttpGet("{nutritionistId}/user/{userId}/unfinished")]
+        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId)
+        {
+            var routes = await _nutritionRouteRepositories.HasUnfinishedRouteAsync(nutritionistId, userId);
+            return Ok(routes);
+        }
+
     }
 }

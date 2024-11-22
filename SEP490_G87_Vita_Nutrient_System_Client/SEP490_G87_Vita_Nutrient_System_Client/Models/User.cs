@@ -36,4 +36,6 @@ public partial class User
     public short? Height { get; set; }
     public short? Weight { get; set; }
     public short? Age { get; set; }
+
+    public List<string>? UnderlyingDiseaseNames { get; set; }
 }

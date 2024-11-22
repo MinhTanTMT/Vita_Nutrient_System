@@ -18,5 +18,12 @@
 
         public bool? IsDone { get; set; }
 
+        public string? UserName { get; set; }
+
+        public string? NutritionistName { get; set; }
+
+        public string? UrlImage { get; set; }
+
+        public string? UnderlyingDisease { get; set; }
     }
 }

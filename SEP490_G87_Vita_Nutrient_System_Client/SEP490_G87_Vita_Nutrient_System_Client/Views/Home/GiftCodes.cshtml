@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mã Quà Tặng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            color: #007bff;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+
+        .gift-code-result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px dashed #007bff;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+            .gift-code-result i {
+                color: #28a745;
+                margin-right: 10px;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-gift me-2"></i>Mã Quà Tặng</h1>
+        <p>
+            Nhập mã quà tặng của bạn bên dưới để nhận những ưu đãi đặc biệt từ chúng tôi. Mỗi mã chỉ có thể sử dụng một lần. Hãy chắc chắn rằng mã của bạn còn hiệu lực trước khi nhập.
+        </p>
+
+        <form id="giftCodeForm">
+            <div class="form-group">
+                <label for="giftCode" class="form-label">Nhập Mã Quà Tặng</label>
+                <input type="text" id="giftCode" class="form-control" placeholder="Nhập mã quà tặng của bạn" required>
+            </div>
+            <button type="submit" class="btn-primary"><i class="fas fa-check-circle me-2"></i>Áp Dụng</button>
+        </form>
+
+        <div id="result" class="gift-code-result" style="display: none;">
+            <i class="fas fa-check-circle"></i><span id="resultMessage">Mã quà tặng đã được áp dụng thành công!</span>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("giftCodeForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const giftCode = document.getElementById("giftCode").value.trim();
+            const resultDiv = document.getElementById("result");
+            const resultMessage = document.getElementById("resultMessage");
+
+            // Giả lập kiểm tra mã quà tặng
+            if (giftCode === "SPECIAL2024") {
+                resultMessage.innerText = "Mã quà tặng đã được áp dụng thành công!";
+                resultDiv.style.display = "block";
+                resultDiv.style.color = "#28a745";
+            } else {
+                resultMessage.innerText = "Mã quà tặng không hợp lệ hoặc đã hết hạn.";
+                resultDiv.style.display = "block";
+                resultDiv.style.color = "#dc3545";
+            }
+        });
+    </script>
+</body>
+</html>
