@@ -589,6 +589,45 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             return await UserProfileSon();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi)
+        {
+            try
+            {
+                var data = new
+                {
+                    userId = uid,
+                    description = udesc,
+                    height = uheight,
+                    weight = uweight,
+                    age = uage,
+                    wantImprove = uwi
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Users/UpdateUserDetails", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update user failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update user successfully!";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+            return await UserProfileSon();
+        }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
