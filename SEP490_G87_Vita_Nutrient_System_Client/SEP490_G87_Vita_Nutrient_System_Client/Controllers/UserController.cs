@@ -308,7 +308,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
 
-
+        ////////////////////////////////////////////////////////////
+        /// Sơn
+        ////////////////////////////////////////////////////////////
+        ///
 
         [HttpGet("foodsList")]
         public async Task<IActionResult> FoodList(
@@ -345,11 +348,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     foods.RemoveAll(f => f.IsActive == false);
                     //remove foods that are blocked
                     foods.RemoveAll(food => foodIds.Contains(food.FoodListId));
-
-                    ////////////////////////////////////////////////////////////
-                    /// Sơn
-                    ////////////////////////////////////////////////////////////
-                    ///
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
@@ -479,6 +477,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        //[HttpGet("Profile")]
+        //public async Task<IActionResult> UserProfile()
+        //{
+
+        //}
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////

@@ -140,6 +140,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
 
             //from TypeOfCalculation to TypeOfCalculationResponse
             CreateMap<TypeOfCalculation, TypeOfCalculationResponse>();
+
+            //from ListOfDisease to DiseaseResponse
+            CreateMap<ListOfDisease, DiseaseResponse>();
         }
     }
 }
