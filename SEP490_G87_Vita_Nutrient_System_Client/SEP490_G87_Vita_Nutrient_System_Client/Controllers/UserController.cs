@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -478,11 +479,116 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        //[HttpGet("Profile")]
-        //public async Task<IActionResult> UserProfile()
-        //{
+        [HttpGet("Profile")]
+        public async Task<IActionResult> UserProfileSon()
+        {
+            try
+            {
+                int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-        //}
+                HttpResponseMessage response = await client.GetAsync(
+                    client.BaseAddress + "/Users/GetUserDetail/" + userId);
+
+                HttpResponseMessage response1 = await client.GetAsync(
+                    client.BaseAddress + "/Disease/GetAllDiseases");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<ListOfDisease> diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(data1);
+
+                    User user = new()
+                    {
+                        UserId = userData.id,
+                        FirstName = userData.firstName,
+                        LastName = userData.lastName,
+                        Urlimage = userData.urlimage,
+                        Dob = userData.dob,
+                        Gender = userData.gender ?? false,
+                        Address = userData.address,
+                        Phone = userData.phone,
+                        UserRole = new UserRole
+                        {
+                            RoleId = userData.role.roleId,
+                            RoleName = userData.role.roleName,
+                        },
+                        UserDetail = new UserDetail
+                        {
+                            UserId = userData.id,
+                            DescribeYourself = userData.detailsInformation.description,
+                            Height = userData.detailsInformation.height,
+                            Weight = userData.detailsInformation.weight,
+                            Age = userData.detailsInformation.age,
+                            WantImprove = userData.detailsInformation.wantImprove,
+                            UnderlyingDisease = userData.detailsInformation.underlyingDisease,
+                            InforConfirmGood = userData.detailsInformation.inforConfirmGood,
+                            InforConfirmBad = userData.detailsInformation.inforConfirmBad,
+                            IsPremium = userData.detailsInformation.isPremium
+                        },
+                        IsActive = userData.isActive,
+                        Account = userData.account,
+                    };
+
+                    ViewBag.user = user;
+                    ViewBag.diseseas = diseases;
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get user profile! Please try later!";
+                }
+
+                return View("~/Views/User/UserInfo.cshtml");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/User/UserInfo.cshtml");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserInfo(int uid, string uacc, string ufn, string uln, int user_gender, DateTime udob, string uadd, string uphone)
+        {
+            try
+            {
+                var data = new
+                {
+                    userId= uid,
+                    firstName= ufn,
+                    lastName= uln,
+                    dob= udob,
+                    gender= user_gender == 1? true : false,
+                    address= uadd,
+                    phone= uphone?? ""
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Users/UpdateUserInfo", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update user failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update user successfully!";
+                }
+            }
+            catch(Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+            return await UserProfileSon();
+        }
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
