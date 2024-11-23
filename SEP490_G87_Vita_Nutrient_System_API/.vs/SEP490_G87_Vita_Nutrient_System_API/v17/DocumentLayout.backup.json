@@ -135,8 +135,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Interfaces\\IUserRepositories.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-22T13:10:36.263Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-22T13:10:36.263Z"
             },
             {
               "$type": "Document",
@@ -148,8 +147,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
               "ViewState": "AgIAABwCAAAAAAAAAAAuwD0CAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-22T11:11:12.081Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-22T11:11:12.081Z"
             },
             {
               "$type": "Document",
@@ -161,8 +159,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
               "ViewState": "AgIAAEYAAAAAAAAAAAAAwFYAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-22T10:59:22.068Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-22T10:59:22.068Z"
             },
             {
               "$type": "Document",
@@ -174,8 +171,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
               "ViewState": "AgIAAHcAAAAAAAAAAAAIwIwAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-22T10:55:25.28Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-22T10:55:25.28Z"
             },
             {
               "$type": "Document",
@@ -187,8 +183,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
               "ViewState": "AgIAADYAAAAAAAAAAAAAwD4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-22T10:55:13.962Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-22T10:55:13.962Z"
             }
           ]
         }
