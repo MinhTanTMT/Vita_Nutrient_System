@@ -1,5 +1,4 @@
-﻿@model List<SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionRoute>
-
+﻿@model List<SEP490_G87_Vita_Nutrient_System_Client.Models.UserListManagement>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
@@ -11,9 +10,21 @@
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
         </div>
     </form> *@
+    @{
+        var hasUnfinishedRoute = Model.Any(route => route.IsDone == false);
+    }
+
     <div class="text-start mb-3">
-        <a asp-action="Create" asp-route-userId="@ViewData["UserId"]" class="btn btn-primary btn-lg">Tạo Lộ Trình Mới</a>
+        @if (!hasUnfinishedRoute)
+        {
+            <a asp-action="Create" asp-route-userId="@ViewData["UserId"]" class="btn btn-primary btn-lg">Tạo Lộ Trình Mới</a>
+        }
+        else
+        {
+            <span class="text-danger">Bạn phải hoàn thành lộ trình hiện tại trước khi tạo lộ trình mới.</span>
+        }
     </div>
+
 
 
     <table class="table custom-table align-middle">
@@ -38,9 +49,9 @@
                         <td>
                             <img src="@Url.Content(route.UrlImage)" alt="Image" style="width: 50px; height: 50px; object-fit: cover;" />
                         </td>
-                        <td>@route.FullName</td>
-                        <td>@route.CreateByName</td>
-                        <td>@route.Name</td>
+                        <td>@route.UserName</td>
+                        <td>@route.NutritionistName</td>
+                        <td>@route.Describe</td>
                         <td>@route.StartDate?.ToString("dd/MM/yyyy")</td>
                         <td>@route.EndDate?.ToString("dd/MM/yyyy")</td>
                         <td>
@@ -71,7 +82,7 @@
             @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
             {
                 <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
-                    <a class="page-link" asp-action="GetAll" asp-route-pageNumber="@i" asp-route-search="@ViewData["search"]">@i</a>
+                    <a class="page-link" asp-action="GetRouteByUser" asp-route-pageNumber="@i" asp-route-search="@ViewData["search"]">@i</a>
                 </li>
             }
         </ul>
@@ -90,6 +101,18 @@
                 }
             });
         });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const userId = @ViewData["UserId"];
+
+        fetch(`/api/nutritionroute/user/${userId}/unfinished`)
+            .then(response => response.json())
+            .then(hasUnfinishedRoute => {
+                if (hasUnfinishedRoute) {
+                    document.getElementById("create-route-btn").style.display = "none";
+                    document.getElementById("unfinished-warning").style.display = "block";
+                }
+            });
     });
 </script>
 
@@ -236,4 +259,8 @@
             .pagination .page-link:hover {
                 background-color: #f3f3f3;
             }
+
+    .text-danger{
+        font-family: 'Roboto', sans-serif;
+    }
 </style>

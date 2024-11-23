@@ -21,9 +21,9 @@ public partial class NutritionistDetail
 
     public int? NumberRate { get; set; }
 
-    public short ExpertPackagesId { get; set; }
+    public short? ExpertPackagesId { get; set; }
 
-    public virtual ExpertPackage ExpertPackages { get; set; } = null!;
+    public virtual ExpertPackage? ExpertPackages { get; set; }
 
     public virtual User Nutritionist { get; set; } = null!;
 }

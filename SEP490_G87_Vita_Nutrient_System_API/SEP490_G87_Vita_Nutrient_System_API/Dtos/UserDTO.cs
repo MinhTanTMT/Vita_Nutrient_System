@@ -15,5 +15,8 @@
 
         public short? Age { get; set; }
         public string? Phone { get; set; }
+
+        /*public string? UnderlyingDisease { get; set; }*/
+        public List<string>? UnderlyingDiseaseNames { get; set; }
     }
 }
