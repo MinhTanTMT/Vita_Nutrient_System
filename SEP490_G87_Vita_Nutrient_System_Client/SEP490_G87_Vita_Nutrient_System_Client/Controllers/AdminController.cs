@@ -2,9 +2,10 @@
 using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Principal;
 using static System.Net.WebRequestMethods;
 using System.Xml.Linq;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography.Xml;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
+
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -209,6 +211,31 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
+        //[HttpPost]
+        //public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration)
+        //{
+        //    var configuration = new ConfigurationBuilder()
+        //    .AddJsonFile("appsettings.json")
+        //    .Build();
+        //    string? accountNumber = configuration.GetValue<string>("accountNumberQRPay");
+        //    int? limit = configuration.GetValue<int>("limitQRPay");
+
+        //    HttpContext.Session.SetString("NutritionistId", NutritionistId.ToString());
+        //    HttpContext.Session.SetString("Describe", Describe ?? "");
+        //    HttpContext.Session.SetString("Price", Price.ToString());
+        //    HttpContext.Session.SetString("Duration", Duration.ToString());
+
+        //    HttpContext.Session.SetString("accountNumberQRPay", accountNumber ?? "");
+        //    HttpContext.Session.SetString("limitQRPay", limit.ToString() ?? "20");
+        //    HttpContext.Session.SetString("amountInPayQRPay", Price.ToString());
+        //    HttpContext.Session.SetString("amountInImgQRPay", Price.ToString());
+
+        //    string contentGeneratePassword = GeneratePassword(6);
+        //    HttpContext.Session.SetString("contentBankPayQRPay", contentGeneratePassword);
+        //    HttpContext.Session.SetString("contentBankImgQRPay", contentGeneratePassword);
+
+        //    return Redirect("QRCodePaymentPage");
+        //}
 
         [HttpGet, Authorize]
         public async Task<IActionResult> AdminDashboardAsync()
@@ -577,21 +604,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     {
                         HttpContent content1 = response1.Content;
                         string data1 = await content1.ReadAsStringAsync();
-                        List<dynamic> packagesData = JsonConvert.DeserializeObject<List<dynamic>>(data1);
+                        dynamic packagesData = JsonConvert.DeserializeObject<dynamic>(data1);
 
-                        List<ExpertPackage> packages = packagesData.Select(
-                            p => new ExpertPackage
+                        ExpertPackage package = new ExpertPackage
                             {
-                                Id = p.id,
-                                NutritionistDetailsId = p.nutritionistDetailsId,
-                                Name = p.name,
-                                Describe = p.describe,
-                                Price = p.price,
-                                Duration = p.duration
-                            })
-                            .ToList();
+                                Id = packagesData.id,
+                                NutritionistDetailsId = packagesData.nutritionistDetailsId,
+                                Name = packagesData.name,
+                                Describe = packagesData.describe,
+                                Price = packagesData.price,
+                                Duration = packagesData.duration
+                            };
 
-                        ViewBag.packages = packages;
+                        ViewBag.package = package;
                     }
 
                     return View("~/Views/Admin/NutritionistManagement/NutritionistDetail.cshtml");
@@ -936,10 +961,425 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return await IngredientsList();
         }
 
+        [HttpGet("admin/expertpackagemanagement/listpackages")]
+        public async Task<IActionResult> ListPackages(int page = 1, int pageSize = 10, string searchQuery = "")
+        {
+            try
+            {
+                // get list packages
+                HttpResponseMessage response =
+                        await client.GetAsync(client.BaseAddress + "/ExpertPackage/GetAllExpertPackage");
+
+                //get list nutritionist
+                HttpResponseMessage response1 =
+                        await client.GetAsync(client.BaseAddress + "/Users/GetUserByRole/" + (int)UserRoles.NUTRITIONIST);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    List<ExpertPackageResponse> packagesData = JsonConvert.DeserializeObject<List<ExpertPackageResponse>>(data);
+
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<dynamic> nutritionists = JsonConvert.DeserializeObject<List<dynamic>>(data1);
+
+                    List<ExpertPackageResponse.User> nutritionists1 = nutritionists.Select(
+                        n => new ExpertPackageResponse.User
+                        {
+                            Id = n.id,
+                            Name = n.firstName + " " + n.lastName,
+                            Account = n.account
+                        }).ToList();
+
+                    // Search logic
+                    if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        packagesData = packagesData.Where(u =>
+                            u.Package.Name.ToLower().Contains(searchQuery.ToLower())
+                        ).ToList();
+                    }
+
+                    // Pagination logic
+                    int totalPackages = packagesData.Count();
+                    var paginatedPackages = packagesData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    ViewBag.packages = paginatedPackages;
+                    ViewBag.nutritionists = nutritionists1;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.TotalPages = (int)Math.Ceiling(totalPackages / (double)pageSize);
+
+
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get list packages! Please try again!";
+                }
+
+                ViewBag.SearchQuery = searchQuery;
+                return View("~/Views/Admin/ExpertPackageManagement/ListPackages.cshtml");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/Admin/ExpertPackageManagement/ListPackages.cshtml");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPackage(string p_name, string p_desc, decimal p_price, short p_duration)
+        {
+            try
+            {
+                var data = new
+                {
+                    id= 0,
+                    name= p_name,
+                    describe= p_desc,
+                    price= p_price,
+                    duration = p_duration
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/ExpertPackage/AddExpertPackage", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Add package failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Add package successfully!";
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await ListPackages();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePackage(int p_id, string p_name, string p_desc, decimal p_price, short p_duration)
+        {
+            try
+            {
+                var data = new
+                {
+                    id = p_id,
+                    name = p_name,
+                    describe = p_desc,
+                    price = p_price,
+                    duration = p_duration
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PutAsync(client.BaseAddress + "/ExpertPackage/UpdateExpertPackage", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update package failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update package successfully!";
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await ListPackages();
+        }
+
+        [HttpGet("admin/expertpackagemanagement/deletepackage/{Id}")]
+        public async Task<IActionResult> DeletePackage(int Id)
+        {
+            try
+            {
+                HttpResponseMessage response =
+                    await client.DeleteAsync(client.BaseAddress + "/ExpertPackage/DeleteExpertPackage/" + Id);
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    string errMsg = JsonConvert.DeserializeObject<string>(data);
+
+                    ViewBag.AlertMessage = errMsg;
+                }
+                else if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.SuccessMessage = "Delete package successfully!";
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot delete package! Please try again!";
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await ListPackages();
+        }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
+        public async Task<IActionResult> FoodList(string search, string diseaseSearch)
+        {
+            var foodList = await GetFoodList(search);
 
+            var foodTypes = await GetFoodTypes();
+            var keyNotes = await GetKeyNotes();
+            var cookingDifficulty = await GetCookingDifficulty();
+            var listOfDisease = await GetDiseaseList(diseaseSearch);
+            var foodAndDiseases = await GetFoodAndDiseaseList();
+
+            var viewModel = new FoodListViewModel
+            {
+                Foods = foodList,
+                FoodTypes = foodTypes,
+                KeyNotes = keyNotes,
+                CookingDifficulties = cookingDifficulty,
+                ListOfDiseases = listOfDisease,
+                FoodAndDiseases = foodAndDiseases
+            };
+
+            return View(viewModel);
+        }
+
+
+        public async Task<List<Food>> GetFoodList(string search)
+        {
+            var requestUrl = client.BaseAddress + $"/Nutrition/get-food-list?search={search}";
+
+            var response = await client.GetAsync(requestUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<Food>();
+            }
+            var responseData = await response.Content.ReadAsStringAsync();
+            var foodListResponse = JsonConvert.DeserializeObject<List<Food>>(responseData);
+
+            return foodListResponse ?? new List<Food>();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveFood(Food food)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var apiUrl = client.BaseAddress + "/Nutrition/save-food";
+                var foodData = new
+                {
+                    food.FoodListId,
+                    food.Name,
+                    food.Describe,
+                    food.Rate,
+                    food.NumberRate,
+                    food.UrlImage,
+                    food.FoodTypeId,
+                    food.KeyNoteId,
+                    food.IsActive,
+                    food.PreparationTime,
+                    food.CookingTime,
+                    food.CookingDifficultyId
+                };
+
+                var content = new StringContent(JsonConvert.SerializeObject(foodData), Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Message"] = "Create/Update food thành công!";
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    TempData["Message"] = "Có lỗi xảy ra khi tạo/cập nhật food.";
+                    Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật food.");
+                    Console.WriteLine("Status Code: " + response.StatusCode);
+                    Console.WriteLine("Error Content: " + errorContent);
+                }
+            }
+
+            return RedirectToAction("FoodList");
+        }
+
+        public async Task<List<FoodType>> GetFoodTypes()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7045/");
+                var response = await client.GetAsync("api/Food/GetFoodTypes");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    var foodTypesResponse = JsonConvert.DeserializeObject<List<FoodType>>(responseData);
+                    return foodTypesResponse;
+                }
+                return new List<FoodType>();
+            }
+        }
+
+        public async Task<List<KeyNote>> GetKeyNotes()
+        {
+            var requestUrl = client.BaseAddress + "/KeyNote/GetKeyNotes";
+
+            var response = await client.GetAsync(requestUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<KeyNote>();
+            }
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var keyNoteResponse = JsonConvert.DeserializeObject<List<KeyNote>>(responseData);
+
+            foreach(var item in keyNoteResponse)
+            {
+                if (string.IsNullOrEmpty(item.KeyList))
+                    item.KeyList = "";
+
+                // Chia nhỏ chuỗi dựa trên dấu #
+                var parts = item.KeyList.Split('#', StringSplitOptions.RemoveEmptyEntries);
+
+                // Ghép các phần tử lại với dấu xuống dòng
+                item.KeyList = string.Join("\n", parts);
+            }
+
+            return keyNoteResponse ?? new List<KeyNote>();
+        }
+
+        public async Task<List<CookingDifficulty>> GetCookingDifficulty()
+        {
+            var requestUrl = client.BaseAddress + "/CookingDifficulties/GetAllCookingDifficulties";
+
+            var response = await client.GetAsync(requestUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<CookingDifficulty>();
+            }
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var cookingDifficultyResponse = JsonConvert.DeserializeObject<List<CookingDifficulty>>(responseData);
+
+            return cookingDifficultyResponse ?? new List<CookingDifficulty>();
+        }
+
+        public async Task<List<ListOfDisease>> GetDiseaseList(string search)
+        {
+            var requestUrl = client.BaseAddress + $"/Nutrition/list-disease?search={search}";
+
+            var response = await client.GetAsync(requestUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<ListOfDisease>();
+            }
+            var responseData = await response.Content.ReadAsStringAsync();
+            var diseaseListResponse = JsonConvert.DeserializeObject<List<ListOfDisease>>(responseData);
+
+            return diseaseListResponse ?? new List<ListOfDisease>();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveDisease(ListOfDisease disease)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var apiUrl = client.BaseAddress + "/Nutrition/save-disease";
+                var diseaseData = new
+                {
+                    disease.Id,
+                    disease.Name,
+                    disease.Describe
+                };
+
+                var content = new StringContent(JsonConvert.SerializeObject(diseaseData), Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Message"] = "Tạo/Cập nhật bệnh thành công!";
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    TempData["Message"] = "Có lỗi xảy ra khi tạo/cập nhật bệnh.";
+                    Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật bệnh.");
+                    Console.WriteLine("Status Code: " + response.StatusCode);
+                    Console.WriteLine("Error Content: " + errorContent);
+                }
+            }
+
+            return RedirectToAction("FoodList");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveFoodAndDisease(FoodAndDisease model)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var apiUrl = client.BaseAddress + "/Nutrition/create-food-and-disease";
+                var diseaseData = new
+                {
+                    model.FoodListId,
+                    model.ListOfDiseasesId,
+                    model.Describe,
+                    model.IsGoodOrBad
+                };
+
+                var content = new StringContent(JsonConvert.SerializeObject(diseaseData), Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Message"] = "Tạo/Cập nhật bảng so sánh thành công!";
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    TempData["Message"] = "Có lỗi xảy ra khi tạo/cập nhật bảng so sánh.";
+                    Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật bảng so sánh.");
+                    Console.WriteLine("Status Code: " + response.StatusCode);
+                    Console.WriteLine("Error Content: " + errorContent);
+                }
+            }
+
+            return RedirectToAction("FoodList");
+        }
+
+        public async Task<List<ListFoodAndDisease>> GetFoodAndDiseaseList()
+        {
+            var requestUrl = client.BaseAddress + "/Nutrition/get-all-food-and-disease";
+
+            var response = await client.GetAsync(requestUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<ListFoodAndDisease>();
+            }
+            var responseData = await response.Content.ReadAsStringAsync();
+            var diseaseListResponse = JsonConvert.DeserializeObject<List<ListFoodAndDisease>>(responseData);
+
+            return diseaseListResponse ?? new List<ListFoodAndDisease>();
+        }
     }
 }

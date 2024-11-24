@@ -1,0 +1,214 @@
+﻿.action-icon{
+    font-size: 15px;
+    padding: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.action-icon:hover{
+    background: #f0f0f0;
+}
+
+/* Modal Background */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Box */
+.modal1 {
+    background-color: #fff;
+    width: 40%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal Header */
+.modal1-header {
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+    .modal1-header .close {
+        cursor: pointer;
+        font-size: 24px;
+        color: #999;
+    }
+
+/* Modal Body */
+.modal1-body {
+    padding: 20px;
+}
+
+    .modal1-body form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal1-body input[type="text"], .modal1-body input[type="number"] {
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+/* Modal Footer */
+.modal1-footer {
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+    .modal1-footer button, .myBtn {
+        padding: 8px 15px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+.btn-cancel {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.btn-save {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.fab {
+    position: fixed;
+    bottom: 30px;
+    right: 55px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 36px;
+    color: white;
+    border: none;
+    background: #2196F3;
+    opacity: 0.8;
+}
+
+    .fab:hover {
+        opacity: 1;
+    }
+
+form#addPackageForm input, form#addPackageForm select,
+form#updatePackageForm input, form#updatePackageForm select {
+    width: 96%;
+}
+
+
+/* Style for modal */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal1 {
+    background-color: #fff;
+    width: 50%;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab-button {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+    .tab-button.active {
+        color: #007bff;
+        font-weight: bold;
+        border-bottom: 2px solid #007bff;
+    }
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+#nutriTable {
+    height: 200px;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+    margin-bottom: 10px;
+    border-bottom: 1px solid;
+}
+
+    #nutriTable::-webkit-scrollbar {
+        display: none;
+    }
+
+.nutritionist {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    margin: 5px;
+}
+
+    .n1{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .n1 .nname{
+        font-size: 20px;
+    }
+
+    .n1 .nacc{
+        font-size: 14px;
+        opacity: 0.7;
+    }
+
+    .n2{
+        font-size: 25px;
+        padding: 5px;
+        cursor: pointer;
+    }
+
+    .n2:hover{
+        background: #f0f0f0;
+    }
