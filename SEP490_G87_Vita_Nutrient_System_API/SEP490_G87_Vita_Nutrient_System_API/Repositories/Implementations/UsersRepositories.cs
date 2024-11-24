@@ -147,7 +147,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (AccountGoogle != null)
             {
                 var accGoogle = _context.Users.FirstOrDefault(x => x.AccountGoogle.Equals(AccountGoogle));
-                if(accGoogle != null)
+                if(accGoogle != null && accGoogle.Role == roleUserPremium)
                 {
                     var data = _context.UserListManagements.FirstOrDefault(x =>
                     x.UserId == accGoogle.UserId
@@ -164,17 +164,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             else
             {
-                var accGoogle = _context.Users.FirstOrDefault(x => x.Account.Equals(Account));
-                if (accGoogle != null)
+                var accUser = _context.Users.FirstOrDefault(x => x.Account.Equals(Account));
+                if (accUser != null && accUser.Role == roleUserPremium)
                 {
                     var data = _context.UserListManagements.FirstOrDefault(x =>
-                    x.UserId == accGoogle.UserId
+                    x.UserId == accUser.UserId
                     && x.StartDate <= DateTime.Now
                     && x.EndDate >= DateTime.Now && x.IsDone == false);
 
                     if (data == null)
                     {
-                        accGoogle.Role = roleUser;
+                        accUser.Role = roleUser;
                         _context.SaveChanges();
                         return true;
                     }
