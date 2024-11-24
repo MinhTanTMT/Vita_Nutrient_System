@@ -159,6 +159,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             ViewBag.myDay = myDay;
             ViewBag.userId = userId;
+            ViewBag.APICompleteTheDish = client.BaseAddress + $"/GenerateMeal/APICompleteTheDish";
             ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? userSevices.TotalAllTheIngredientsOfTheDish(foodListTotaAll) : userSevices.TotalAllTheIngredientsOfTheDish(nullData);
             ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? userSevices.TotalAllTheIngredientsOfTheDish(foodListNotEaten) : userSevices.TotalAllTheIngredientsOfTheDish(nullData);
             ViewBag.foodListEatenCalculated = foodListEaten.Count() > 0 ? userSevices.TotalAllTheIngredientsOfTheDish(foodListEaten) : userSevices.TotalAllTheIngredientsOfTheDish(nullData);

@@ -59,6 +59,34 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View();
         }
 
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPasswordAsync(string Email)
+        {
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/Users/APIForgotPassword?emailGoogle={Email}");
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                ViewBag.AlertMessage = "Your password has been sent.";
+                return View();
+            }
+            else
+            {
+                ViewBag.AlertMessage = "This email does not exist.";
+                return View();
+            }
+
+
+        }
+
+
+
         [HttpPost, Authorize]
         public async Task<IActionResult> UpdateUserRole(string role)
         {
