@@ -1,0 +1,543 @@
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.FoodListViewModel
+
+<div class="container my-5">
+    <div class="mb-5">
+
+        <!-- Tiêu đề và nút Create ở phía trên -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Food List</h3>
+            <div class="input-group" style="max-width: 300px;">
+                <form method="get" action="@Url.Action("FoodList", "Admin")" class="d-flex">
+                    <input type="text" name="search" class="form-control" placeholder="Search food..." value="@Context.Request.Query["search"]">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <p>Search</p>
+                    </button>
+                </form>
+            </div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createFoodModal">
+                Create New Food
+            </button>
+        </div>
+
+        <!-- Create Food Modal -->
+        <div class="modal fade" id="createFoodModal" tabindex="-1" aria-labelledby="createFoodModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createFoodModalLabel">Create New Food</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="SaveFood" method="post">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Name:</label>
+                                    <input type="text" class="form-control" name="Name" required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Description:</label>
+                                    <input type="text" class="form-control" name="Describe" required />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Rate:</label>
+                                    <input type="text" class="form-control" name="Rate" required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Number of Ratings:</label>
+                                    <input type="number" class="form-control" name="NumberRate" required />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="foodTypeId">Food Type:</label>
+                                    <select id="foodTypeId" name="foodTypeId" class="form-select">
+                                        @foreach (var type in Model.FoodTypes)
+                                        {
+                                            <option value="@type.FoodTypeId">@type.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="keyNoteId">Key Note:</label>
+                                    <select id="keyNoteId" name="keyNoteId" class="form-select">
+                                        @foreach (var type in Model.KeyNotes)
+                                        {
+                                            <option value="@type.Id">@type.KeyList</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="checkbox" hidden checked class="form-check-input" name="IsActive" id="isActiveCheckbox">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Preparation Time:</label>
+                                    <input type="number" class="form-control" name="PreparationTime" required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Cooking Time:</label>
+                                    <input type="number" class="form-control" name="CookingTime" required />
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="cookingDifficultyId">Cooking Difficulty:</label>
+                                <select id="cookingDifficultyId" name="cookingDifficultyId" class="form-select">
+                                    @foreach (var type in Model.CookingDifficulties)
+                                    {
+                                        <option value="@type.Id">@type.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create Food</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Food List Table -->
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Rate</th>
+                    <th>Number of Ratings</th>
+                    <th>Food Type</th>
+                    <th>Key Note</th>
+                    <th>Preparation Time</th>
+                    <th>Cooking Time</th>
+                    <th>Difficulty</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var food in Model.Foods)
+                {
+                    <tr>
+                        <td>@food.FoodListId</td>
+                        <td>@food.Name</td>
+                        <td>@food.Describe</td>
+                        <td>@food.Rate</td>
+                        <td>@food.NumberRate</td>
+                        <td>@food.FoodTypeName</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(food.KeyNoteName))
+                            {
+                                @foreach (var line in food.KeyNoteName.Split('#').Where(s => !string.IsNullOrWhiteSpace(s)))
+                                {
+                                    <div>• @line</div>
+                                }
+                            }
+                        </td>
+                        <td>@food.PreparationTime</td>
+                        <td>@food.CookingTime</td>
+                        <td>@food.CookingDifficultyName</td>
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateFoodModal_@food.FoodListId">
+                                Update
+                            </button>
+                            @if (food.IsActive == true)
+                            {
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteFood(@food.FoodListId)">
+                                    Deactivate
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteFood(@food.FoodListId)">
+                                    Activate
+                                </button>
+                            }
+
+
+
+                            <!-- Update Food Modal -->
+                            <div class="modal fade" id="updateFoodModal_@food.FoodListId" tabindex="-1" aria-labelledby="updateFoodModalLabel_@food.FoodListId" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateFoodModalLabel@food.FoodListId">Update Food</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form asp-action="SaveFood" method="post">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="FoodListId" value="@food.FoodListId" />
+                                                <div class="mb-3">
+                                                    <label class="form-label">Name:</label>
+                                                    <input type="text" class="form-control" name="Name" value="@food.Name" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description:</label>
+                                                    <input type="text" class="form-control" name="Describe" value="@food.Describe" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Rate:</label>
+                                                    <input type="text" class="form-control" name="Rate" value="@food.Rate" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Number of Ratings:</label>
+                                                    <input type="number" class="form-control" name="NumberRate" value="@food.NumberRate" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="foodTypeId">Food Type:</label>
+                                                    <select id="foodTypeId" name="foodTypeId" class="form-control">
+                                                        @foreach (var type in Model.FoodTypes)
+                                                        {
+                                                            if (type.FoodTypeId == food.FoodTypeId)
+                                                            {
+                                                                <option value="@type.FoodTypeId" selected="selected">@type.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@type.FoodTypeId">@type.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="keyNoteId">Key Note:</label>
+                                                    <select id="keyNoteId" name="keyNoteId" class="form-control">
+                                                        @foreach (var type in Model.KeyNotes)
+                                                        {
+                                                            if (type.Id == food.KeyNoteId)
+                                                            {
+                                                                <option value="@type.Id" selected="selected">@type.KeyList</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@type.Id">@type.KeyList</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <input type="checkbox" hidden checked class="form-check-input" name="IsActive" id="isActiveCheckbox">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Preparation Time:</label>
+                                                    <input type="number" class="form-control" name="PreparationTime" value="@food.PreparationTime" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Cooking Time:</label>
+                                                    <input type="number" class="form-control" name="CookingTime" value="@food.CookingTime" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="cookingDifficultyId">Cooking Difficulty:</label>
+                                                    <select id="cookingDifficultyId" name="cookingDifficultyId" class="form-control">
+                                                        @foreach (var type in Model.CookingDifficulties)
+                                                        {
+                                                            if (type.Id == food.CookingDifficultyId)
+                                                            {
+                                                                <option value="@type.Id" selected="selected">@type.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@type.Id">@type.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h3>Disease List</h3>
+
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createDiseaseModal">
+            Create Disease
+        </button>
+
+        <!-- Create Disease Modal -->
+        <div class="modal fade" id="createDiseaseModal" tabindex="-1" aria-labelledby="createDiseaseModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createDiseaseModalLabel">Create New Disease</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="SaveDisease" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" name="Id" value="0" /> <!-- Set Id to 0 for new creation -->
+                            <div class="mb-3">
+                                <label class="form-label">Name:</label>
+                                <input type="text" class="form-control" name="Name" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description:</label>
+                                <input type="text" class="form-control" name="Describe" required />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create Disease</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group mb-3" style="max-width: 300px;">
+            <form method="get" action="@Url.Action("FoodList", "Admin")" class="d-flex">
+                <input type="text" name="diseaseSearch" class="form-control" placeholder="Search disease..." value="@Context.Request.Query["diseaseSearch"]">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <p>Search</p>
+                </button>
+            </form>
+        </div>
+
+        <!-- Disease List Table with Aligned Columns -->
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <!-- Empty columns to align with Food List table -->
+                    <th colspan="8"></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var disease in Model.ListOfDiseases)
+                {
+                    <tr>
+                        <td>@disease.Name</td>
+                        <td>@disease.Describe</td>
+                        <!-- Empty cells to align with Food List table -->
+                        <td colspan="8"></td>
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateDiseaseModal_@disease.Id">
+                                Update
+                            </button>
+                            <!-- Update Disease Modal -->
+                            <div class="modal fade" id="updateDiseaseModal_@disease.Id" tabindex="-1" aria-labelledby="updateDiseaseModalLabel_@disease.Id" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateDiseaseModalLabel@disease.Id">Update Disease</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form asp-action="SaveDisease" method="post">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="Id" value="@disease.Id" />
+                                                <div class="mb-3">
+                                                    <label class="form-label">Name:</label>
+                                                    <input type="text" class="form-control" name="Name" value="@disease.Name" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description:</label>
+                                                    <input type="text" class="form-control" name="Describe" value="@disease.Describe" required />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h3 class="mt-5">Food and Disease</h3>
+
+        <!-- Button to open Create Food and Disease Modal -->
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createFoodAndDiseaseModal">
+            Create Food and Disease
+        </button>
+
+        <!-- Create Food and Disease Modal -->
+        <div class="modal fade" id="createFoodAndDiseaseModal" tabindex="-1" aria-labelledby="createFoodAndDiseaseModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createFoodAndDiseaseModalLabel">Create New Food and Disease</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="SaveFoodAndDisease" method="post">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Disease:</label>
+                                <select class="form-control" name="ListOfDiseasesId" required>
+                                    <!-- Populate options from Disease list -->
+                                    @foreach (var disease in Model.ListOfDiseases)
+                                    {
+                                        <option value="@disease.Id">@disease.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Food:</label>
+                                <select class="form-control" name="FoodListId" required>
+                                    <!-- Populate options from Food list -->
+                                    @foreach (var food in Model.Foods)
+                                    {
+                                        <option value="@food.FoodListId">@food.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description:</label>
+                                <input type="text" class="form-control" name="Describe" required />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="IsGoodOrBad" value="true" id="isGoodOrBad">
+                                <label class="form-check-label" for="isGoodOrBad">Good for Disease</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Food and Disease Table -->
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Disease Name</th>
+                    <th>Disease Description</th>
+                    <th>Food Name</th>
+                    <th>Food Description</th>
+                    <th>Description</th>
+                    <th>Good or Bad</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.FoodAndDiseases)
+                {
+                    <tr>
+                        <td>@item.DiseaseName</td>
+                        <td>@item.DiseaseDescribe</td>
+                        <td>@item.FoodName</td>
+                        <td>@item.FoodDescribe</td>
+                        <td>@item.Describe</td>
+                        <td>
+                            @if (item.IsGoodOrBad)
+                            {
+                                <span class="badge bg-success">Good</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Bad</span>
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateFoodAndDiseaseModal_@item.FoodListId-@item.ListOfDiseasesId">
+                                Update
+                            </button>
+                            <div class="modal fade" id="updateFoodAndDiseaseModal_@item.FoodListId-@item.ListOfDiseasesId" tabindex="-1" aria-labelledby="updateFoodAndDiseaseModalLabel_@item.FoodListId-@item.ListOfDiseasesId" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateDiseaseModalLabel@disease.Id">Update Disease</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form asp-action="SaveFoodAndDisease" method="post">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Disease:</label>
+                                                    <select class="form-control" name="ListOfDiseasesId" required>
+                                                        <!-- Populate options from Disease list -->
+                                                        @foreach (var disease in Model.ListOfDiseases)
+                                                        {
+                                                            if (disease.Id == item.ListOfDiseasesId)
+                                                            {
+                                                                <option value="@disease.Id" selected="selected">@item.DiseaseName</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@disease.Id">@disease.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Food:</label>
+                                                    <select class="form-control" name="FoodListId" required>
+                                                        <!-- Populate options from Food list -->
+                                                        @foreach (var food in Model.Foods)
+                                                        {
+                                                            if (food.FoodListId == item.FoodListId)
+                                                            {
+                                                                <option value="@food.FoodListId" selected="selected">@item.FoodListId</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@food.FoodListId">@food.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description:</label>
+                                                    <input type="text" value="@item.Describe" class="form-control" name="Describe" required />
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="IsGoodOrBad" value="true" id="isGoodOrBad" @(item.IsGoodOrBad ? "checked" : "")>
+                                                    <label class="form-check-label" for="isGoodOrBad">Good for Disease</label>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<script>
+    async function deleteFood(foodId) {
+        const confirmed = confirm("Bạn có chắc muốn đổi trạng thái của món ăn này?");
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`https://localhost:7045/api/Nutrition/FoodList/${foodId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert("Đổi trạng thái thành công!");
+                location.reload();
+            } else {
+                alert("Có lỗi xảy ra khi đổi trạng thái food.");
+                console.error("Switch failed:", await response.text());
+            }
+        } catch (error) {
+            console.error("Error switch food:", error);
+            alert("Có lỗi xảy ra khi đổi trạng thái food.");
+        }
+    }
+</script>
