@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <!-- Bao gồm file CSS cho chat -->
+    <link rel="stylesheet" href="/css/chat.css">
+
+</head>
+<body>
+    <!-- Nội dung của bạn ở đây -->
+    <div class="chat-container">
+        <div id="chat-messages" class="chat-messages">
+            <input type="hidden" id="roomId" value="@ViewData["RoomId"]" />
+            <input type="hidden" id="userId" value="@ViewData["UserId"]" />
+
+            <!-- Hiển thị các tin nhắn -->
+            @foreach (var message in Model)
+            {
+                <div class="chat-message @(message.FromUserId == (int)ViewData["UserId"] ? "sent" : "received")">
+                    <div class="message-content">
+                        @if (message.FromUserId != (int)ViewData["UserId"])
+                        {
+                            <span class="user-name">@message.FromUserName</span>
+                        }
+                        <p>@message.Content</p>
+                        <span class="timestamp">@message.Timestamp.ToString("hh:mm tt")</span>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="chat-input-container">
+            <textarea id="messageInput" placeholder="Tin Nhắn"></textarea>
+            <button id="sendButton" onclick="sendMessage()">Gửi</button>
+        </div>
+    </div>
+
+
+    <script>
+
+        // Hàm gửi tin nhắn
+        function sendMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const roomId = document.getElementById("roomId")?.value;
+            const userId = document.getElementById("userId")?.value;
+
+            if (!messageInput || !roomId || !userId) {
+                alert("Invalid room or user data.");
+                return;
+            }
+
+            const messageContent = messageInput.value.trim();
+            if (messageContent === "") {
+                alert("Message cannot be empty!");
+                return;
+            }
+
+            const message = {
+                FromUserId: userId,
+                ToRoomId: roomId,
+                Content: messageContent,
+            };
+
+            // Gửi tin nhắn tới API
+            fetch("/Chat/SendMessage", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(message),
+            })
+                .then((response) => response.json())
+                .then((result) => {
+                    if (result.success) {
+                        const msgContainer = document.getElementById("chat-messages");
+                        const newMessage = document.createElement("div");
+                        newMessage.className = "chat-message sent";
+                        newMessage.innerHTML = `
+                        <div class="message-content">
+                            <p>${messageContent}</p>
+                            <span class="timestamp">${new Date().toLocaleTimeString()}</span>
+                        </div>
+                    `;
+                        if (msgContainer) {
+                            msgContainer.appendChild(newMessage);
+                            msgContainer.scrollTop = msgContainer.scrollHeight;
+                        }
+                        messageInput.value = "";
+                    } else {
+                        alert(result.message || "Failed to send message");
+                    }
+                })
+                .catch((err) => {
+                    console.error("Error sending message:", err);
+                    alert("An error occurred while sending the message.");
+                });
+        }
+
+    </script>
+
+</body>
+</html>
