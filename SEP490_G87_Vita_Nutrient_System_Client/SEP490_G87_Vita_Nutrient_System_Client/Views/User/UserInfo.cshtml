@@ -51,6 +51,12 @@ else
                                 <p>@u.UserDetail.DescribeYourself</p>
                             }
                         </div>
+
+                        <div class="description">
+                            <button type="submit" class="btn btn-gradient-primary me-2" onclick="openChangePassModal();">
+                                Change password
+                            </button>
+                        </div>
                     </div>
 
                     
@@ -124,7 +130,9 @@ else
                                                 <input type="text" name="uphone" class="form-control" id="user-phone-input" placeholder="Enter your Phone number" value="@u.Phone">
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                                        <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
+                                            Save
+                                        </button>
                                     </form>
                                 </div>
                             </div>
@@ -143,32 +151,34 @@ else
                                         <div class="form-group row">
                                             <label for="user-height" class="col-sm-3 col-form-label">Height</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Description" value="@u.UserDetail.Height">
+                                            <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Your height" value="@u.UserDetail.Height">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-weight" class="col-sm-3 col-form-label">Weight</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Description" value="@u.UserDetail.Weight">
+                                            <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Your weight" value="@u.UserDetail.Weight">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-age" class="col-sm-3 col-form-label">Age</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Description" value="@u.UserDetail.Age">
+                                            <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Your age" value="@u.UserDetail.Age">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-account-input" class="col-sm-3 col-form-label">Want improve</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="uwi" class="form-control user-info-input" id="user-account-input" placeholder="Description" value="@u.UserDetail.WantImprove">
+                                                <input type="number" name="uwi" class="form-control user-info-input" id="user-account-input" placeholder="" value="@u.UserDetail.WantImprove">
                                             </div>
                                         </div>
 
-                                        <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                                        <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
+                                            Save
+                                            </button>
                                     </form>
                                 </div>
                             </div>
@@ -179,7 +189,34 @@ else
         </div>
     </div>
 }
+<!-- add package modal-->
+<div class="modal-overlay" id="modalOverlay">
+    <!-- Modal -->
+    <div class="modal1">
+        <div class="modal1-header">
+            <span>Change password</span>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal1-body">
+            <form id="changePassForm" asp-controller="User" asp-action="ChangePassword" method="post">
+                <input type="hidden" name="uid" value="@u.UserId" required />
 
+                <label>Old Password:</label>
+                <input class="ms-auto" type="password" name="uopw" required />
+
+                <label>New Password:</label>
+                <input class="ms-auto" type="password" name="unpw" required />
+
+                <label>Confirm Password:</label>
+                <input class="ms-auto" type="password" name="ucpw" required />
+                <div class="modal1-footer">
+                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button class="btn-save" type="submit" onclick="ChangePass()">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div id="toast"></div>
 
 <script src="~/js/userprofile.js"></script>

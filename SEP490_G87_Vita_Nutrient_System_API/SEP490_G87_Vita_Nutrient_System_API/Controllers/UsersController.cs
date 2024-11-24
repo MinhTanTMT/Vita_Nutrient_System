@@ -216,6 +216,40 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Update user status successfully!");
         }
 
+        [HttpPut("ChangePassword")]
+        public async Task<ActionResult<string>> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            User u = repositories.GetUserById(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            if(request.NewPassword.Trim().Length == 0)
+            {
+                return BadRequest("New password invalid!");
+            }
+
+            //kiem tra password cu~
+            if(!u.Password.Equals(request.OldPassword))
+            {
+                return BadRequest("Old password wrong!");
+            }
+
+            //kiem tra confirm password va new password
+            if (!request.NewPassword.Equals(request.ConfirmPassword))
+            {
+                return BadRequest("Confirm password not match!");
+            }
+
+            u.Password = request.NewPassword;
+
+            repositories.UpdateUser(u);
+
+            return Ok("Change password successfully!");
+        }
+
         [HttpPost("UpdateUserDetails")]
         public async Task<ActionResult<string>> UpdateUserDetails([FromBody] UpdateUserDetailsRequest request)
         {

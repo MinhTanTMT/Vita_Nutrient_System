@@ -627,6 +627,44 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return await UserProfileSon();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(int uid, string uopw, string unpw, string ucpw)
+        {
+            try
+            {
+                var data = new
+                {
+                    userId = uid,
+                    oldPassword = uopw,
+                    newPassword = unpw,
+                    confirmPassword = ucpw
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PutAsync(client.BaseAddress + "/Users/ChangePassword", content);
+                HttpContent rContent = response.Content;
+                string message = await rContent.ReadAsStringAsync();
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = message;
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Change password successfully!";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+            return await UserProfileSon();
+        }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////
