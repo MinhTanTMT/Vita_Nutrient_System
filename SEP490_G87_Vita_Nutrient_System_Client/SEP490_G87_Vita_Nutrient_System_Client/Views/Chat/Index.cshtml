@@ -1,0 +1,16 @@
+﻿<link rel="stylesheet" href="/css/room.css">
+@model List<SEP490_G87_Vita_Nutrient_System_Client.Models.RoomModel>
+
+<div class="container">
+    <h2>Danh sách Phòng Chat</h2>
+    <ul class="room-list">
+        @foreach (var room in Model)
+        {
+            <li class="room-item">
+                <span>@room.Name</span>
+                <a href="@Url.Action("Room", "Chat", new { roomId = room.Id })" class="btn">Vào phòng</a>
+            </li>
+        }
+    </ul>
+</div>
+

@@ -667,29 +667,48 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình lưu thông tin: " + errorResponse });
             }
         }
-            // Call the API to get liked foods
-            
+        // Call the API to get liked foods
+
         [HttpGet("NutritionalGoals")]
         public async Task<IActionResult> NutritionalGoals()
         {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
-            HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetOnlyUserDetail/{userId}");
-
-            if (userDetailsRes.IsSuccessStatusCode)
+            try
             {
-                var nutritionalGoals = JsonConvert.DeserializeObject<NutritionalGoals>(await userDetailsRes.Content.ReadAsStringAsync());
+                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+                // Gọi API để lấy chi tiết mục tiêu dinh dưỡng
+                HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetOnlyUserDetail/{userId}");
+
+                if (userDetailsRes.IsSuccessStatusCode)
+                {
+                    var nutritionalGoals = JsonConvert.DeserializeObject<NutritionalGoals>(await userDetailsRes.Content.ReadAsStringAsync());
+
+                    // Kiểm tra nếu dữ liệu dinh dưỡng bị null hoặc không đầy đủ
+                    if (nutritionalGoals == null || !nutritionalGoals.Calo.HasValue)
+                    {
+                        return RedirectToAction("UserPhysicalStatistics");
+                    }
+
+                    // Tính toán mục tiêu dinh dưỡng nếu dữ liệu hợp lệ
                     var model = new NutritionalGoals
                     {
-                        Calo = nutritionalGoals.Calo,
-                        Carbs = (int)(nutritionalGoals.Calo * 0.4 / 4),  // 40% calo từ carbs (4 calo mỗi gram)
-                        Fats = (int)(nutritionalGoals.Calo * 0.3 / 9),   // 30% calo từ chất béo (9 calo mỗi gram)
-                        Proteins = (int)(nutritionalGoals.Calo * 0.3 / 4) // 30% calo từ protein (4 calo mỗi gram)
+                        Calo = nutritionalGoals.Calo.Value, // Sử dụng .Value vì Calo là Nullable
+                        Carbs = (int)(nutritionalGoals.Calo.Value * 0.4 / 4),  // 40% calo từ carbs (4 calo mỗi gram)
+                        Fats = (int)(nutritionalGoals.Calo.Value * 0.3 / 9),   // 30% calo từ chất béo (9 calo mỗi gram)
+                        Proteins = (int)(nutritionalGoals.Calo.Value * 0.3 / 4) // 30% calo từ protein (4 calo mỗi gram)
                     };
-                    return View(model);
-            }
 
-            return View("Error");
+                    return View(model);
+                }
+                return RedirectToAction("UserPhysicalStatistics");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("UserPhysicalStatistics");
+            }
         }
+
+
 
 
 
