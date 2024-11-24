@@ -970,11 +970,27 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response =
                         await client.GetAsync(client.BaseAddress + "/ExpertPackage/GetAllExpertPackage");
 
+                //get list nutritionist
+                HttpResponseMessage response1 =
+                        await client.GetAsync(client.BaseAddress + "/Users/GetUserByRole/" + (int)UserRoles.NUTRITIONIST);
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
                     List<ExpertPackageResponse> packagesData = JsonConvert.DeserializeObject<List<ExpertPackageResponse>>(data);
+
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<dynamic> nutritionists = JsonConvert.DeserializeObject<List<dynamic>>(data1);
+
+                    List<ExpertPackageResponse.User> nutritionists1 = nutritionists.Select(
+                        n => new ExpertPackageResponse.User
+                        {
+                            Id = n.id,
+                            Name = n.firstName + " " + n.lastName,
+                            Account = n.account
+                        }).ToList();
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
@@ -989,8 +1005,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var paginatedPackages = packagesData.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
                     ViewBag.packages = paginatedPackages;
+                    ViewBag.nutritionists = nutritionists1;
                     ViewBag.CurrentPage = page;
                     ViewBag.TotalPages = (int)Math.Ceiling(totalPackages / (double)pageSize);
+
+
                 }
                 else
                 {

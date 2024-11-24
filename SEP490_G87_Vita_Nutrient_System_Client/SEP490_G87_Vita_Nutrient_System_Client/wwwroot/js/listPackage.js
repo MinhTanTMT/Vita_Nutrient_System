@@ -8,7 +8,9 @@ function openModalAdd() {
 
 function openModalUpdate(id, name, describe, price, duration, nutritionists) {
     var form = document.getElementById("updatePackageForm");
+    var form1 = document.getElementById("updatePackageNutriForm");
 
+    form1.elements['p_id'].value = id;
     form.elements['p_id'].value = id;
     form.elements['p_name'].value = name;
     form.elements['p_desc'].value = describe;
@@ -22,11 +24,13 @@ function openModalUpdate(id, name, describe, price, duration, nutritionists) {
 
 function updateNutriTable(input) {
     const nutriTable = document.getElementById("nutriTable");
+    const selectElement = document.getElementById("nutritionistsSelect");
 
     nutriTable.innerHTML = '';
 
     if (input.length === 0) {
         const emptyMessage = document.createElement("span");
+        emptyMessage.setAttribute("id", "no-nutri-msg");
         emptyMessage.textContent = "There is no nutritionist!";
 
         nutriTable.appendChild(emptyMessage);
@@ -35,6 +39,23 @@ function updateNutriTable(input) {
 
     // Duyệt qua từng phần tử trong mảng input
     input.forEach(item => {
+        const optionId = `opt-${item.Id}`;
+
+        const optionElement = document.getElementById(optionId);
+
+        if (optionElement) {
+            optionElement.style.display = "none";
+            if (selectElement.value === optionElement.value) {
+                const visibleOption = Array.from(selectElement.options).find(
+                    option => option.style.display !== "none"
+                );
+
+                if (visibleOption) {
+                    selectElement.value = visibleOption.value;
+                }
+            }
+        }
+        //////////////
         const nutritionistDiv = document.createElement("div");
         nutritionistDiv.className = "nutritionist";
         nutritionistDiv.setAttribute("id",`rec_${item.Id}`);
@@ -72,6 +93,14 @@ function updateNutriTable(input) {
 function closeModal() {
     document.getElementById("modalOverlay").style.display = "none";
     document.getElementById("modalOverlay1").style.display = "none";
+    ///////////
+    const selectElement = document.getElementById("nutritionistsSelect");
+
+    const options = selectElement.getElementsByTagName("option");
+
+    Array.from(options).forEach(option => {
+        option.style.display = "block";
+    });
 }
 
 // Close modal when clicking outside
@@ -130,6 +159,64 @@ function openTab(event, tabId) {
     document.getElementById(tabId).classList.add("active");
 }
 
+function AddNutri() {
+    const selectElement = document.getElementById("nutritionistsSelect");
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const pid = document.getElementById("updatePackageForm").elements['p_id'].value;
+    const nid = selectedOption.value;
+    const parts = selectedOption.text.split(" - ");
+
+    fetch(`https://localhost:7045/api/ExpertPackage/AddNutritionistToPackage/${nid}/${pid}`, {
+        method: 'GET'
+    })
+        .then(response => {
+            if (response.ok) {
+                hideOption(nid);
+                const nutriTable = document.getElementById("nutriTable");
+                const nutritionistDiv = document.createElement("div");
+                nutritionistDiv.className = "nutritionist";
+                nutritionistDiv.setAttribute("id", `rec_${nid}`);
+                const n1Div = document.createElement("div");
+                n1Div.className = "n1";
+
+                const nameSpan = document.createElement("span");
+                nameSpan.className = "nname";
+                nameSpan.textContent = parts[0];
+
+                const accountSpan = document.createElement("span");
+                accountSpan.className = "nacc";
+                accountSpan.textContent = parts[1];
+
+                n1Div.appendChild(nameSpan);
+                n1Div.appendChild(accountSpan);
+
+                const n2Div = document.createElement("div");
+                n2Div.className = "n2";
+                n2Div.setAttribute("onclick", `deleteNutritionist(${nid});`);
+
+                const deleteIcon = document.createElement("i");
+                deleteIcon.className = "mdi mdi-delete";
+
+                n2Div.appendChild(deleteIcon);
+
+                nutritionistDiv.appendChild(n1Div);
+                nutritionistDiv.appendChild(n2Div);
+
+                nutriTable.appendChild(nutritionistDiv);
+                selectVisibleOption();
+                document.getElementById("no-nutri-msg").style.display = "none";
+                showSuccessToast("Add nutritionist to package successful!");
+            } else {
+                showErrorToast("Add nutritionist to package failed!");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showErrorToast(error);
+        });
+}
+
+
 function deleteNutritionist(Id) {
     fetch(`https://localhost:7045/api/ExpertPackage/RemoveNutritionistFromPackage/${Id}`, {
         method: 'GET'
@@ -139,8 +226,19 @@ function deleteNutritionist(Id) {
                 const elementToRemove = document.getElementById(`rec_${Id}`);
                 if (elementToRemove) {
                     elementToRemove.remove();
+                    showOption(Id);
                 }
                 showSuccessToast("Remove successful!");
+
+                if (document.getElementsByClassName("nutritionist").length == 0) {
+                    const nutriTable = document.getElementById("nutriTable");
+
+                    const emptyMessage = document.createElement("span");
+                    emptyMessage.setAttribute("id", "no-nutri-msg");
+                    emptyMessage.textContent = "There is no nutritionist!";
+
+                    nutriTable.appendChild(emptyMessage);
+                }
             } else {
                 showErrorToast("Remove failed!");
             }
@@ -150,3 +248,44 @@ function deleteNutritionist(Id) {
             showErrorToast(error);
         });
 }
+
+function showOption(id) {
+    const selectElement = document.getElementById("nutritionistsSelect");
+
+    const options = selectElement.getElementsByTagName("option");
+
+    Array.from(options).forEach(option => {
+
+        if (option.attributes.id.value === "opt-" + id) {
+            option.style.display = "block";
+        }
+    });
+}
+
+function hideOption(id) {
+    const selectElement = document.getElementById("nutritionistsSelect");
+
+    const options = selectElement.getElementsByTagName("option");
+
+    Array.from(options).forEach(option => {
+
+        if (option.attributes.id.value === "opt-" + id) {
+            option.style.display = "none";
+        }
+    });
+}
+
+function selectVisibleOption() {
+    const selectElement = document.getElementById("nutritionistsSelect");
+    const options = selectElement.options;
+
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+
+        if (option.style.display !== "none") {
+            selectElement.selectedIndex = i;
+            break;
+        }
+    }
+}
+
