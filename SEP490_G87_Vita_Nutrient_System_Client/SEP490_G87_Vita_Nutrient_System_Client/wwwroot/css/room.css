@@ -1,0 +1,64 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    color: #333333;
+}
+
+.room-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 auto;
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+}
+
+.room-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+    .room-item:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Hiệu ứng hover */
+    }
+
+    .room-item span {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333333;
+    }
+
+    .room-item .btn {
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: #ae72ff; /* Màu nút */
+        color: #ffffff;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .room-item .btn:hover {
+            background-color: #9a63e6; /* Màu khi hover */
+        }
