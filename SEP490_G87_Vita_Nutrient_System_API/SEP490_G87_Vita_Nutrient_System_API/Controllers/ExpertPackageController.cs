@@ -142,10 +142,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         //remove nutritionist to package
-        [HttpGet("RemoveNutritionistFromPackage/{nutritionistId}/{packageId}")]
-        public async Task<ActionResult> RemoveNutritionistFromPackage(int nutritionistId, short packageId)
+        [HttpGet("RemoveNutritionistFromPackage/{Id}")]
+        public async Task<ActionResult> RemoveNutritionistFromPackage(int Id)
         {
-            bool result = repositories.RemoveNutritionistFromPackage(nutritionistId, packageId);
+            bool result = repositories.RemoveNutritionistFromPackage(Id);
 
             if (result)
             {

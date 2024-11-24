@@ -37,7 +37,7 @@ function updateNutriTable(input) {
     input.forEach(item => {
         const nutritionistDiv = document.createElement("div");
         nutritionistDiv.className = "nutritionist";
-
+        nutritionistDiv.setAttribute("id",`rec_${item.Id}`);
         const n1Div = document.createElement("div");
         n1Div.className = "n1";
 
@@ -131,5 +131,22 @@ function openTab(event, tabId) {
 }
 
 function deleteNutritionist(Id) {
-    console.log("delete " + id +"~~")
+    fetch(`https://localhost:7045/api/ExpertPackage/RemoveNutritionistFromPackage/${Id}`, {
+        method: 'GET'
+    })
+        .then(response => {
+            if (response.ok) {
+                const elementToRemove = document.getElementById(`rec_${Id}`);
+                if (elementToRemove) {
+                    elementToRemove.remove();
+                }
+                showSuccessToast("Remove successful!");
+            } else {
+                showErrorToast("Remove failed!");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showErrorToast(error);
+        });
 }
