@@ -132,5 +132,29 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 }
             }
         }
+
+        //add nutritionist to package
+        [HttpGet("AddNutritionistToPackage/{nutritionistId}/{packageId}")]
+        public async Task<ActionResult> AddNutritionistToPackage(int nutritionistId, short packageId)
+        {
+            repositories.AddNutritionistToPackage(nutritionistId, packageId);
+            return Ok("Add nutritionist to package successful!");
+        }
+
+        //remove nutritionist to package
+        [HttpGet("RemoveNutritionistFromPackage/{nutritionistId}/{packageId}")]
+        public async Task<ActionResult> RemoveNutritionistFromPackage(int nutritionistId, short packageId)
+        {
+            bool result = repositories.RemoveNutritionistFromPackage(nutritionistId, packageId);
+
+            if (result)
+            {
+                return Ok("Remove successful!");
+            }
+            else
+            {
+                return BadRequest("Remove failed!");
+            }
+        }
     }
 }

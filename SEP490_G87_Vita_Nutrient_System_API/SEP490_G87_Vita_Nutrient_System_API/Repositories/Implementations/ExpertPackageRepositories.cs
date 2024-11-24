@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using NuGet.Versioning;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
@@ -56,6 +57,35 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             return users;
+        }
+
+        public void AddNutritionistToPackage(int nId, short pId)
+        {
+            NutritionistDetail nutritionistDetail = new NutritionistDetail
+            {
+                NutritionistId = nId,
+                ExpertPackagesId = pId
+            };
+
+            _context.NutritionistDetails.Add(nutritionistDetail);
+            _context.SaveChanges();
+        }
+
+        public bool RemoveNutritionistFromPackage(int nId, short pId)
+        {
+            NutritionistDetail nutritionistDetail = _context.NutritionistDetails.SingleOrDefault
+                (x=> x.NutritionistId == nId && x.ExpertPackagesId == pId);
+
+            if(nutritionistDetail is null)
+            {
+                return false;
+            }
+            else
+            {
+                _context.NutritionistDetails.Remove(nutritionistDetail);
+                _context.SaveChanges ();
+                return true;
+            }
         }
     }
 }
