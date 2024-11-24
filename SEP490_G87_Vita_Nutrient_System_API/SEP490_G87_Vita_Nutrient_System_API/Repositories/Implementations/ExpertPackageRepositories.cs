@@ -61,13 +61,23 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public void AddNutritionistToPackage(int nId, short pId)
         {
-            NutritionistDetail nutritionistDetail = new NutritionistDetail
-            {
-                NutritionistId = nId,
-                ExpertPackagesId = pId
-            };
+            NutritionistDetail nutritionistDetail = _context.NutritionistDetails.SingleOrDefault(x => x.NutritionistId == nId);
 
-            _context.NutritionistDetails.Add(nutritionistDetail);
+            if(nutritionistDetail is null)
+            {
+                nutritionistDetail = new NutritionistDetail
+                {
+                    NutritionistId = nId,
+                    ExpertPackagesId = pId
+                };
+                _context.NutritionistDetails.Add(nutritionistDetail);
+            }
+            else
+            {
+                nutritionistDetail.ExpertPackagesId = pId;
+                _context.Entry<NutritionistDetail>(nutritionistDetail).State = EntityState.Modified;
+            }
+
             _context.SaveChanges();
         }
 

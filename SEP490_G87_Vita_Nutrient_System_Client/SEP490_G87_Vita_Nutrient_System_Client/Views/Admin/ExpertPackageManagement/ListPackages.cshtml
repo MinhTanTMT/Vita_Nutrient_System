@@ -4,6 +4,7 @@
 *@
 @{
     List<ExpertPackageResponse> listPackages = ViewBag.packages;
+    List<ExpertPackageResponse.User> nutritionists = ViewBag.nutritionists;
     int currentPage = ViewBag.CurrentPage;
     int totalPages = ViewBag.TotalPages;
     string searchQuery = ViewBag.SearchQuery;
@@ -186,6 +187,22 @@
 
                 <div id="nutriTable">
                 </div>
+
+                <br/>
+
+                <label for="nutritionistsSelect">Nutritionists: </label>
+                <div class="form-group d-flex">
+                    <select class="form-control form-control-sm" id="nutritionistsSelect">
+                        @foreach (var n in nutritionists)
+                        {
+                            <option value="@n.Id" id="opt-@n.Id">
+                                @n.Name - @n.Account
+                            </option>
+                        }
+                    </select>
+                    <button class="btn-save myBtn" onclick="AddNutri();">Add</button>
+                </div>
+
             </div>
 
             <div class="modal1-footer">
