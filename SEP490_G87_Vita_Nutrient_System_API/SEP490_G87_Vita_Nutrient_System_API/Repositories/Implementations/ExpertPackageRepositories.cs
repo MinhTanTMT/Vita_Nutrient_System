@@ -71,10 +71,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.SaveChanges();
         }
 
-        public bool RemoveNutritionistFromPackage(int nId, short pId)
+        public bool RemoveNutritionistFromPackage(int Id)
         {
-            NutritionistDetail nutritionistDetail = _context.NutritionistDetails.SingleOrDefault
-                (x=> x.NutritionistId == nId && x.ExpertPackagesId == pId);
+            NutritionistDetail nutritionistDetail = _context.NutritionistDetails.SingleOrDefault(x => x.NutritionistId == Id);
 
             if(nutritionistDetail is null)
             {
@@ -82,7 +81,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             else
             {
-                _context.NutritionistDetails.Remove(nutritionistDetail);
+                nutritionistDetail.ExpertPackagesId = null;
+                _context.Entry<NutritionistDetail>(nutritionistDetail).State = EntityState.Modified;
                 _context.SaveChanges ();
                 return true;
             }
