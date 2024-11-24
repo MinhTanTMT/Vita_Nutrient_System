@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using SEP490_G87_Vita_Nutrient_System_API.PageResult;
 using AutoMapper;
 using SEP490_G87_Vita_Nutrient_System_API.Mapper;
+using System.Net.Mail;
+using System.Net;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -29,12 +32,75 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Tân
         ////////////////////////////////////////////////////////////
         ///
+
+        public async Task<bool> SendMail(string emailAccount, string subject, string contentSend)
+        {
+
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var emailSettings = config.GetSection("EmailSettings");
+            string fromEmail = emailSettings["FromEmail"];
+            string emailPassword = emailSettings["Password"];
+            string smtpHost = emailSettings["Host"];
+            int smtpPort = int.Parse(emailSettings["Port"]);
+
+            var fromAddress = new MailAddress(fromEmail);
+            var toAddress = new MailAddress(emailAccount);
+
+            var smtp = new SmtpClient
+            {
+                Host = smtpHost,
+                Port = smtpPort,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailPassword),
+                Timeout = 30000
+            };
+
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = contentSend,
+            })
+            {
+                smtp.Send(message);
+            }
+
+            return true;
+        }
+
+
+
+        public async Task<bool> ForgotPassword(string emailGoogle)
+        {
+            try
+            {
+                var inforAccount = await _context.Users.FirstOrDefaultAsync(x => x.AccountGoogle.Equals(emailGoogle));
+                if (inforAccount != null)
+                {
+                    string? Passwork = $"Mật khẩu hiện tại của bạn: {inforAccount.Password}";
+                    await SendMail(emailGoogle, "Mật khẩu của bạn", Passwork);
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public dynamic GetUserLogin(string account, string password)
         {
             if (_context.Users == null)
             {
                 return null;
             }
+            modifyPremiumAccount(account, null);
             var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password && u.IsActive == true);
             if (user == null)
             {
@@ -70,12 +136,57 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.Users.Add(user);
             _context.SaveChanges();
             return user;
-
-
         }
+
+
+        private bool modifyPremiumAccount(string? Account, string? AccountGoogle)
+        {
+            short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
+            short roleUserPremium = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUserPremium");
+            
+            if (AccountGoogle != null)
+            {
+                var accGoogle = _context.Users.FirstOrDefault(x => x.AccountGoogle.Equals(AccountGoogle));
+                if(accGoogle != null && accGoogle.Role == roleUserPremium)
+                {
+                    var data = _context.UserListManagements.FirstOrDefault(x =>
+                    x.UserId == accGoogle.UserId
+                    && x.StartDate <= DateTime.Now
+                    && x.EndDate >= DateTime.Now && x.IsDone == false);
+
+                    if (data == null)
+                    {
+                        accGoogle.Role = roleUser;
+                        _context.SaveChanges();
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                var accUser = _context.Users.FirstOrDefault(x => x.Account.Equals(Account));
+                if (accUser != null && accUser.Role == roleUserPremium)
+                {
+                    var data = _context.UserListManagements.FirstOrDefault(x =>
+                    x.UserId == accUser.UserId
+                    && x.StartDate <= DateTime.Now
+                    && x.EndDate >= DateTime.Now && x.IsDone == false);
+
+                    if (data == null)
+                    {
+                        accUser.Role = roleUser;
+                        _context.SaveChanges();
+                        return true;
+                    }
+                }
+            }
+            return true;
+        }
+
 
         public dynamic GetRegisterLoginGoogle(User user)
         {
+            modifyPremiumAccount(null, user.AccountGoogle);
             var accGoogle = _context.Users.FirstOrDefault(x => x.AccountGoogle == user.AccountGoogle);
 
             if (accGoogle == null)
@@ -97,7 +208,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             else
             {
-                string roleName = _context.Roles.Find(accGoogle.Role).RoleName;
+                string roleName = _context.Roles.Find(accGoogle.Role).RoleName;     
                 var UserLogin = new
                 {
                     FullName = user.FirstName + " " + user.LastName,
@@ -109,10 +220,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 };
                 return UserLogin;
             }
-
-
-            return null;
-
         }
 
 

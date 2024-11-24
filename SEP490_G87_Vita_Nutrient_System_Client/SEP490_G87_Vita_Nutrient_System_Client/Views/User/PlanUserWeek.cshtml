@@ -86,15 +86,15 @@
             <div class="days overflow-x-auto whitespace-nowrap" id="meal-plan-days">
                 @foreach (var item in Model)
                 {
-                    <div class="bg-gray-900 rounded-lg shadow-lg p-4 w-80 mb-4 inline-block">
+                    <div class="rounded-lg shadow-lg p-4 w-80 mb-4 inline-block @(item.DayOfWeek == (DateTime)ViewBag.myDay ? "bg-blue-900" : "bg-gray-900")">
                         <!-- Header: Date and Calories -->
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <h3 class="text-blue-400 font-bold">@item.NameDayOfWeek.ToUpper() </h3>
+                                <h3 class="text-blue-400 font-bold">@item.NameDayOfWeek.ToUpper()</h3>
                                 <p class="text-sm text-red-500" style="cursor: pointer;" onclick="navigateToPlanUser('@item.DayOfWeek')">
                                     ⚠ @item.DayOfWeek.ToString("yyyy-MM-dd")
                                 </p>
-                                <p class="text-sm text-red-500">⚠ @item.TotalCaloriesAllDay Calo </p>
+                                <p class="text-sm text-red-500">⚠ @item.TotalCaloriesAllDay Calo</p>
                             </div>
                             <!-- Button inside form -->
                             <form asp-controller="User" asp-action="RefreshTheMealWeek" method="post">
@@ -105,18 +105,18 @@
 
                         <!-- Meal Sections -->
                         <div class="space-y-4">
-
                             @foreach (var item2 in item.dataListFoodMealDayOfTheWeek)
                             {
-                                <!-- Breakfast -->
                                 <div class="bg-gray-800 rounded-lg p-3 relative w-72">
                                     <h4 class="text-yellow-500 font-bold">@item2.NameSlotOfTheDay</h4>
-                                    <p class="text-sm text-gray-400"> @item2.TotalCaloriesPerMeal Calories</p>
+                                    <p class="text-sm text-gray-400">@item2.TotalCaloriesPerMeal Calories</p>
                                     @foreach (var item3 in item2.foodDataOfSlot)
                                     {
                                         <div class="flex items-center justify-between mb-2">
                                             <p class="text-sm text-gray-400">1 Meal</p>
-                                            <button class="text-gray-400" onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item3.SettingDetail, @item3.OrderSettingDetail, '@item.DayOfWeek')"><i class="fas fa-ellipsis-v"></i></button>
+                                            <button class="text-gray-400" onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item3.SettingDetail, @item3.OrderSettingDetail, '@item.DayOfWeek')">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
                                         </div>
                                         @foreach (var item4 in item3.foodIdData)
                                         {
@@ -125,7 +125,7 @@
                                                     <img src="@Url.Content("~/images/" + item4.foodData.Urlimage)" alt="Meal Image" class="w-12 h-12 rounded mr-3" style="margin-bottom: 3px">
                                                     <div>
                                                         <p class="text-blue-400 font-semibold meal-item-title">@item4.foodData.Name</p>
-                                                        <p class="text-gray-400 meal-item-description"> @item4.foodData.Describe </p>
+                                                        <p class="text-gray-400 meal-item-description">@item4.foodData.Describe</p>
                                                     </div>
                                                 </li>
                                             </ul>

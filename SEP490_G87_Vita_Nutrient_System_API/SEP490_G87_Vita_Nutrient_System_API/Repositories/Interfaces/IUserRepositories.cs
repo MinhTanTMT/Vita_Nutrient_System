@@ -1,4 +1,5 @@
-﻿using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+﻿using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.PageResult;
 
@@ -11,7 +12,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         /// Tân
         ////////////////////////////////////////////////////////////
         ///
-
+        Task<bool> ForgotPassword(string emailGoogle);
         dynamic GetUserLogin(string account, string password);
         bool CheckExitAccountUser(string account);
         dynamic GetUserRegister(User user);

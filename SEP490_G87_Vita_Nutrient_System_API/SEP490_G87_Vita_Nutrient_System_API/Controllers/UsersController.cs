@@ -25,6 +25,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             _mapper = mapper;
         }
 
+
+        [HttpGet("APIForgotPassword")]
+        public async Task<ActionResult> APIForgotPassword(string emailGoogle)
+        {
+
+            if (await repositories.ForgotPassword(emailGoogle))
+            {
+                return Ok();
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
         [HttpGet("Login")]
         public async Task<ActionResult<User>> APIGetUserLogin(string account, string password)
         {
@@ -38,7 +53,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return Ok(dataReturn);
             }
         }
-
 
 
         [HttpGet("checkExit")]

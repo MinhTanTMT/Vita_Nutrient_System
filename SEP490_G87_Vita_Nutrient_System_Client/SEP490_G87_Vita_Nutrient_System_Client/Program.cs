@@ -10,7 +10,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             var builder = WebApplication.CreateBuilder(args);
             var googleAuthSettings = builder.Configuration.GetSection("GoogleAuth");
 
-            builder.Services.AddDistributedMemoryCache(); // Sử dụng bộ nhớ trong để lưu trữ session (yêu cầu)
+            builder.Services.AddDistributedMemoryCache();
 
             builder.Services.AddSession(options =>
             {

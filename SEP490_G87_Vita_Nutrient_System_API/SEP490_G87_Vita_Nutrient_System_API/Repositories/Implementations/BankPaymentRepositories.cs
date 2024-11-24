@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mail;
+using System.Runtime.CompilerServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
@@ -87,7 +88,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             var data = _context.UserListManagements.FirstOrDefault(x =>
                 x.UserId == userListManagement.UserId
                 && x.StartDate <= userListManagement.StartDate
-                && x.EndDate >= userListManagement.StartDate);
+                && x.EndDate >= userListManagement.StartDate && x.IsDone == false);
 
             if (data == null)
             {
@@ -100,7 +101,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     EndDate = userListManagement.EndDate,
                     IsDone = userListManagement.IsDone
                 });
-
                 await _context.SaveChangesAsync();
             }
             else
@@ -246,8 +246,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-
-
         }
 
         public async Task<IEnumerable<Transaction>> GetTheLastTransactionsOfBankAccountNumber(string accountNumber, int limit)
@@ -278,8 +276,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-
-
         }
 
 
@@ -487,38 +483,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return null;
             }
 
-        }
-
-        public async Task<bool> SendMail()
-        {
-            Random random = new Random();
-            int otp;
-            otp = random.Next(100000, 1000000);
-            var fromAddress = new MailAddress(File.ReadAllText(@"C:\Users\msi\Desktop\SEP490_G87\SEP490_G87\Email.txt"));//mail dung de gui ma otp
-            var tpAddress = new MailAddress("minhtantmt2k2@gmail.com"); //mail dung dc nhan ma otp
-            string frompass = File.ReadAllText(@"C:\Users\msi\Desktop\SEP490_G87\SEP490_G87\PassCode.txt");
-            const string subject = "OPT code";
-            string body = otp.ToString();
-
-            var smtp = new SmtpClient
-            {
-                Host = "smtp.gmail.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(fromAddress.Address, frompass),
-                Timeout = 290009
-            };
-            using (var message = new MailMessage(fromAddress, tpAddress)
-            {
-                Subject = subject,
-                Body = body,
-            })
-            {
-                smtp.Send(message);
-            }
-            return true;
         }
     }
 }
