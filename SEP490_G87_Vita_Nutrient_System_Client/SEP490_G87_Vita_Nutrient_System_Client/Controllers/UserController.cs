@@ -498,9 +498,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     string data = await content.ReadAsStringAsync();
                     dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
 
-                    HttpContent content1 = response1.Content;
-                    string data1 = await content1.ReadAsStringAsync();
-                    List<ListOfDisease> diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(data1);
+                    //HttpContent content1 = response1.Content;
+                    //string data1 = await content1.ReadAsStringAsync();
+                    //List<ListOfDisease> diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(data1);
 
                     User user = new()
                     {
@@ -535,7 +535,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     };
 
                     ViewBag.user = user;
-                    ViewBag.diseseas = diseases;
+                    //ViewBag.diseseas = diseases;
                 }
                 else
                 {

@@ -3,7 +3,7 @@
 *@
 @{
     User u = ViewBag.user;
-    List<ListOfDisease> diseases = ViewBag.diseases;
+    // List<ListOfDisease> diseases = ViewBag.diseases;
 }
 <link rel="stylesheet" href="~/css/nutritionistDetail.css">
 <link rel="stylesheet" href="~/css/userProfile.css">
@@ -172,7 +172,7 @@ else
                                         <div class="form-group row">
                                             <label for="user-account-input" class="col-sm-3 col-form-label">Want improve</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="uwi" class="form-control user-info-input" id="user-account-input" placeholder="" value="@u.UserDetail.WantImprove">
+                                                <input type="text" name="uwi" class="form-control user-info-input" id="user-account-input" placeholder="" value="@u.UserDetail.WantImprove">
                                             </div>
                                         </div>
 
