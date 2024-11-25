@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos.Disease;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos.Food;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos.FoodAndDisease;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.PageResult;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
@@ -116,14 +119,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         // Sửa hàm này
         public async Task SaveNutritionTargetsAsync(NutritionTargetsDaily nutritionTargets)
         {
-        //    bool exerciseIntensityExists = await _context.ExerciseIntensities
-        //.AnyAsync(e => e.Id == nutritionTargets.ExerciseIntensityId);
-        //    if (!exerciseIntensityExists)
-        //    {
-        //        throw new Exception("Invalid ExerciseIntensityId. Please ensure that the Exercise Intensity exists.");
-        //    }
-        //    _context.Add(nutritionTargets);
-        //    await _context.SaveChangesAsync();
+            //    bool exerciseIntensityExists = await _context.ExerciseIntensities
+            //.AnyAsync(e => e.Id == nutritionTargets.ExerciseIntensityId);
+            //    if (!exerciseIntensityExists)
+            //    {
+            //        throw new Exception("Invalid ExerciseIntensityId. Please ensure that the Exercise Intensity exists.");
+            //    }
+            //    _context.Add(nutritionTargets);
+            //    await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<UserDTO>> GetUsers(int userId, string? search, int page = 1, int pageSize = 10)
@@ -507,6 +510,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.SaveChangesAsync();
 
             return foodAndDisease.ListOfDiseasesId;
+        }
     }
-
 }

@@ -3,7 +3,7 @@
 *@
 @{
     User nutritionist = ViewBag.nutritionist;
-    ExpertPackage package = ViewBag.package;
+    List<ExpertPackage> packages = ViewBag.packages;
 }
 <link rel="stylesheet" href="~/css/nutritionistDetail.css">
 
@@ -148,7 +148,7 @@
                 <h2 class="title">Expert packages</h2>
 
                 <div class="packages-body">
-                    @if (package is null)
+                    @if (packages is null || packages.Count == 0)
                     {
                         <h3>There is no packages!</h3>
                     }
@@ -157,6 +157,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th> # </th>
                                     <th> Name </th>
                                     <th> Description </th>
                                     <th> Price </th>
@@ -164,12 +165,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td> @package.Name </td>
-                                    <td> @package.Describe </td>
-                                    <td> @package.Price </td>
-                                    <td> @package.Duration </td>
-                                </tr>
+                                @for(int i = 0; i < packages.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@(i+1)</td>
+                                        <td> @packages[i].Name </td>
+                                        <td> @packages[i].Describe </td>
+                                        <td> @packages[i].Price </td>
+                                        <td> @packages[i].Duration </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     }
