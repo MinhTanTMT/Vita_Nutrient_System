@@ -85,18 +85,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         return View(new List<UserListManagement>());
                     }
 
-
-                    /*// Tìm kiếm theo từ khóa
-                    if (!string.IsNullOrEmpty(search))
-                    {
-                        routes = routes.Where(r =>
-                            (r.Name != null && r.Name.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
-                            (r.FullName != null && r.FullName.Contains(search, StringComparison.OrdinalIgnoreCase))
-                        ).ToList();
-
-                        ViewData["search"] = search;
-                    }*/
-
                     // Phân trang
                     int totalItems = routes.Count;
                     var paginatedRoutes = routes.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
@@ -120,10 +108,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNutritionRoutes(int userId, int userListManagementId, string packageName, int pageNumber = 1, int pageSize = 10)
         {
-            // Gán giá trị mặc định cho ViewData
-            ViewData["TotalPages"] = 0;
-            ViewData["CurrentPage"] = pageNumber;
-
+           
             try
             {
                 var nutritionistId = int.Parse(User.FindFirst("UserId")?.Value);
@@ -138,6 +123,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     // Nếu không có lộ trình, trả danh sách rỗng
                     if (routes == null || !routes.Any())
                     {
+                        // Gán giá trị mặc định cho ViewData
+                        ViewData["TotalPages"] = 0;
+                        ViewData["CurrentPage"] = pageNumber;
                         return View(new List<NutritionRoute>());
                     }
 
@@ -185,76 +173,69 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // GET: NutritionRoute/Create
         [HttpGet]
-        public async Task<IActionResult> CreateAsync(int userId, int userListManagementId)
+        public async Task<IActionResult> Create(int userId, int userListManagementId, string packageName)
         {
-            var nutritionistId = int.Parse(User.FindFirst("UserId")?.Value);
+            ViewData["UserId"] = userId;
+            ViewData["UserListManagementId"] = userListManagementId;
+            ViewData["PackageName"] = packageName;
 
-            // Kiểm tra lộ trình chưa hoàn thành
-            HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/{nutritionistId}/user/{userId}/unfinished");
-            if (response.IsSuccessStatusCode)
+            var nutritionRoute = new NutritionRoute
             {
-                var data = await response.Content.ReadAsStringAsync();
-                var hasUnfinishedRoute = JsonSerializer.Deserialize<bool>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                UserId = userId,
+                CreateById = int.Parse(User.FindFirst("UserId")?.Value)
+            };
 
-                if (hasUnfinishedRoute)
-                {
-                    ModelState.AddModelError(string.Empty, "Bạn phải hoàn thành lộ trình hiện tại trước khi tạo lộ trình mới.");
-                    return RedirectToAction("GetNutritionRoutes", new { userId });
-                }
-            }
-
-            // Tạo lộ trình mới
-            var user = await GetUserById(userId);
-            if (user != null)
-            {
-                var nutritionRoute = new NutritionRoute
-                {
-                    UserId = userId,
-                    CreateById = nutritionistId
-                };
-
-                return View(nutritionRoute);
-            }
-
-            ModelState.AddModelError(string.Empty, "Không thể lấy thông tin người dùng.");
-            return RedirectToAction("GetNutritionRoutes", new { userId });
-        }
-
-        private async Task<User> GetUserById(int userId)
-        {
-            HttpResponseMessage response = await client.GetAsync($"api/users/GetUserById/{userId}");
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<User>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
-            return null;
+            return View(nutritionRoute);
         }
 
         // POST: NutritionRoute/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NutritionRoute nutritionRoute, int userListManagementId)
+        public async Task<IActionResult> Create(NutritionRoute nutritionRoute, int userId, int userListManagementId, string packageName)
         {
-            if (ModelState.IsValid)
+            try
             {
-                nutritionRoute.CreateById = int.Parse(User.FindFirst("UserId")?.Value);
-                nutritionRoute.IsDone = false;
-
-                var content = new StringContent(JsonSerializer.Serialize(nutritionRoute), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync($"api/nutritionroute/{userListManagementId}", content);
-
-                if (response.IsSuccessStatusCode)
+                if (ModelState.IsValid)
                 {
-                    return RedirectToAction(nameof(GetNutritionRoutes), new { userId = nutritionRoute.UserId });
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Có lỗi xảy ra khi tạo lộ trình dinh dưỡng.");
+                    // Gán CreateById từ người dùng đang đăng nhập
+                    nutritionRoute.CreateById = int.Parse(User.FindFirst("UserId")?.Value);
+                    nutritionRoute.IsDone = false;
+
+                    // Tạo JSON payload và gửi đến API
+                    var content = new StringContent(JsonSerializer.Serialize(nutritionRoute), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PostAsync($"api/nutritionroute/{userListManagementId}", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Chuyển hướng về trang danh sách sau khi tạo thành công
+                        return RedirectToAction("GetNutritionRoutes", new
+                        {
+                            userId,
+                            userListManagementId,
+                            packageName
+                        });
+                    }
+                    else
+                    {
+                        // Ghi lỗi nếu API trả về lỗi
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        ModelState.AddModelError(string.Empty, $"Lỗi từ API: {errorContent}");
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Lỗi: {ex.Message}");
+            }
+
+            // Nếu có lỗi, quay lại view Create và giữ lại thông tin
+            ViewData["UserId"] = userId;
+            ViewData["UserListManagementId"] = userListManagementId;
+            ViewData["PackageName"] = packageName;
             return View(nutritionRoute);
         }
+
+
 
 
         // GET: NutritionRoute/Edit/{id}

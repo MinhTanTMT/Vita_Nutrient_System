@@ -66,7 +66,7 @@
             @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
             {
                 <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
-                    <a class="page-link" asp-action="GetUsersByCreateId" asp-route-pageNumber="@i" asp-route-search="@ViewData["search"]">@i</a>
+                    <a class="page-link" asp-action="GetInfoAllPremiumUserByNutritionist" asp-route-pageNumber="@i" asp-route-search="@ViewData["search"]">@i</a>
                 </li>
             }
         </ul>
