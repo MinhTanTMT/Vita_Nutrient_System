@@ -36,4 +36,5 @@ public partial class TransactionsSystem
     public int? BankAccountId { get; set; }
 
     public bool? Status { get; set; }
+
 }

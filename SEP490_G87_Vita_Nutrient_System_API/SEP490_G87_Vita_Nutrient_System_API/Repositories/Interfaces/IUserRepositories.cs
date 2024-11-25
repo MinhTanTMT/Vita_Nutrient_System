@@ -1,4 +1,5 @@
-﻿using SEP490_G87_Vita_Nutrient_System_API.Dtos;
+﻿using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.PageResult;
 
@@ -11,12 +12,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         /// Tân
         ////////////////////////////////////////////////////////////
         ///
-
+        Task<bool> ForgotPassword(string emailGoogle);
         dynamic GetUserLogin(string account, string password);
         bool CheckExitAccountUser(string account);
         dynamic GetUserRegister(User user);
         dynamic GetUserById(int id);
         dynamic ChangePassword(ChangePasswordDTO model);
+        dynamic GetRegisterLoginGoogle(User user);
         Task<PagedResult<FoodList>> GetLikedFoods(int userId, GetLikeFoodDTO model);
         Task<string> LikeOrUnlikeFood(int userId, int foodId);
         Task<string> UnblockFood(int userId, int foodId);
@@ -53,7 +55,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<UserDetail> GetUserDetailByUserIdAsync(int userId);
         void UpdateUser(User user);
         User? GetNutritionistDetailsInfo(int id);
-        IQueryable<ExpertPackage> GetNutritionistPackages(int id);
+        ExpertPackage GetNutritionistPackages(short id);
 
         ////////////////////////////////////////////////////////////
         /// Tùng

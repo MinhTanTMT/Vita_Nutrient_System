@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mail;
+using System.Runtime.CompilerServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
@@ -73,11 +74,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task<bool> InsertPaidPersonData(UserListManagementDTO userListManagement, int typeInsert)
         {
+            if(typeInsert == 1)
+            {
+                short roleUserPremium = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUserPremium");
+                var changeRoleUser = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userListManagement.UserId);
+                if (changeRoleUser != null) 
+                {
+                    changeRoleUser.Role = roleUserPremium;
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             var data = _context.UserListManagements.FirstOrDefault(x =>
                 x.UserId == userListManagement.UserId
-                && x.NutritionistId == userListManagement.NutritionistId
                 && x.StartDate <= userListManagement.StartDate
-                && x.EndDate >= userListManagement.StartDate);
+                && x.EndDate >= userListManagement.StartDate && x.IsDone == false);
 
             if (data == null)
             {
@@ -90,11 +101,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     EndDate = userListManagement.EndDate,
                     IsDone = userListManagement.IsDone
                 });
-
                 await _context.SaveChangesAsync();
             }
             else
             {
+                data.NutritionistId = userListManagement.NutritionistId;
                 if (data.EndDate.HasValue && userListManagement.StartDate.HasValue && userListManagement.EndDate.HasValue)
                 {
                     TimeSpan additionalTime = userListManagement.EndDate.Value - userListManagement.StartDate.Value;
@@ -107,35 +118,37 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        public async Task<TransactionsSystem> ModifyDataTransactionsSystem(TransactionsSystem data)
+        public async Task<TransactionsSystemDTO> ModifyDataTransactionsSystem(TransactionsSystemDTO data)
         {
-            // Tìm kiếm bản ghi hiện tại
             var dataTransactionsSystem = _context.TransactionsSystems.FirstOrDefault(x => x.Id == data.Id);
-
             if (dataTransactionsSystem == null)
             {
-                // Thêm mới nếu không tồn tại
                 var newTransaction = new TransactionsSystem
                 {
+                    UserPayId = data.UserPayId,
+                    PayeeId = data.PayeeId,
+                    AccountNumber = data.AccountNumber,
+                    AmountOut = data.AmountOut,
                     AmountIn = data.AmountIn,
-                    TransactionContent = data.TransactionContent
+                    TransactionContent = data.TransactionContent,
+                    Status = data.Status
                 };
 
                 await _context.TransactionsSystems.AddAsync(newTransaction);
                 await _context.SaveChangesAsync();
 
-                // Lúc này, newTransaction đã có đầy đủ các thuộc tính từ cơ sở dữ liệu
-                return newTransaction;
+                TransactionsSystemDTO transactionsSystemDTO = mapper.Map<TransactionsSystem, TransactionsSystemDTO>(newTransaction);
+                return transactionsSystemDTO;
+
+
             }
             else
             {
-                // Xử lý logic khi tồn tại bản ghi
-                dataTransactionsSystem.AmountIn = data.AmountIn;
-                dataTransactionsSystem.TransactionContent = data.TransactionContent;
-
+                dataTransactionsSystem.Status = data.Status;
                 await _context.SaveChangesAsync();
 
-                return dataTransactionsSystem;
+                TransactionsSystemDTO transactionsSystemDTO = mapper.Map<TransactionsSystem, TransactionsSystemDTO>(dataTransactionsSystem);
+                return transactionsSystemDTO;
             }
         }
 
@@ -233,8 +246,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-
-
         }
 
         public async Task<IEnumerable<Transaction>> GetTheLastTransactionsOfBankAccountNumber(string accountNumber, int limit)
@@ -265,8 +276,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-
-
         }
 
 
@@ -274,12 +283,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             try
             {
-
                 IEnumerable<Transaction> dataTransaction = await GetTheLastTransactionsOfBankAccountNumber(accountNumber, limit);
                 TransactionsSystem dataTransactionsSystem = await _context.TransactionsSystems.OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.TransactionContent.Equals(content) && x.AmountIn == amountIn);
                 if (dataTransactionsSystem != null && dataTransaction != null)
                 {
-                    Transaction contentCompare = dataTransaction.FirstOrDefault(x => x.transaction_content.Contains(dataTransactionsSystem.TransactionContent) && Decimal.Parse(x.amount_in) == dataTransactionsSystem.AmountIn);
+                    Transaction contentCompare = dataTransaction.FirstOrDefault(x => x.transaction_content.Contains(dataTransactionsSystem.TransactionContent) && Math.Round(Decimal.Parse(x.amount_in), 2) == Math.Round(dataTransactionsSystem.AmountIn ?? 0, 2));
                     if (contentCompare != null)
                     {
                         TransactionsSystem intsertData = await _context.TransactionsSystems.FindAsync(dataTransactionsSystem.Id);
@@ -476,41 +484,5 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
         }
-
-        public async Task<bool> SendMail()
-        {
-            Random random = new Random();
-            int otp;
-            otp = random.Next(100000, 1000000);
-            var fromAddress = new MailAddress(File.ReadAllText(@"C:\Users\msi\Desktop\SEP490_G87\SEP490_G87\Email.txt"));//mail dung de gui ma otp
-            var tpAddress = new MailAddress("minhtantmt2k2@gmail.com"); //mail dung dc nhan ma otp
-            string frompass = File.ReadAllText(@"C:\Users\msi\Desktop\SEP490_G87\SEP490_G87\PassCode.txt");
-            const string subject = "OPT code";
-            string body = otp.ToString();
-
-            var smtp = new SmtpClient
-            {
-                Host = "smtp.gmail.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(fromAddress.Address, frompass),
-                Timeout = 290009
-            };
-            using (var message = new MailMessage(fromAddress, tpAddress)
-            {
-                Subject = subject,
-                Body = body,
-            })
-            {
-                smtp.Send(message);
-            }
-            return true;
-        }
-
-
-
-
     }
 }

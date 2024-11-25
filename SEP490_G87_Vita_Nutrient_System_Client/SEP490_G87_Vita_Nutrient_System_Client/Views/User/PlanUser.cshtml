@@ -89,12 +89,14 @@
             double percentEaten = (caloriesEaten / totaAllCalories) * 100;
         }
 
+
         <div class="progress-container">
-            <div id="progress-bar" class="progress-bar"></div>
+            <div id="progress-bar" class="progress-bar" style="width: @(Math.Round((caloriesEaten / totaAllCalories) * 100, 2))%;"></div>
         </div>
 
-        <p>Calories Eaten: @caloriesEaten / @totaAllCalories Cal</p>
-
+        <p id="caloriesEaten" data-eaten="@caloriesEaten" data-total="@totaAllCalories">
+            Calories Eaten: @caloriesEaten / @totaAllCalories Cal
+        </p>
 
         <!-- CSS cho thanh tiến trình -->
         <style>
@@ -273,7 +275,7 @@
                                 @foreach (var item3 in item2.foodIdData)
                                 {
                                     <ul class="space-y-2 ml-4">
-                                        <li class="flex items-center space-x-2 gap-4">
+                                        <li class="flex items-center space-x-2 gap-4" data-food-id="@item3.idFood">
 
                                             <style>
                                                 .custom-tooltip-container {
@@ -308,10 +310,12 @@
                                                 <input onclick="toggleMenuCheckFoodEaten('@item.SlotOfTheDay', '@item2.SettingDetail', '@item3.idFood', '@item3.statusSymbol', '@ViewBag.userId', '@ViewBag.myDay' , '@item3.positionFood', '@item2.OrderSettingDetail')"
                                                        type="checkbox"
                                                        class="h-6 w-6"
+                                                       data-date="@ViewBag.myDay"
                                                 @(item3.statusSymbol.Equals("+") ? "checked" : "")
                                                 @(item3.statusSymbol.Equals("!") ? "disabled" : "") />
                                                 <span class="tooltip-text"> Đánh dấu để tính toán tiến trình </span>
                                             </div>
+
 
                                             <div class="flex items-center gap-3" onclick="getMealDetail(@item3.idFood)">
                                                 <img src="~/images/@item3.foodData.Urlimage"
@@ -320,7 +324,7 @@
                                             </div>
                                             <div class="flex flex-col" onclick="getMealDetail(@item3.idFood)">
                                                 <span class="text-lg font-medium"> @item3.foodData.Name </span>
-                                                <span>@Math.Round(item3.foodData.IngredientDetails100gReduceDTO.Energy, 2) Calo</span>
+                                                <span class="calories">@Math.Round(item3.foodData.IngredientDetails100gReduceDTO.Energy, 2)</span> Calo
                                             </div>
                                         </li>
                                     </ul>
@@ -346,6 +350,57 @@
 
                 function toggleMenuCheckFoodEaten(slotOfTheDay, settingDetail, idFood, statusSymbol, userId, myDay, positionFood, orderNumber) {
 
+
+                    const today = new Date();
+                    const viewBagDate = new Date('@ViewBag.myDay');
+
+                    // Tính 7 ngày trước
+                    const sevenDaysAgo = new Date();
+                    sevenDaysAgo.setDate(today.getDate() - 7);
+
+                    // Kiểm tra nếu ngày của ViewBag.myDay không hợp lệ
+                    if (viewBagDate < sevenDaysAgo || viewBagDate > today) {
+                        alert('Lưu ý: Hệ thống chỉ tính toán hoàn thành món ăn trong vòng 7 ngày trở về trước.');
+                        return;
+                    }
+
+                    const checkbox = event.target; // Checkbox vừa được click
+                    const isCheckedStature = checkbox.checked; // Trạng thái của checkbox (true/false)
+
+                    // Lấy calo của món ăn từ giao diện
+                    const foodCalories = parseFloat(document.querySelector(`[data-food-id="${idFood}"] .calories`).textContent);
+
+                    // Lấy tổng calo đã ăn và mục tiêu từ giao diện
+                    let caloriesEaten = parseFloat(document.getElementById("caloriesEaten").getAttribute("data-eaten"));
+                    const totalCalories = parseFloat(document.getElementById("caloriesEaten").getAttribute("data-total"));
+
+                    // Cộng hoặc trừ calo
+                    if (isCheckedStature) {
+                        caloriesEaten += foodCalories;
+                    } else {
+                        caloriesEaten -= foodCalories;
+                    }
+
+                    // Cập nhật calo đã ăn trên giao diện
+                    document.getElementById("caloriesEaten").textContent = `${caloriesEaten.toFixed(2)} / ${totalCalories.toFixed(2)} Cal`;
+                    document.getElementById("caloriesEaten").setAttribute("data-eaten", caloriesEaten.toFixed(2));
+
+                    // Cập nhật thanh tiến trình
+                    const percentEaten = (caloriesEaten / totalCalories) * 100;
+                    const progressBar = document.getElementById("progress-bar");
+                    progressBar.style.width = `${percentEaten}%`;
+
+                    // Thay đổi màu sắc của thanh tiến trình
+                    if (percentEaten <= 50) {
+                        progressBar.style.backgroundColor = "#FF4444"; // Màu đỏ nhạt
+                    } else if (percentEaten <= 80) {
+                        progressBar.style.backgroundColor = "#FF8800"; // Màu cam
+                    } else {
+                        progressBar.style.backgroundColor = "#4CAF50"; // Màu xanh lá
+                    }
+
+
+
                     var data = {
                         userId: parseInt(userId),
                         myDay: formatDateToISOWithoutTimezone(myDay),
@@ -358,9 +413,9 @@
                     };
 
                     console.log(data);
-
+                    const apiURL = "@ViewBag.APICompleteTheDish".replace(/&amp;/g, '&');
                     $.ajax({
-                        url: "https://localhost:7045/api/GenerateMeal/APICompleteTheDish", // URL của API
+                        url: apiURL, // URL của API
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(data),
