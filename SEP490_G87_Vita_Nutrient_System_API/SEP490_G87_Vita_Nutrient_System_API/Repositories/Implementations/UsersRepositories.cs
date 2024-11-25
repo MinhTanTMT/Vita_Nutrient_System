@@ -143,11 +143,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
             short roleUserPremium = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUserPremium");
-            
+
             if (AccountGoogle != null)
             {
                 var accGoogle = _context.Users.FirstOrDefault(x => x.AccountGoogle.Equals(AccountGoogle));
-                if(accGoogle != null && accGoogle.Role == roleUserPremium)
+                if (accGoogle != null && accGoogle.Role == roleUserPremium)
                 {
                     var data = _context.UserListManagements.FirstOrDefault(x =>
                     x.UserId == accGoogle.UserId
