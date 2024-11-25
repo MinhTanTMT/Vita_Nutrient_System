@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Hubs;
 using SEP490_G87_Vita_Nutrient_System_API.Models;

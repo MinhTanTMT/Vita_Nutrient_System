@@ -1,6 +1,4 @@
-﻿@model IEnumerable<SEP490_G87_Vita_Nutrient_System_Client.Models.MessageModel>
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,10 +7,10 @@
 
     <!-- Bao gồm file CSS cho chat -->
     <link rel="stylesheet" href="/css/chat.css">
-    <script src="~/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+
 </head>
 <body>
+    <!-- Nội dung của bạn ở đây -->
     <div class="chat-container">
         <div id="chat-messages" class="chat-messages">
             <input type="hidden" id="roomId" value="@ViewData["RoomId"]" />
@@ -35,58 +33,20 @@
         </div>
 
         <div class="chat-input-container">
-            <textarea id="messageInput" placeholder="Tin Nhắn" rows="3" maxlength="2000"></textarea>
-
+            <textarea id="messageInput" placeholder="Tin Nhắn"></textarea>
             <button id="sendButton" onclick="sendMessage()">Gửi</button>
         </div>
     </div>
 
+
     <script>
-        // Kết nối với SignalR Hub
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chathub")
-            .build();
-
-        const roomId = document.getElementById("roomId")?.value;
-        const userId = document.getElementById("userId")?.value;
-
-        connection.start()
-            .then(() => {
-                console.log("Connected to SignalR Hub");
-                if (roomId) {
-                    connection.invoke("JoinRoom", roomId)
-                        .then(() => console.log(`Joined room ${roomId}`))
-                        .catch(err => console.error("Error joining room:", err));
-                }
-            })
-            .catch(err => console.error("Error connecting to SignalR:", err));
-
-        // Lắng nghe tin nhắn mới từ SignalR
-        connection.on("ReceiveMessage", (userName, messageContent, senderId) => {
-            if (senderId == userId) {
-                // Nếu người gửi là chính mình, bỏ qua (tránh lặp tin nhắn)
-                return;
-            }
-            const msgContainer = document.getElementById("chat-messages");
-            const newMessage = document.createElement("div");
-            newMessage.className = senderId == userId ? "chat-message sent" : "chat-message received";
-            newMessage.innerHTML = `
-                <div class="message-content">
-                    ${senderId != userId ? `<span class="user-name">${userName}</span>` : ""}
-                    <p>${messageContent}</p>
-                    <span class="timestamp">${new Date().toLocaleTimeString()}</span>
-                </div>
-            `;
-            if (msgContainer) {
-                msgContainer.appendChild(newMessage);
-                msgContainer.scrollTop = msgContainer.scrollHeight;
-            }
-        });
-
 
         // Hàm gửi tin nhắn
         function sendMessage() {
             const messageInput = document.getElementById("messageInput");
+            const roomId = document.getElementById("roomId")?.value;
+            const userId = document.getElementById("userId")?.value;
+
             if (!messageInput || !roomId || !userId) {
                 alert("Invalid room or user data.");
                 return;
@@ -119,19 +79,18 @@
                         const newMessage = document.createElement("div");
                         newMessage.className = "chat-message sent";
                         newMessage.innerHTML = `
-                                    <div class="message-content">
-                                        <p>${messageContent}</p>
-                                        <span class="timestamp">${new Date().toLocaleTimeString()}</span>
-                                    </div>
-                                `;
+                        <div class="message-content">
+                            <p>${messageContent}</p>
+                            <span class="timestamp">${new Date().toLocaleTimeString()}</span>
+                        </div>
+                    `;
                         if (msgContainer) {
                             msgContainer.appendChild(newMessage);
                             msgContainer.scrollTop = msgContainer.scrollHeight;
                         }
-                        messageInput.value = ""; // Xóa nội dung trong textarea
-                        messageInput.style.height = "auto"; // Đặt chiều cao về mặc định
+                        messageInput.value = "";
                     } else {
-                        alert(result.message || "Chữ Quá Dài Không Thể Gửi ");
+                        alert(result.message || "Failed to send message");
                     }
                 })
                 .catch((err) => {
@@ -140,27 +99,7 @@
                 });
         }
 
-        // Tăng chiều cao tự động khi nhập tin nhắn
-        const messageInput = document.getElementById("messageInput");    
-        messageInput.addEventListener("input", () => {
-            messageInput.style.height = "auto"; // Reset chiều cao về auto
-            messageInput.style.height = `${messageInput.scrollHeight}px`; // Tăng chiều cao theo nội dung
-        });
-
-        // Hàm cuộn xuống cuối đoạn chat
-        function scrollToBottom() {
-            const msgContainer = document.getElementById("chat-messages");
-            if (msgContainer) {
-                msgContainer.scrollTop = msgContainer.scrollHeight;
-            }
-        }
-
-        // Gọi hàm cuộn xuống cuối đoạn chat khi trang được tải
-        document.addEventListener("DOMContentLoaded", () => {
-            scrollToBottom(); // Cuộn xuống cuối khi nội dung đã sẵn sàng
-        });
-
-
     </script>
+
 </body>
 </html>
