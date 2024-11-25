@@ -3,24 +3,28 @@
   "WorkspaceRootPath": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\nutritionrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\nutritionrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\controllers\\nutritionroutecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\controllers\\nutritionroutecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\bankpaymentrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\bankpaymentrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\generatemealrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\generatemealrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\nutritionrouterepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\nutritionrouterepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\usersrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\implementations\\usersrepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\repositories\\interfaces\\inutritionrouterepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\repositories\\interfaces\\inutritionrouterepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Dtos\\ListOfDiseaseDTO.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SEP490_G87_Vita_Nutrient_System_API\\Dtos\\ListOfDiseaseDTO.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|d:\\sep490_g87_vita_nutrient_system\\vita_nutrient_system\\sep490_g87_vita_nutrient_system_api\\sep490_g87_vita_nutrient_system_api\\models\\listofdisease.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24B846A8-869C-4C9E-8440-0C9495FD52A4}|SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API.csproj|solutionrelative:sep490_g87_vita_nutrient_system_api\\models\\listofdisease.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 401,
-          "SelectedChildIndex": 19,
+          "SelectedChildIndex": 20,
           "Children": [
             {
               "$type": "Bookmark",
@@ -110,65 +114,80 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "NutritionRepositories.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRepositories.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRepositories.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRepositories.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRepositories.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAgwBcAAAAeAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "BankPaymentRepositories.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\BankPaymentRepositories.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAQwB8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T04:08:26.194Z",
+              "WhenOpened": "2024-11-25T19:33:34.759Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "NutritionRouteController.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\NutritionRouteController.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\NutritionRouteController.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\NutritionRouteController.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\NutritionRouteController.cs",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAMwIoAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-25T08:02:40.995Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "INutritionRouteRepositories.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Interfaces\\INutritionRouteRepositories.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Interfaces\\INutritionRouteRepositories.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Interfaces\\INutritionRouteRepositories.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Interfaces\\INutritionRouteRepositories.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-25T08:01:27.715Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "GenerateMealRepositories.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
-              "ViewState": "AgIAAHIDAAAAAAAAAAAWwIkDAAAAAAAAAAAAAA==",
+              "Title": "NutritionRouteRepositories.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRouteRepositories.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRouteRepositories.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRouteRepositories.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\NutritionRouteRepositories.cs",
+              "ViewState": "AgIAABsBAAAAAAAAAAAAACIBAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T14:28:41.923Z"
+              "WhenOpened": "2024-11-25T08:01:22.973Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-11-24T08:19:38.496Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UsersRepositories.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\UsersRepositories.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\UsersRepositories.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\UsersRepositories.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\UsersRepositories.cs",
-              "ViewState": "AgIAAIwAAAAAAAAAAAAnwJ4AAAAwAAAAAAAAAA==",
+              "Title": "ListOfDiseaseDTO.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Dtos\\ListOfDiseaseDTO.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Dtos\\ListOfDiseaseDTO.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Dtos\\ListOfDiseaseDTO.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Dtos\\ListOfDiseaseDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T01:06:59.664Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UsersController.cs",
-              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
-              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
-              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
-              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
-              "ViewState": "AgIAAMAAAAAAAAAAAAApwMoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T01:06:49.918Z",
+              "WhenOpened": "2024-11-25T08:01:06.828Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ListOfDisease.cs",
+              "DocumentMoniker": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Models\\ListOfDisease.cs",
+              "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Models\\ListOfDisease.cs",
+              "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Models\\ListOfDisease.cs",
+              "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Models\\ListOfDisease.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-25T08:00:51.676Z"
             }
           ]
         }

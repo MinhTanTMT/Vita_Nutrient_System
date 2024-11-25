@@ -58,7 +58,7 @@
                                 data-username="@user.FullName">
                             Quản lý Bệnh Lý
                         </button>
-
+                        <h6>@user.UserId</h6>
                     </td>
                 </tr>
             }
@@ -192,7 +192,7 @@
                         alert('Vui lòng chọn bệnh lý.');
                         return;
                     }
-                    console.log(diseaseId + ' ' + userId);
+
                     try {
                         const response = await fetch(`/NutritionRoute/AddDisease`, {
                             method: 'POST',
@@ -226,6 +226,8 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId, diseaseId }),
             });
+
+            console.log(diseaseId + ' ' + userId);
 
             if (response.ok) {
                 alert('Xóa bệnh lý thành công.');

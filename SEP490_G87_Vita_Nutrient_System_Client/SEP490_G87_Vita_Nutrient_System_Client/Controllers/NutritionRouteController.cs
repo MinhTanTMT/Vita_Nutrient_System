@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -413,27 +413,21 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddDisease(int userId, int diseaseId)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddDisease([FromBody] AddDiseaseRequest request)
         {
-            if (userId <= 0 || diseaseId <= 0)
+            if (request.UserId <= 0 || request.DiseaseId <= 0)
             {
                 return Json(new { success = false, message = "User ID hoặc Disease ID không hợp lệ." });
             }
-
             try
             {
-                //var payload = JsonSerializer.Serialize(userId , diseaseId);
-                //var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
-                ABCDE newData = new ABCDE() { userId = userId, diseaseId = diseaseId };
-
-
-                HttpResponseMessage response = await client.PostAsJsonAsync($"api/nutritionroute/AddDiseasesOfUser", newData);
+                HttpResponseMessage response = await client.PostAsJsonAsync($"api/NutritionRoute/AddDiseasesOfUser", request);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return Json(new { success = true, message = "Thêm bệnh lý thành công." });
+                    return Json(new { success = true, message = "Thêm bệnh lý thành công cc." });
                 }
                 else
                 {
@@ -450,20 +444,21 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteDisease(int userId, int diseaseId)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteDisease([FromBody]AddDiseaseRequest request)
         {
-            if (userId <= 0 || diseaseId <= 0)
+            if (request.UserId <= 0 || request.DiseaseId <= 0)
             {
                 return Json(new { success = false, message = "User ID hoặc Disease ID không hợp lệ." });
             }
 
             try
             {
-                HttpResponseMessage response = await client.DeleteAsync($"api/nutritionroute/user/{userId}/diseases/{diseaseId}");
+                HttpResponseMessage response = await client.DeleteAsync($"api/NutritionRoute/user/{request.UserId}/diseases/{request.DiseaseId}");
 
                 if (response.IsSuccessStatusCode)
                 {
+
                     return Json(new { success = true, message = "Xóa bệnh lý thành công." });
                 }
                 else
@@ -480,10 +475,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
     
     }
 
-    public class ABCDE 
-    { 
-        public int userId { get; set; }
-        public int diseaseId { get; set; }
-    
+    public class AddDiseaseRequest
+    {
+        public int UserId { get; set; }
+        public int DiseaseId { get; set; }
     }
 }

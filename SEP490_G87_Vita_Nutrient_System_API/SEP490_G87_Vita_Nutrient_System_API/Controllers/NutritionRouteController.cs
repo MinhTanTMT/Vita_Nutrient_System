@@ -137,12 +137,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpPost("AddDiseasesOfUser")]
-        public async Task<IActionResult> CreateDisease([FromBody] DataSend data)
+        public async Task<IActionResult> CreateDisease([FromBody] AddDiseaseRequest data)
         {
-            var isCreated = await _nutritionRouteRepositories.CreateDiseaseAsync(data.userId, data.diseaseId);
+            var isCreated = await _nutritionRouteRepositories.CreateDiseaseAsync(data.UserId, data.DiseaseId);
             if (!isCreated)
             {
-                return Ok("Không thể thêm bệnh nền. Bệnh đã tồn tại hoặc dữ liệu không hợp lệ.");
+                return BadRequest("Không thể thêm bệnh nền. Bệnh đã tồn tại hoặc dữ liệu không hợp lệ.");
             }
             return Ok("Thêm bệnh nền thành công.");
         }
@@ -160,9 +160,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
     }
 
-    public class DataSend
+    public class AddDiseaseRequest
     {
-        public int userId { get; set; }
-        public int diseaseId { get; set; }
+        public int UserId { get; set; }
+        public int DiseaseId { get; set; }
     }
 }

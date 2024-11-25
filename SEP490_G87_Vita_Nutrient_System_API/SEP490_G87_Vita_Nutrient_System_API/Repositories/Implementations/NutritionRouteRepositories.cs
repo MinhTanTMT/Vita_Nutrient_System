@@ -242,7 +242,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return new List<ListOfDiseaseDTO>(); // Không có bệnh nền
             }
 
-            var diseaseIds = userDetail.UnderlyingDisease.Split(',')
+            var diseaseIds = userDetail.UnderlyingDisease.Split(';')
                 .Select(id =>
                 {
                     int.TryParse(id, out var parsedId);
@@ -280,7 +280,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             // Cập nhật danh sách bệnh
             var currentDiseases = string.IsNullOrEmpty(userDetail.UnderlyingDisease)
                 ? new List<int>()
-                : userDetail.UnderlyingDisease.Split(',').Select(int.Parse).ToList();
+                : userDetail.UnderlyingDisease.Split(';').Select(int.Parse).ToList();
 
             if (currentDiseases.Contains(diseaseId))
             {
@@ -288,7 +288,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             currentDiseases.Add(diseaseId);
-            userDetail.UnderlyingDisease = string.Join(",", currentDiseases);
+            userDetail.UnderlyingDisease = string.Join(";", currentDiseases);
 
             _context.UserDetails.Update(userDetail);
             await _context.SaveChangesAsync();
@@ -304,7 +304,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             // Cập nhật danh sách bệnh
-            var currentDiseases = userDetail.UnderlyingDisease.Split(',').Select(int.Parse).ToList();
+            var currentDiseases = userDetail.UnderlyingDisease.Split(';').Select(int.Parse).ToList();
             if (!currentDiseases.Contains(diseaseId))
             {
                 return false; // Bệnh không tồn tại trong danh sách
@@ -312,7 +312,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             currentDiseases.Remove(diseaseId);
             userDetail.UnderlyingDisease = currentDiseases.Any()
-                ? string.Join(",", currentDiseases)
+                ? string.Join(";", currentDiseases)
                 : null; // Nếu không còn bệnh nào thì đặt null
 
             _context.UserDetails.Update(userDetail);
