@@ -3,6 +3,7 @@
 *@
 @{
     User u = ViewBag.user;
+    ExpertPackage package = ViewBag.package;
 }
 <link rel="stylesheet" href="~/css/nutritionistDetail.css">
 <link rel="stylesheet" href="~/css/userProfile.css">
@@ -11,9 +12,9 @@
 
 <input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
 <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
-@if(u is null)
+@if (u is null)
 {
-    <div>Cannot get user profile! Try again later!</div>
+    <div>Cannot get nutritionist profile! Try again later!</div>
 }
 else
 {
@@ -58,8 +59,6 @@ else
                         </div>
                     </div>
 
-                    
-
                     <div class="profile-right col-8">
 
                         <div class="tab-navigation">
@@ -71,8 +70,7 @@ else
                                 <div class="basic-info">
                                     <form asp-controller="User" asp-action="UpdateUserInfo" method="post">
                                         <input type="hidden" name="uid" value="@u.UserId">
-                                        <input type="hidden" name="page" value="user" required />
-
+                                        <input type="hidden" name="page" value="nutritionist" required />
                                         <div class="form-group row">
                                             <label for="user-account-input" class="col-sm-3 col-form-label">Account</label>
                                             <div class="col-sm-9">
@@ -138,51 +136,78 @@ else
                             </div>
                             <div id="tab2" class="tab-content">
                                 <div class="details-info">
-                                    <form asp-controller="User" asp-action="UpdateUserDetails" method="post">
+                                    <form asp-controller="User" asp-action="UpdateNutritionistDetails" method="post">
                                         <input type="hidden" name="uid" value="@u.UserId">
 
                                         <div class="form-group row">
                                             <label for="user-desc" class="col-sm-3 col-form-label">Your description</label>
                                             <div class="col-sm-9">
-                                            <input type="text" name="udesc" class="form-control user-info-input" id="user-desc" placeholder="Description" value="@u.UserDetail.DescribeYourself">
+                                                <input type="text" name="udesc" class="form-control user-info-input" id="user-desc" placeholder="Description" value="@u.NutritionistDetail?.DescribeYourself">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-height" class="col-sm-3 col-form-label">Height</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Your height" value="@u.UserDetail.Height">
+                                                <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Your height" value="@u.NutritionistDetail?.Height">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-weight" class="col-sm-3 col-form-label">Weight</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Your weight" value="@u.UserDetail.Weight">
+                                                <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Your weight" value="@u.NutritionistDetail?.Weight">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-age" class="col-sm-3 col-form-label">Age</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Your age" value="@u.UserDetail.Age">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label for="user-account-input" class="col-sm-3 col-form-label">Want improve</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" name="uwi" class="form-control user-info-input" id="user-account-input" placeholder="" value="@u.UserDetail.WantImprove">
+                                                <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Your age" value="@u.NutritionistDetail?.Age">
                                             </div>
                                         </div>
 
                                         <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
                                             Save
-                                            </button>
+                                        </button>
                                     </form>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="hr"></div>
+
+                <div class="packages-container">
+                    <h2 class="title">Your expert packages</h2>
+
+                    <div class="packages-body">
+                        @if (package is null)
+                        {
+                            <h3>There is no packages!</h3>
+                        }
+                        else
+                        {
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th> Name </th>
+                                        <th> Description </th>
+                                        <th> Price </th>
+                                        <th> Duration </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> @package.Name </td>
+                                        <td> @package.Describe </td>
+                                        <td> @package.Price </td>
+                                        <td> @package.Duration </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
                     </div>
                 </div>
             </div>
@@ -200,7 +225,7 @@ else
         <div class="modal1-body">
             <form id="changePassForm" asp-controller="User" asp-action="ChangePassword" method="post">
                 <input type="hidden" name="uid" value="@u.UserId" required />
-                <input type="hidden" name="page" value="user" required />
+                <input type="hidden" name="page" value="nutritionist" required />
 
                 <label>Old Password:</label>
                 <input class="ms-auto" type="password" name="uopw" required />

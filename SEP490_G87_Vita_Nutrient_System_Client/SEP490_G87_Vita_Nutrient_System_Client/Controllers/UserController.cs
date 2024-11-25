@@ -489,18 +489,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response = await client.GetAsync(
                     client.BaseAddress + "/Users/GetUserDetail/" + userId);
 
-                HttpResponseMessage response1 = await client.GetAsync(
-                    client.BaseAddress + "/Disease/GetAllDiseases");
-
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
                     dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
-
-                    //HttpContent content1 = response1.Content;
-                    //string data1 = await content1.ReadAsStringAsync();
-                    //List<ListOfDisease> diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(data1);
 
                     User user = new()
                     {
@@ -535,7 +528,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     };
 
                     ViewBag.user = user;
-                    //ViewBag.diseseas = diseases;
                 }
                 else
                 {
@@ -551,8 +543,118 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
+        [HttpGet("AdminProfile")]
+        public async Task<IActionResult> AdminProfile()
+        {
+            try
+            {
+                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+                HttpResponseMessage response = await client.GetAsync(
+                    client.BaseAddress + "/Users/GetUserById/" + userId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                    User user = new()
+                    {
+                        UserId = userData.id,
+                        FirstName = userData.firstName,
+                        LastName = userData.lastName,
+                        Urlimage = userData.urlimage,
+                        Dob = userData.dob,
+                        Gender = userData.gender ?? false,
+                        Address = userData.address,
+                        Phone = userData.phone,
+                        Account = userData.account,
+                    };
+
+                    ViewBag.admin = user;
+                }
+            }catch(Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return View("~/Views/User/AdminInfo.cshtml");
+        }
+
+        [HttpGet("NutritionistProfile")]
+        public async Task<IActionResult> NutritionistProfile()
+        {
+            try
+            {
+                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+                HttpResponseMessage response = await client.GetAsync(
+                    client.BaseAddress + "/Users/GetNutritionistDetail/" + userId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic nutritionistData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                    User user = new()
+                    {
+                        UserId = nutritionistData.id,
+                        FirstName = nutritionistData.firstName,
+                        LastName = nutritionistData.lastName,
+                        Urlimage = nutritionistData.urlimage,
+                        Dob = nutritionistData.dob,
+                        Gender = nutritionistData.gender ?? false,
+                        Address = nutritionistData.address,
+                        Phone = nutritionistData.phone,
+                        NutritionistDetail = new NutritionistDetail
+                        {
+                            NutritionistId = nutritionistData.id,
+                            DescribeYourself = nutritionistData.detailsInformation.description,
+                            Height = nutritionistData.detailsInformation.height,
+                            Weight = nutritionistData.detailsInformation.weight,
+                            Age = nutritionistData.detailsInformation.age,
+                            ExpertPackagesId = nutritionistData.detailsInformation.expertPackagesId,
+                        },
+                        Account = nutritionistData.account,
+                    };
+
+                    ViewBag.user = user;
+
+                    HttpResponseMessage response1 =
+                        await client.GetAsync(client.BaseAddress + "/Users/GetNutritionistPackages/" + 
+                        user.NutritionistDetail.ExpertPackagesId);
+
+                    if (response1.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        HttpContent content1 = response1.Content;
+                        string data1 = await content1.ReadAsStringAsync();
+                        dynamic packagesData = JsonConvert.DeserializeObject<dynamic>(data1);
+
+                        ExpertPackage package = new ExpertPackage
+                        {
+                            Id = packagesData.id,
+                            Name = packagesData.name,
+                            Describe = packagesData.describe,
+                            Price = packagesData.price,
+                            Duration = packagesData.duration
+                        };
+
+                        ViewBag.package = package;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return View("~/Views/User/NutritionistInfo.cshtml");
+        }
+
         [HttpPost]
-        public async Task<IActionResult> UpdateUserInfo(int uid, string uacc, string ufn, string uln, int user_gender, DateTime udob, string uadd, string uphone)
+        public async Task<IActionResult> UpdateUserInfo(string page ,int uid, string uacc, string ufn, string uln, int user_gender, DateTime udob, string uadd, string uphone)
         {
             try
             {
@@ -587,7 +689,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
-            return await UserProfileSon();
+            return page switch
+            {
+                "user" => await UserProfileSon(),
+                "admin" => await AdminProfile(),
+                "nutritionist" => await NutritionistProfile()
+            };
         }
 
         [HttpPost]
@@ -598,7 +705,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 var data = new
                 {
                     userId = uid,
-                    description = udesc,
+                    describe = udesc,
                     height = uheight,
                     weight = uweight,
                     age = uage,
@@ -614,11 +721,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Update user failed! Please try again!";
+                    ViewBag.AlertMessage = "Update profile failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Update user successfully!";
+                    ViewBag.SuccessMessage = "Update profile successfully!";
                 }
             }
             catch (Exception ex)
@@ -629,7 +736,44 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(int uid, string uopw, string unpw, string ucpw)
+        public async Task<IActionResult> UpdateNutritionistDetails(int uid, string udesc, short uheight, short uage, short uweight)
+        {
+            try
+            {
+                var data = new
+                {
+                    userId = uid,
+                    describe = udesc,
+                    height = uheight,
+                    weight = uweight,
+                    age = uage
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Users/UpdateNutritionistDetails", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update profile failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update profile successfully!";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+            return await NutritionistProfile();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string page, int uid, string uopw, string unpw, string ucpw)
         {
             try
             {
@@ -663,7 +807,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
-            return await UserProfileSon();
+            return page switch
+            {
+                "user" => await UserProfileSon(),
+                "admin" => await AdminProfile(),
+                "nutritionist" => await NutritionistProfile()
+            };
         }
 
         ////////////////////////////////////////////////////////////

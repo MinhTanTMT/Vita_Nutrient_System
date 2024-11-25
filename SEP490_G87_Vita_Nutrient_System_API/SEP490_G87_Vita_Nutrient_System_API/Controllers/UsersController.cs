@@ -285,6 +285,25 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Update user successfully!");
         }
 
+        [HttpPost("UpdateNutritionistDetails")]
+        public async Task<ActionResult<string>> UpdateNutritionistDetails([FromBody] UpdateNutritionistDetailsRequest request)
+        {
+            NutritionistDetail u = _repositories.GetNutritionistDetail(request.UserId);
+
+            //kiem tra xem nutritionist ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("Nutritionist not found!");
+            }
+
+            u.DescribeYourself = request.Describe;
+            u.Height = request.Height;
+            u.Weight = request.Weight;
+            u.Age = request.Age;
+            _repositories.UpdateNutritionistDetails(u);
+            return Ok("Update nutritionist successfully!");
+        }
+
         [HttpGet("{userId}/liked-foods")]
         public async Task<ActionResult<dynamic>> GetLikedFoods(int userId, [FromQuery] GetLikeFoodDTO model)
         {

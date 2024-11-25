@@ -8,5 +8,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task SaveUserDetails(UserPhysicalStatisticsDTO userDetails);
         void UpdateUserDetails(UserDetail userDetail);
         UserDetail GetUserDetail(int id);
+        NutritionistDetail GetNutritionistDetail(int nutritionistId);
+        void UpdateNutritionistDetails(NutritionistDetail nutritionistDetail);
     }
 }

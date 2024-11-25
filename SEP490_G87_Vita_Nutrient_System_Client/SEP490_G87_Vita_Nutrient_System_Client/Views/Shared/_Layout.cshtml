@@ -220,12 +220,16 @@
                         if (role != null)
                         {
                             <li class="nav-item nav-profile">
-                                <a href="@Url.Action("UserProfileSon", "User")" class="nav-link">
+                                <a href="@Url.Action(role switch
+                                {
+                                    "Admin" => "AdminProfile",
+                                    "Nutritionist" => "NutritionistProfile",
+                                    _ => "UserProfileSon" 
+                                }, "User")" class="nav-link">
                                     <div class="nav-profile-image">
 
                                         @if (Context.Session.GetString("imageUrl") != null)
                                         {
-
                                             <img src="@Context.Session.GetString("imageUrl")" alt="profile" onclick="event.preventDefault(); document.getElementById('goProfilePage').submit();">
                                         }
 
