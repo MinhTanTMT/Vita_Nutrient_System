@@ -14,6 +14,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<IEnumerable<UserDTO>> GetAllPremiumUserAsync(int nutritionistId);
         Task<bool> HasUnfinishedRouteAsync(int nutritionistId, int userId);
         Task<IEnumerable<NutritionRouteDTO>> GetNutritionRoutesAsync(int nutritionistId, int userId, int userListManagementId);
-
+        Task<IEnumerable<ListOfDiseaseDTO>> GetDiseaseByUserIdAsync(int userId);
+        Task<bool> CreateDiseaseAsync(int userId, int diseaseId);
+        Task<bool> DeleteDiseaseAsync(int userId, int diseaseId);
     }
 }

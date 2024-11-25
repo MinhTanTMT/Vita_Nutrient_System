@@ -232,6 +232,94 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 }).ToListAsync();
         }
 
+        public async Task<IEnumerable<ListOfDiseaseDTO>> GetDiseaseByUserIdAsync(int userId)
+        {
+            var userDetail = await _context.UserDetails
+                .FirstOrDefaultAsync(ud => ud.UserId == userId);
+
+            if (userDetail == null || string.IsNullOrEmpty(userDetail.UnderlyingDisease))
+            {
+                return new List<ListOfDiseaseDTO>(); // Không có bệnh nền
+            }
+
+            var diseaseIds = userDetail.UnderlyingDisease.Split(',')
+                .Select(id =>
+                {
+                    int.TryParse(id, out var parsedId);
+                    return parsedId;
+                })
+                .Where(parsedId => parsedId > 0) // Loại bỏ các giá trị không hợp lệ
+                .ToList();
+
+            return await _context.ListOfDiseases
+                .Where(d => diseaseIds.Contains(d.Id))
+                .Select(d => new ListOfDiseaseDTO
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    Describe = d.Describe
+                }).ToListAsync();
+        }
+
+        public async Task<bool> CreateDiseaseAsync(int userId, int diseaseId)
+        {
+            // Kiểm tra xem bệnh có tồn tại không
+            var disease = await _context.ListOfDiseases.FindAsync(diseaseId);
+            if (disease == null)
+            {
+                return false; // Bệnh không tồn tại
+            }
+
+            // Lấy thông tin UserDetail
+            var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.UserId == userId);
+            if (userDetail == null)
+            {
+                return false; // Không tìm thấy UserDetail
+            }
+
+            // Cập nhật danh sách bệnh
+            var currentDiseases = string.IsNullOrEmpty(userDetail.UnderlyingDisease)
+                ? new List<int>()
+                : userDetail.UnderlyingDisease.Split(',').Select(int.Parse).ToList();
+
+            if (currentDiseases.Contains(diseaseId))
+            {
+                return false; // Bệnh đã tồn tại
+            }
+
+            currentDiseases.Add(diseaseId);
+            userDetail.UnderlyingDisease = string.Join(",", currentDiseases);
+
+            _context.UserDetails.Update(userDetail);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> DeleteDiseaseAsync(int userId, int diseaseId)
+        {
+            // Lấy thông tin UserDetail
+            var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.UserId == userId);
+            if (userDetail == null || string.IsNullOrEmpty(userDetail.UnderlyingDisease))
+            {
+                return false; // Không tìm thấy UserDetail hoặc không có bệnh nền
+            }
+
+            // Cập nhật danh sách bệnh
+            var currentDiseases = userDetail.UnderlyingDisease.Split(',').Select(int.Parse).ToList();
+            if (!currentDiseases.Contains(diseaseId))
+            {
+                return false; // Bệnh không tồn tại trong danh sách
+            }
+
+            currentDiseases.Remove(diseaseId);
+            userDetail.UnderlyingDisease = currentDiseases.Any()
+                ? string.Join(",", currentDiseases)
+                : null; // Nếu không còn bệnh nào thì đặt null
+
+            _context.UserDetails.Update(userDetail);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 
 }

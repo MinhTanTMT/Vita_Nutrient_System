@@ -125,5 +125,44 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(routes);
         }
 
+        [HttpGet("user/{userId}/diseases")]
+        public async Task<ActionResult<IEnumerable<ListOfDiseaseDTO>>> GetDiseaseByUserId(int userId)
+        {
+            var diseases = await _nutritionRouteRepositories.GetDiseaseByUserIdAsync(userId);
+            if (diseases == null || !diseases.Any())
+            {
+                return Ok("Không tìm thấy bệnh nền nào cho người dùng này.");
+            }
+            return Ok(diseases);
+        }
+
+        [HttpPost("AddDiseasesOfUser")]
+        public async Task<IActionResult> CreateDisease([FromBody] DataSend data)
+        {
+            var isCreated = await _nutritionRouteRepositories.CreateDiseaseAsync(data.userId, data.diseaseId);
+            if (!isCreated)
+            {
+                return Ok("Không thể thêm bệnh nền. Bệnh đã tồn tại hoặc dữ liệu không hợp lệ.");
+            }
+            return Ok("Thêm bệnh nền thành công.");
+        }
+
+        [HttpDelete("user/{userId}/diseases/{diseaseId}")]
+        public async Task<IActionResult> DeleteDisease(int userId, int diseaseId)
+        {
+            var isDeleted = await _nutritionRouteRepositories.DeleteDiseaseAsync(userId, diseaseId);
+            if (!isDeleted)
+            {
+                return BadRequest("Không thể xóa bệnh nền. Bệnh không tồn tại hoặc dữ liệu không hợp lệ.");
+            }
+            return Ok("Xóa bệnh nền thành công.");
+        }
+
+    }
+
+    public class DataSend
+    {
+        public int userId { get; set; }
+        public int diseaseId { get; set; }
     }
 }

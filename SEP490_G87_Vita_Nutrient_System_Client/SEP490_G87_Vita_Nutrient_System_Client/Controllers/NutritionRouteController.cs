@@ -112,7 +112,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             try
             {
                 var nutritionistId = int.Parse(User.FindFirst("UserId")?.Value);
-
                 ViewData["UserId"] = userId;
                 ViewData["UserListManagementId"] = userListManagementId;
                 ViewData["PackageName"] = packageName;
@@ -369,5 +368,122 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("Delete", new { id, userId, userListManagementId, packageName });
         }
 
+        // Lấy danh sách tất cả các bệnh
+        [HttpGet]
+        public async Task<JsonResult> GetAllDiseases()
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync($"api/disease/GetAllDiseases");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var diseases = JsonSerializer.Deserialize<List<ListOfDisease>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return Json(diseases);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = $"Có lỗi xảy ra: {ex.Message}" });
+            }
+
+            return Json(new List<ListOfDisease>());
+        }
+
+        // Lấy danh sách bệnh theo người dùng
+        [HttpGet]
+        public async Task<JsonResult> GetDiseasesByUserId(int userId)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/user/{userId}/diseases");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var diseases = JsonSerializer.Deserialize<List<ListOfDisease>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return Json(diseases);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = $"Có lỗi xảy ra: {ex.Message}" });
+            }
+
+            return Json(new List<ListOfDisease>());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddDisease(int userId, int diseaseId)
+        {
+            if (userId <= 0 || diseaseId <= 0)
+            {
+                return Json(new { success = false, message = "User ID hoặc Disease ID không hợp lệ." });
+            }
+
+            try
+            {
+                //var payload = JsonSerializer.Serialize(userId , diseaseId);
+                //var content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+                ABCDE newData = new ABCDE() { userId = userId, diseaseId = diseaseId };
+
+
+                HttpResponseMessage response = await client.PostAsJsonAsync($"api/nutritionroute/AddDiseasesOfUser", newData);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Thêm bệnh lý thành công." });
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    return Json(new { success = false, message = $"Không thể thêm bệnh lý: {errorMessage}" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Lỗi hệ thống: {ex.Message}" });
+            }
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteDisease(int userId, int diseaseId)
+        {
+            if (userId <= 0 || diseaseId <= 0)
+            {
+                return Json(new { success = false, message = "User ID hoặc Disease ID không hợp lệ." });
+            }
+
+            try
+            {
+                HttpResponseMessage response = await client.DeleteAsync($"api/nutritionroute/user/{userId}/diseases/{diseaseId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Xóa bệnh lý thành công." });
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    return Json(new { success = false, message = $"Không thể xóa bệnh lý: {errorMessage}" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Lỗi hệ thống: {ex.Message}" });
+            }
+        }
+    
+    }
+
+    public class ABCDE 
+    { 
+        public int userId { get; set; }
+        public int diseaseId { get; set; }
+    
     }
 }
