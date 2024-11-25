@@ -113,6 +113,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 var nutritionistId = int.Parse(User.FindFirst("UserId")?.Value);
 
+                ViewData["UserId"] = userId;
+                ViewData["UserListManagementId"] = userListManagementId;
+                ViewData["PackageName"] = packageName;
+
                 // Gửi yêu cầu đến API
                 HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/{nutritionistId}/user/{userId}/route/{userListManagementId}");
                 if (response.IsSuccessStatusCode)
@@ -136,15 +140,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     // Gán giá trị vào ViewData
                     ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
-                    ViewData["UserId"] = userId;
-                    ViewData["UserListManagementId"] = userListManagementId;
-                    ViewData["PackageName"] = packageName;
 
                     return View(paginatedRoutes);
                 }
             }
             catch (Exception ex)
             {
+
                 ModelState.AddModelError(string.Empty, $"Có lỗi xảy ra: {ex.Message}");
             }
 

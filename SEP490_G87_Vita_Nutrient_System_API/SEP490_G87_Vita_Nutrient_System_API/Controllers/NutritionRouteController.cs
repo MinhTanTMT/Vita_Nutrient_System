@@ -120,7 +120,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var routes = await _nutritionRouteRepositories.GetNutritionRoutesAsync(nutritionistId, userId, userListManagementId);
             if (routes == null || !routes.Any())
             {
-                return NotFound("Không tìm thấy lộ trình nào cho gói đăng ký này.");
+                return Ok("Không tìm thấy lộ trình nào cho gói đăng ký này.");
             }
             return Ok(routes);
         }
