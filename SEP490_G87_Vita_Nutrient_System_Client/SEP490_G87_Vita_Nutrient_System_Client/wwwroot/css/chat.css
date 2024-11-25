@@ -21,15 +21,19 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    word-wrap: break-word; /* Đảm bảo chữ dài không làm tràn */
+    word-break: break-word; /* Tự xuống dòng khi từ quá dài */
 }
 
 /* Tin nhắn */
 .chat-message {
     display: flex;
-    max-width: 75%; /* Chiều rộng tối đa của tin nhắn */
+    max-width: 85%; /* Tăng chiều rộng tối đa của tin nhắn */
     padding: 10px;
     border-radius: 12px;
     word-wrap: break-word;
+    word-break: break-word; /* Chữ dài tự động xuống dòng */
+    white-space: pre-wrap; /* Giữ nguyên định dạng xuống dòng từ người gửi */
 }
 
     .chat-message.sent {
@@ -51,53 +55,69 @@
         display: flex;
         flex-direction: column;
         gap: 5px;
+        max-width: 100%; /* Giới hạn chiều rộng nội dung */
     }
 
         /* Văn bản tin nhắn */
         .chat-message .message-content p {
             margin: 0;
-            word-break: break-word;
+            word-break: break-word; /* Đảm bảo từ dài tự động xuống dòng */
         }
 
         /* Thời gian */
         .chat-message .message-content .timestamp {
             font-size: 0.8em;
             color: #666666;
+            align-self: flex-end; /* Thời gian được căn phải */
         }
 
 /* Khu vực nhập tin nhắn */
 .chat-input-container {
     display: flex;
+    align-items: center; /* Đảm bảo nút "Gửi" căn giữa theo chiều dọc */
     padding: 10px;
     background-color: #ffffff;
     border-top: 1px solid #dddddd;
-    gap: 10px;
+    gap: 10px; /* Khoảng cách giữa textarea và nút gửi */
 }
 
+    /* Textarea nhập tin nhắn */
     .chat-input-container textarea {
-        flex-grow: 1;
-        height: 50px;
-        resize: none;
+        flex-grow: 1; /* Textarea chiếm toàn bộ không gian còn lại */
+        height: auto; /* Tự động điều chỉnh chiều cao */
+        min-height: 50px; /* Chiều cao tối thiểu */
+        max-height: 150px; /* Chiều cao tối đa */
+        resize: none; /* Không cho phép người dùng thay đổi kích thước */
         border: 1px solid #dddddd;
         border-radius: 8px;
         padding: 10px;
         font-size: 1em;
         outline: none;
+        overflow-y: auto; /* Hiển thị thanh cuộn khi nội dung quá dài */
+        box-sizing: border-box; /* Đảm bảo padding không làm thay đổi kích thước */
     }
 
+    /* Nút gửi tin nhắn */
     .chat-input-container button {
-        padding: 0 20px;
+        flex-shrink: 0; /* Đảm bảo nút không co lại */
+        width: 80px; /* Chiều rộng cố định */
+        height: 50px; /* Chiều cao cố định */
         border: none;
         border-radius: 8px;
         background-color: #007bff;
         color: #ffffff;
         font-size: 1em;
         cursor: pointer;
+        display: flex;
+        justify-content: center; /* Căn giữa văn bản trong nút */
+        align-items: center; /* Căn giữa văn bản trong nút */
+        white-space: nowrap; /* Không cho phép chữ trong nút xuống dòng */
     }
 
         .chat-input-container button:hover {
             background-color: #0056b3;
         }
+
 /* Thông báo thành công */
 .chat-message.success .message-content {
     background-color: #d4edda;

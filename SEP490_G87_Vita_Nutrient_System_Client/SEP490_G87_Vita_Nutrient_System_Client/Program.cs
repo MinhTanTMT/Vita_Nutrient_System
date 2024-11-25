@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using SEP490_G87_Vita_Nutrient_System_Client.Hubs;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client
 {
@@ -17,7 +18,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
                 options.Cookie.IsEssential = true;
             });
 
-
+            // Thêm SignalR
+            builder.Services.AddSignalR();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -50,6 +52,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // Map SignalR endpoint
+            app.MapHub<ChatHub>("/chathub");
 
             app.Run();
         }
