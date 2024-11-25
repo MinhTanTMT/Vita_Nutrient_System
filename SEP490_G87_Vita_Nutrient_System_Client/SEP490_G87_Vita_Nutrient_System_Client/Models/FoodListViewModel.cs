@@ -1,4 +1,6 @@
-﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Models
+﻿using SEP490_G87_Vita_Nutrient_System_Client.Models.RecipeDTO;
+
+namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
     public class FoodListViewModel
     {
@@ -8,5 +10,6 @@
         public List<CookingDifficulty> CookingDifficulties { get; set; }
         public List<ListOfDisease> ListOfDiseases { get; set; }
         public List<ListFoodAndDisease> FoodAndDiseases { get; set; }
+        public Dictionary<int, List<RecipeDT>> RecipesByFood { get; set; }
     }
 }

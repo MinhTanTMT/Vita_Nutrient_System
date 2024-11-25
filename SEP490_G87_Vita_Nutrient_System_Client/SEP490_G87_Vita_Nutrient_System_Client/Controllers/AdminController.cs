@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography.Xml;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
+using SEP490_G87_Vita_Nutrient_System_Client.Models.RecipeDTO;
 
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
@@ -952,6 +953,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             var listOfDisease = await GetDiseaseList(diseaseSearch);
             var foodAndDiseases = await GetFoodAndDiseaseList();
 
+            // Tạo dictionary chứa danh sách recipe cho từng món ăn
+            var recipesByFood = new Dictionary<int, List<RecipeDT>>();
+
+            foreach (var food in foodList)
+            {
+                var recipes = await GetFoodRecipes(food.FoodListId);
+                recipesByFood[food.FoodListId] = recipes;
+            }
+
             var viewModel = new FoodListViewModel
             {
                 Foods = foodList,
@@ -959,10 +969,28 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 KeyNotes = keyNotes,
                 CookingDifficulties = cookingDifficulty,
                 ListOfDiseases = listOfDisease,
-                FoodAndDiseases = foodAndDiseases
+                FoodAndDiseases = foodAndDiseases,
+                RecipesByFood = recipesByFood
             };
 
             return View(viewModel);
+        }
+
+
+        public async Task<List<RecipeDT>> GetFoodRecipes(int foodId)
+        {
+            var requestUrl = $"https://localhost:7045/api/Food/GetFoodRecipe/{foodId}";
+
+            var response = await client.GetAsync(requestUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<RecipeDT>();
+            }
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var recipes = JsonConvert.DeserializeObject<List<RecipeDT>>(responseData);
+
+            return recipes ?? new List<RecipeDT>();
         }
 
 
@@ -1185,5 +1213,35 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             return diseaseListResponse ?? new List<ListFoodAndDisease>();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveFoodRecipe([FromBody] SaveFoodRecipeDTO model)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://localhost:7045/");
+                    var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("api/Food/SaveFoodRecipes", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return Json(new { success = true, message = "Recipe saved successfully!" });
+                    }
+                    else
+                    {
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        return Json(new { success = false, message = $"Failed to save recipe: {errorContent}" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
+        }
+
+
     }
 }
