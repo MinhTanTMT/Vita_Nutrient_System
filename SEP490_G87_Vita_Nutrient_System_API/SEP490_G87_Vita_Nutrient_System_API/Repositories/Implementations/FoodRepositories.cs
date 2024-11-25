@@ -144,8 +144,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     var add = new Recipe
                     {
                         FoodListId = item.FoodListId,
-                        NumericalOrder = (recipe.Any() ? recipe.Max(t => t.NumericalOrder) : 0 + 1),
-                        Describe = item.Describe,
+                        NumericalOrder = (short?)((recipe.Any()
+                                        ? recipe.Max(t => t.NumericalOrder) ?? 0
+                                        : 0) + 1),
+                    Describe = item.Describe,
                         Urlimage = item.Urlimage
                     };
 
