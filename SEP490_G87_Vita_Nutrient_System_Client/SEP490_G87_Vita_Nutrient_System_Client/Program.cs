@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client
 {
-    public class Program()
+    public class Program
     {
         public static void Main(string[] args)
         {
@@ -44,11 +44,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
 
             var app = builder.Build();
 
+            Console.WriteLine("Environment: " + app.Environment.EnvironmentName);
+
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
+
             app.UseStaticFiles();
 
             app.UseRouting();
