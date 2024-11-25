@@ -1,6 +1,6 @@
-﻿namespace SEP490_G87_Vita_Nutrient_System_API.Dtos.Disease
+﻿namespace SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels
 {
-    public class SaveDiseaseDTO
+    public class DiseaseResponse
     {
         public int Id { get; set; }
 
