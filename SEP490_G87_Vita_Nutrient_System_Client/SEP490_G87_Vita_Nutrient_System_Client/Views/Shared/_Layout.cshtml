@@ -337,7 +337,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("ListLikedFoods ", "User")">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
@@ -399,7 +399,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("ListLikedFoods ", "User")">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
@@ -432,7 +432,7 @@
                                     <i class="menu-arrow"></i>
                                     <i class="mdi mdi-medical-bag menu-icon"></i>
                                 </a>
-                                <div class="collapse" id="general-pages">
+                                @*<div class="collapse" id="general-pages">
                                     <ul class="nav flex-column sub-menu">
                                         <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
                                         <li class="nav-item"> <a class="nav-link" href="@Url.Action("Login", "Home")"> Login </a></li>
@@ -440,8 +440,11 @@
                                         <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
                                         <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
                                     </ul>
-                                </div>
+                                </div>*@
                             </li>
+
+                            <li class="nav-item"> <a class="nav-link" href="@Url.Action("Login", "Home")"> Login </a></li>
+                            <li class="nav-item"> <a class="nav-link" href="@Url.Action("Register", "Home")"> Register </a></li>
                         }
                     }
 
