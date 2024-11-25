@@ -97,36 +97,47 @@
         <div class="form-group">
             <label for="ingredient-selector">Chọn thực phẩm muốn loại trừ</label>
             <div class="ingredient-selector-container">
-                <select id="ingredient-selector" class="form-control">
-                    <option value="">Chọn thực phẩm</option>
-                    @if (ViewBag.Ingredients != null)
-                    {
-                        foreach (var ingredient in ViewBag.Ingredients)
+                <!-- Trigger dropdown -->
+                <div id="ingredient-selector" class="dropdown-toggle form-control" tabindex="0">
+                    Chọn thực phẩm
+                </div>
+                <!-- Dropdown danh sách -->
+                <div id="ingredient-dropdown" class="dropdown-menu" style="display: none;">
+                    <!-- Ô tìm kiếm -->
+                    <input type="text" id="ingredient-search" class="form-control" placeholder="Tìm kiếm nguyên liệu" style="margin-bottom: 8px;">
+                    <!-- Danh sách thực phẩm -->
+                    <ul id="ingredient-list" class="list-group">
+                        @if (ViewBag.Ingredients != null)
                         {
-                            <option value="@ingredient.Id">@ingredient.Name</option>
+                            foreach (var ingredient in ViewBag.Ingredients)
+                            {
+                                <li data-id="@ingredient.Id" class="list-group-item ingredient-item">@ingredient.Name</li>
+                            }
                         }
-                    }
-                </select>
-                <button type="button" id="add-ingredient-button" class="btn btn-secondary">Thêm vào</button>
+                    </ul>
+                </div>
             </div>
 
-            <!-- Danh sách thực phẩm đã chọn -->
-            <div id="excluded-ingredients-list" class="excluded-list">
+
+
+
+            <!-- Danh sách thực phẩm đã loại trừ -->
+            <div id="excluded-ingredients-list" class="excluded-list mt-3">
                 @if (ViewBag.SelectedIngredients != null)
                 {
                     foreach (var ingredient in ViewBag.SelectedIngredients)
                     {
                         <div class="excluded-item" data-id="@ingredient.Id">
                             @ingredient.Name
-                            <button type="button" class="remove-ingredient-button">❌</button>
+                            <button type="button" class="remove-ingredient-button btn btn-danger btn-sm">❌</button>
                         </div>
                     }
                 }
             </div>
-
             <!-- Giá trị AvoidIngredient -->
             <input type="hidden" id="avoid-ingredient" name="AvoidIngredient" value="@Model.AvoidIngredient" />
         </div>
+
 
 
 
@@ -299,44 +310,79 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const ingredientSelector = document.getElementById('ingredient-selector');
-        const addIngredientButton = document.getElementById('add-ingredient-button');
+        const ingredientDropdown = document.getElementById('ingredient-dropdown');
+        const ingredientSearch = document.getElementById('ingredient-search');
+        const ingredientList = document.getElementById('ingredient-list');
         const excludedIngredientsList = document.getElementById('excluded-ingredients-list');
         const avoidIngredientInput = document.getElementById('avoid-ingredient');
 
-        // Hàm thêm thực phẩm vào danh sách loại trừ
-        function addExcludedIngredient() {
-            const selectedValue = ingredientSelector.value;
-            const selectedText = ingredientSelector.options[ingredientSelector.selectedIndex].text;
-
-            if (!selectedValue) {
-                alert("Vui lòng chọn một thực phẩm để loại trừ!");
-                return;
+        // Hiển thị hoặc ẩn dropdown khi nhấn vào selector
+        ingredientSelector.addEventListener('click', function () {
+            if (ingredientDropdown.style.display === 'none' || ingredientDropdown.style.display === '') {
+                ingredientDropdown.style.display = 'block'; // Hiển thị dropdown
+                ingredientSearch.focus(); // Focus vào ô tìm kiếm
+            } else {
+                ingredientDropdown.style.display = 'none'; // Ẩn dropdown
             }
+        });
 
-            // Kiểm tra xem thực phẩm đã được chọn hay chưa
-            const existingItem = excludedIngredientsList.querySelector(`[data-id="${selectedValue}"]`);
-            if (existingItem) {
-                alert("Thực phẩm này đã được thêm vào danh sách loại trừ!");
-                return;
+        // Tìm kiếm trong danh sách
+        ingredientSearch.addEventListener('input', function () {
+            const searchTerm = ingredientSearch.value.toLowerCase();
+            Array.from(ingredientList.children).forEach(item => {
+                if (item.textContent.toLowerCase().includes(searchTerm)) {
+                    item.style.display = ''; // Hiển thị mục phù hợp
+                } else {
+                    item.style.display = 'none'; // Ẩn mục không phù hợp
+                }
+            });
+        });
+
+        // Chọn một thực phẩm từ danh sách
+        ingredientList.addEventListener('click', function (event) {
+            if (event.target.classList.contains('ingredient-item')) {
+                const selectedId = event.target.getAttribute('data-id');
+                const selectedName = event.target.textContent;
+
+                // Thêm vào danh sách loại trừ
+                createExcludedIngredientItem(selectedId, selectedName);
+
+                // Đóng dropdown sau khi chọn
+                ingredientDropdown.style.display = 'none';
             }
+        });
 
-            // Tạo và thêm thực phẩm vào danh sách hiển thị
-            createExcludedIngredientItem(selectedValue, selectedText);
+        // Hàm khởi tạo sự kiện xóa cho các mục đã được tải
+        function initializeRemoveButtons() {
+            const removeButtons = document.querySelectorAll('.remove-ingredient-button');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const item = button.parentElement;
+                    item.remove();
+                    updateAvoidIngredient();
+                });
+            });
         }
 
-        // Hàm tạo và thêm phần tử thực phẩm loại trừ
+        // Hàm tạo và thêm thực phẩm loại trừ
         function createExcludedIngredientItem(id, name) {
+            // Kiểm tra nếu thực phẩm đã tồn tại trong danh sách
+            const existingItem = Array.from(excludedIngredientsList.children).find(item => item.dataset.id === id);
+            if (existingItem) {
+                alert('Thực phẩm này đã được thêm vào danh sách!');
+                return;
+            }
+
             const item = document.createElement('div');
             item.className = 'excluded-item';
             item.dataset.id = id;
             item.textContent = name;
 
-            // Nút xóa cho từng thành phần
             const removeButton = document.createElement('button');
             removeButton.textContent = "❌";
-            removeButton.className = "remove-ingredient-button";
+            removeButton.className = "remove-ingredient-button btn btn-danger btn-sm";
 
-            // Gắn sự kiện xóa
+            // Gắn sự kiện xóa cho nút "❌"
             removeButton.addEventListener('click', function () {
                 item.remove();
                 updateAvoidIngredient();
@@ -344,33 +390,36 @@
 
             item.appendChild(removeButton);
             excludedIngredientsList.appendChild(item);
-
-            // Cập nhật giá trị AvoidIngredient
             updateAvoidIngredient();
         }
 
-        // Hàm cập nhật giá trị AvoidIngredient
+        // Cập nhật giá trị AvoidIngredient
         function updateAvoidIngredient() {
             const selectedIds = Array.from(excludedIngredientsList.children).map(item => item.dataset.id);
             avoidIngredientInput.value = selectedIds.join(';');
         }
 
-        // Gắn sự kiện cho nút thêm
-        addIngredientButton.addEventListener('click', addExcludedIngredient);
-
-        // Gắn sự kiện cho các thực phẩm đã được tải từ server
-        Array.from(excludedIngredientsList.children).forEach(item => {
-            const removeButton = item.querySelector('.remove-ingredient-button');
-            if (removeButton) {
-                removeButton.addEventListener('click', function () {
-                    item.remove();
-                    updateAvoidIngredient();
-                });
+        // Đóng danh sách khi nhấn ra ngoài
+        document.addEventListener('click', function (event) {
+            if (!ingredientSelector.contains(event.target) && !ingredientDropdown.contains(event.target)) {
+                ingredientDropdown.style.display = 'none';
             }
         });
-        // Cập nhật giá trị AvoidIngredient ban đầu
-        updateAvoidIngredient();
+
+        // Không cần giới hạn số lượng mục hiển thị, chỉ cần bật thanh cuộn qua CSS
+        function applyScrollBehavior() {
+            ingredientList.style.maxHeight = '240px'; // Giới hạn chiều cao (8 mục, khoảng 30px mỗi mục)
+            ingredientList.style.overflowY = 'auto'; // Thanh cuộn dọc
+        }
+
+        // Khởi tạo thanh cuộn cho danh sách
+        applyScrollBehavior();
+
+        // Khởi tạo sự kiện cho các mục đã tải
+        initializeRemoveButtons();
     });
+
+
 
 
 
