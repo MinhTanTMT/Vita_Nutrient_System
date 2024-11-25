@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using SEP490_G87_Vita_Nutrient_System_Client.Hubs;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client
 {
@@ -38,6 +39,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
                 options.CallbackPath = googleAuthSettings["CallbackPath"];
             });
 
+            // Thêm SignalR
+            builder.Services.AddSignalR();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddAuthorization();
@@ -60,6 +64,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // Map SignalR endpoint
+            app.MapHub<ChatHub>("/chathub");
 
             app.Run();
         }
