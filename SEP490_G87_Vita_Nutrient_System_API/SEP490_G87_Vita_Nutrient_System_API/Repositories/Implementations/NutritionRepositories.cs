@@ -258,6 +258,255 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             return (bool)relation.IsGoodOrBad;
         }
+
+        public async Task<List<GetFoodListDTO>> GetFoodLists(string search)
+        {
+            return await _context.FoodLists.Include(ft => ft.FoodType).Include(kn => kn.KeyNote).Include(cd => cd.CookingDifficulty)
+            .Where(f => (string.IsNullOrEmpty(search) || f.Name.Contains(search))).Select(fl => new GetFoodListDTO
+            {
+                FoodListId = fl.FoodListId,
+                Name = fl.Name,
+                KeyNoteId = fl.KeyNoteId,
+                FoodTypeId = fl.FoodTypeId,
+                CookingDifficultyId = fl.CookingDifficultyId,
+                Describe = fl.Describe,
+                Rate = fl.Rate,
+                NumberRate = fl.NumberRate,
+                Urlimage = fl.Urlimage,
+                FoodTypeName = fl.FoodType.Name,
+                KeyNoteName = fl.KeyNote.KeyList,
+                IsActive = fl.IsActive,
+                PreparationTime = fl.PreparationTime,
+                CookingTime = fl.CookingTime,
+                CookingDifficultyName = fl.CookingDifficulty.Name
+            })
+            .ToListAsync();
+        }
+
+        public async Task<GetFoodListDTO> GetFoodList(int id)
+        {
+            var foodList = await _context.FoodLists.Include(ft => ft.FoodType).Include(kn => kn.KeyNote).Include(cd => cd.CookingDifficulty).Select(fl => new GetFoodListDTO
+            {
+                FoodListId = fl.FoodListId,
+                Name = fl.Name,
+                Describe = fl.Describe,
+                Rate = fl.Rate,
+                NumberRate = fl.NumberRate,
+                Urlimage = fl.Urlimage,
+                FoodTypeName = fl.FoodType.Name,
+                KeyNoteName = fl.KeyNote.KeyList,
+                IsActive = fl.IsActive,
+                PreparationTime = fl.PreparationTime,
+                CookingTime = fl.CookingTime,
+                CookingDifficultyName = fl.CookingDifficulty.Name
+            }).FirstOrDefaultAsync(t => t.FoodListId == id);
+
+            if (foodList == null)
+            {
+                return null;
+            }
+
+            return foodList;
+        }
+
+        public async Task<FoodList> SaveFoodList(SaveFoodDTO model)
+        {
+            FoodList food;
+
+            if (model.FoodListId == 0)
+            {
+                food = new FoodList
+                {
+                    Name = model.Name,
+                    Describe = model.Describe,
+                    Rate = model.Rate,
+                    NumberRate = model.NumberRate,
+                    Urlimage = model.Urlimage,
+                    FoodTypeId = model.FoodTypeId,
+                    KeyNoteId = model.KeyNoteId,
+                    IsActive = true,
+                    PreparationTime = model.PreparationTime,
+                    CookingTime = model.CookingTime,
+                    CookingDifficultyId = model.CookingDifficultyId
+                };
+                await _context.AddAsync(food);
+            }
+            else
+            {
+                food = await _context.FoodLists.FirstOrDefaultAsync(t => t.FoodListId == model.FoodListId);
+                if (food == null)
+                {
+                    return null;
+                }
+
+                // Cập nhật từng thuộc tính của food từ model
+                food.Name = model.Name;
+                food.Describe = model.Describe;
+                food.Rate = model.Rate;
+                food.NumberRate = model.NumberRate;
+                food.Urlimage = model.Urlimage;
+                food.FoodTypeId = model.FoodTypeId;
+                food.KeyNoteId = model.KeyNoteId;
+                food.IsActive = model.IsActive;
+                food.PreparationTime = model.PreparationTime;
+                food.CookingTime = model.CookingTime;
+                food.CookingDifficultyId = model.CookingDifficultyId;
+
+                _context.FoodLists.Update(food);
+            }
+
+            await _context.SaveChangesAsync();
+            return food;
+        }
+
+        public async Task<int> DeleteFoodList(int id)
+        {
+            var foodList = await _context.FoodLists.FirstOrDefaultAsync(t => t.FoodListId == id);
+            if (foodList == null)
+            {
+                return 0;
+            }
+
+            foodList.IsActive = !foodList.IsActive;
+            await _context.SaveChangesAsync();
+
+            return foodList.FoodListId;
+        }
+
+        public async Task<List<ListOfDisease>> GetDiseases(string search)
+        {
+            return await _context.ListOfDiseases
+            .Where(d => string.IsNullOrEmpty(search) || d.Name.Contains(search))
+            .ToListAsync();
+        }
+
+        public async Task<ListOfDisease> GetDiseases(int id)
+        {
+            var disease = await _context.ListOfDiseases.FirstOrDefaultAsync(t => t.Id == id);
+
+            if (disease == null)
+            {
+                return null;
+            }
+
+            return disease;
+        }
+
+        public async Task<ListOfDisease> SaveDisease(SaveDiseaseDTO model)
+        {
+            ListOfDisease disease;
+
+            if (model.Id == 0)
+            {
+                disease = new ListOfDisease
+                {
+                    Name = model.Name,
+                    Describe = model.Describe
+                };
+                await _context.AddAsync(disease);
+            }
+            else
+            {
+                disease = await _context.ListOfDiseases.FirstOrDefaultAsync(t => t.Id == model.Id);
+                if (disease == null)
+                {
+                    return null;
+                }
+
+                disease.Name = model.Name;
+                disease.Describe = model.Describe;
+            }
+
+            await _context.SaveChangesAsync();
+            return disease;
+        }
+
+
+        public async Task<ListFoodAndDiseaseDTO> GetFoodAndDiseases(int foodId, int diseaseId)
+        {
+            var foodAndDisease = await _context.FoodAndDiseases
+            .Include(f => f.FoodList)
+            .Include(d => d.ListOfDiseases).Select(fd => new ListFoodAndDiseaseDTO
+            {
+                FoodListId = fd.FoodListId,
+                ListOfDiseasesId = fd.ListOfDiseasesId,
+                DiseaseName = fd.ListOfDiseases.Name,
+                DiseaseDescribe = fd.ListOfDiseases.Describe,
+                FoodName = fd.FoodList.Name,
+                FoodDescribe = fd.FoodList.Describe,
+                Describe = fd.Describe,
+                IsGoodOrBad = fd.IsGoodOrBad
+            }).Where(t => _context.FoodLists.FirstOrDefault(b => b.IsActive == true && b.FoodListId == t.FoodListId) != null)
+            .FirstOrDefaultAsync(fd => fd.FoodListId == foodId && fd.ListOfDiseasesId == diseaseId);
+
+            return foodAndDisease;
+        }
+
+        public async Task<List<ListFoodAndDiseaseDTO>> GetFoodAndDiseases()
+        {
+            return await _context.FoodAndDiseases.Include(f => f.FoodList).Include(d => d.ListOfDiseases).Select(fd => new ListFoodAndDiseaseDTO
+            {
+                FoodListId = fd.FoodListId,
+                ListOfDiseasesId = fd.ListOfDiseasesId,
+                DiseaseName = fd.ListOfDiseases.Name,
+                DiseaseDescribe = fd.ListOfDiseases.Describe,
+                FoodName = fd.FoodList.Name,
+                FoodDescribe = fd.FoodList.Describe,
+                Describe = fd.Describe,
+                IsGoodOrBad = fd.IsGoodOrBad
+            }).Where(t => _context.FoodLists.FirstOrDefault(b => b.IsActive == true && b.FoodListId == t.FoodListId) != null).ToListAsync();
+        }
+
+        public async Task<FoodAndDisease> SaveFoodAndDiseases(SaveFoodAndDiseaseDTO model)
+        {
+            var check = await _context.FoodAndDiseases.FirstOrDefaultAsync(t => t.ListOfDiseasesId == model.ListOfDiseasesId && t.FoodListId == model.FoodListId);
+            if (check != null)
+            {
+                if(model.IsGoodOrBad == null)
+                {
+                    model.IsGoodOrBad = false;
+                }
+                check.ListOfDiseasesId = model.ListOfDiseasesId;
+                check.FoodListId = model.FoodListId;
+                check.Describe = model.Describe;
+                check.IsGoodOrBad = model.IsGoodOrBad;
+
+                _context.FoodAndDiseases.Update(check);
+            }
+            else
+            {
+                if (model.IsGoodOrBad == null)
+                {
+                    model.IsGoodOrBad = false;
+                }
+                check = new FoodAndDisease()
+                {
+                    ListOfDiseasesId = model.ListOfDiseasesId,
+                    FoodListId = model.FoodListId,
+                    Describe = model.Describe,
+                    IsGoodOrBad = model.IsGoodOrBad
+                };
+                await _context.AddAsync(check);
+            }
+            await _context.SaveChangesAsync();
+
+            return check;
+        }
+
+        public async Task<int> DeleteFoodAndDisease(int foodId, int diseaseId)
+        {
+            var foodAndDisease = await _context.FoodAndDiseases
+            .FirstOrDefaultAsync(fd => fd.FoodListId == foodId && fd.ListOfDiseasesId == diseaseId);
+
+            if (foodAndDisease == null)
+            {
+                return 0;
+            }
+
+            _context.FoodAndDiseases.Remove(foodAndDisease);
+            await _context.SaveChangesAsync();
+
+            return foodAndDisease.ListOfDiseasesId;
     }
 
 }

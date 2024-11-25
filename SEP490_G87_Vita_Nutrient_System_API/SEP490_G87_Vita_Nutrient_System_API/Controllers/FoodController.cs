@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos.Recipe;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
@@ -105,6 +106,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(types);
         }
 
+        [HttpPost("SaveFoodRecipes")]
+        public async Task<string> SaveFoodRecipes([FromBody] SaveFoodRecipeDTO model)
+        {
+            return await foodRepositories.SaveFoodRecipe(model);
+        } 
     }
 }
 
