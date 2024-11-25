@@ -561,7 +561,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     User user = new()
                     {
-                        UserId = userData.id,
+                        UserId = userData.userId,
                         FirstName = userData.firstName,
                         LastName = userData.lastName,
                         Urlimage = userData.urlimage,
