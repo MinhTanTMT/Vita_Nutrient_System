@@ -1,72 +1,40 @@
-﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionRoute
-
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.UserListManagement
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
-<div class="container mt-5">
-    <h1 class="page-title text-center mb-4"><strong>Tạo Lộ Trình Mới</strong></h1>
-    <!-- Nút Quay lại -->
-    <a asp-action="GetNutritionRoutes"
-       asp-route-userId="@ViewData["UserId"]"
-       asp-route-userListManagementId="@ViewData["UserListManagementId"]"
-       asp-route-packageName="@ViewData["PackageName"]"
-       asp-route-pageNumber="@ViewData["CurrentPage"]"
-       class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left"></i> Quay lại
-    </a>
-
+<div class="container">
+    <h2 class="page-title text-center mb-4">Tạo Lộ Trình Dinh Dưỡng Mới</h2>
     <form asp-controller="NutritionRoute" asp-action="Create" method="post" enctype="multipart/form-data" class="create-form">
-        <!-- Ẩn các giá trị cần thiết để gửi lên Controller -->
-        <input type="hidden" name="userId" value="@ViewData["UserId"]" />
-        <input type="hidden" name="userListManagementId" value="@ViewData["UserListManagementId"]" />
-        <input type="hidden" name="packageName" value="@ViewData["PackageName"]" />
-
-        <input type="hidden" asp-for="UserId" />
-        <input type="hidden" asp-for="CreateById" />
-        <input type="hidden" asp-for="IsDone" />
-
-        <!-- Tên lộ trình -->
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label">Tên lộ trình</label>
-            <input asp-for="Name" class="form-control" placeholder="Nhập tên lộ trình" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+        <div class="form-group mb-3 d-flex align-items-center">
+            <label class="form-label user-label mb-0">Người sử dụng:   </label>
+            <span class="user-name">@Model.UserName</span>
+            <input type="hidden" asp-for="UserId" />
         </div>
-
-        <!-- Mô tả -->
-        <div class="mb-3">
-            <label asp-for="Describe" class="form-label">Mô tả</label>
-            <textarea asp-for="Describe" class="form-control" rows="3" placeholder="Nhập mô tả lộ trình"></textarea>
+        <div class="form-group">
+            <label for="Describe">Mô Tả</label>
+            <textarea asp-for="Describe" class="form-control"></textarea>
             <span asp-validation-for="Describe" class="text-danger"></span>
         </div>
-
-        <!-- Ngày bắt đầu -->
-        <div class="mb-3">
-            <label asp-for="StartDate" class="form-label">Ngày bắt đầu</label>
-            <input asp-for="StartDate" type="date" class="form-control" />
+        <div class="form-group">
+            <label for="StartDate">Ngày Bắt Đầu</label>
+            <input type="date" asp-for="StartDate" class="form-control" />
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
-
-        <!-- Ngày kết thúc -->
-        <div class="mb-3">
-            <label asp-for="EndDate" class="form-label">Ngày kết thúc</label>
-            <input asp-for="EndDate" type="date" class="form-control" />
+        <div class="form-group">
+            <label for="EndDate">Ngày Kết Thúc</label>
+            <input type="date" asp-for="EndDate" class="form-control" />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
-
-        <p>User ID: @ViewData["UserId"]</p>
-        <p>User List Management ID: @ViewData["UserListManagementId"]</p>
-        <p>Package Name: @ViewData["PackageName"]</p>
-
-        <!-- Nút Gửi -->
+        <div class="form-group">
+            <input type="hidden" asp-for="IsDone" value="false" />
+        </div>
         <div class="form-group action-buttons text-center mb-4">
             <input type="submit" value="Tạo lộ trình" class="btn btn-primary" />
+            <a asp-action="GetRouteByUser" asp-route-userId="@Model.UserId" class="btn btn-secondary">Quay lại danh sách</a>
         </div>
     </form>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
 <style>
     .container {
         max-width: 70%;

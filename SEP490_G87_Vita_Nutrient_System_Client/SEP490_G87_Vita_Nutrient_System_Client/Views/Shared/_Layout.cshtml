@@ -81,6 +81,7 @@
                                         {
                                             <p class="mb-1 text-black">@Context.Session.GetString("takeFullName")</p>
                                         }
+
                                     </div>
                                 </a>
                                 <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
@@ -209,7 +210,7 @@
             </div>
         </nav>
         <!-- partial -->
-        <div class="container-fluid page-body-wrapper" style="flex-wrap: wrap;">
+        <div class="container-fluid page-body-wrapper">
             <!-- partial:partials/_sidebar.html -->
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
@@ -220,7 +221,7 @@
                         if (role != null)
                         {
                             <li class="nav-item nav-profile">
-                                <a href="@Url.Action("UserProfileSon", "User")" class="nav-link">
+                                <a href="#" class="nav-link">
                                     <div class="nav-profile-image">
 
                                         @if (Context.Session.GetString("imageUrl") != null)
@@ -270,12 +271,6 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("ListPackages", "Admin")">
-                                        <span class="menu-title">Package Management</span>
-                                        <i class="mdi mdi-package menu-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("Index", "News")">
                                         <span class="menu-title">News</span>
                                         <i class="mdi mdi-newspaper menu-icon"></i>
@@ -287,7 +282,7 @@
                             else if (role.Equals("Nutritionist"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("GetInfoAllPremiumUserByNutritionist", "NutritionRoute")">
+                                    <a class="nav-link" href="@Url.Action("GetUsersByCreateId", "NutritionRoute")">
                                         <span class="menu-title">Quản lý khách hàng</span>
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
@@ -342,7 +337,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("ListLikedFoods ", "User")">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
@@ -404,7 +399,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("ListLikedFoods ", "User")">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
@@ -437,7 +432,7 @@
                                     <i class="menu-arrow"></i>
                                     <i class="mdi mdi-medical-bag menu-icon"></i>
                                 </a>
-                                <div class="collapse" id="general-pages">
+                                @*<div class="collapse" id="general-pages">
                                     <ul class="nav flex-column sub-menu">
                                         <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
                                         <li class="nav-item"> <a class="nav-link" href="@Url.Action("Login", "Home")"> Login </a></li>
@@ -445,8 +440,11 @@
                                         <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
                                         <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
                                     </ul>
-                                </div>
+                                </div>*@
                             </li>
+
+                            <li class="nav-item"> <a class="nav-link" href="@Url.Action("Login", "Home")"> Login </a></li>
+                            <li class="nav-item"> <a class="nav-link" href="@Url.Action("Register", "Home")"> Register </a></li>
                         }
                     }
 

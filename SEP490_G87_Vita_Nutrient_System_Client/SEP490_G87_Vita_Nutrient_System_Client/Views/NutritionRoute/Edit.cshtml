@@ -1,4 +1,4 @@
-﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionRoute
+﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.UserListManagement
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
@@ -7,18 +7,10 @@
     <form asp-controller="NutritionRoute" asp-action="Edit" method="post" enctype="multipart/form-data" class="edit-form p-4 rounded shadow">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="UserId" />
-        <input type="hidden" name="userListManagementId" value="@ViewData["UserListManagementId"]" />
-        <input type="hidden" name="packageName" value="@ViewData["PackageName"]" />
 
         <div class="form-group mb-3 d-flex align-items-center">
             <label class="form-label user-label mb-0">Người sử dụng:   </label>
-            <span class="user-name">@Model.FullName</span>
-        </div>
-
-        <div class="form-group mb-3">
-            <label for="Name" class="form-label">Tên lộ trình</label>
-            <textarea asp-for="Name" class="form-control"></textarea>
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <span class="user-name">@Model.UserName</span>
         </div>
 
         <div class="form-group mb-3">
@@ -52,16 +44,8 @@
         <div class="form-group text-center">
             <input type="hidden" asp-for="Id" />
             <input type="submit" class="btn btn-primary" value="Lưu Thay Đổi">
-            <a asp-action="GetNutritionRoutes"
-               asp-route-userId="@ViewData["UserId"]"
-               asp-route-userListManagementId="@ViewData["UserListManagementId"]"
-               asp-route-packageName="@ViewData["PackageName"]"
-               class="btn btn-secondary">Hủy</a>
+            <a asp-action="GetRouteByUser" asp-route-userId="@Model.UserId" class="btn btn-secondary">Hủy</a>
         </div>
-
-        <!-- Kiểm tra giá trị được truyền -->
-       @*  <p>@($"ID: {ViewData["ID"]}, UserId: {ViewData["UserId"]}, UserListManagementId: {ViewData["UserListManagementId"]}, PackageName: {ViewData["PackageName"]}")</p> *@
-
     </form>
 </div>
 <script>
