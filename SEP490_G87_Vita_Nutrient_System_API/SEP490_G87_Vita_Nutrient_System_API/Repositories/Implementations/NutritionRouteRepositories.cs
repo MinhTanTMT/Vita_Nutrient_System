@@ -15,7 +15,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
 
 
-        public async Task<IEnumerable<UserDTO>> GetAllPremiumUserAsync(int nutritionistId)
+        public async Task<IEnumerable<UserDTO>> GetAllUsersByCreateIdAsync(int nutritionistId)
         {
             return await _context.UserListManagements
                 .Where(route => route.NutritionistId == nutritionistId)
@@ -45,7 +45,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
 
         // Get nutrition route by NutritionistId and UserId
-        public async Task<IEnumerable<UserListManagementDTO>> GetPremiumUserByNutritionistIdAndUserIdAsync(int nutritionistId, int userId)
+        public async Task<IEnumerable<UserListManagementDTO>> GetNutritionRoutesByNutritionistIdAndUserIdAsync(int nutritionistId, int userId)
         {
             return await _context.UserListManagements
                 .Where(route => route.NutritionistId == nutritionistId && route.UserId == userId) // Lọc theo NutritionistId và userId
@@ -70,125 +70,91 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
 
         // Get nutrition route by ID
-        public async Task<NutritionRouteDTO> GetNutritionRouteByIdAsync(int id)
+        public async Task<UserListManagementDTO> GetNutritionRouteByIdAsync(int id)
         {
-            var route = await _context.NutritionRoutes
-                .Include(r => r.User) // Bao gồm thông tin của User
+            var route = await _context.UserListManagements
+                .Include(route => route.Nutritionist)
+                .Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (route == null) return null;
 
-            return new NutritionRouteDTO
+            return new UserListManagementDTO
             {
                 Id = route.Id,
                 UserId = route.UserId,
-                CreateById = route.CreateById,
-                Name = route.Name,
+                NutritionistId = route.NutritionistId,
                 Describe = route.Describe,
                 StartDate = route.StartDate,
                 EndDate = route.EndDate,
                 IsDone = route.IsDone,
-                FullName = route.User.FirstName + " " + route.User.LastName
+                NutritionistName = route.Nutritionist.FirstName + " " + route.Nutritionist.LastName,
+                UserName = route.User.FirstName + " " + route.User.LastName
+
             };
         }
 
 
-        public async Task<bool> CreateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto, int userListManagementId)
+        // Create a new nutrition route
+        public async Task<bool> CreateNutritionRouteAsync(UserListManagementDTO userListManagementDto)
         {
-            // Kiểm tra UserListManagement (gói đăng ký nâng cao)
-            var relatedUserListManagement = await _context.UserListManagements
-                .FirstOrDefaultAsync(ul => ul.Id == userListManagementId
-                                           && ul.NutritionistId == nutritionRouteDto.CreateById
-                                           && ul.UserId == nutritionRouteDto.UserId);
-
-            if (relatedUserListManagement == null)
+            // Kiểm tra người dùng với UserId
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userListManagementDto.UserId);
+            if (user == null)
             {
-                return false; // Gói đăng ký không tồn tại
+                return false; // Người dùng không tồn tại
             }
 
-            // Kiểm tra thời gian của lộ trình nằm trong khoảng thời gian gói đăng ký
-            if (nutritionRouteDto.StartDate < relatedUserListManagement.StartDate ||
-                nutritionRouteDto.EndDate > relatedUserListManagement.EndDate)
+            // Create new NutritionRoute entity
+            var route = new UserListManagement
             {
-                return false; // Thời gian không hợp lệ
-            }
-
-            // Tạo mới NutritionRoute
-            var route = new NutritionRoute
-            {
-                UserId = nutritionRouteDto.UserId,
-                CreateById = nutritionRouteDto.CreateById,
-                Name = nutritionRouteDto.Name,
-                Describe = nutritionRouteDto.Describe,
-                StartDate = nutritionRouteDto.StartDate,
-                EndDate = nutritionRouteDto.EndDate,
-                IsDone = nutritionRouteDto.IsDone
+                UserId = userListManagementDto.UserId, // ID của người dùng được truyền vào
+                NutritionistId = userListManagementDto.NutritionistId,
+                Describe = userListManagementDto.Describe,
+                StartDate = userListManagementDto.StartDate,
+                EndDate = userListManagementDto.EndDate,
+                IsDone = userListManagementDto.IsDone
             };
 
-            _context.NutritionRoutes.Add(route);
+            _context.UserListManagements.Add(route);
             await _context.SaveChangesAsync();
             return true;
         }
-
 
 
         // Update an existing nutrition route
-        public async Task<bool> UpdateNutritionRouteAsync(NutritionRouteDTO nutritionRouteDto, int userListManagementId)
+        public async Task UpdateNutritionRouteAsync(UserListManagementDTO userListManagementDto)
         {
-            // Kiểm tra UserListManagement (gói đăng ký nâng cao)
-            var relatedUserListManagement = await _context.UserListManagements
-                .FirstOrDefaultAsync(ul => ul.Id == userListManagementId
-                                           && ul.NutritionistId == nutritionRouteDto.CreateById
-                                           && ul.UserId == nutritionRouteDto.UserId);
+            var route = await _context.UserListManagements
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == userListManagementDto.Id);
 
-            if (relatedUserListManagement == null)
-            {
-                return false; // Gói đăng ký không tồn tại
-            }
+            if (route == null) return;
 
-            // Kiểm tra thời gian của lộ trình nằm trong khoảng thời gian gói đăng ký
-            if (nutritionRouteDto.StartDate < relatedUserListManagement.StartDate ||
-                nutritionRouteDto.EndDate > relatedUserListManagement.EndDate)
-            {
-                return false; // Thời gian không hợp lệ
-            }
+            // Cập nhật các thuộc tính có thể sửa đổi
+            route.Describe = userListManagementDto.Describe;
+            route.StartDate = userListManagementDto.StartDate;
+            route.EndDate = userListManagementDto.EndDate;
+            route.IsDone = userListManagementDto.IsDone;
 
-            // Lấy lộ trình cần cập nhật
-            var route = await _context.NutritionRoutes.FirstOrDefaultAsync(r => r.Id == nutritionRouteDto.Id);
+            // Thiết lập UserName dựa trên thông tin từ cơ sở dữ liệu, không cho phép người dùng sửa
+            userListManagementDto.UserName = route.User.FirstName + " " + route.User.LastName;
 
-            if (route == null)
-            {
-                return false; // Lộ trình không tồn tại
-            }
-
-            // Cập nhật thông tin
-            route.Name = nutritionRouteDto.Name;
-            route.Describe = nutritionRouteDto.Describe;
-            route.StartDate = nutritionRouteDto.StartDate;
-            route.EndDate = nutritionRouteDto.EndDate;
-            route.IsDone = nutritionRouteDto.IsDone;
-
-            _context.NutritionRoutes.Update(route);
+            _context.UserListManagements.Update(route);
             await _context.SaveChangesAsync();
-            return true;
         }
-
 
 
         // Delete a nutrition route
         public async Task DeleteNutritionRouteAsync(int id)
         {
-            var route = await _context.NutritionRoutes
-                .Include(r => r.MealOfTheDays)
+            var route = await _context.UserListManagements
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (route == null) return;
 
-            // Xóa tất cả các MealOfTheDay liên quan
-            _context.MealOfTheDays.RemoveRange(route.MealOfTheDays);
-
             // Xóa NutritionRoute
-            _context.NutritionRoutes.Remove(route);
+            _context.UserListManagements.Remove(route);
             await _context.SaveChangesAsync();
         }
 

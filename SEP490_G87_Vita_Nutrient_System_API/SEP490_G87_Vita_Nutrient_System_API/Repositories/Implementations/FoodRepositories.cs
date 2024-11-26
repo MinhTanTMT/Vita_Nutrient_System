@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SEP490_G87_Vita_Nutrient_System_API.Dtos.Recipe;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using System.Reflection.Metadata.Ecma335;
@@ -13,7 +14,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public FoodList? GetFood(int foodId)
         {
             return _context.FoodLists.Include(food => food.FoodType)
-                .FirstOrDefault(f=>f.FoodListId == foodId);
+                .FirstOrDefault(f => f.FoodListId == foodId);
         }
 
         public List<Recipe> GetFoodRecipe(int foodId)
@@ -77,7 +78,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             var ingradient = _context.IngredientDetails100gs.Find(id);
 
-            if(ingradient != null)
+            if (ingradient != null)
             {
                 _context.Entry<IngredientDetails100g>(ingradient).State = EntityState.Detached;
                 return true;
@@ -116,6 +117,47 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return _context.ScaleAmounts
                 .Include(s => s.IngredientDetails)
                 .Where(s => s.FoodListId == foodId).ToList();
+        }
+
+        public async Task<string> SaveFoodRecipe(SaveFoodRecipeDTO model)
+        {
+            var food = await _context.FoodLists.FirstOrDefaultAsync(t => t.FoodListId == model.FoodId);
+            if (food == null)
+            {
+                return "Food not found!";
+            }
+            var recipe = GetFoodRecipe(model.FoodId);
+
+            foreach (var item in model.Recipes)
+            {
+                var entity = recipe.FirstOrDefault(t => t.RecipeId == item.RecipeId);
+                if (entity != null)
+                {
+                    entity.NumericalOrder = item.NumericalOrder;
+                    entity.Describe = item.Describe;
+                    entity.Urlimage = item.Urlimage;
+
+                    _context.Update(entity);
+                }
+                else
+                {
+                    var add = new Recipe
+                    {
+                        FoodListId = item.FoodListId,
+                        NumericalOrder = (short?)((recipe.Any()
+                                        ? recipe.Max(t => t.NumericalOrder) ?? 0
+                                        : 0) + 1),
+                    Describe = item.Describe,
+                        Urlimage = item.Urlimage
+                    };
+
+                    await _context.AddAsync(add);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return "Save Recipe successfully!";
         }
     }
 }

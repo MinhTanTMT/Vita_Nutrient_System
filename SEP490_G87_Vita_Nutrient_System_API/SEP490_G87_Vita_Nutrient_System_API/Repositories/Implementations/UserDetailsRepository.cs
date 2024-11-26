@@ -71,15 +71,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public UserDetail GetUserDetail(int userId)
-        {
-            return _context.UserDetails.SingleOrDefault(u => u.UserId == userId);
-        }
 
-        public void UpdateUserDetails(UserDetail userDetail)
-        {
-            _context.Entry<UserDetail>(userDetail).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
     }
 }

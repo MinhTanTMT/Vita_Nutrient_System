@@ -21,8 +21,47 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetInfoAllPremiumUserByNutritionist(string search, int pageNumber = 1, int pageSize = 10)
+       /* public async Task<IActionResult> GetNutritionists(string search, int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                var roleId = 2;
+                // Gửi yêu cầu đến API
+                HttpResponseMessage response = await client.GetAsync($"api/users/GetUserByRole/{roleId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var users = JsonSerializer.Deserialize<List<User>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    // Tìm kiếm từ khóa nếu có
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        users = users.Where(u =>
+                            (u.FullName != null && u.FullName.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
+                            (u.Phone != null && u.Phone.Contains(search, StringComparison.OrdinalIgnoreCase))
+                        ).ToList();
+                        ViewData["search"] = search;
+                    }
+
+                    // Phân trang
+                    int totalItems = users.Count;
+                    var paginatedUsers = users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                    // Truyền thông tin phân trang vào ViewData
+                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    ViewData["CurrentPage"] = pageNumber;
+
+                    return View(paginatedUsers);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Có lỗi xảy ra: {ex.Message}");
+            }
+            return View();
+        }*/
+
+        public async Task<IActionResult> GetUsersByCreateId(string search, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
@@ -66,8 +105,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View(new List<User>());
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetDetailsAllPremiumUserByNutritionist(int userId, string search, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetRouteByUser(int userId, string search, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
@@ -84,6 +122,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         ViewData["CurrentPage"] = pageNumber;
                         return View(new List<UserListManagement>());
                     }
+
+
+                    /*// Tìm kiếm theo từ khóa
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        routes = routes.Where(r =>
+                            (r.Name != null && r.Name.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
+                            (r.FullName != null && r.FullName.Contains(search, StringComparison.OrdinalIgnoreCase))
+                        ).ToList();
+
+                        ViewData["search"] = search;
+                    }*/
 
                     // Phân trang
                     int totalItems = routes.Count;
@@ -434,11 +484,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var route = JsonSerializer.Deserialize<UserListManagement>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                // Gán giá trị vào ViewData
-                ViewData["ID"] = id;
-                ViewData["UserId"] = userId;
-                ViewData["UserListManagementId"] = userListManagementId;
-                ViewData["PackageName"] = packageName;
                 return View(route);
             }
             return NotFound();
@@ -447,36 +492,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         // POST: NutritionRoute/Delete/{id}
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id, int userId, int userListManagementId, string packageName)
+        public async Task<IActionResult> DeleteConfirmed(int id, int userId)
         {
-            try
+            HttpResponseMessage response = await client.DeleteAsync($"api/nutritionroute/{id}");
+            if (response.IsSuccessStatusCode)
             {
-                // Gửi yêu cầu DELETE đến API
-                HttpResponseMessage response = await client.DeleteAsync($"api/nutritionroute/{id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    // Chuyển hướng về trang GetNutritionRoutes sau khi xóa thành công
-                    return RedirectToAction("GetNutritionRoutes", new
-                    {
-                        userId,
-                        userListManagementId,
-                        packageName
-                    });
-                }
-                else
-                {
-                    // Ghi lại lỗi nếu DELETE không thành công
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    ModelState.AddModelError(string.Empty, $"Không thể xóa lộ trình dinh dưỡng: {errorContent}");
-                }
+                return RedirectToAction("GetRouteByUser", new { userId = userId });
             }
-            catch (Exception ex)
-            {
-                // Xử lý lỗi nếu có ngoại lệ xảy ra
-                ModelState.AddModelError(string.Empty, $"Lỗi xảy ra khi xóa lộ trình: {ex.Message}");
-            }
-
+            return View("Error");
+        }
             // Nếu lỗi xảy ra, hiển thị lại trang xóa với thông báo lỗi
             return RedirectToAction("Delete", new { id, userId, userListManagementId, packageName });
         }

@@ -173,11 +173,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("GetNutritionistPackages/{id}")]
-        public async Task<ActionResult<ExpertPackageResponse>> GetNutritionistPackages(short id)
+        public async Task<ActionResult<List<ExpertPackageResponse>>> GetNutritionistPackages(int id)
         {
-            ExpertPackage packages = repositories.GetNutritionistPackages(id);
+            List<ExpertPackage> packages = repositories.GetNutritionistPackages(id).ToList();
 
-            var result = _mapper.Map<ExpertPackageResponse>(packages);
+            var result = packages
+                .Select(p => _mapper.Map<ExpertPackageResponse>(p))
+                .ToList();
 
             return Ok(result);
         }

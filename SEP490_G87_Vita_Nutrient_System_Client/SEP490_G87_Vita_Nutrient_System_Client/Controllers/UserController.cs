@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -310,10 +309,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
 
-        ////////////////////////////////////////////////////////////
-        /// Sơn
-        ////////////////////////////////////////////////////////////
-        ///
+
 
         [HttpGet("foodsList")]
         public async Task<IActionResult> FoodList(
@@ -350,6 +346,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     foods.RemoveAll(f => f.IsActive == false);
                     //remove foods that are blocked
                     foods.RemoveAll(food => foodIds.Contains(food.FoodListId));
+
+                    ////////////////////////////////////////////////////////////
+                    /// Sơn
+                    ////////////////////////////////////////////////////////////
+                    ///
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
@@ -687,7 +688,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
         [HttpGet, Authorize(Roles = "User, UserPremium")]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = "")
+        public async Task<IActionResult> ListLikedFoods(int page = 1, int pageSize = 10, string search = "")
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
 
@@ -868,7 +869,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
 
             // Call the API to get blocked foods
-            var response = await client.GetAsync($"Users/{userId}/blocked-foods?Search={search}&Page={page}&PageSize={pageSize}");
+            var response = await client.GetAsync(client.BaseAddress + $"/Users/{userId}/blocked-foods?Search={search}&Page={page}&PageSize={pageSize}");
             if (response.IsSuccessStatusCode)
             {
                 var responseData = await response.Content.ReadAsStringAsync();
@@ -878,8 +879,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.CurrentPage = blockedFoods.CurrentPage;
                 return View(blockedFoods.Items);
             }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error: {response.StatusCode}, Content: {errorContent}");
+                return View("Error");
+            }
 
-            return View("Error"); // Show an error view if the API call fails
+          // Show an error view if the API call fails
         }
 
         [HttpPost]
