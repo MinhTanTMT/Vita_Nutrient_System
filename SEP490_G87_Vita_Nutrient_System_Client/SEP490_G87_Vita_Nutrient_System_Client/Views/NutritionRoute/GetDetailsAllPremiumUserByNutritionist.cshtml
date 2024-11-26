@@ -43,6 +43,7 @@
                     <th>Ngày bắt đầu</th>
                     <th>Ngày kết thúc</th>
                     <th>Trạng thái</th>
+                    <th>Đánh giá</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,6 +65,22 @@
                                     @(route.IsDone == true ? "Hoàn thành" : "Chưa hoàn thành")
                                 </span>
                             </td>
+                        <td>
+                            <span class="rating-stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= route.Rate)
+                                    {
+                                        <i class="fas fa-star text-warning"></i> <!-- Sao đầy -->
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star text-muted"></i> <!-- Sao rỗng -->
+                                    }
+                                }
+                            </span>
+                        </td>
+
                         </tr>
                     }
                 }
@@ -291,4 +308,18 @@
     .text-danger{
         font-family: 'Roboto', sans-serif;
     }
+
+    .rating-stars .fa-star {
+        font-size: 18px;
+        margin-right: 2px;
+    }
+
+        .rating-stars .fa-star.text-warning {
+            color: #ffc107; /* Vàng */
+        }
+
+        .rating-stars .fa-star.text-muted {
+            color: #ddd; /* Xám nhạt */
+        }
+
 </style>

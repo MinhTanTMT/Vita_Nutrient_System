@@ -6,6 +6,7 @@
         short Height,
         short Weight,
         short Age,
-        string? WantImprove
+        string? WantImprove,
+        string? UnderlyingDisease 
         );
 }
