@@ -12,12 +12,14 @@ using SEP490_G87_Vita_Nutrient_System_API.Mapper;
 using System.Net.Mail;
 using System.Net;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
     public class UsersRepositories : IUserRepositories
     {
-
+        private readonly string EncryptionKey = "StrongKey16Chars";
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
         private MapperConfiguration config;
         private IMapper mapper;
@@ -32,6 +34,67 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Tân
         ////////////////////////////////////////////////////////////
         ///
+
+
+        public string EncryptPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentException("Password cannot be null or empty", nameof(password));
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+
+                // Tạo IV động
+                aes.GenerateIV();
+                byte[] iv = aes.IV;
+
+                using (var encryptor = aes.CreateEncryptor(aes.Key, iv))
+                using (var ms = new MemoryStream())
+                {
+                    // Lưu IV vào đầu dữ liệu
+                    ms.Write(iv, 0, iv.Length);
+
+                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    using (var writer = new StreamWriter(cs))
+                    {
+                        writer.Write(password);
+                    }
+
+                    return Convert.ToBase64String(ms.ToArray());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Giải mã mật khẩu.
+        /// </summary>
+        public string DecryptPassword(string encryptedPassword)
+        {
+            if (string.IsNullOrEmpty(encryptedPassword))
+                throw new ArgumentException("Encrypted password cannot be null or empty", nameof(encryptedPassword));
+
+            byte[] cipherBytes = Convert.FromBase64String(encryptedPassword);
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+
+                // Đọc IV từ đầu dữ liệu mã hóa
+                byte[] iv = new byte[16];
+                Array.Copy(cipherBytes, 0, iv, 0, iv.Length);
+                aes.IV = iv;
+
+                using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                using (var ms = new MemoryStream(cipherBytes, iv.Length, cipherBytes.Length - iv.Length))
+                using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                using (var reader = new StreamReader(cs))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
 
         public async Task<bool> SendMail(string emailAccount, string subject, string contentSend)
         {
@@ -81,7 +144,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 var inforAccount = await _context.Users.FirstOrDefaultAsync(x => x.AccountGoogle.Equals(emailGoogle));
                 if (inforAccount != null)
                 {
-                    string? Passwork = $"Mật khẩu hiện tại của bạn: {inforAccount.Password}";
+                    string? Passwork = $"Mật khẩu hiện tại của bạn: {DecryptPassword(inforAccount.Password)}";
                     await SendMail(emailGoogle, "Mật khẩu của bạn", Passwork);
                     return true;
                 }
@@ -101,7 +164,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return null;
             }
             modifyPremiumAccount(account, null);
-            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password && u.IsActive == true);
+            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account.Equals(account) && DecryptPassword(u.Password).Equals(password) && u.IsActive == true);
             if (user == null)
             {
                 return null;
@@ -133,7 +196,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public dynamic GetUserRegister(User user)
         {
-            _context.Users.Add(user);
+            User modifiUser = new User()
+            {
+                Role = user.Role,
+                Account = user.Account,
+                Password = EncryptPassword(user.Password),
+            };
+
+            _context.Users.Add(modifiUser);
             _context.SaveChanges();
             return user;
         }
@@ -143,11 +213,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
             short roleUserPremium = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUserPremium");
-            
+
             if (AccountGoogle != null)
             {
                 var accGoogle = _context.Users.FirstOrDefault(x => x.AccountGoogle.Equals(AccountGoogle));
-                if(accGoogle != null && accGoogle.Role == roleUserPremium)
+                if (accGoogle != null && accGoogle.Role == roleUserPremium)
                 {
                     var data = _context.UserListManagements.FirstOrDefault(x =>
                     x.UserId == accGoogle.UserId
@@ -191,7 +261,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (accGoogle == null)
             {
-                _context.Users.Add(user);
+
+                User modifiUser = new User()
+                {
+                    Role = user.Role,
+                    Account = user.Account,
+                    Password = EncryptPassword(user.Password),
+                };
+
+                _context.Users.Add(modifiUser);
                 _context.SaveChanges();
 
                 string roleName = _context.Roles.Find(user.Role).RoleName;
@@ -208,7 +286,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             else
             {
-                string roleName = _context.Roles.Find(accGoogle.Role).RoleName;     
+                string roleName = _context.Roles.Find(accGoogle.Role).RoleName;
                 var UserLogin = new
                 {
                     FullName = user.FirstName + " " + user.LastName,
