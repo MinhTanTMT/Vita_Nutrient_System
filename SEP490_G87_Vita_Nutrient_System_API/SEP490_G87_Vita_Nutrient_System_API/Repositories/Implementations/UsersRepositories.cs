@@ -12,6 +12,8 @@ using SEP490_G87_Vita_Nutrient_System_API.Mapper;
 using System.Net.Mail;
 using System.Net;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -32,6 +34,55 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Tân
         ////////////////////////////////////////////////////////////
         ///
+
+
+        private static readonly string EncryptionKey = "StrongKey16Chars"; 
+        private static readonly byte[] IV = Encoding.UTF8.GetBytes("YourIV16CharsOnly"); 
+
+        public static string EncryptPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentException("Password cannot be null or empty", nameof(password));
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+                aes.IV = IV;
+
+                using (var encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
+                using (var ms = new MemoryStream())
+                {
+                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    using (var writer = new StreamWriter(cs))
+                    {
+                        writer.Write(password);
+                    }
+
+                    // Convert the encrypted bytes to Base64 string
+                    return Convert.ToBase64String(ms.ToArray());
+                }
+            }
+        }
+
+        public static string DecryptPassword(string encryptedPassword)
+        {
+            if (string.IsNullOrEmpty(encryptedPassword))
+                throw new ArgumentException("Encrypted password cannot be null or empty", nameof(encryptedPassword));
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+                aes.IV = IV;
+
+                using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                using (var ms = new MemoryStream(Convert.FromBase64String(encryptedPassword)))
+                using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                using (var reader = new StreamReader(cs))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
 
         public async Task<bool> SendMail(string emailAccount, string subject, string contentSend)
         {
@@ -81,7 +132,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 var inforAccount = await _context.Users.FirstOrDefaultAsync(x => x.AccountGoogle.Equals(emailGoogle));
                 if (inforAccount != null)
                 {
-                    string? Passwork = $"Mật khẩu hiện tại của bạn: {inforAccount.Password}";
+                    string? Passwork = $"Mật khẩu hiện tại của bạn: {DecryptPassword(inforAccount.Password)}";
                     await SendMail(emailGoogle, "Mật khẩu của bạn", Passwork);
                     return true;
                 }
@@ -101,7 +152,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 return null;
             }
             modifyPremiumAccount(account, null);
-            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password && u.IsActive == true);
+            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account.Equals(account) && DecryptPassword(u.Password).Equals(password) && u.IsActive == true);
             if (user == null)
             {
                 return null;
@@ -133,6 +184,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public dynamic GetUserRegister(User user)
         {
+            User modifiUser = new User()
+            {
+                Account = user.Account,
+                Password = EncryptPassword(user.Password),
+            };
+
             _context.Users.Add(user);
             _context.SaveChanges();
             return user;
