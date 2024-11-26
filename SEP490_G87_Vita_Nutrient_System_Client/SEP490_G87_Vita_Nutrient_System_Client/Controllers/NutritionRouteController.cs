@@ -226,18 +226,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var data = await response.Content.ReadAsStringAsync();
                     var existingRoutes = JsonSerializer.Deserialize<List<NutritionRoute>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    // Kiểm tra trùng tên lộ trình (bao gồm loại bỏ khoảng trắng thừa)
-                    if (existingRoutes != null && existingRoutes.Any(r =>
-                        string.Equals(r.Name.Trim(), nutritionRoute.Name.Trim(), StringComparison.OrdinalIgnoreCase)))
-                    {
-                        ModelState.AddModelError(string.Empty, $"Tên lộ trình \"{nutritionRoute.Name}\" đã tồn tại trong gói đăng ký này. Vui lòng chọn tên khác.");
-                        return View(nutritionRoute);
-                    }
-
-
-                    // Tiếp tục logic kiểm tra thời gian của gói đăng ký
+                    // Lấy thông tin gói đăng ký
                     HttpResponseMessage userListManagementResponse = await client.GetAsync($"api/nutritionroute/{nutritionistId}/user/{userId}");
-
                     if (!userListManagementResponse.IsSuccessStatusCode)
                     {
                         ModelState.AddModelError(string.Empty, "Không thể lấy thông tin gói đăng ký.");
@@ -247,24 +237,57 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var userListManagementData = await userListManagementResponse.Content.ReadAsStringAsync();
                     var userListManagement = JsonSerializer.Deserialize<List<UserListManagement>>(userListManagementData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    if (userListManagement == null || !userListManagement.Any())
-                    {
-                        ModelState.AddModelError(string.Empty, "Không tìm thấy thông tin gói đăng ký.");
-                        return View(nutritionRoute);
-                    }
-
                     var selectedPackage = userListManagement.FirstOrDefault(p => p.Id == userListManagementId);
-
                     if (selectedPackage == null)
                     {
                         ModelState.AddModelError(string.Empty, "Gói đăng ký không tồn tại.");
                         return View(nutritionRoute);
                     }
 
-                    // Kiểm tra thời gian
-                    if (nutritionRoute.StartDate <= selectedPackage.StartDate || nutritionRoute.EndDate >= selectedPackage.EndDate)
+                    if (!existingRoutes.Any())
                     {
-                        ModelState.AddModelError(string.Empty, $"Thời gian của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                        // Nếu không có lộ trình trước đó, kiểm tra thời gian với gói
+                        if (nutritionRoute.StartDate < selectedPackage.StartDate || nutritionRoute.EndDate > selectedPackage.EndDate)
+                        {
+                            ModelState.AddModelError(string.Empty, $"Thời gian của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                            return View(nutritionRoute);
+                        }
+
+                        // Cập nhật IsDone cho lộ trình cũ của CreateById = 1
+                        var updateOldRouteResponse = await client.PutAsync(
+                            $"api/nutritionroute/updateIsDone?createById=1&userId={userId}",
+                            new StringContent("", Encoding.UTF8, "application/json")
+                        );
+
+                        if (!updateOldRouteResponse.IsSuccessStatusCode)
+                        {
+                            ModelState.AddModelError(string.Empty, "Không thể cập nhật trạng thái IsDone cho lộ trình cũ.");
+                            return View(nutritionRoute);
+                        }
+                    }
+                    else
+                    {
+                        var lastRoute = existingRoutes.OrderBy(r => r.EndDate).Last();
+
+                        // Ngày bắt đầu phải lớn hơn ngày kết thúc của lộ trình trước
+                        if (nutritionRoute.StartDate <= lastRoute.EndDate)
+                        {
+                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải lớn hơn ngày kết thúc của lộ trình trước đó ({lastRoute.EndDate?.ToShortDateString()}).");
+                            return View(nutritionRoute);
+                        }
+
+                        // Ngày kết thúc phải nằm trong thời gian của gói
+                        if (nutritionRoute.EndDate > selectedPackage.EndDate)
+                        {
+                            ModelState.AddModelError(string.Empty, $"Ngày kết thúc của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                            return View(nutritionRoute);
+                        }
+                    }
+
+                    // Kiểm tra trùng tên lộ trình
+                    if (existingRoutes.Any(r => string.Equals(r.Name.Trim(), nutritionRoute.Name.Trim(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        ModelState.AddModelError(string.Empty, $"Tên lộ trình \"{nutritionRoute.Name}\" đã tồn tại trong gói đăng ký này. Vui lòng chọn tên khác.");
                         return View(nutritionRoute);
                     }
 
@@ -293,6 +316,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             return View(nutritionRoute);
         }
+
 
         // GET: NutritionRoute/Edit/{id}
         [HttpGet]
@@ -356,18 +380,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var data = await response.Content.ReadAsStringAsync();
                     var existingRoutes = JsonSerializer.Deserialize<List<NutritionRoute>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    // Kiểm tra trùng tên lộ trình (loại bỏ lộ trình hiện tại khỏi danh sách kiểm tra)
-                    if (existingRoutes != null && existingRoutes.Any(r =>
-                        r.Id != nutritionRoute.Id && // Bỏ qua lộ trình hiện tại
-                        string.Equals(r.Name.Trim(), nutritionRoute.Name.Trim(), StringComparison.OrdinalIgnoreCase)))
-                    {
-                        ModelState.AddModelError(string.Empty, $"Tên lộ trình \"{nutritionRoute.Name}\" đã tồn tại trong gói đăng ký này. Vui lòng chọn tên khác.");
-                        return View(nutritionRoute);
-                    }
-
                     // Lấy thông tin gói đăng ký
                     HttpResponseMessage userListManagementResponse = await client.GetAsync($"api/nutritionroute/{nutritionistId}/user/{userId}");
-
                     if (!userListManagementResponse.IsSuccessStatusCode)
                     {
                         ModelState.AddModelError(string.Empty, "Không thể lấy thông tin gói đăng ký.");
@@ -377,24 +391,49 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var userListManagementData = await userListManagementResponse.Content.ReadAsStringAsync();
                     var userListManagement = JsonSerializer.Deserialize<List<UserListManagement>>(userListManagementData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    if (userListManagement == null || !userListManagement.Any())
-                    {
-                        ModelState.AddModelError(string.Empty, "Không tìm thấy thông tin gói đăng ký.");
-                        return View(nutritionRoute);
-                    }
-
                     var selectedPackage = userListManagement.FirstOrDefault(p => p.Id == userListManagementId);
-
                     if (selectedPackage == null)
                     {
                         ModelState.AddModelError(string.Empty, "Gói đăng ký không tồn tại.");
                         return View(nutritionRoute);
                     }
 
-                    // Kiểm tra thời gian
-                    if (nutritionRoute.StartDate < selectedPackage.StartDate || nutritionRoute.EndDate > selectedPackage.EndDate)
+                    // Kiểm tra vị trí lộ trình (là đầu tiên hay không)
+                    var sortedRoutes = existingRoutes.OrderBy(r => r.StartDate).ToList();
+                    var currentIndex = sortedRoutes.FindIndex(r => r.Id == nutritionRoute.Id);
+
+                    if (currentIndex == 0)
                     {
-                        ModelState.AddModelError(string.Empty, $"Thời gian của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                        // Lộ trình đầu tiên: kiểm tra so với gói đăng ký
+                        if (nutritionRoute.StartDate < selectedPackage.StartDate || nutritionRoute.StartDate > selectedPackage.EndDate)
+                        {
+                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                            return View(nutritionRoute);
+                        }
+                    }
+                    else if (currentIndex > 0)
+                    {
+                        // Lộ trình sau: kiểm tra so với lộ trình trước
+                        var previousRoute = sortedRoutes[currentIndex - 1];
+                        if (nutritionRoute.StartDate <= previousRoute.EndDate)
+                        {
+                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải lớn hơn ngày kết thúc của lộ trình trước đó ({previousRoute.EndDate?.ToShortDateString()}).");
+                            return View(nutritionRoute);
+                        }
+                    }
+
+                    // Kiểm tra ngày kết thúc của lộ trình với gói đăng ký
+                    if (nutritionRoute.EndDate > selectedPackage.EndDate)
+                    {
+                        ModelState.AddModelError(string.Empty, $"Ngày kết thúc của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                        return View(nutritionRoute);
+                    }
+
+                    // Kiểm tra trùng tên lộ trình
+                    if (existingRoutes.Any(r => r.Id != nutritionRoute.Id &&
+                                                string.Equals(r.Name.Trim(), nutritionRoute.Name.Trim(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        ModelState.AddModelError(string.Empty, $"Tên lộ trình \"{nutritionRoute.Name}\" đã tồn tại trong gói đăng ký này. Vui lòng chọn tên khác.");
                         return View(nutritionRoute);
                     }
 
@@ -418,10 +457,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ModelState.AddModelError(string.Empty, $"Lỗi: {ex.Message}");
             }
 
-            // Trả về view với thông tin lỗi
             return View(nutritionRoute);
         }
-
 
 
 
@@ -433,7 +470,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var route = JsonSerializer.Deserialize<UserListManagement>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var route = JsonSerializer.Deserialize<NutritionRoute>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 // Gán giá trị vào ViewData
                 ViewData["ID"] = id;
                 ViewData["UserId"] = userId;

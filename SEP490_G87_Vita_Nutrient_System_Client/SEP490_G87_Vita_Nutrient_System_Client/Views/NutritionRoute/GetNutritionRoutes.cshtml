@@ -17,10 +17,6 @@
         </a>
 
 
-        @{
-            var hasUnfinishedRoute = Model.Any(route => route.IsDone == false);
-        }
-
         <div class="text-start mb-3">
             @if (!(bool)ViewData["HasUnfinishedRoute"])
             {

@@ -337,6 +337,23 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> UpdateIsDoneAsync(int createById, int userId)
+        {
+            // Lấy lộ trình cần cập nhật
+            var route = await _context.NutritionRoutes
+                .FirstOrDefaultAsync(r => r.CreateById == createById && r.UserId == userId && r.IsDone == false);
+
+            if (route == null)
+            {
+                return false; // Không tìm thấy lộ trình hoặc tất cả lộ trình đã hoàn thành
+            }
+
+            // Cập nhật IsDone
+            route.IsDone = true;
+            _context.NutritionRoutes.Update(route);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
     }
 
