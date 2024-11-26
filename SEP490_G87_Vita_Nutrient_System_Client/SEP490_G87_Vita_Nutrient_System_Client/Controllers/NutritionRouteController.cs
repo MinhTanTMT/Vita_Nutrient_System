@@ -532,17 +532,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 return Json(new { success = false, message = "User ID hoặc Disease ID không hợp lệ." });
             }
+
             try
             {
-                // Kiểm tra bệnh đã tồn tại chưa
+                // Kiểm tra bệnh đã tồn tại
                 HttpResponseMessage checkResponse = await client.GetAsync($"api/NutritionRoute/user/{request.UserId}/diseases");
                 if (checkResponse.IsSuccessStatusCode)
                 {
                     var existingDiseasesData = await checkResponse.Content.ReadAsStringAsync();
                     var existingDiseases = JsonSerializer.Deserialize<List<ListOfDisease>>(existingDiseasesData);
 
-                    // Kiểm tra nếu bệnh đã tồn tại
-                    if (existingDiseases.Any(d => d.Id == request.DiseaseId))
+                    // Bỏ qua kiểm tra nếu danh sách rỗng
+                    if (existingDiseases != null && existingDiseases.Any(d => d.Id == request.DiseaseId))
                     {
                         return Json(new { success = false, message = "Bệnh lý đã tồn tại với người dùng." });
                     }
@@ -566,6 +567,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return Json(new { success = false, message = $"Lỗi hệ thống: {ex.Message}" });
             }
         }
+
 
 
 
