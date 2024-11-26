@@ -184,7 +184,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-
         [HttpPost("APIgetThisListOfDishes")]
         public async Task<IActionResult> APIgetThisListOfDishes(
         [FromBody] DataFoodListMealOfTheDay dataFoodListMealOfTheDay,
@@ -194,7 +193,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
             return Ok(await generateMealRepositories.GetThisListOfDishesInputMealDay(dataFoodListMealOfTheDay, userId, myDay));
         }
-
 
 
         [HttpPost("APISelectReplaceCurrentFood")]
