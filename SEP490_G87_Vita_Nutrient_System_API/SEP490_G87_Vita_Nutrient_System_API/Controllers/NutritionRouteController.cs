@@ -114,7 +114,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var routes = await _nutritionRouteRepositories.GetNutritionRoutesAsync(nutritionistId, userId, userListManagementId);
             if (routes == null || !routes.Any())
             {
-                return Ok("Không tìm thấy lộ trình nào cho gói đăng ký này.");
+                // Trả về danh sách rỗng thay vì chuỗi
+                return Ok(new List<NutritionRouteDTO>());
             }
             return Ok(routes);
         }
@@ -152,7 +153,33 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Xóa bệnh nền thành công.");
         }
 
+        [HttpPut("updateIsDone")]
+        public async Task<IActionResult> UpdateIsDone([FromQuery] int createById, [FromQuery] int userId)
+        {
+            if (createById <= 0 || userId <= 0)
+            {
+                return BadRequest("CreateById hoặc UserId không hợp lệ.");
+            }
+
+            try
+            {
+                var isUpdated = await _nutritionRouteRepositories.UpdateIsDoneAsync(createById, userId);
+                if (!isUpdated)
+                {
+                    return NotFound("Không tìm thấy lộ trình cần cập nhật hoặc tất cả lộ trình đã hoàn thành.");
+                }
+
+                return Ok("Cập nhật trạng thái IsDone thành công.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi hệ thống: {ex.Message}");
+            }
+        }
+
+
     }
+
 
     public class AddDiseaseRequest
     {

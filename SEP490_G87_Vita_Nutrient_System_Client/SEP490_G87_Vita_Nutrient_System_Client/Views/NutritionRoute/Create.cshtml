@@ -18,14 +18,14 @@
     {
         <div class="alert alert-danger shadow">
             <ul class="alert-list">
-                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors).Distinct())
                 {
-                    <i class="fas fa-exclamation-circle alert-icon"></i>
-                    @error.ErrorMessage
+                    <li>@error.ErrorMessage</li>
                 }
             </ul>
         </div>
     }
+
 
     <form asp-controller="NutritionRoute" asp-action="Create" method="post" enctype="multipart/form-data" class="create-form">
         <!-- Ẩn các giá trị cần thiết để gửi lên Controller -->

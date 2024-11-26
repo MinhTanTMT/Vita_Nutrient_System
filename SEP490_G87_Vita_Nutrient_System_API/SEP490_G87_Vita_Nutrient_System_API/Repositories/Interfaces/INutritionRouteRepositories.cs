@@ -17,5 +17,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<IEnumerable<ListOfDiseaseDTO>> GetDiseaseByUserIdAsync(int userId);
         Task<bool> CreateDiseaseAsync(int userId, int diseaseId);
         Task<bool> DeleteDiseaseAsync(int userId, int diseaseId);
+        Task<bool> UpdateIsDoneAsync(int createById, int userId);
+
     }
 }
