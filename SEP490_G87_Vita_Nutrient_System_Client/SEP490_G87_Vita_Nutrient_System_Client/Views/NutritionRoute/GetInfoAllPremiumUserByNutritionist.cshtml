@@ -234,8 +234,10 @@
                         if (response.ok) {
                             showAlertMessage('Thêm bệnh lý thành công.', 'add-success');
                             await loadDiseaseList(userId); // Cập nhật danh sách bệnh lý
+                            updateUnderlyingDiseaseColumn(userId);
                         } else {
-                            showAlertMessage('Thêm bệnh lý thất bại.', 'danger');
+                            const errorResponse = await response.json();
+                            showAlertMessage(errorResponse.message || 'Thêm bệnh lý thất bại.', 'danger');
                         }
                     } catch (error) {
                         console.error('Lỗi khi thêm bệnh lý:', error);
@@ -257,6 +259,7 @@
                 if (response.ok) {
                     showAlertMessage('Xóa bệnh lý thành công.', 'delete-success');
                     await loadDiseaseList(userId); // Cập nhật danh sách bệnh lý
+                    updateUnderlyingDiseaseColumn(userId);
                 } else {
                     showAlertMessage('Xóa bệnh lý thất bại.', 'danger');
                 }

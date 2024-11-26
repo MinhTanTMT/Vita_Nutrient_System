@@ -125,7 +125,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var diseases = await _nutritionRouteRepositories.GetDiseaseByUserIdAsync(userId);
             if (diseases == null || !diseases.Any())
             {
-                return Ok("Không tìm thấy bệnh nền nào cho người dùng này.");
+                return Ok(new List<ListOfDiseaseDTO>());
             }
             return Ok(diseases);
         }
