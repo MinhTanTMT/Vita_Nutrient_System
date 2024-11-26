@@ -100,19 +100,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return NoContent();
         }
 
-        /*[HttpGet("{nutritionistId}/user/{userId}/unfinished")]
-        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId)
+        [HttpGet("{nutritionistId}/user/{userId}/unfinished/{userListManagementId}")]
+        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId, int userListManagementId)
         {
-            var routes = await _nutritionRouteRepositories.GetUsersWithUnfinishedRoutesAsync(nutritionistId, userId);
-            return Ok(routes); 
-        }*/
-
-        [HttpGet("{nutritionistId}/user/{userId}/unfinished")]
-        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId)
-        {
-            var routes = await _nutritionRouteRepositories.HasUnfinishedRouteAsync(nutritionistId, userId);
-            return Ok(routes);
+            var hasUnfinishedRoute = await _nutritionRouteRepositories.HasUnfinishedRouteAsync(nutritionistId, userId, userListManagementId);
+            return Ok(hasUnfinishedRoute);
         }
+
 
         [HttpGet("{nutritionistId}/user/{userId}/route/{userListManagementId}")]
         public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetNutritionRoutes(int nutritionistId, int userId, int userListManagementId)

@@ -279,6 +279,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             u.Weight = request.Weight;
             u.Age = request.Age;
             u.WantImprove = request.WantImprove;
+            u.UnderlyingDisease = request.UnderlyingDisease;
 
             _repositories.UpdateUserDetails(u);
 

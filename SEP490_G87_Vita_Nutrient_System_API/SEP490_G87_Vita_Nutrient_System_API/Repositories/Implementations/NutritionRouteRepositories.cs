@@ -6,6 +6,7 @@ using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -61,6 +62,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     StartDate = route.StartDate,
                     EndDate = route.EndDate,
                     IsDone = route.IsDone,
+                    Rate = route.Rate,
                     UrlImage = route.User.Urlimage
                 }).ToListAsync();
         }
@@ -190,12 +192,28 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> HasUnfinishedRouteAsync(int nutritionistId , int userId)
+        public async Task<bool> HasUnfinishedRouteAsync(int nutritionistId, int userId, int userListManagementId)
         {
-            // Kiểm tra xem có lộ trình nào chưa hoàn thành cho người dùng này không
-            return await _context.UserListManagements
-                .AnyAsync(route => route.UserId == userId && route.NutritionistId == nutritionistId && route.IsDone == false);
+            // Lấy thông tin gói đăng ký
+            var userListManagement = await _context.UserListManagements
+                .FirstOrDefaultAsync(ul => ul.UserId == userId
+                                           && ul.NutritionistId == nutritionistId
+                                           && ul.Id == userListManagementId);
+
+            if (userListManagement == null)
+            {
+                return false; // Không tìm thấy gói đăng ký
+            }
+
+            // Kiểm tra tất cả lộ trình thuộc gói đăng ký có trạng thái chưa hoàn thành
+            return await _context.NutritionRoutes
+                .AnyAsync(route => route.UserId == userId
+                                   && route.CreateById == nutritionistId
+                                   && route.StartDate >= userListManagement.StartDate
+                                   && route.EndDate <= userListManagement.EndDate
+                                   && route.IsDone == false);
         }
+
 
         public async Task<IEnumerable<NutritionRouteDTO>> GetNutritionRoutesAsync(int nutritionistId, int userId, int userListManagementId)
         {
