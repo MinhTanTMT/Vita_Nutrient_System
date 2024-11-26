@@ -7,7 +7,5 @@
         public string? Name { get; set; }
 
         public string? Describe { get; set; }
-
-        public virtual ICollection<FoodAndDisease> FoodAndDiseases { get; set; } = new List<FoodAndDisease>();
     }
 }

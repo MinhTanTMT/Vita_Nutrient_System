@@ -6,6 +6,7 @@ using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
@@ -61,6 +62,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     StartDate = route.StartDate,
                     EndDate = route.EndDate,
                     IsDone = route.IsDone,
+                    Rate = route.Rate,
                     UrlImage = route.User.Urlimage
                 }).ToListAsync();
         }
@@ -156,31 +158,150 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        /*public async Task<IEnumerable<UserListManagementDTO>> GetUsersWithUnfinishedRoutesAsync(int nutritionistId, int userId)
+        public async Task<bool> HasUnfinishedRouteAsync(int nutritionistId, int userId, int userListManagementId)
         {
-            return await _context.UserListManagements
-               .Where(route => route.NutritionistId == nutritionistId && route.UserId == userId &&route.IsDone == false) // Lọc theo NutritionistId và userId
-               .Include(route => route.Nutritionist)
-               .Include(route => route.User)
-               .Select(route => new UserListManagementDTO
-               {
-                   Id = route.Id,
-                   UserId = route.UserId,
-                   NutritionistId = route.NutritionistId,
-                   UserName = route.User.FirstName + " " + route.User.LastName,
-                   NutritionistName = route.Nutritionist.FirstName + " " + route.Nutritionist.LastName,
-                   Describe = route.Describe,
-                   StartDate = route.StartDate,
-                   EndDate = route.EndDate,
-                   IsDone = route.IsDone,
-                   UrlImage = route.User.Urlimage
-               }).ToListAsync();
-        }*/
-        public async Task<bool> HasUnfinishedRouteAsync(int nutritionistId , int userId)
+            // Lấy thông tin gói đăng ký
+            var userListManagement = await _context.UserListManagements
+                .FirstOrDefaultAsync(ul => ul.UserId == userId
+                                           && ul.NutritionistId == nutritionistId
+                                           && ul.Id == userListManagementId);
+
+            if (userListManagement == null)
+            {
+                return false; // Không tìm thấy gói đăng ký
+            }
+
+            // Kiểm tra tất cả lộ trình thuộc gói đăng ký có trạng thái chưa hoàn thành
+            return await _context.NutritionRoutes
+                .AnyAsync(route => route.UserId == userId
+                                   && route.CreateById == nutritionistId
+                                   && route.StartDate >= userListManagement.StartDate
+                                   && route.EndDate <= userListManagement.EndDate
+                                   && route.IsDone == false);
+        }
+
+
+        public async Task<IEnumerable<NutritionRouteDTO>> GetNutritionRoutesAsync(int nutritionistId, int userId, int userListManagementId)
         {
-            // Kiểm tra xem có lộ trình nào chưa hoàn thành cho người dùng này không
-            return await _context.UserListManagements
-                .AnyAsync(route => route.UserId == userId && route.NutritionistId == nutritionistId && route.IsDone == false);
+            // Xác định UserListManagement (gói đăng ký nâng cao)
+            var relatedUserListManagement = await _context.UserListManagements
+                .FirstOrDefaultAsync(ul => ul.Id == userListManagementId
+                                           && ul.NutritionistId == nutritionistId
+                                           && ul.UserId == userId);
+
+            if (relatedUserListManagement == null)
+            {
+                return new List<NutritionRouteDTO>(); // Trả về danh sách rỗng nếu không tìm thấy gói
+            }
+
+            // Lọc lộ trình dinh dưỡng thuộc về gói đăng ký nâng cao này
+            return await _context.NutritionRoutes
+                .Where(route => route.UserId == relatedUserListManagement.UserId
+                                && route.CreateById == relatedUserListManagement.NutritionistId
+                                && route.StartDate >= relatedUserListManagement.StartDate
+                                && route.EndDate <= relatedUserListManagement.EndDate) // Điều kiện thời gian khớp với gói
+                .Select(route => new NutritionRouteDTO
+                {
+                    Id = route.Id,
+                    UserId = route.UserId,
+                    CreateById = route.CreateById,
+                    Name = route.Name,
+                    Describe = route.Describe,
+                    StartDate = route.StartDate,
+                    EndDate = route.EndDate,
+                    IsDone = route.IsDone,
+                    FullName = route.User.FirstName + " " + route.User.LastName,
+                    CreateByName = route.CreateBy.FirstName + " " + route.CreateBy.LastName,
+                    UrlImage = route.User.Urlimage
+                }).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ListOfDiseaseDTO>> GetDiseaseByUserIdAsync(int userId)
+        {
+            var userDetail = await _context.UserDetails
+                .FirstOrDefaultAsync(ud => ud.UserId == userId);
+
+            if (userDetail == null || string.IsNullOrEmpty(userDetail.UnderlyingDisease))
+            {
+                return new List<ListOfDiseaseDTO>(); // Không có bệnh nền
+            }
+
+            var diseaseIds = userDetail.UnderlyingDisease.Split(';')
+                .Select(id =>
+                {
+                    int.TryParse(id, out var parsedId);
+                    return parsedId;
+                })
+                .Where(parsedId => parsedId > 0) // Loại bỏ các giá trị không hợp lệ
+                .ToList();
+
+            return await _context.ListOfDiseases
+                .Where(d => diseaseIds.Contains(d.Id))
+                .Select(d => new ListOfDiseaseDTO
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    Describe = d.Describe
+                }).ToListAsync();
+        }
+
+        public async Task<bool> CreateDiseaseAsync(int userId, int diseaseId)
+        {
+            // Kiểm tra xem bệnh có tồn tại không
+            var disease = await _context.ListOfDiseases.FindAsync(diseaseId);
+            if (disease == null)
+            {
+                return false; // Bệnh không tồn tại
+            }
+
+            // Lấy thông tin UserDetail
+            var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.UserId == userId);
+            if (userDetail == null)
+            {
+                return false; // Không tìm thấy UserDetail
+            }
+
+            // Cập nhật danh sách bệnh
+            var currentDiseases = string.IsNullOrEmpty(userDetail.UnderlyingDisease)
+                ? new List<int>()
+                : userDetail.UnderlyingDisease.Split(';').Select(int.Parse).ToList();
+
+            if (currentDiseases.Contains(diseaseId))
+            {
+                return false; // Bệnh đã tồn tại
+            }
+
+            currentDiseases.Add(diseaseId);
+            userDetail.UnderlyingDisease = string.Join(";", currentDiseases);
+
+            _context.UserDetails.Update(userDetail);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> DeleteDiseaseAsync(int userId, int diseaseId)
+        {
+            // Lấy thông tin UserDetail
+            var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.UserId == userId);
+            if (userDetail == null || string.IsNullOrEmpty(userDetail.UnderlyingDisease))
+            {
+                return false; // Không tìm thấy UserDetail hoặc không có bệnh nền
+            }
+
+            // Cập nhật danh sách bệnh
+            var currentDiseases = userDetail.UnderlyingDisease.Split(';').Select(int.Parse).ToList();
+            if (!currentDiseases.Contains(diseaseId))
+            {
+                return false; // Bệnh không tồn tại trong danh sách
+            }
+
+            currentDiseases.Remove(diseaseId);
+            userDetail.UnderlyingDisease = currentDiseases.Any()
+                ? string.Join(";", currentDiseases)
+                : null; // Nếu không còn bệnh nào thì đặt null
+
+            _context.UserDetails.Update(userDetail);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
     }
