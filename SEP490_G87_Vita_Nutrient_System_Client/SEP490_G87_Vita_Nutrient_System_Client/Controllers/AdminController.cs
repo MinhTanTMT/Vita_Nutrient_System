@@ -101,7 +101,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                         if (typeInsert == 1) ViewData["UserListManagement"] = new UserListManagement { NutritionistId = NutritionistId ?? 0, UserId = userId, Describe = Describe, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(Duration ?? 0), IsDone = false };
                         else ViewData["UserListManagement"] = new UserListManagement { NutritionistId = roleAdmin, UserId = userId, Describe = Describe, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(Duration ?? 0), IsDone = false };
-  
+
                         HttpResponseMessage res2 = await client.PostAsJsonAsync(client.BaseAddress + $"/BankPayment/APIModifyDataTransactionsSystem", transactionsSystem);
                         if (res.StatusCode == System.Net.HttpStatusCode.OK)
                         {
@@ -180,7 +180,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         //    // Truyền danh sách lên view
         //    return View(systemPremiumPackages);
         //}
-        
+
 
         [HttpGet, Authorize]
         public async Task<IActionResult> NutritionistServicesAsync()
@@ -246,14 +246,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                         ViewBag.GraphDataString0 = JsonConvert.SerializeObject(graphData[0]);
                         ViewBag.GraphDataString1 = JsonConvert.SerializeObject(graphData[1]);
-                        ViewBag.GraphDataString2 = JsonConvert.SerializeObject(graphData[2]); 
-                        ViewBag.GraphDataString3 = JsonConvert.SerializeObject((graphData.SelectMany(row => row).Max()/100)*111); 
+                        ViewBag.GraphDataString2 = JsonConvert.SerializeObject(graphData[2]);
+                        ViewBag.GraphDataString3 = JsonConvert.SerializeObject((graphData.SelectMany(row => row).Max() / 100) * 111);
                     }
 
                     ViewBag.MoneyInThisMonth = MoneyInThisMonth;
                     ViewBag.MoneyOutThisMonth = MoneyOutThisMonth;
                     ViewBag.BalanceThisMonth = BalanceThisMonth;
-                    
+
                     return View(transactionsSystemData);
                 }
 
@@ -312,7 +312,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     HttpContent normalUserContent = normalUserResponse.Content;
                     string data = await normalUserContent.ReadAsStringAsync();
-                    List<dynamic> normalUsersData = JsonConvert.DeserializeObject< List<dynamic>>(data);
+                    List<dynamic> normalUsersData = JsonConvert.DeserializeObject<List<dynamic>>(data);
 
                     HttpContent premiumUserContent = premiumUserResponse.Content;
                     string data1 = await premiumUserContent.ReadAsStringAsync();
@@ -360,7 +360,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         }
                         ).ToList();
 
-                    users = users.Concat( premiumUsers ).ToList();
+                    users = users.Concat(premiumUsers).ToList();
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
@@ -403,7 +403,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response =
                     await client.GetAsync(client.BaseAddress + "/Users/GetUserDetail/" + userId);
 
-                if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
@@ -513,7 +513,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     ViewBag.AlertMessage = "Cannot get list nutritionists! Please try again!";
                 }
-                
+
                 ViewBag.SearchQuery = searchQuery;
 
                 return View("~/Views/Admin/NutritionistManagement/ListNutritionist.cshtml");
@@ -635,7 +635,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.AlertMessage = "Cannot update user status! Please try again!";
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
@@ -699,7 +699,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
@@ -736,7 +736,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.SuccessMessage = "Add ingredient successfully!";
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
@@ -769,7 +769,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 ViewBag.keyNotes = keyNotes;
                 ViewBag.typesOfCalculation = typesOfCalculation;
-                
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
@@ -784,7 +784,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml");
@@ -920,7 +920,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                HttpResponseMessage response = 
+                HttpResponseMessage response =
                     await client.DeleteAsync(client.BaseAddress + "/Ingredient/RemoveIngredient/" + Id);
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
@@ -931,7 +931,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.SuccessMessage = "Delete ingredient successfully!";
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
@@ -979,7 +979,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         public async Task<List<RecipeDT>> GetFoodRecipes(int foodId)
         {
-            var requestUrl = $"https://localhost:7045/api/Food/GetFoodRecipe/{foodId}";
+            var requestUrl = $"{client.BaseAddress}/Food/GetFoodRecipe/{foodId}";
 
             var response = await client.GetAsync(requestUrl);
             if (!response.IsSuccessStatusCode)
@@ -1055,18 +1055,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         public async Task<List<FoodType>> GetFoodTypes()
         {
-            using (var client = new HttpClient())
+            var requestUrl = client.BaseAddress + "/Food/GetFoodTypes";
+            var response = await client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri("https://localhost:7045/");
-                var response = await client.GetAsync("api/Food/GetFoodTypes");
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseData = await response.Content.ReadAsStringAsync();
-                    var foodTypesResponse = JsonConvert.DeserializeObject<List<FoodType>>(responseData);
-                    return foodTypesResponse;
-                }
-                return new List<FoodType>();
+                var responseData = await response.Content.ReadAsStringAsync();
+                var foodTypesResponse = JsonConvert.DeserializeObject<List<FoodType>>(responseData);
+                return foodTypesResponse;
             }
+            return new List<FoodType>();
         }
 
         public async Task<List<KeyNote>> GetKeyNotes()
@@ -1083,7 +1080,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             var responseData = await response.Content.ReadAsStringAsync();
             var keyNoteResponse = JsonConvert.DeserializeObject<List<KeyNote>>(responseData);
 
-            foreach(var item in keyNoteResponse)
+            foreach (var item in keyNoteResponse)
             {
                 if (string.IsNullOrEmpty(item.KeyList))
                     item.KeyList = "";
@@ -1219,21 +1216,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("https://localhost:7045/");
-                    var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("api/Food/SaveFoodRecipes", content);
+                var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(client.BaseAddress + "/Food/SaveFoodRecipes", content);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return Json(new { success = true, message = "Recipe saved successfully!" });
-                    }
-                    else
-                    {
-                        var errorContent = await response.Content.ReadAsStringAsync();
-                        return Json(new { success = false, message = $"Failed to save recipe: {errorContent}" });
-                    }
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Recipe saved successfully!" });
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    return Json(new { success = false, message = $"Failed to save recipe: {errorContent}" });
                 }
             }
             catch (Exception ex)
