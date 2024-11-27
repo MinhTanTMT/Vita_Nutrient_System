@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
@@ -50,90 +51,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
 
-        //// Key chính xác 16 ký tự
-        //private static readonly string EncryptionKey = "StrongKey16Chars";
-
-        ///// <summary>
-        ///// Mã hóa mật khẩu.
-        ///// </summary>
-        //public static string EncryptPassword(string password)
-        //{
-        //    if (string.IsNullOrEmpty(password))
-        //        throw new ArgumentException("Password cannot be null or empty", nameof(password));
-
-        //    using (Aes aes = Aes.Create())
-        //    {
-        //        aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
-
-        //        // Tạo IV động
-        //        aes.GenerateIV();
-        //        byte[] iv = aes.IV;
-
-        //        using (var encryptor = aes.CreateEncryptor(aes.Key, iv))
-        //        using (var ms = new MemoryStream())
-        //        {
-        //            // Lưu IV vào đầu dữ liệu
-        //            ms.Write(iv, 0, iv.Length);
-
-        //            using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-        //            using (var writer = new StreamWriter(cs))
-        //            {
-        //                writer.Write(password);
-        //            }
-
-        //            return Convert.ToBase64String(ms.ToArray());
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Giải mã mật khẩu.
-        ///// </summary>
-        //public static string DecryptPassword(string encryptedPassword)
-        //{
-        //    if (string.IsNullOrEmpty(encryptedPassword))
-        //        throw new ArgumentException("Encrypted password cannot be null or empty", nameof(encryptedPassword));
-
-        //    byte[] cipherBytes = Convert.FromBase64String(encryptedPassword);
-
-        //    using (Aes aes = Aes.Create())
-        //    {
-        //        aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
-
-        //        // Đọc IV từ đầu dữ liệu mã hóa
-        //        byte[] iv = new byte[16];
-        //        Array.Copy(cipherBytes, 0, iv, 0, iv.Length);
-        //        aes.IV = iv;
-
-        //        using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
-        //        using (var ms = new MemoryStream(cipherBytes, iv.Length, cipherBytes.Length - iv.Length))
-        //        using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-        //        using (var reader = new StreamReader(cs))
-        //        {
-        //            return reader.ReadToEnd();
-        //        }
-        //    }
-        //}
-
-
-
-
         [HttpGet("APITest")]
-        public async Task<IActionResult> APITest( )
+        public async Task<ActionResult<UserLoginRegister>> APITest( )
         {
 
             //return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
 
             UsersRepositories usersRepositories = new UsersRepositories();
 
-            User abc = new User()
+            UserLoginRegister abc = new UserLoginRegister()
             {
-                Role = 4,
-                Account = "tantestmaha",
-                Password = "tantestmaha"
+                Account = "tantestmaha4",
+                Password = "tantestmaha4",
+                
             };
 
-            return Ok(usersRepositories.GetUserRegister(abc));
+            return Ok(await usersRepositories.GetUserLogin("tantestmaha4" , "tantestmaha4"));
 
 
         }

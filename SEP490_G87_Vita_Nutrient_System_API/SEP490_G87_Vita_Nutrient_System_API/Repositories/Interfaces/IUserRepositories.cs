@@ -12,13 +12,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         /// Tân
         ////////////////////////////////////////////////////////////
         ///
+        ///
+
+        Task<bool> CheckExitAccountUser(string account);
         Task<bool> ForgotPassword(string emailGoogle);
-        dynamic GetUserLogin(string account, string password);
-        bool CheckExitAccountUser(string account);
-        dynamic GetUserRegister(User user);
+        Task<UserLoginRegister> GetUserLogin(string account, string password);
+        Task<UserLoginRegister> GetUserRegister(UserLoginRegister user);
         dynamic GetUserById(int id);
         dynamic ChangePassword(ChangePasswordDTO model);
-        dynamic GetRegisterLoginGoogle(User user);
+        Task<UserLoginRegister> GetRegisterLoginGoogle(UserLoginRegister user);
         Task<PagedResult<FoodList>> GetLikedFoods(int userId, GetLikeFoodDTO model);
         Task<string> LikeOrUnlikeFood(int userId, int foodId);
         Task<string> UnblockFood(int userId, int foodId);
