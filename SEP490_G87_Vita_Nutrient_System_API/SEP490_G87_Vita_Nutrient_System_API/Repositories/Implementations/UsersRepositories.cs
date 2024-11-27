@@ -12,12 +12,14 @@ using SEP490_G87_Vita_Nutrient_System_API.Mapper;
 using System.Net.Mail;
 using System.Net;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 {
     public class UsersRepositories : IUserRepositories
     {
-
+        private readonly string EncryptionKey = "StrongKey16Chars";
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
         private MapperConfiguration config;
         private IMapper mapper;
@@ -32,6 +34,71 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Tân
         ////////////////////////////////////////////////////////////
         ///
+
+
+        public async Task<string> EncryptPassword(string password)
+        {
+            //if (string.IsNullOrEmpty(password))
+            //    throw new ArgumentException("Password cannot be null or empty", nameof(password));
+
+            //using (Aes aes = Aes.Create())
+            //{
+            //    aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+
+            //    // Tạo IV động
+            //    aes.GenerateIV();
+            //    byte[] iv = aes.IV;
+
+            //    using (var encryptor = aes.CreateEncryptor(aes.Key, iv))
+            //    using (var ms = new MemoryStream())
+            //    {
+            //        // Lưu IV vào đầu dữ liệu
+            //        ms.Write(iv, 0, iv.Length);
+
+            //        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+            //        using (var writer = new StreamWriter(cs))
+            //        {
+            //            writer.Write(password);
+            //        }
+
+            //        return Convert.ToBase64String(ms.ToArray());
+            //    }
+            //}
+
+            return password;
+        }
+
+        /// <summary>
+        /// Giải mã mật khẩu.
+        /// </summary>
+        public async Task<string> DecryptPassword(string encryptedPassword)
+        {
+            //if (string.IsNullOrEmpty(encryptedPassword))
+            //    throw new ArgumentException("Encrypted password cannot be null or empty", nameof(encryptedPassword));
+
+            //byte[] cipherBytes = Convert.FromBase64String(encryptedPassword);
+
+            //using (Aes aes = Aes.Create())
+            //{
+            //    aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+
+            //    // Đọc IV từ đầu dữ liệu mã hóa
+            //    byte[] iv = new byte[16];
+            //    Array.Copy(cipherBytes, 0, iv, 0, iv.Length);
+            //    aes.IV = iv;
+
+            //    using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+            //    using (var ms = new MemoryStream(cipherBytes, iv.Length, cipherBytes.Length - iv.Length))
+            //    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+            //    using (var reader = new StreamReader(cs))
+            //    {
+            //        return reader.ReadToEnd();
+            //    }
+            //}
+
+            return encryptedPassword; // luc lam moi database them sau
+        }
+
 
         public async Task<bool> SendMail(string emailAccount, string subject, string contentSend)
         {
@@ -81,7 +148,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 var inforAccount = await _context.Users.FirstOrDefaultAsync(x => x.AccountGoogle.Equals(emailGoogle));
                 if (inforAccount != null)
                 {
-                    string? Passwork = $"Mật khẩu hiện tại của bạn: {inforAccount.Password}";
+                    string? Passwork = $"Mật khẩu hiện tại của bạn: {await DecryptPassword(inforAccount.Password)}";
                     await SendMail(emailGoogle, "Mật khẩu của bạn", Passwork);
                     return true;
                 }
@@ -94,36 +161,50 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
         }
 
-        public dynamic GetUserLogin(string account, string password)
+        public async Task<UserLoginRegister> GetUserLogin(string account, string password)
         {
             if (_context.Users == null)
             {
                 return null;
             }
-            modifyPremiumAccount(account, null);
-            var user = _context.Users.Include(u => u.RoleNavigation).FirstOrDefault(u => u.Account == account && u.Password == password && u.IsActive == true);
+
+            await modifyPremiumAccount(account, null);
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Account.Equals(account));
+
+            //var user = await _context.Users.Include(u => u.RoleNavigation).FirstOrDefaultAsync(u => u.Account.Equals(account) && u.Password.Equals(passwordEncrypt) && u.IsActive == true);
             if (user == null)
             {
                 return null;
             }
-            var UserLogin = new
+            else if (password.Equals(await DecryptPassword(user.Password)))
             {
-                FullName = user.FirstName + " " + user.LastName,
-                user.Urlimage,
-                user.Account,
-                user.RoleNavigation.RoleName,
-                user.UserId
-            };
-            return UserLogin;
+                var getDataRole = await _context.Roles.FindAsync(user.Role);
+
+                if (getDataRole != null)
+                {
+                    UserLoginRegister UserLogin = new UserLoginRegister()
+                    {
+                        FullName = user.FirstName + " " + user.LastName,
+                        Urlimage = user.Urlimage,
+                        Account = user.Account,
+                        RoleName = getDataRole.RoleName,
+                        UserId = user.UserId
+                    };
+                    return UserLogin;
+                }
+            }
+            return null;
+
         }
 
-        public bool CheckExitAccountUser(string account)
+        public async Task<bool> CheckExitAccountUser(string account)
         {
             if (_context.Users == null)
             {
                 return false;
             }
-            var user = _context.Users.FirstOrDefault(u => u.Account.Equals(account));
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Account.Equals(account));
             if (user == null)
             {
                 return true;
@@ -131,25 +212,36 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return false;
         }
 
-        public dynamic GetUserRegister(User user)
+        public async Task<UserLoginRegister> GetUserRegister(UserLoginRegister user)
         {
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            User modifiUser = new User()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = user.Role,
+                Account = user.Account,
+                Password =  await EncryptPassword(user.Password),
+                IsActive = true
+            };
+
+            await _context.Users.AddAsync(modifiUser);
+            await _context.SaveChangesAsync();
+            user.UserId = modifiUser.UserId;
             return user;
         }
 
 
-        private bool modifyPremiumAccount(string? Account, string? AccountGoogle)
+        public async Task<bool> modifyPremiumAccount(string? Account, string? AccountGoogle)
         {
             short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
             short roleUserPremium = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUserPremium");
-            
+
             if (AccountGoogle != null)
             {
-                var accGoogle = _context.Users.FirstOrDefault(x => x.AccountGoogle.Equals(AccountGoogle));
-                if(accGoogle != null && accGoogle.Role == roleUserPremium)
+                var accGoogle = await _context.Users.FirstOrDefaultAsync(x => x.AccountGoogle.Equals(AccountGoogle));
+                if (accGoogle != null && accGoogle.Role == roleUserPremium)
                 {
-                    var data = _context.UserListManagements.FirstOrDefault(x =>
+                    var data = await _context.UserListManagements.FirstOrDefaultAsync(x =>
                     x.UserId == accGoogle.UserId
                     && x.StartDate <= DateTime.Now
                     && x.EndDate >= DateTime.Now && x.IsDone == false);
@@ -157,17 +249,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     if (data == null)
                     {
                         accGoogle.Role = roleUser;
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                         return true;
                     }
                 }
             }
             else
             {
-                var accUser = _context.Users.FirstOrDefault(x => x.Account.Equals(Account));
+                var accUser = await _context.Users.FirstOrDefaultAsync(x => x.Account.Equals(Account));
                 if (accUser != null && accUser.Role == roleUserPremium)
                 {
-                    var data = _context.UserListManagements.FirstOrDefault(x =>
+                    var data = await _context.UserListManagements.FirstOrDefaultAsync(x =>
                     x.UserId == accUser.UserId
                     && x.StartDate <= DateTime.Now
                     && x.EndDate >= DateTime.Now && x.IsDone == false);
@@ -175,7 +267,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     if (data == null)
                     {
                         accUser.Role = roleUser;
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                         return true;
                     }
                 }
@@ -184,42 +276,61 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        public dynamic GetRegisterLoginGoogle(User user)
+        public async Task<UserLoginRegister> GetRegisterLoginGoogle(UserLoginRegister user)
         {
-            modifyPremiumAccount(null, user.AccountGoogle);
-            var accGoogle = _context.Users.FirstOrDefault(x => x.AccountGoogle == user.AccountGoogle);
+            await modifyPremiumAccount(null, user.AccountGoogle);
+            var accGoogle = await _context.Users.FirstOrDefaultAsync(x => x.AccountGoogle.Equals(user.AccountGoogle));
 
             if (accGoogle == null)
             {
-                _context.Users.Add(user);
-                _context.SaveChanges();
 
-                string roleName = _context.Roles.Find(user.Role).RoleName;
-                var UserLogin = new
+                User modifiUser = new User()
                 {
-                    FullName = user.FirstName + " " + user.LastName,
-                    user.Urlimage,
-                    user.Account,
-                    RoleName = roleName,
-                    user.UserId,
-                    user.AccountGoogle
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Role = user.Role,
+                    Account = user.Account,
+                    AccountGoogle = user.AccountGoogle,
+                    Password = await EncryptPassword(user.Password),
+                    IsActive = true
                 };
-                return UserLogin;
+
+                await _context.Users.AddAsync(modifiUser);
+                await _context.SaveChangesAsync();
+
+                var getDataRole = await _context.Roles.FindAsync(modifiUser.Role);
+                if (getDataRole != null)
+                {
+                    UserLoginRegister UserLogin = new UserLoginRegister()
+                    {
+                        FullName = modifiUser.FirstName + " " + modifiUser.LastName,
+                        Urlimage = modifiUser.Urlimage,
+                        Account = modifiUser.Account,
+                        RoleName = getDataRole.RoleName,
+                        UserId = modifiUser.UserId
+                    };
+                    return UserLogin;
+                }
             }
             else
             {
-                string roleName = _context.Roles.Find(accGoogle.Role).RoleName;     
-                var UserLogin = new
+                var getDataRole = await _context.Roles.FindAsync(accGoogle.Role);
+
+                if (getDataRole != null)
                 {
-                    FullName = user.FirstName + " " + user.LastName,
-                    accGoogle.Urlimage,
-                    accGoogle.Account,
-                    RoleName = roleName,
-                    accGoogle.UserId,
-                    user.AccountGoogle
-                };
-                return UserLogin;
+                    UserLoginRegister UserLogin = new UserLoginRegister()
+                    {
+                        FullName = accGoogle.FirstName + " " + accGoogle.LastName,
+                        Urlimage = accGoogle.Urlimage,
+                        Account = accGoogle.Account,
+                        RoleName = getDataRole.RoleName,
+                        UserId = accGoogle.UserId
+                    };
+                    return UserLogin;
+                }
+
             }
+            return null;
         }
 
 
@@ -430,5 +541,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             return "Success";
         }
+
     }
 }

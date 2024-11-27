@@ -128,18 +128,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     HttpContent content = res.Content;
                     string data = await content.ReadAsStringAsync();
-                    dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
+                    UserLoginRegister u = JsonConvert.DeserializeObject<UserLoginRegister>(data);
 
-                    HttpContext.Session.SetString("UserId", (string)u.userId);
-
-                    importStringToSession("takeFullName", u.fullName, "string");
-                    importStringToSession("imageUrl", u.urlimage, "URL");
+                    HttpContext.Session.SetString("UserId", (string)(u.UserId.ToString()));
+                    importStringToSession("takeFullName", u.FullName, "string");
+                    importStringToSession("imageUrl", u.Urlimage, "URL");
 
                     var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name,(string) u.account),
-                    new Claim(ClaimTypes.Role,(string) u.roleName),
-                    new Claim("UserId", (string)u.userId)
+                    new Claim(ClaimTypes.Name,(string) u.Account),
+                    new Claim(ClaimTypes.Role,(string) u.RoleName),
+                    new Claim("UserId", (string)(u.UserId.ToString()))
                 };
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties
@@ -149,17 +148,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-                    if (((string)u.roleName).Equals("Admin"))
+                    if (((string)u.RoleName).Equals("Admin"))
                     {
                         return RedirectToAction("AdminDashboard", "Admin");
                     }
-                    else if (((string)u.roleName).Equals("Nutritionist"))
+                    else if (((string)u.RoleName).Equals("Nutritionist"))
                     {
                         return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
+                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.UserId}");
 
                         if (res2.StatusCode == System.Net.HttpStatusCode.OK)
                         {
@@ -237,7 +236,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 else
                 {
                     short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
-                    User user = new User()
+                    UserLoginRegister user = new UserLoginRegister()
                     {
                         Account = account,
                         Password = password,
@@ -255,13 +254,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         {
                             HttpContent content = resLogin.Content;
                             string data = await content.ReadAsStringAsync();
-                            dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
+                            UserLoginRegister u = JsonConvert.DeserializeObject<UserLoginRegister>(data);
+
+                            HttpContext.Session.SetString("UserId", (string)(u.UserId.ToString()));
+                            importStringToSession("takeFullName", u.FullName, "string");
+                            importStringToSession("imageUrl", u.Urlimage, "URL");
 
                             var claims = new List<Claim>
                         {
-                            new Claim(ClaimTypes.Name,(string) u.account),
-                            new Claim(ClaimTypes.Role,(string) u.roleName),
-                            new Claim("UserId", (string)u.userId)
+                            new Claim(ClaimTypes.Name,(string) u.Account),
+                            new Claim(ClaimTypes.Role,(string) u.RoleName),
+                            new Claim("UserId", (string)(u.UserId.ToString()))
 
                         };
 
@@ -274,7 +277,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                            HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
+                            HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.UserId}");
                             if (res2.StatusCode == System.Net.HttpStatusCode.OK)
                             {
                                 return RedirectToAction("Index", "Home");
@@ -328,7 +331,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 // Tạo đối tượng chứa thông tin người dùng
                 short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
-                User user = new User()
+                UserLoginRegister user = new UserLoginRegister()
                 {
                     Password = adminSevices.GeneratePassword(20),
                     Account = email,
@@ -342,13 +345,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     HttpContent content = resLoginGoogle.Content;
                     string data = await content.ReadAsStringAsync();
-                    dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
+                    UserLoginRegister u = JsonConvert.DeserializeObject<UserLoginRegister>(data);
 
                     var claims = new List<Claim>
                         {
-                            new Claim(ClaimTypes.Name,(string) u.account),
-                            new Claim(ClaimTypes.Role,(string) u.roleName),
-                            new Claim("UserId", (string)u.userId)
+                            new Claim(ClaimTypes.Name,(string) u.Account),
+                            new Claim(ClaimTypes.Role,(string) u.RoleName),
+                            new Claim("UserId", (string)(u.UserId.ToString()))
 
                         };
 
@@ -361,7 +364,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                    HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
+                    HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.UserId}");
                     if (res2.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         return RedirectToAction("Index", "Home");

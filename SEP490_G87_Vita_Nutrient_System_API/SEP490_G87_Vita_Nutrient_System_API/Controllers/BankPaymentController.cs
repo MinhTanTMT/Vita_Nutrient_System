@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
@@ -11,6 +12,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Reflection.Metadata;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using static System.Net.WebRequestMethods;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -43,17 +46,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult<string>> APIGetQRPayDefaultSystem(int? idBankInformation, decimal amount, string content)
         {
             return Ok(await repositories.GetQRPayImage(idBankInformation, amount, content));
-        } 
+        }
+
+
 
 
         [HttpGet("APITest")]
-        public async Task<ActionResult<TransactionsSystem>> APITest( )
+        public async Task<ActionResult<UserLoginRegister>> APITest( )
         {
 
             //return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
 
+            UsersRepositories usersRepositories = new UsersRepositories();
 
-            return Ok();
+            UserLoginRegister abc = new UserLoginRegister()
+            {
+                Account = "tantestmaha4",
+                Password = "tantestmaha4",
+                
+            };
+
+            return Ok(await usersRepositories.GetUserLogin("tantestmaha4" , "tantestmaha4"));
 
 
         }
