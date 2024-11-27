@@ -21,7 +21,10 @@
         </dd>
     </div>
     <hr />
+
     <div class="rating-section">
+        <h5>Đánh giá của bạn trước đó:</h5>
+        <div id="user-rating-stars" class="star-display"></div>
         <h4>Đánh giá bài viết</h4>
         @if (User.Identity.IsAuthenticated)
         {
@@ -40,6 +43,8 @@
             
         }
         <p id="rating-display">@Model.Rate?.ToString("0.00")/5 - (@Model.NumberRate bình chọn)</p>
+        
+
     </div>
 
     <div class="action-links text-right">
@@ -60,6 +65,28 @@
 
 </div>
 <script>
+    function displayUserRating(rating) {
+        const container = document.getElementById('user-rating-stars');
+        container.innerHTML = ''; // Xóa nội dung cũ nếu có
+        const fullStars = Math.floor(rating); // Số sao đầy
+        const halfStar = rating % 1 >= 0.5; // Có nửa sao không
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0); // Số sao rỗng
+
+        // Tạo các sao đầy
+        for (let i = 0; i < fullStars; i++) {
+            container.innerHTML += '<i class="fa fa-star" style="color: #ffc700;"></i>';
+        }
+
+        // Tạo các sao rỗng
+        for (let i = 0; i < emptyStars; i++) {
+            container.innerHTML += '<i class="fa fa-star" style="color: #ccc;"></i>';
+        }
+    }
+
+    // Gọi hàm hiển thị sao với dữ liệu từ server
+    const userRate = parseFloat("@Model.UserRate") || 0; // Lấy đánh giá của người dùng
+    displayUserRating(userRate);
+
     const apiBaseUrl = '@ViewData["ApiBaseUrl"]';
     let selectedRating = 0; // Biến để lưu giá trị đánh giá người dùng chọn
 
