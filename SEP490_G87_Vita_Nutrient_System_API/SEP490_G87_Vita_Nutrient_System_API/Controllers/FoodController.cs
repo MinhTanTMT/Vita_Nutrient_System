@@ -149,10 +149,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Add successful!");
         }
 
-        [HttpDelete("DeleteIngredientFromFood")]
-        public async Task<ActionResult> DeleteIngredientFromFood([FromBody] RemoveIngredientFromFoodRequest request)
+        [HttpDelete("DeleteIngredientFromFood/{foodId}/{ingredientId}")]
+        public async Task<ActionResult> DeleteIngredientFromFood(int foodId, int ingredientId)
         {
-            foodRepositories.RemoveIngredientFromFood(request.FoodId, request.IngredientId);
+            foodRepositories.RemoveIngredientFromFood(foodId, ingredientId);
 
             return Ok("Remove successful!");
         }

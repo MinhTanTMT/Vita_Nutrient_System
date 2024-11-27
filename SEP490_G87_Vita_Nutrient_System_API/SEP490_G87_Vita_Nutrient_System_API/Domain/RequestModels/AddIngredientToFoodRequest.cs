@@ -2,7 +2,4 @@
 {
     public record AddIngredientToFoodRequest
     (int FoodId, int IngredientId, double Amount);
-
-    public record RemoveIngredientFromFoodRequest
-    (int FoodId, int IngredientId);
 }

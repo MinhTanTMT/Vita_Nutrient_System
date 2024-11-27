@@ -1232,6 +1232,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     string data2 = await content2.ReadAsStringAsync();
                     List<IngredientDetails100g> foodIngredients = JsonConvert.DeserializeObject<List<IngredientDetails100g>>(data2);
 
+                    ingredients.RemoveAll(item => foodIngredients.Any(fi => fi.Id == item.Id));
+
                     ViewBag.food = food;
                     ViewBag.allIngredients = ingredients;
                     ViewBag.foodIngredients = foodIngredients;
@@ -1243,6 +1245,66 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
 
             return View("~/Views/Admin/FoodIngredients.cshtml");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddIngredientToFood(int foodId, int ingreId, double amount)
+        {
+            try
+            {
+                var data = new
+                {
+                    foodid = foodId,
+                    ingredientId = ingreId,
+                    amount = amount
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Food/AddIngredientToFood", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Add ingredient failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Add ingredient successfully!";
+                }
+            }
+            catch(Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await FoodListIngredients(foodId);
+        }
+
+        [HttpGet("admin/foodmanagement/deleteingredient/{foodId}/{ingreId}")]
+        public async Task<IActionResult> RemoveIngredientFromFood(int foodId, int ingreId)
+        {
+            try
+            {
+                HttpResponseMessage response =
+                    await client.DeleteAsync(client.BaseAddress + "/Food/DeleteIngredientFromFood/" + foodId + "/" + ingreId);
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Cannot remove ingredient! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Remove ingredient successfully!";
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await FoodListIngredients(foodId);
         }
 
         ////////////////////////////////////////////////////////////
