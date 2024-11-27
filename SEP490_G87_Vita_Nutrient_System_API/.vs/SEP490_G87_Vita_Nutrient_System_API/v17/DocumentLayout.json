@@ -127,7 +127,8 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\UsersRepositories.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-26T13:03:14.824Z"
+              "WhenOpened": "2024-11-26T13:03:14.824Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -137,9 +138,10 @@
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
               "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\GenerateMealController.cs",
-              "ViewState": "AgIAAD0AAAAAAAAAAIBJwMQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADoAAAAAAAAAAIBZwMQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-26T07:36:30.316Z"
+              "WhenOpened": "2024-11-26T07:36:30.316Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -149,9 +151,10 @@
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
               "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
-              "ViewState": "AgIAABYEAAAAAAAAACBjwPYDAAANAAAAAAAAAA==",
+              "ViewState": "AgIAABMEAAAAAAAAAIBpwPYDAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T14:28:41.923Z"
+              "WhenOpened": "2024-11-24T14:28:41.923Z",
+              "EditorCaption": ""
             }
           ]
         }
