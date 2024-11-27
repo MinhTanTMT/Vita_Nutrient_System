@@ -5,7 +5,9 @@
 <link rel="stylesheet" href="/css/meal-list.css" />
 
 @model List<CreateMealSettingsDetail>
-
+@{
+    var userId = ViewBag.UserId;
+}
 <div class="container">
     <div class="modal-header">
         <h5 class="modal-title">Danh sách  bữa ăn</h5>
@@ -21,13 +23,13 @@
 
             @foreach (var group in groupedMeals)
             {
-                <h1>
+                <h1 data-group-id="@group.Key" class="meal-group-title">
                     @group.First().SlotOfTheDay
                 </h1>
 
                 @foreach (var meal in group)
                 {
-                    <div class="meal-item d-flex align-items-center justify-content-between">
+                    <div class="meal-item d-flex align-items-center justify-content-between" data-meal-id="@meal.Id" data-group-id="@group.Key">
                         <div class="meal-info">
                             <h6>@meal.Name</h6>
                             <p>
@@ -40,32 +42,75 @@
                         <div class="meal-actions d-flex">
                             <form asp-action="AddMealToList" asp-controller="Meal" method="post">
                                 <input type="hidden" name="mealId" value="@meal.Id" />
+                                <input type="hidden" name="userId" value="@ViewBag.UserId" />
                                 <button type="submit" class="btn btn-light add-meal-btn">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </form>
-                            <a href="@Url.Action("EditMealSettingsDetail", "Meal", new { id = meal.Id })" class="btn btn-light edit-meal-btn">
+                            <a href="@Url.Action("EditMealSettingsDetail", "Meal", new { id = meal.Id ,userId = userId  })" class="btn btn-light edit-meal-btn">
                                 <i class="fa fa-pencil-alt"></i>
                             </a>
 
-                            <form action="@Url.Action("DeleteMealSettingsDetail", "Meal", new { dayOfTheWeekId = ViewBag.DayOfTheWeekId })" method="post" style="display: inline;">
-                                <input type="hidden" name="id" value="@meal.Id" />
-                                <button type="submit" class="btn btn-light delete-meal-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa bữa ăn này?');">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-light delete-meal-btn" onclick="confirmDeleteMeal(@meal.Id, @ViewBag.UserId, @ViewBag.DayOfTheWeekId)">
+                                <i class="fa fa-times"></i>
+                            </button>
                         </div>
                     </div>
                 }
             }
+
         </div>
     </div>
 
     <div class="modal-footer">
-        <a href="@Url.Action("CreateMealSettingsDetail", "Meal", new { dayOfTheWeekId = ViewBag.DayOfTheWeekId })" class="btn btn-primary">
+        <a href="@Url.Action("CreateMealSettingsDetail", "Meal", new { dayOfTheWeekId = ViewBag.DayOfTheWeekId,userId = userId})" class="btn btn-primary">
             <i class="fa fa-plus"></i> Tạo bữa ăn mới
         </a>
-        <a href="@Url.Action("MealSettingsDetailToList", "Meal")" class="btn btn-secondary">Trở Lại</a>
+        <a href="@Url.Action("MealSettingsDetailToList", "Meal", new { userId = userId })" class="btn btn-secondary">Trở Lại</a>
     </div>
-
 </div>
+<script>
+    function confirmDeleteMeal(mealId, userId, dayOfTheWeekId) {
+        // Hiển thị hộp thoại xác nhận
+        if (confirm('Bạn có chắc chắn muốn xóa bữa ăn này?')) {
+            // Gửi yêu cầu AJAX để xóa bữa ăn mà không cần tải lại trang
+            $.ajax({
+                url: '@Url.Action("DeleteMealSettingsDetail", "Meal")', // URL controller
+                type: 'POST',
+                data: {
+                    id: mealId,
+                    userId: userId,   // Truyền userId
+                    dayOfTheWeekId: dayOfTheWeekId // Truyền ngày trong tuần
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Tìm phần tử chứa bữa ăn cần xóa
+                        var mealItem = $('div[data-meal-id="' + mealId + '"]');
+
+                        // Xóa phần tử khỏi DOM ngay lập tức
+                        mealItem.remove();
+
+                        // Kiểm tra nếu nhóm không còn phần tử nào thì ẩn tiêu đề nhóm
+                        var groupId = mealItem.data('group-id');
+                        var remainingMeals = $('.meal-item[data-group-id="' + groupId + '"]');
+
+                        // Nếu không còn bữa ăn nào trong nhóm, ẩn tiêu đề nhóm
+                        if (remainingMeals.length === 0) {
+                            $('h1[data-group-id="' + groupId + '"]').remove();
+                        }
+                    } else {
+                        alert(response.message || 'Có lỗi xảy ra khi xóa bữa ăn.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi trong quá trình xóa bữa ăn:", error);
+                    alert("Có lỗi xảy ra khi xóa bữa ăn.");
+                }
+            });
+        }
+    }
+
+
+
+
+</script>
