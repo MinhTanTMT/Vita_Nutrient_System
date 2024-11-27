@@ -31,8 +31,12 @@ using System.Net.Http;
 
 
         [HttpPost]
-        public async Task<IActionResult> AddMealToList(int mealId)
+        public async Task<IActionResult> AddMealToList(int mealId , int userId)
         {
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
             try
             {
                 HttpResponseMessage response = await client.PutAsync($"{client.BaseAddress}/Meals/AddMealToList/{mealId}", null);
@@ -44,7 +48,7 @@ using System.Net.Http;
 
                     if (updateCaloResponse.IsSuccessStatusCode)
                     {
-                        return RedirectToAction("MealSettingsDetailToList");
+                        return RedirectToAction("MealSettingsDetailToList", new { userId = userId });
                     }
                     else
                     {
@@ -53,7 +57,7 @@ using System.Net.Http;
                 }          
                 else if (response.StatusCode == HttpStatusCode.Conflict)
                 {
-                    return RedirectToAction("MealSettingsDetailToList");
+                    return RedirectToAction("MealSettingsDetailToList", new { userId = userId });
                 }
                 else
                 {
@@ -65,35 +69,43 @@ using System.Net.Http;
             {
                 ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
             }
-            return RedirectToAction("MealSettingsDetailToList");
+            return RedirectToAction("MealSettingsDetailToList", new { userId = userId });
         }
 
 
 
         [HttpPost]
-        public async Task<IActionResult> RemoveMealToList(int mealId)
+        public async Task<IActionResult> RemoveMealToList(int mealId, int userId)
         {
+            // Kiểm tra userId nếu không có, lấy từ token hoặc session.
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
+
             try
             {
+                // Gửi yêu cầu API để xóa bữa ăn
                 HttpResponseMessage response = await client.PutAsync($"{client.BaseAddress}/Meals/RemoveMealToList/{mealId}", null);
 
+                // Nếu xóa thành công, trả về kết quả JSON thành công
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("MealSettingsDetailToList");
+                    return Json(new { success = true });
                 }
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    ViewBag.ErrorMessage = $"Lỗi khi xóa bữa ăn: {error}";
+                    return Json(new { success = false, message = $"Lỗi khi xóa bữa ăn: {error}" });
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
+                // Trả về lỗi nếu có exception
+                return Json(new { success = false, message = $"Lỗi trong quá trình gọi API: {ex.Message}" });
             }
-
-            return RedirectToAction("MealSettingsDetailToList");
         }
+
 
 
 
@@ -123,9 +135,12 @@ using System.Net.Http;
 
 
         [HttpGet]
-        public async Task<IActionResult> MealSettingsDetailToList()
+        public async Task<IActionResult> MealSettingsDetailToList(int userId)
         {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            if(userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }  
             List<CreateMealSettingsDetail> activeMeals = new List<CreateMealSettingsDetail>();
             List<CookingDifficulty> cookingDifficulties = new List<CookingDifficulty>();
             List<WantCooking> wantCookings = new List<WantCooking>();
@@ -227,6 +242,7 @@ using System.Net.Http;
                 ViewBag.DaysOfWeek = daysOfWeek;
                 ViewData["DayOfTheWeekStartId"] = dayOfTheWeekStartId;
                 ViewBag.SameScheduleEveryDay = sameScheduleEveryDay;
+                ViewBag.UserId = userId;
             }
             catch (Exception ex)
             {
@@ -235,10 +251,8 @@ using System.Net.Http;
             return View(activeMeals);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateDietType([FromBody] MealSetting dto)
+        public async Task<IActionResult> UpdateDietType(int foodTypeIdWant, int userId)
         {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
-
             try
             {
                 HttpResponseMessage mealSettingResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
@@ -247,7 +261,7 @@ using System.Net.Http;
                     var mealSettingData = await mealSettingResponse.Content.ReadAsStringAsync();
                     var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
 
-                    mealSetting.FoodTypeIdWant = dto.FoodTypeIdWant;
+                    mealSetting.FoodTypeIdWant = (short)foodTypeIdWant;
 
                     var content = new StringContent(JsonConvert.SerializeObject(mealSetting), Encoding.UTF8, "application/json");
                     HttpResponseMessage updateResponse = await client.PutAsync($"{client.BaseAddress}/Meals/UpdateMealSetting/{mealSetting.UserId}", content);
@@ -305,10 +319,12 @@ using System.Net.Http;
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateDayOfTheWeek([FromBody] DayOfTheWeek dto)
+        public async Task<IActionResult> UpdateDayOfTheWeek(int dayOfTheWeekStartId, int userId)
         {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
-
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
             try
             {
                 HttpResponseMessage mealSettingResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
@@ -317,7 +333,7 @@ using System.Net.Http;
                     var mealSettingData = await mealSettingResponse.Content.ReadAsStringAsync();
                     var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
 
-                    mealSetting.DayOfTheWeekStartId = dto.Id;
+                    mealSetting.DayOfTheWeekStartId = (short)dayOfTheWeekStartId;
 
                     var content = new StringContent(JsonConvert.SerializeObject(mealSetting), Encoding.UTF8, "application/json");
                     HttpResponseMessage updateResponse = await client.PutAsync($"{client.BaseAddress}/Meals/UpdateMealSetting/{mealSetting.UserId}", content);
@@ -341,9 +357,12 @@ using System.Net.Http;
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSameScheduleEveryDay(bool SameScheduleEveryDay)
+        public async Task<IActionResult> UpdateSameScheduleEveryDay(bool SameScheduleEveryDay, int userId)
         {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
 
             try
             {
@@ -384,7 +403,7 @@ using System.Net.Http;
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateMealSettingsDetailAsync(CreateMealSettingsDetail model)
+        public async Task<IActionResult> CreateMealSettingsDetailAsync(CreateMealSettingsDetail model, int userId)
         {
             if (!ModelState.IsValid)
             {
@@ -400,7 +419,7 @@ using System.Net.Http;
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("MealList", new { dayOfTheWeekId = model.DayOfTheWeekId });
+                    return RedirectToAction("MealList", "Meal", new { dayOfTheWeekId = model.DayOfTheWeekId, userId = userId });
                 }
                 else
                 {
@@ -420,13 +439,11 @@ using System.Net.Http;
 
 
         [HttpGet]
-        public async Task<IActionResult> CreateMealSettingsDetailAsync(short dayOfTheWeekId)
+        public async Task<IActionResult> CreateMealSettingsDetailAsync(short dayOfTheWeekId,int userId)
         {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
-            if (userId == null)
+            if (userId == 0)
             {
-                ViewBag.ErrorMessage = "Không tìm thấy UserId.";
-                return RedirectToAction("MealSettingsDetailToList");
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
             }
             var model = new CreateMealSettingsDetail
             {
@@ -447,27 +464,26 @@ using System.Net.Http;
                 ViewBag.ErrorMessage = "Không thể lấy MealSettingsId.";
                 return View();
             }
-
+            ViewBag.UserId = userId;
             await LoadDropDownLists();
             return View(model);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> MealList(short dayOfTheWeekId)
+        public async Task<IActionResult> MealList(short dayOfTheWeekId,int userId)
         {
             List<CreateMealSettingsDetail> meals = new List<CreateMealSettingsDetail>();
             List<CookingDifficulty> cookingDifficulties = new List<CookingDifficulty>();
+            
+            
             List<WantCooking> wantCookings = new List<WantCooking>();
             List<SlotOfTheDay> slotOfTheDays = new List<SlotOfTheDay>();
-
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
-
-            if (userId == null )
+            if(userId == 0)
             {
-                ViewBag.ErrorMessage = "Không tìm thấy UserId.";
-                return View();
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
             }
+           
             try
             {
                 
@@ -514,12 +530,17 @@ using System.Net.Http;
             }
 
             ViewBag.DayOfTheWeekId = dayOfTheWeekId;
+            ViewBag.UserId = userId;
             return View(meals);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditMealSettingsDetailAsync(int id, CreateMealSettingsDetail model)
+        public async Task<IActionResult> EditMealSettingsDetailAsync(int id, CreateMealSettingsDetail model, int userId)
         {
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
             try
             {
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
@@ -533,7 +554,7 @@ using System.Net.Http;
 
                     if (updateCaloResponse.IsSuccessStatusCode)
                     {
-                        return RedirectToAction("MealList", new { dayOfTheWeekId = model.DayOfTheWeekId });
+                        return RedirectToAction("MealList", new { dayOfTheWeekId = model.DayOfTheWeekId , userId= userId });
                     }
                     else
                     {
@@ -548,17 +569,21 @@ using System.Net.Http;
             catch (Exception ex)
             { 
                 ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
-            }
-
-            await LoadDropDownLists(); 
+            }        
+            await LoadDropDownLists();
+            ViewBag.UserId = userId;
             return View("EditMealSettingsDetail", model);
         }
 
 
         [HttpGet]
-            public async Task<IActionResult> EditMealSettingsDetail(int id)
+            public async Task<IActionResult> EditMealSettingsDetail(int id, int userId)
             {
-                CreateMealSettingsDetail mealSettingsDetail = null;
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
+            CreateMealSettingsDetail mealSettingsDetail = null;
                 try
                 {
                     HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Meals/FindMealSettingsDetailById/{id}");
@@ -579,15 +604,8 @@ using System.Net.Http;
                     ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
                     return RedirectToAction("Meal");
                 }
-
-                if (mealSettingsDetail == null)
-                {
-                    ViewBag.ErrorMessage = "Không tìm thấy MealSettingsDetail.";
-                    return RedirectToAction("Error");
-                }
-
                 await LoadDropDownLists();
-
+                ViewBag.UserId = userId;
                 return View(mealSettingsDetail);
 
 
@@ -595,8 +613,12 @@ using System.Net.Http;
 
 
         [HttpGet]
-        public async Task<IActionResult> EditMealSettingsDetailActive(int id)
+        public async Task<IActionResult> EditMealSettingsDetailActive(int id, int userId)
         {
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
             CreateMealSettingsDetail mealSettingsDetail = null;
             try
             {
@@ -626,13 +648,17 @@ using System.Net.Http;
             }
 
             await LoadDropDownLists();
-
+            ViewBag.UserId = userId;
             return View(mealSettingsDetail);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditMealSettingsDetailActiveAsync(int id, CreateMealSettingsDetail model)
+        public async Task<IActionResult> EditMealSettingsDetailActiveAsync(int id, CreateMealSettingsDetail model, int userId)
         {
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
             try
             {
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
@@ -641,7 +667,7 @@ using System.Net.Http;
                 if (response.IsSuccessStatusCode)
                 {
 
-                        return RedirectToAction("MealSettingsDetailToList");
+                    return RedirectToAction("MealSettingsDetailToList", new { userId = userId });
                 }
                 else
                 {
@@ -654,29 +680,43 @@ using System.Net.Http;
             }
 
             await LoadDropDownLists();
+            ViewBag.UserId = userId;
             return View("EditMealSettingsDetail", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteMealSettingsDetail(int id, short dayOfTheWeekId)
+        public async Task<IActionResult> DeleteMealSettingsDetail(int id, short dayOfTheWeekId, int userId)
         {
+            // Kiểm tra userId, nếu chưa có thì lấy từ Claims
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
+
             try
             {
+                // Gọi API để xóa bữa ăn
                 HttpResponseMessage response = await client.DeleteAsync($"{client.BaseAddress}/Meals/DeleteMealSettingsDetail/{id}");
 
-                if (!response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
+                {
+                    // Trả về kết quả JSON khi xóa thành công
+                    return Json(new { success = true });
+                }
+                else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    ViewBag.ErrorMessage = $"Lỗi khi xóa bữa ăn: {error}";
+                    // Trả về thông báo lỗi nếu không thành công
+                    return Json(new { success = false, message = $"Lỗi khi xóa bữa ăn: {error}" });
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
+                // Trả về thông báo lỗi nếu có exception
+                return Json(new { success = false, message = $"Lỗi trong quá trình gọi API: {ex.Message}" });
             }
-
-            return RedirectToAction("MealList", new { dayOfTheWeekId });
         }
+
 
 
         private async Task LoadDropDownLists()

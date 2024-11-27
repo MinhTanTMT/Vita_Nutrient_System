@@ -57,7 +57,8 @@
                 @for (int i = 0; i < Model.Count; i++)
                 {
                     var route = Model[i];
-                    <tr class="clickable-row" data-href="@Url.Action("Details", new { id = route.Id, userId = ViewData["UserId"], userListManagementId = ViewData["UserListManagementId"], packageName = ViewData["PackageName"] })">
+                    // sưả vào đấy
+                    <tr class="clickable-row" data-href="@Url.Action("MealSettingsDetailToList", "Meal", new { userId = ViewData["UserId"] })">
                         <td>@(i + 1)</td>
                         <td class="text-truncate" style="max-width: 150px;">@route.Name</td>
                         <td class="text-truncate" style="max-width: 150px;">@route.Describe</td>
