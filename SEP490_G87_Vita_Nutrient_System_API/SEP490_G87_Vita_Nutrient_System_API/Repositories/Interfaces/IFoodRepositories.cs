@@ -26,6 +26,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         List<FoodSelection> GetFoodSelectionsByUserId(int userId);
         List<ScaleAmount> GetIngredientByFoodId(int foodId);
         Task<string> SaveFoodRecipe(SaveFoodRecipeDTO model);
+        void AddIngredientToFood(int foodId, int ingredientId, double amount);
+        void RemoveIngredientFromFood(int foodId, int ingredientId);
 
     }
 }

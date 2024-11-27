@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
@@ -138,6 +139,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             {
                 return BadRequest("Food not found!");
             }
+        }
+
+        [HttpPost("AddIngredientToFood")]
+        public async Task<ActionResult> AddIngredientToFood([FromBody] AddIngredientToFoodRequest request)
+        {
+            foodRepositories.AddIngredientToFood(request.FoodId, request.IngredientId, request.Amount);
+
+            return Ok("Add successful!");
+        }
+
+        [HttpDelete("DeleteIngredientFromFood")]
+        public async Task<ActionResult> DeleteIngredientFromFood([FromBody] RemoveIngredientFromFoodRequest request)
+        {
+            foodRepositories.RemoveIngredientFromFood(request.FoodId, request.IngredientId);
+
+            return Ok("Remove successful!");
         }
     }
 }
