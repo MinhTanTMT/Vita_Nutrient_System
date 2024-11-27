@@ -1202,6 +1202,49 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return await ListPackages();
         }
 
+        [HttpGet("admin/foodmanagement/foodingredient/{foodId}")]
+        public async Task<IActionResult> FoodListIngredients(int foodId)
+        {
+            try
+            {
+                // get food
+                HttpResponseMessage response =
+                        await client.GetAsync(client.BaseAddress + "/Food/GetFoodById/" + foodId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic result = JsonConvert.DeserializeObject<dynamic>(data);
+                    FoodList food = result.food.ToObject<FoodList>();
+
+                    // get all ingredients
+                    HttpResponseMessage response1 =
+                            await client.GetAsync(client.BaseAddress + "/Ingredient/GetAllIngredients");
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<IngredientDetails100g> ingredients = JsonConvert.DeserializeObject<List<IngredientDetails100g>>(data1);
+
+                    //get food ingredients
+                    HttpResponseMessage response2 =
+                            await client.GetAsync(client.BaseAddress + "/Food/GetFoodIngredient/" + foodId);
+                    HttpContent content2 = response2.Content;
+                    string data2 = await content2.ReadAsStringAsync();
+                    List<IngredientDetails100g> foodIngredients = JsonConvert.DeserializeObject<List<IngredientDetails100g>>(data2);
+
+                    ViewBag.food = food;
+                    ViewBag.allIngredients = ingredients;
+                    ViewBag.foodIngredients = foodIngredients;
+                }
+            }
+            catch(Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return View("~/Views/Admin/FoodIngredients.cshtml");
+        }
+
         ////////////////////////////////////////////////////////////
         /// Tùng
         ////////////////////////////////////////////////////////////

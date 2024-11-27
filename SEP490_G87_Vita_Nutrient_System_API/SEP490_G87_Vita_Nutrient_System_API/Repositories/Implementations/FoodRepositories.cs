@@ -11,6 +11,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
     {
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
         public FoodRepositories() { }
+
+        public bool IsFoodExisted(int foodId)
+        {
+            return _context.FoodLists.Find(foodId) is not null;
+        }
         public FoodList? GetFood(int foodId)
         {
             return _context.FoodLists.Include(food => food.FoodType)
