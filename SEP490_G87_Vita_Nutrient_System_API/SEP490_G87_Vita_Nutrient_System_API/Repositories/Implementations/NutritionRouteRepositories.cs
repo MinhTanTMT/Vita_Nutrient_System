@@ -85,8 +85,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 CreateById = route.CreateById,
                 Name = route.Name,
                 Describe = route.Describe,
-                StartDate = route.StartDate,
-                EndDate = route.EndDate,
+                StartDate = route.StartDate?.Date,
+                EndDate = route.EndDate?.Date,
                 IsDone = route.IsDone,
                 FullName = route.User.FirstName + " " + route.User.LastName
             };
@@ -107,8 +107,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             // Kiểm tra thời gian của lộ trình nằm trong khoảng thời gian gói đăng ký
-            if (nutritionRouteDto.StartDate < relatedUserListManagement.StartDate ||
-                nutritionRouteDto.EndDate > relatedUserListManagement.EndDate)
+            if (nutritionRouteDto.StartDate.Value.Date < relatedUserListManagement.StartDate.Value.Date ||
+                nutritionRouteDto.EndDate.Value.Date > relatedUserListManagement.EndDate.Value.Date)
             {
                 return false; // Thời gian không hợp lệ
             }
@@ -120,8 +120,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 CreateById = nutritionRouteDto.CreateById,
                 Name = nutritionRouteDto.Name,
                 Describe = nutritionRouteDto.Describe,
-                StartDate = nutritionRouteDto.StartDate,
-                EndDate = nutritionRouteDto.EndDate,
+                StartDate = nutritionRouteDto.StartDate?.Date,
+                EndDate = nutritionRouteDto.EndDate?.Date,
                 IsDone = nutritionRouteDto.IsDone
             };
 
@@ -147,8 +147,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             // Kiểm tra thời gian của lộ trình nằm trong khoảng thời gian gói đăng ký
-            if (nutritionRouteDto.StartDate < relatedUserListManagement.StartDate ||
-                nutritionRouteDto.EndDate > relatedUserListManagement.EndDate)
+            if (nutritionRouteDto.StartDate.Value.Date < relatedUserListManagement.StartDate.Value.Date ||
+                nutritionRouteDto.EndDate.Value.Date > relatedUserListManagement.EndDate.Value.Date)
             {
                 return false; // Thời gian không hợp lệ
             }
@@ -164,8 +164,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             // Cập nhật thông tin
             route.Name = nutritionRouteDto.Name;
             route.Describe = nutritionRouteDto.Describe;
-            route.StartDate = nutritionRouteDto.StartDate;
-            route.EndDate = nutritionRouteDto.EndDate;
+            route.StartDate = nutritionRouteDto.StartDate?.Date;
+            route.EndDate = nutritionRouteDto.EndDate?.Date;
             route.IsDone = nutritionRouteDto.IsDone;
 
             _context.NutritionRoutes.Update(route);
@@ -232,8 +232,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return await _context.NutritionRoutes
                 .Where(route => route.UserId == relatedUserListManagement.UserId
                                 && route.CreateById == relatedUserListManagement.NutritionistId
-                                && route.StartDate >= relatedUserListManagement.StartDate
-                                && route.EndDate <= relatedUserListManagement.EndDate) // Điều kiện thời gian khớp với gói
+                                && route.StartDate.Value.Date >= relatedUserListManagement.StartDate.Value.Date
+                                && route.EndDate.Value.Date <= relatedUserListManagement.EndDate.Value.Date) // Điều kiện thời gian khớp với gói
                 .Select(route => new NutritionRouteDTO
                 {
                     Id = route.Id,

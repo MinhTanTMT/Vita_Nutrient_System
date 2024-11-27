@@ -247,7 +247,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     if (!existingRoutes.Any())
                     {
                         // Nếu không có lộ trình trước đó, kiểm tra thời gian với gói
-                        if (nutritionRoute.StartDate < selectedPackage.StartDate || nutritionRoute.EndDate > selectedPackage.EndDate)
+                        if (nutritionRoute.StartDate.Value.Date < selectedPackage.StartDate.Value.Date 
+                            || nutritionRoute.EndDate.Value.Date > selectedPackage.EndDate.Value.Date)
                         {
                             ModelState.AddModelError(string.Empty, $"Thời gian của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
                             return View(nutritionRoute);
@@ -270,14 +271,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         var lastRoute = existingRoutes.OrderBy(r => r.EndDate).Last();
 
                         // Ngày bắt đầu phải lớn hơn ngày kết thúc của lộ trình trước
-                        if (nutritionRoute.StartDate <= lastRoute.EndDate)
+                        if (nutritionRoute.StartDate.Value.Date <= lastRoute.EndDate.Value.Date)
                         {
                             ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải lớn hơn ngày kết thúc của lộ trình trước đó ({lastRoute.EndDate?.ToShortDateString()}).");
                             return View(nutritionRoute);
                         }
 
                         // Ngày kết thúc phải nằm trong thời gian của gói
-                        if (nutritionRoute.EndDate > selectedPackage.EndDate)
+                        if (nutritionRoute.EndDate.Value.Date > selectedPackage.EndDate.Value.Date)
                         {
                             ModelState.AddModelError(string.Empty, $"Ngày kết thúc của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
                             return View(nutritionRoute);
@@ -405,7 +406,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     if (currentIndex == 0)
                     {
                         // Lộ trình đầu tiên: kiểm tra so với gói đăng ký
-                        if (nutritionRoute.StartDate < selectedPackage.StartDate || nutritionRoute.StartDate > selectedPackage.EndDate)
+                        if (nutritionRoute.StartDate.Value.Date < selectedPackage.StartDate.Value.Date 
+                            || nutritionRoute.StartDate.Value.Date > selectedPackage.EndDate.Value.Date)
                         {
                             ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
                             return View(nutritionRoute);
@@ -415,7 +417,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     {
                         // Lộ trình sau: kiểm tra so với lộ trình trước
                         var previousRoute = sortedRoutes[currentIndex - 1];
-                        if (nutritionRoute.StartDate <= previousRoute.EndDate)
+                        if (nutritionRoute.StartDate.Value.Date <= previousRoute.EndDate.Value.Date)
                         {
                             ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải lớn hơn ngày kết thúc của lộ trình trước đó ({previousRoute.EndDate?.ToShortDateString()}).");
                             return View(nutritionRoute);
@@ -423,7 +425,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
 
                     // Kiểm tra ngày kết thúc của lộ trình với gói đăng ký
-                    if (nutritionRoute.EndDate > selectedPackage.EndDate)
+                    if (nutritionRoute.EndDate.Value.Date > selectedPackage.EndDate.Value.Date)
                     {
                         ModelState.AddModelError(string.Empty, $"Ngày kết thúc của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
                         return View(nutritionRoute);
