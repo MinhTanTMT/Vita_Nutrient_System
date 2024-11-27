@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes
 {
@@ -31,7 +30,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes
             // So sánh EndDate và StartDate
             if (startDate.HasValue && endDate.HasValue && endDate < startDate)
             {
-                return new ValidationResult(ErrorMessage ?? "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
+                // Chỉ gắn lỗi cho trường EndDate
+                return new ValidationResult(ErrorMessage ?? "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.", new[] { validationContext.MemberName });
             }
 
             return ValidationResult.Success;

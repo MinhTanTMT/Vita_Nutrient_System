@@ -25,10 +25,25 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("Login")]
-        public async Task<ActionResult<User>> APIGetUserLogin(string account, string password)
+
+        [HttpGet("APIForgotPassword")]
+        public async Task<ActionResult> APIForgotPassword(string emailGoogle)
         {
-            var dataReturn = repositories.GetUserLogin(account, password);
+
+            if (await repositories.ForgotPassword(emailGoogle))
+            {
+                return Ok();
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
+        [HttpGet("Login")]
+        public async Task<ActionResult<UserLoginRegister>> APIGetUserLogin(string account, string password)
+        {
+            var dataReturn = await repositories.GetUserLogin(account, password);
             if (dataReturn == null)
             {
                 return NotFound();
@@ -36,15 +51,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             else
             {
                 return Ok(dataReturn);
-            }    
+            }
         }
-
 
 
         [HttpGet("checkExit")]
         public async Task<ActionResult<User>> APIGetUserByAccount(string account)
         {
-            var dataReturn = repositories.CheckExitAccountUser(account);
+            var dataReturn = await repositories.CheckExitAccountUser(account);
 
             if (dataReturn)
             {
@@ -54,16 +68,25 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             {
                 return NotFound();
             }
-            
+
         }
 
 
         [HttpPost("Register")]
-        public async Task<ActionResult<User>> GetUserRegister(User user)
+        public async Task<ActionResult<UserLoginRegister>> GetUserRegister(UserLoginRegister user)
         {
-            var dataReturn = repositories.GetUserRegister(user);
+            var dataReturn = await repositories.GetUserRegister(user);
             return Ok(user);
         }
+
+
+        [HttpPost("RegisterLoginGoogle")]
+        public async Task<ActionResult<UserLoginRegister>> APIGetRegisterLoginGoogle(UserLoginRegister user)
+        {
+            var dataReturn = await repositories.GetRegisterLoginGoogle(user);
+            return Ok(dataReturn);
+        }
+
 
 
         [HttpGet("GetUserById/{id}")]
@@ -71,7 +94,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
 
             var dataReturn = repositories.GetUserById(id);
-            
+
             if (dataReturn == null)
             {
                 return NotFound();
@@ -95,7 +118,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult<List<CommonUserResponse>>> GetUsersByRole(int roleId)
         {
             //kiem tra xem roleId duoc truyen vao co hop le hay khong
-            if(!Enum.IsDefined(typeof(UserRole), roleId))
+            if (!Enum.IsDefined(typeof(UserRole), roleId))
             {
                 return BadRequest("Invalid role id!");
             }
@@ -150,13 +173,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("GetNutritionistPackages/{id}")]
-        public async Task<ActionResult<List<ExpertPackageResponse>>> GetNutritionistPackages(int id)
+        public async Task<ActionResult<ExpertPackageResponse>> GetNutritionistPackages(short id)
         {
-            List<ExpertPackage> packages = repositories.GetNutritionistPackages(id).ToList();
+            ExpertPackage packages = repositories.GetNutritionistPackages(id);
 
-            var result = packages
-                .Select(p => _mapper.Map<ExpertPackageResponse>(p))
-                .ToList();
+            var result = _mapper.Map<ExpertPackageResponse>(packages);
 
             return Ok(result);
         }
@@ -177,7 +198,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             User u = repositories.GetUserById(request.UserId);
             //kiem tra xem user ton tai hay ko
-            if(u == null)
+            if (u == null)
             {
                 return BadRequest("User not found!");
             }
@@ -186,6 +207,83 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             repositories.UpdateUser(u);
 
             return Ok("Update user status successfully!");
+        }
+
+        [HttpPost("UpdateUserInfo")]
+        public async Task<ActionResult<string>> UpdateUserInfo([FromBody] UpdateUserInfoRequest request)
+        {
+            User u = repositories.GetUserById(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.FirstName = request.FirstName;
+            u.LastName = request.LastName;
+            u.Dob = request.DOB ?? new DateTime(2000, 01, 01);
+            u.Gender = request.Gender;
+            u.Address = request.Address;
+            u.Phone = request.Phone ?? "";
+            repositories.UpdateUser(u);
+
+            return Ok("Update user status successfully!");
+        }
+
+        [HttpPut("ChangePassword")]
+        public async Task<ActionResult<string>> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            User u = repositories.GetUserById(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            if(request.NewPassword.Trim().Length == 0)
+            {
+                return BadRequest("New password invalid!");
+            }
+
+            //kiem tra password cu~
+            if(!u.Password.Equals(request.OldPassword))
+            {
+                return BadRequest("Old password wrong!");
+            }
+
+            //kiem tra confirm password va new password
+            if (!request.NewPassword.Equals(request.ConfirmPassword))
+            {
+                return BadRequest("Confirm password not match!");
+            }
+
+            u.Password = request.NewPassword;
+
+            repositories.UpdateUser(u);
+
+            return Ok("Change password successfully!");
+        }
+
+        [HttpPost("UpdateUserDetails")]
+        public async Task<ActionResult<string>> UpdateUserDetails([FromBody] UpdateUserDetailsRequest request)
+        {
+            UserDetail u = _repositories.GetUserDetail(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.DescribeYourself = request.Describe;
+            u.Height = request.Height;
+            u.Weight = request.Weight;
+            u.Age = request.Age;
+            u.WantImprove = request.WantImprove;
+            u.UnderlyingDisease = request.UnderlyingDisease;
+
+            _repositories.UpdateUserDetails(u);
+
+            return Ok("Update user successfully!");
         }
 
         [HttpGet("{userId}/liked-foods")]
@@ -223,7 +321,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("{userId}/blocked-foods")]
-        public async Task<IActionResult> GetBlockedFoods(int userId, [FromQuery]GetLikeFoodDTO model)
+        public async Task<IActionResult> GetBlockedFoods(int userId, [FromQuery] GetLikeFoodDTO model)
         {
             var paginatedFoods = await repositories.GetBlockedFoods(userId, model);
 

@@ -56,39 +56,44 @@
             var jsonListFoodId = System.Text.Json.JsonSerializer.Serialize(listFoodId);
 
         }
-    
 
-    <div class="space-y-4 mb-8 w-1/2">
-        <button class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg"
-                    onclick="changeAllTheDishesCurrentMeal(@jsonListFoodId, @Model.SettingDetail)">
-            <i class="fas fa-expand-arrows-alt cursor-pointer mr-4"></i>
-            <span class="flex-grow text-left">Entire meal</span>
-        </button>
 
-        @if (Model.foodIdData != null && Model.foodIdData.Length > 0)
-        {
-            @foreach (var food in Model.foodIdData)
+        <div class="space-y-4 mb-8 w-1/2">
+            <!-- Nút "Entire meal" -->
+            <button id="btnEntireMeal" class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg"
+                    onclick="highlightButton('btnEntireMeal'); changeAllTheDishesCurrentMeal(@jsonListFoodId, @Model.SettingDetail)">
+                <i class="fas fa-expand-arrows-alt cursor-pointer mr-4"></i>
+                <span class="flex-grow text-left">Entire meal</span>
+            </button>
+
+            <!-- Các nút món ăn -->
+            @if (Model.foodIdData != null && Model.foodIdData.Length > 0)
             {
-                    <button class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg" onclick="changeOneDishCurrentMeal(@jsonListFoodId, @food.foodData.FoodListId, @food.positionFood, @Model.SettingDetail)">
-                    <i class="fas fa-expand-arrows-alt cursor-pointer mr-4"></i>
-                    <img src="~/images/@food.foodData.Urlimage" alt="@food.foodData.Name" class="w-10 h-10 rounded mr-4">
-                    <span class="flex-grow text-left">@food.foodData.Name</span>
-                    <span>@food.foodData.Describe</span>
-                </button>
+                var index = 0; // Sử dụng biến index để tạo id duy nhất
+                foreach (var food in Model.foodIdData)
+                {
+                    <button id="btnFood@food.foodData.FoodListId_@index" class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg"
+                            onclick="highlightButton('btnFood@food.foodData.FoodListId_@index'); changeOneDishCurrentMeal(@jsonListFoodId, @food.foodData.FoodListId, @food.positionFood, @Model.SettingDetail)">
+                        <i class="fas fa-expand-arrows-alt cursor-pointer mr-4"></i>
+                        <img src="~/images/@food.foodData.Urlimage" alt="@food.foodData.Name" class="w-10 h-10 rounded mr-4">
+                        <span class="flex-grow text-left">@food.foodData.Name</span>
+                        <span>@food.foodData.Describe</span>
+                    </button>
+                    index++;
+                }
             }
-        }
-        else
-        {
-            <p class="text-center text-red-500">Không tìm được món phù hợp</p>
-        }
-    </div>
+            else
+            {
+                <p class="text-center text-red-500">Không tìm được món phù hợp</p>
+            }
+        </div>
 
         <!-- Tabs Section -->
         <div class="flex space-x-4 mb-4">
-            <button class="text-orange-500 font-semibold" onclick="loadFoodType(1)">Suggestions</button>
-            <button class="text-gray-500" onclick="loadFoodType(2)">Recent</button>
-            <button class="text-gray-500" onclick="loadFoodType(3)">Collections</button>
-            <button class="text-gray-500" onclick="loadFoodType(4)">Pantry</button>
+            <button id="btn1" class="text-orange-500 font-semibold" onclick="loadFoodType(0, 'btn1')">Suggestions</button>
+            <button id="btn2" class="text-gray-500" onclick="loadFoodType(1, 'btn2')">Like</button>
+            <button id="btn3" class="text-gray-500" onclick="loadFoodType(2, 'btn3')">Collections</button>
+            <button id="btn4" class="text-gray-500" onclick="loadFoodType(3, 'btn4')">Recent</button>
         </div>
 
         <!-- Suggestions Section -->
@@ -113,15 +118,53 @@
 <script>
         let suggestedLoadFoodType = 1;
 
-
         let selectedItems = []; // Khởi tạo biến toàn cục
+
+        function loadFoodType(type, buttonId) {
+            // Cập nhật giá trị của suggestedLoadFoodType
+            suggestedLoadFoodType = type;
+
+            // Đặt tất cả các nút về class "text-gray-500"
+            const buttons = document.querySelectorAll('.flex button');
+            buttons.forEach(button => {
+                button.classList.remove('text-orange-500', 'font-semibold');
+                button.classList.add('text-gray-500');
+            });
+
+            // Đổi class của nút được nhấn thành "text-orange-500 font-semibold"
+            const activeButton = document.getElementById(buttonId);
+            activeButton.classList.remove('text-gray-500');
+            activeButton.classList.add('text-orange-500', 'font-semibold');
+
+            console.log(`Selected food type: ${suggestedLoadFoodType}`);
+            // Bạn có thể thêm các hành động khác khi food type được thay đổi
+        }
+
+        function highlightButton(buttonId) {
+            // Đặt lại tất cả các nút về trạng thái mặc định
+            const buttons = document.querySelectorAll('.space-y-4 button');
+            buttons.forEach(button => {
+                button.classList.remove('bg-blue-300', 'text-black'); // Xóa class làm nổi bật
+                button.classList.add('bg-gray-700', 'text-white'); // Đặt lại class mặc định
+            });
+
+            // Thêm class nổi bật cho nút được nhấn
+            const activeButton = document.getElementById(buttonId);
+            if (activeButton) {
+                activeButton.classList.remove('bg-gray-700', 'text-white');
+                activeButton.classList.add('bg-blue-300', 'text-black');
+            } else {
+                console.error('Button not found with id:', buttonId);
+            }
+        }
+
 
         function changeAllTheDishesCurrentMeal(jsonListFoodId, settingDetail) {
             // Xóa dữ liệu cũ trước khi load danh sách mới
             selectedItems = [];
             const apiURL = "@ViewBag.clientBaseAddress".replace(/&amp;/g, '&');
             $.ajax({
-                url: apiURL + '/GenerateMeal/APICreateListOfAlternativeDishes',
+                url: apiURL + '/GenerateMeal/APICreateListOfAlternativeDishes?foodSelectionType=' + suggestedLoadFoodType,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -144,23 +187,25 @@
 
                             $.each(item.foodIdData, function (index2, item2) {
                                 var foodItem = `
-                                        <div class="flex items-center mb-2">
-                                            <img src="/images/${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-10 h-10 object-cover rounded mr-2">
-                                            <div class="flex flex-col">
-                                                <h3 class="text-blue-400 font-semibold">${item2.foodData.name}</h3>
-                                                <p class="text-sm text-gray-300">1 serving</p>
-                                            </div>
-                                        </div>
-                                    `;
+                        <div class="flex items-center mb-2">
+                            <img src="/images/${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-10 h-10 object-cover rounded mr-2">
+                            <div class="flex flex-col">
+                                <h3 class="text-blue-400 font-semibold">${item2.foodData.name}</h3>
+                                <p class="text-sm text-gray-300">1 serving</p>
+                            </div>
+                        </div>
+                    `;
                                 trayDiv.append(foodItem);
                             });
 
+                            let totalCalories = item.foodIdData.reduce((sum, item2) => sum + item2.foodData.ingredientDetails100gReduceDTO.energy, 0).toFixed(2);
+
                             trayDiv.append(`
-                                    <div class="flex items-center justify-between w-full mt-2">
-                                        <span class="text-orange-400 text-sm">${item.foodIdData.reduce((sum, item2) => sum + item2.foodData.ingredientDetails100gReduceDTO.energy, 0)} Calories</span>
-                                        <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="getThisListOfDishes(${index})">Pick</button>
-                                    </div>
-                                `);
+                    <div class="flex items-center justify-between w-full mt-2">
+                        <span class="text-orange-400 text-sm">${totalCalories} Calories</span>
+                        <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="getThisListOfDishes(${index})">Pick</button>
+                    </div>
+                `);
                             ListFoodDiv.append(trayDiv);
                         }
                     });
@@ -189,15 +234,14 @@
                     console.error("Error occurred:", error);
                 }
             });
-        }
-
+        }        
 
         function changeOneDishCurrentMeal(jsonListFoodId, foodListId, positionFood, settingDetail) {
             jsonListFoodId.splice(positionFood, 1);
             console.log("Data jsonListFoodId:", jsonListFoodId);
             const apiURL = "@ViewBag.clientBaseAddress".replace(/&amp;/g, '&');
             $.ajax({
-                url: apiURL + '/GenerateMeal/APICreateListOfAlternativeDishes',
+                url: apiURL + '/GenerateMeal/APICreateListOfAlternativeDishes?foodSelectionType=' + suggestedLoadFoodType,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -213,23 +257,23 @@
 
                     $.each(response, function (index, item) {
                         $.each(item.foodIdData, function (index2, item2) {
-                            if (item2.positionFood == positionFood) {
-                                // chưa có câu lệnh bỏ qua món id đang thay thế
-                                //if (!jsonListFoodId.includes(item2.foodData.foodListId)) { // câu lệnh bỏ qua các món đã có trong danh sách sẵn
+                            // if (item2.positionFood == positionFood) {
+                                // Kiểm tra nếu món ăn chưa có trong danh sách `jsonListFoodId`
+                                if (!jsonListFoodId.includes(item2.foodData.foodListId)) {
                                     var rowContent = `
-                                            <div class="bg-gray-700 text-white p-4 rounded-lg flex flex-col items-start">
-                                                <img src="/images/${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-full h-24 object-cover rounded mb-2">
-                                                <h3 class="text-white font-semibold">${item2.foodData.name}</h3>
-                                                <p class="text-sm text-gray-300">${item2.foodData.describe}</p>
-                                                <div class="flex items-center justify-between w-full mt-2">
-                                                    <span class="text-orange-400 text-sm">${item2.foodData.ingredientDetails100gReduceDTO.energy} Calories</span>
-                                                    <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="SelectReplaceCurrentFood(@Model.SlotOfTheDay, @Model.SettingDetail, ${foodListId}, '-', @ViewBag.userId, '@ViewBag.myDay', ${positionFood}, @Model.OrderSettingDetail, ${item2.foodData.foodListId})">Pick</button>
-                                                </div>
-                                            </div>
-                                        `;
-                                    ListFoodDiv.append(rowContent);
-                                //}
-                            }
+                        <div class="bg-gray-700 text-white p-4 rounded-lg flex flex-col items-start">
+                            <img src="/images/${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-full h-24 object-cover rounded mb-2">
+                            <h3 class="text-white font-semibold">${item2.foodData.name}</h3>
+                            <p class="text-sm text-gray-300">${item2.foodData.describe}</p>
+                            <div class="flex items-center justify-between w-full mt-2">
+                                <span class="text-orange-400 text-sm">${parseFloat(item2.foodData.ingredientDetails100gReduceDTO.energy).toFixed(2)} Calories</span>
+                                <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="SelectReplaceCurrentFood(@Model.SlotOfTheDay, @Model.SettingDetail, ${foodListId}, '-', @ViewBag.userId, '@ViewBag.myDay', ${positionFood}, @Model.OrderSettingDetail, ${item2.foodData.foodListId})">Pick</button>
+                            </div>
+                        </div>
+                    `;
+                                    ListFoodDiv.append(rowContent); // Thêm nội dung vào danh sách
+                                }
+                            // }
                         });
                     });
                 },

@@ -518,25 +518,24 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
         modelBuilder.Entity<NutritionistDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Nutritio__3214EC077AAE0E39");
+            entity.HasKey(e => e.Id).HasName("PK__Nutritio__3214EC072E635249");
 
             entity.ToTable("NutritionistDetails", "UserData");
 
-            entity.HasIndex(e => new { e.NutritionistId, e.ExpertPackagesId }, "UQ__Nutritio__9C31FC2DB10104B2").IsUnique();
+            entity.HasIndex(e => new { e.NutritionistId, e.ExpertPackagesId }, "UQ__Nutritio__9C31FC2DB4456619").IsUnique();
 
-            entity.HasIndex(e => e.NutritionistId, "UQ__Nutritio__F4399C8DAFF5E92D").IsUnique();
+            entity.HasIndex(e => e.NutritionistId, "UQ__Nutritio__F4399C8D11E0A2FB").IsUnique();
 
             entity.Property(e => e.DescribeYourself).HasMaxLength(500);
 
             entity.HasOne(d => d.ExpertPackages).WithMany(p => p.NutritionistDetails)
                 .HasForeignKey(d => d.ExpertPackagesId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Nutrition__Exper__52E34C9D");
+                .HasConstraintName("FK__Nutrition__Exper__59904A2C");
 
             entity.HasOne(d => d.Nutritionist).WithOne(p => p.NutritionistDetail)
                 .HasForeignKey<NutritionistDetail>(d => d.NutritionistId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Nutrition__Nutri__51EF2864");
+                .HasConstraintName("FK__Nutrition__Nutri__589C25F3");
         });
 
         modelBuilder.Entity<Recipe>(entity =>
@@ -681,10 +680,17 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
 
             entity.ToTable("User", "UserData");
 
+            entity.HasIndex(e => e.Account, "UQ_Account").IsUnique();
+
+            entity.HasIndex(e => e.AccountGoogle, "UQ_AccountGoogle")
+                .IsUnique()
+                .HasFilter("([AccountGoogle] IS NOT NULL)");
+
             entity.Property(e => e.Account)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasDefaultValue("example@example.com");
+            entity.Property(e => e.AccountGoogle).HasMaxLength(255);
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Dob)
                 .HasColumnType("datetime")

@@ -1,0 +1,586 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    User u = ViewBag.user;
+    // List<ListOfDisease> diseases = ViewBag.diseases;
+}
+<link rel="stylesheet" href="~/css/nutritionistDetail.css">
+<link rel="stylesheet" href="~/css/userProfile.css">
+<link rel="stylesheet" href="~/css/toast.css" />
+
+
+<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
+<input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+@if(u is null)
+{
+    <div>Cannot get user profile! Try again later!</div>
+}
+else
+{
+    <div class="row" style="flex-basis: 100%;">
+        <div class="col-12 grid-margin">
+            <div class="card profile-wrapper">
+                <div class="row">
+                    <div class="profile-left col-4">
+                        <div class="avatar">
+                            @if (u.Urlimage == null || u.Urlimage.Length == 0)
+                            {
+                                <img src="~/images/default_avatar.png" alt="avatar" style="width: 100%" />
+                            }
+                            else
+                            {
+                                <img src="@u.Urlimage" alt="avatar"
+                                     onerror="this.src='/images/default_avatar.png'; this.onerror=null; " />
+                            }
+                        </div>
+
+                        <div class="name">
+                            @u.FirstName @u.LastName
+                        </div>
+
+                        <div class="description">
+                            @if (u.UserDetail is null
+                           || u.UserDetail.DescribeYourself is null
+                           || u.UserDetail.DescribeYourself.Length == 0)
+                            {
+                                <p>No description</p>
+                            }
+                            else
+                            {
+                                <p>@u.UserDetail.DescribeYourself</p>
+                            }
+                        </div>
+
+                        <div class="description">
+                            <button type="submit" class="btn btn-gradient-primary me-2" onclick="openChangePassModal();">
+                                Change password
+                            </button>
+                        </div>
+                    </div>
+
+                    
+
+                    <div class="profile-right col-8">
+
+                        <div class="tab-navigation">
+                            <button class="tab-button active" onclick="openTab(event, 'tab1')">Basic Info</button>
+                            <button class="tab-button" onclick="openTab(event, 'tab2')">Details Info</button>
+                        </div>
+                        <div>
+                            <div id="tab1" class="tab-content active">
+                                <div class="basic-info">
+                                    <form asp-controller="User" asp-action="UpdateUserInfo" method="post">
+                                        <input type="hidden" name="uid" value="@u.UserId">
+
+                                        <div class="form-group row">
+                                            <label for="user-account-input" class="col-sm-3 col-form-label">Account</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uacc" disabled class="form-control user-info-input" id="user-account-input" placeholder="User Account" value="@u.Account">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-firstname-input" class="col-sm-3 col-form-label">First name</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="ufn" class="form-control" id="user-firstname-input" required placeholder="Enter your firstname" value="@u.FirstName">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Last name</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uln" class="form-control" id="user-lastname-input" required placeholder="Enter your lastname" value="@u.LastName">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Gender</label>
+                                            <div class="form-group gender">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input type="radio" class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(u.Gender is null ? "checked" : (bool)u.Gender ? "checked" : "")> Male <i class="input-helper"></i>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input type="radio" class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(u.Gender is null ? "" : (bool)u.Gender ? "" : "checked")> Female <i class="input-helper"></i>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Date of birth</label>
+                                            <div class="col-sm-9">
+                                                <input type="date" name="udob" class="form-control" id="user-lastname-input" placeholder="Enter your Date of birth" required value="@(u.Dob is null? "" : u.Dob.Value.ToString("yyyy-MM-dd"))">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-address-input" class="col-sm-3 col-form-label">Address</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uadd" class="form-control" id="user-address-input" placeholder="Enter your address" value="@u.Address">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-phone-input" class="col-sm-3 col-form-label">Phone number</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uphone" class="form-control" id="user-phone-input" placeholder="Enter your Phone number" value="@u.Phone">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
+                                            Save
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="tab2" class="tab-content">
+                                <div class="details-info">
+                                    <form asp-controller="User" asp-action="UpdateUserDetails" method="post">
+                                        <input type="hidden" name="uid" value="@u.UserId">
+
+                                        <div class="form-group row">
+                                            <label for="user-desc" class="col-sm-3 col-form-label">Your description</label>
+                                            <div class="col-sm-9">
+                                            <input type="text" name="udesc" class="form-control user-info-input" id="user-desc" placeholder="Description" value="@u.UserDetail.DescribeYourself">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-height" class="col-sm-3 col-form-label">Height</label>
+                                            <div class="col-sm-9">
+                                            <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Your height" value="@u.UserDetail.Height">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-weight" class="col-sm-3 col-form-label">Weight</label>
+                                            <div class="col-sm-9">
+                                            <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Your weight" value="@u.UserDetail.Weight">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-age" class="col-sm-3 col-form-label">Age</label>
+                                            <div class="col-sm-9">
+                                            <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Your age" value="@u.UserDetail.Age">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-account-input" class="col-sm-3 col-form-label">Want improve</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uwi" class="form-control user-info-input" id="user-account-input" placeholder="" value="@u.UserDetail.WantImprove">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row align-items-center">
+                                            <label for="user-account-input" class="col-sm-3 col-form-label">Underlying Disease</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control user-info-input" id="underlyingDiseaseInput" placeholder="Bệnh lý" value="@u.UserDetail.UnderlyingDisease" readonly>
+                                            </div>
+                                            <div class="col-sm-2 d-flex justify-content-end">
+                                                <button type="button" class="btn btn-primary btn-sm manage-disease-btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#diseaseModal">
+                                                    Quản lý Bệnh Lý
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+
+                                        <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
+                                            Save
+                                            </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- add package modal-->
+<div class="modal-overlay" id="modalOverlay">
+    <!-- Modal -->
+    <div class="modal1">
+        <div class="modal1-header">
+            <span>Change password</span>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal1-body">
+            <form id="changePassForm" asp-controller="User" asp-action="ChangePassword" method="post">
+                <input type="hidden" name="uid" value="@u.UserId" required />
+
+                <label>Old Password:</label>
+                <input class="ms-auto" type="password" name="uopw" required />
+
+                <label>New Password:</label>
+                <input class="ms-auto" type="password" name="unpw" required />
+
+                <label>Confirm Password:</label>
+                <input class="ms-auto" type="password" name="ucpw" required />
+                <div class="modal1-footer">
+                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button class="btn-save" type="submit" onclick="ChangePass()">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="toast"></div>
+
+<!-- Modal quản lý bệnh lý -->
+<div class="modal fade" id="diseaseModal" tabindex="-1" aria-labelledby="diseaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="diseaseModalLabel">Quản lý Bệnh Lý</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+@*                 <h6 class="fw-bold">Bệnh lý của: <span>@u.FirstName @u.LastName</span></h6> *@
+                <!-- Khu vực thông báo -->
+                <div id="diseaseAlertMessage" class="alert-message"></div>
+
+                <div class="table-responsive">
+                    <table class="table custom-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên Bệnh</th>
+                                <th>Mô Tả</th>
+                                <th style="text-align: center;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="currentDiseasesList">
+                            <!-- Danh sách bệnh lý hiện tại sẽ được nạp từ API -->
+                        </tbody>
+                    </table>
+                </div>
+                <hr />
+                <div class="mb-3">
+                    <label for="diseaseSelect" class="form-label fw-semibold">Thêm bệnh lý:</label>
+                    <div class="d-flex align-items-center">
+                        <select class="form-select me-2" id="diseaseSelect" style="flex: 3;">
+                            <!-- Các bệnh lý sẽ được nạp vào đây từ API -->
+                        </select>
+                        <button type="button" class="btn btn-success" id="addDiseaseBtn" style="flex: 1; max-width: 100px;">Thêm</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const userId = document.querySelector("input[name='uid']").value;
+
+        const loadUnderlyingDisease = () => {
+            // Lấy danh sách bệnh lý của người dùng từ API
+            fetch(`/NutritionRoute/GetDiseasesByUserId?userId=${userId}`)
+                .then(response => response.json())
+                .then(diseases => {
+                    const diseaseNames = diseases.map(d => d.name).join(", ");
+                    const underlyingDiseaseInput = document.getElementById("underlyingDiseaseInput");
+                    underlyingDiseaseInput.value = diseaseNames || "Không có bệnh lý";
+                })
+                .catch(err => console.error("Error fetching underlying diseases:", err));
+        };
+
+        const loadDiseases = () => {
+            // Lấy danh sách tất cả các bệnh lý từ API
+            fetch(`/NutritionRoute/GetAllDiseases`)
+                .then(response => response.json())
+                .then(diseases => {
+                    const diseaseSelect = document.getElementById("diseaseSelect");
+                    diseaseSelect.innerHTML = diseases
+                        .map(d => `<option value="${d.id}">${d.name}</option>`)
+                        .join("");
+                });
+
+            // Lấy danh sách bệnh lý của người dùng
+            fetch(`/NutritionRoute/GetDiseasesByUserId?userId=${userId}`)
+                .then(response => response.json())
+                .then(diseases => {
+                    const currentDiseasesList = document.getElementById("currentDiseasesList");
+                    if (diseases.length === 0) {
+                        currentDiseasesList.innerHTML = `
+                            <tr>
+                                <td colspan="4" class="text-center">Không có bệnh lý nào</td>
+                            </tr>
+                        `;
+                    } else {
+                        currentDiseasesList.innerHTML = diseases
+                            .map((d, index) => `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${d.name}</td>
+                                        <td>${d.describe || "Không có mô tả"}</td>
+                                    <td style="text-align: center;">
+                                        <button type="button" class="btn btn-danger btn-sm remove-disease-btn" data-disease-id="${d.id}">
+                                            Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            `)
+                            .join("");
+
+                        // Kết nối nút "Xóa" với hàm removeDisease
+                        document.querySelectorAll(".remove-disease-btn").forEach(btn => {
+                            btn.addEventListener("click", () => {
+                                const diseaseId = btn.getAttribute("data-disease-id");
+                                removeDisease(diseaseId);
+                            });
+                        });
+                    }
+                });
+        };
+
+        const addDisease = () => {
+            const diseaseId = document.getElementById("diseaseSelect").value;
+            if (!diseaseId) {
+                showDiseaseAlertMessage("Vui lòng chọn một bệnh lý để thêm!", "danger");
+                return;
+            }
+            fetch(`/NutritionRoute/AddDisease`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userId, diseaseId }),
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        showDiseaseAlertMessage("Thêm bệnh lý thành công.", "add-success");
+                        loadDiseases();
+                    }
+                    else {
+                        showDiseaseAlertMessage('Không thể thêm bệnh lý.', 'danger');
+                    }
+                })
+                .catch(err => console.error("Error adding disease:", err));
+                showDiseaseAlertMessage('Đã xảy ra lỗi khi thêm bệnh lý.', 'danger');
+        };
+
+        const removeDisease = diseaseId => {
+            fetch(`/NutritionRoute/DeleteDisease`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userId, diseaseId }),
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        loadDiseases(); // Cập nhật danh sách trong modal
+                        showDiseaseAlertMessage('Xóa bệnh lý thành công.', 'delete-success');
+                    } else {
+                        showDiseaseAlertMessage('Không thể xóa bệnh lý.', 'danger');
+                    }
+                })
+                .catch(err => console.error("Error removing disease:", err));
+                showDiseaseAlertMessage('Đã xảy ra lỗi khi xóa bệnh lý.', 'danger');
+        };
+
+        document.getElementById("addDiseaseBtn").addEventListener("click", addDisease);
+
+        // Lắng nghe sự kiện khi modal bị đóng để tải lại trang
+        const diseaseModal = document.getElementById("diseaseModal");
+        diseaseModal.addEventListener("hidden.bs.modal", () => {
+            loadUnderlyingDisease(); // Chỉ cập nhật danh sách Underlying Disease
+        });
+
+        loadDiseases();
+        function showDiseaseAlertMessage(message, type) {
+            const alertMessage = document.getElementById('diseaseAlertMessage');
+            alertMessage.style.display = 'block';
+            alertMessage.textContent = message;
+
+            // Loại bỏ các lớp cũ
+            alertMessage.className = 'alert-message';
+
+            // Thêm lớp tương ứng
+            if (type === 'add-success') {
+                alertMessage.classList.add('alert-add-success');
+            } else if (type === 'delete-success') {
+                alertMessage.classList.add('alert-delete-success');
+            } else if (type === 'danger') {
+                alertMessage.classList.add('alert-danger');
+            }
+
+            // Tự động ẩn sau 2 giây
+            setTimeout(() => {
+                alertMessage.style.display = 'none';
+            }, 2000);
+        }
+
+    });
+
+</script>
+<style>
+    /* Styling for Modal */
+    .modal-dialog {
+        max-width: 60%;
+        ; /* Giới hạn chiều rộng của modal */
+        margin: 30px auto;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+        background: linear-gradient(145deg, #ffffff, #f3f3f3);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px; /* Thu nhỏ khoảng cách padding */
+        border-bottom: 1px solid #e0e0e0;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .modal-title {
+        font-family: 'Roboto', sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .btn-close {
+        color: white;
+        background-color: transparent;
+        font-size: 18px;
+    }
+
+    .modal-body {
+        padding: 15px; /* Thu nhỏ khoảng cách padding */
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+    }
+
+        .modal-body h4 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px; /* Thu nhỏ font */
+            margin-bottom: 10px;
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px; /* Giảm khoảng cách bảng */
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .modal-body table th, .modal-body table td {
+                padding: 8px; /* Thu nhỏ padding của bảng */
+                text-align: left;
+                border-bottom: 1px solid #e0e0e0;
+                font-size: 14px; /* Thu nhỏ font trong bảng */
+            }
+
+            .modal-body table th {
+                background-color: #4CAF50;
+                color: white;
+                font-family: 'Roboto', sans-serif;
+                font-weight: bold;
+            }
+
+            .modal-body table tr:nth-child(even) {
+                background-color: #f3f3f3;
+            }
+
+            .modal-body table tr:hover {
+                background-color: #e8f5e9;
+                transition: background-color 0.3s ease;
+            }
+
+        .modal-body .form-group {
+            margin-top: 15px;
+        }
+
+        .modal-body select {
+            width: 100%;
+            padding: 8px; /* Thu nhỏ padding của select */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            addDiseaseForm outline: none;
+            font-size: 12px; /* Thu nhỏ font trong select */
+            font-family: 'Roboto', sans-serif;
+        }
+
+            .modal-body select:focus {
+                border-color: #4CAF50;
+                box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+            }
+
+        .modal-body button {
+            width: auto; /* Tự động vừa với nội dung */
+            padding: 6px 12px; /* Kích thước padding nhỏ hơn */
+            font-size: 14px; /* Thu nhỏ font chữ */
+            font-weight: bold;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+            .modal-body button:hover {
+
+                background-color: #45a049;
+            }
+
+        .modal-body .btn-danger {
+            background-color: #f44336;
+            border: none;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+            .modal-body .btn-danger:hover {
+                background-color: #d32f2f;
+            }
+
+    .alert-message {
+        display: none;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Thêm thành công */
+    .alert-add-success {
+        color: green; 
+    }
+    /* Xóa thành công */
+    .alert-delete-success {
+        color: red; 
+    }
+
+    .alert-danger {
+        color: orangered;
+    }
+</style>
+<script src="~/js/userprofile.js"></script>
+<script src="~/js/toast.js"></script>
+

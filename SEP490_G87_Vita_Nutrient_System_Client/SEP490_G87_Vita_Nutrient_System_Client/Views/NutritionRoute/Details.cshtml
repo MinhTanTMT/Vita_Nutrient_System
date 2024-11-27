@@ -4,18 +4,22 @@
     <h2 class="text-center mb-4"><strong>Chi Tiết Lộ Trình Dinh Dưỡng</strong></h2>
 
     <div class="detail-box p-4 mb-4">
-        <p><strong>ID:</strong> @Model.Id</p>
-        <p><strong>Người Sử Dụng:</strong> @Model.UserName</p>
+        <p><strong>Người Sử Dụng:</strong> @Model.FullName</p>
         <p><strong>Tên Lộ Trình:</strong> @Model.Name</p>
-        <p><strong>Mô Tả:</strong> @Model.Describe</p>
+        <p><strong>Mô tả:</strong> @Model.Describe</p>
         <p><strong>Ngày Bắt Đầu:</strong> @Model.StartDate?.ToString("dd/MM/yyyy")</p>
         <p><strong>Ngày Kết Thúc:</strong> @Model.EndDate?.ToString("dd/MM/yyyy")</p>
         <p><strong>Trạng Thái:</strong> @(Model.IsDone == true ? "Hoàn Thành" : "Chưa Hoàn Thành")</p>
     </div>
 
     <div class="text-center">
-        <a asp-action="GetAll" class="btn btn-secondary btn-lg me-2">Quay lại Danh Sách</a>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg me-2">Chỉnh Sửa</a>
+        <a asp-action="GetNutritionRoutes"
+           asp-route-userId="@ViewData["UserId"]"
+           asp-route-userListManagementId="@ViewData["UserListManagementId"]"
+           asp-route-packageName="@ViewData["PackageName"]"
+           class="btn btn-secondary btn-lg me-2">
+            Quay lại
+        </a>
         <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-lg">Xóa</a>
     </div>
 </div>

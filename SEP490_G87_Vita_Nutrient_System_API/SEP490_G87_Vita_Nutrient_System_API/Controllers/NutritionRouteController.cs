@@ -13,14 +13,23 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     {
         private readonly INutritionRouteRepositories _nutritionRouteRepositories = new NutritionRouteRepositories();
 
-        // GET: api/nutritionroute/user/{createById}
-        [HttpGet("user/{createById}")]
-        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetAllNutritionRoutesByCreateById(int createById)
+
+        [HttpGet("{nutritionistId}/users")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllPremiumUser(int nutritionistId)
         {
-            var routes = await _nutritionRouteRepositories.GetAllNutritionRoutesByCreateByIdAsync(createById);
-            return Ok(routes);
+            var users = await _nutritionRouteRepositories.GetAllPremiumUserAsync(nutritionistId);
+            return Ok(users);
         }
 
+
+
+        // GET: api/nutritionroute/{nutritionistId}/user/{userId}
+        [HttpGet("{nutritionistId}/user/{userId}")]
+        public async Task<ActionResult<IEnumerable<UserListManagementDTO>>> GetPremiumUserByNutritionistIdAndUserId(int nutritionistId, int userId)
+        {
+            var routes = await _nutritionRouteRepositories.GetPremiumUserByNutritionistIdAndUserIdAsync(nutritionistId, userId);
+            return Ok(routes);
+        }
 
         // GET: api/nutritionroute/{id}
         [HttpGet("{id}")]
@@ -34,32 +43,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok(route);
         }
 
-        // POST: api/nutritionroute
-        [HttpPost]
-        public async Task<ActionResult> CreateNutritionRoute([FromBody] NutritionRouteDTO nutritionRouteDto, [FromQuery] string userPhoneNumber)
+        // POST: api/nutritionroute/{userListManagementId}
+        [HttpPost("{userListManagementId}")]
+        public async Task<ActionResult> CreateNutritionRoute(int userListManagementId, [FromBody] NutritionRouteDTO nutritionRouteDto)
         {
             if (nutritionRouteDto == null || !ModelState.IsValid)
             {
                 return BadRequest("Dữ liệu lộ trình dinh dưỡng không hợp lệ.");
             }
 
-            if (string.IsNullOrEmpty(userPhoneNumber)) 
-            {
-                return BadRequest("Số điện thoại của người sử dụng không được để trống.");
-            }
-
-            var isCreated = await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto, userPhoneNumber);
+            var isCreated = await _nutritionRouteRepositories.CreateNutritionRouteAsync(nutritionRouteDto, userListManagementId);
             if (!isCreated)
             {
-                return NotFound("Không tìm thấy người sử dụng với số điện thoại đã cung cấp.");
+                return NotFound("Không thể tạo lộ trình dinh dưỡng. Kiểm tra gói đăng ký hoặc thời gian.");
             }
 
-            return Ok();
+            return Ok("Tạo lộ trình dinh dưỡng thành công.");
         }
 
-        // PUT: api/nutritionroute/{id}
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateNutritionRoute(int id, [FromBody] NutritionRouteDTO nutritionRouteDto)
+        // PUT: api/nutritionroute/{id}/{userListManagementId}
+        [HttpPut("{id}/{userListManagementId}")]
+        public async Task<ActionResult> UpdateNutritionRoute(int id, int userListManagementId, [FromBody] NutritionRouteDTO nutritionRouteDto)
         {
             if (id != nutritionRouteDto.Id)
             {
@@ -68,18 +72,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             try
             {
-                // Lấy NutritionRoute hiện tại từ database để cập nhật thông tin UserName và các trường khác
-                var existingRoute = await _nutritionRouteRepositories.GetNutritionRouteByIdAsync(id);
+                var isUpdated = await _nutritionRouteRepositories.UpdateNutritionRouteAsync(nutritionRouteDto, userListManagementId);
 
-                if (existingRoute == null)
+                if (!isUpdated)
                 {
-                    return NotFound("Không tìm thấy lộ trình dinh dưỡng.");
+                    return NotFound("Không thể cập nhật lộ trình. Kiểm tra gói đăng ký hoặc thời gian.");
                 }
-
-                // Chỉ cập nhật các trường cần thiết, giữ nguyên UserName
-                nutritionRouteDto.UserName = existingRoute.UserName;
-
-                await _nutritionRouteRepositories.UpdateNutritionRouteAsync(nutritionRouteDto);
             }
             catch (KeyNotFoundException)
             {
@@ -90,7 +88,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return StatusCode(500, $"Lỗi khi cập nhật lộ trình dinh dưỡng: {ex.Message}");
             }
 
-            return Ok();
+            return Ok("Cập nhật lộ trình dinh dưỡng thành công.");
         }
 
 
@@ -101,5 +99,91 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _nutritionRouteRepositories.DeleteNutritionRouteAsync(id);
             return NoContent();
         }
+
+        [HttpGet("{nutritionistId}/user/{userId}/unfinished/{userListManagementId}")]
+        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId, int userListManagementId)
+        {
+            var hasUnfinishedRoute = await _nutritionRouteRepositories.HasUnfinishedRouteAsync(nutritionistId, userId, userListManagementId);
+            return Ok(hasUnfinishedRoute);
+        }
+
+
+        [HttpGet("{nutritionistId}/user/{userId}/route/{userListManagementId}")]
+        public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetNutritionRoutes(int nutritionistId, int userId, int userListManagementId)
+        {
+            var routes = await _nutritionRouteRepositories.GetNutritionRoutesAsync(nutritionistId, userId, userListManagementId);
+            if (routes == null || !routes.Any())
+            {
+                // Trả về danh sách rỗng thay vì chuỗi
+                return Ok(new List<NutritionRouteDTO>());
+            }
+            return Ok(routes);
+        }
+
+        [HttpGet("user/{userId}/diseases")]
+        public async Task<ActionResult<IEnumerable<ListOfDiseaseDTO>>> GetDiseaseByUserId(int userId)
+        {
+            var diseases = await _nutritionRouteRepositories.GetDiseaseByUserIdAsync(userId);
+            if (diseases == null || !diseases.Any())
+            {
+                return Ok(new List<ListOfDiseaseDTO>());
+            }
+            return Ok(diseases);
+        }
+
+        [HttpPost("AddDiseasesOfUser")]
+        public async Task<IActionResult> CreateDisease([FromBody] AddDiseaseRequest data)
+        {
+            var isCreated = await _nutritionRouteRepositories.CreateDiseaseAsync(data.UserId, data.DiseaseId);
+            if (!isCreated)
+            {
+                return BadRequest("Không thể thêm bệnh nền. Bệnh đã tồn tại hoặc dữ liệu không hợp lệ.");
+            }
+            return Ok("Thêm bệnh nền thành công.");
+        }
+
+        [HttpDelete("user/{userId}/diseases/{diseaseId}")]
+        public async Task<IActionResult> DeleteDisease(int userId, int diseaseId)
+        {
+            var isDeleted = await _nutritionRouteRepositories.DeleteDiseaseAsync(userId, diseaseId);
+            if (!isDeleted)
+            {
+                return BadRequest("Không thể xóa bệnh nền. Bệnh không tồn tại hoặc dữ liệu không hợp lệ.");
+            }
+            return Ok("Xóa bệnh nền thành công.");
+        }
+
+        [HttpPut("updateIsDone")]
+        public async Task<IActionResult> UpdateIsDone([FromQuery] int createById, [FromQuery] int userId)
+        {
+            if (createById <= 0 || userId <= 0)
+            {
+                return BadRequest("CreateById hoặc UserId không hợp lệ.");
+            }
+
+            try
+            {
+                var isUpdated = await _nutritionRouteRepositories.UpdateIsDoneAsync(createById, userId);
+                if (!isUpdated)
+                {
+                    return NotFound("Không tìm thấy lộ trình cần cập nhật hoặc tất cả lộ trình đã hoàn thành.");
+                }
+
+                return Ok("Cập nhật trạng thái IsDone thành công.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi hệ thống: {ex.Message}");
+            }
+        }
+
+
+    }
+
+
+    public class AddDiseaseRequest
+    {
+        public int UserId { get; set; }
+        public int DiseaseId { get; set; }
     }
 }

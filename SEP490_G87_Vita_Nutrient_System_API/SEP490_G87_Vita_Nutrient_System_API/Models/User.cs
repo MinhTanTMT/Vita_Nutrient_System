@@ -29,6 +29,8 @@ public partial class User
 
     public string Account { get; set; } = null!;
 
+    public string? AccountGoogle { get; set; }
+
     public virtual ICollection<ArticlesNews> ArticlesNews { get; set; } = new List<ArticlesNews>();
 
     public virtual ICollection<BankInformation> BankInformations { get; set; } = new List<BankInformation>();

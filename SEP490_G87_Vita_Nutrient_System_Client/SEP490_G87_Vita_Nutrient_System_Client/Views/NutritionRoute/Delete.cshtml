@@ -6,8 +6,8 @@
     <h2 class="page-title">Xóa Lộ Trình Dinh Dưỡng</h2>
 
     <div class="route-details">
-        <p><strong>Người Sử Dụng:</strong> @Model.UserName</p>
-        <p><strong>Tên Lộ Trình:</strong> @Model.Name</p>
+        <p><strong>Người sử dụng:</strong> @Model.FullName</p>
+        <p><strong>Tên lộ trình:</strong> @Model.Name</p>
         <p><strong>Mô Tả:</strong> @Model.Describe</p>
         <p><strong>Ngày Bắt Đầu:</strong> @Model.StartDate?.ToString("dd/MM/yyyy")</p>
         <p><strong>Ngày Kết Thúc:</strong> @Model.EndDate?.ToString("dd/MM/yyyy")</p>
@@ -15,7 +15,11 @@
 
     <div class="action-buttons text-center">
         <button class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal">Xóa</button>
-        <a asp-action="GetAll" class="btn btn-secondary">Hủy</a>
+        <a asp-action="GetNutritionRoutes"
+           asp-route-userId="@ViewData["UserId"]"
+           asp-route-userListManagementId="@ViewData["UserListManagementId"]"
+           asp-route-packageName="@ViewData["PackageName"]"
+           class="btn btn-secondary">Hủy</a>
     </div>
 </div>
 
@@ -35,8 +39,12 @@
             <div class="modal-footer">
                 <form asp-action="DeleteConfirmed" method="post">
                     <input type="hidden" asp-for="Id" />
+                    <input type="hidden" name="userId" value="@Model.UserId" />
+                    <input type="hidden" name="userListManagementId" value="@ViewData["UserListManagementId"]" />
+                    <input type="hidden" name="packageName" value="@ViewData["PackageName"]" />
                     <button type="submit" class="btn btn-danger">Xóa</button>
                 </form>
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
             </div>
         </div>

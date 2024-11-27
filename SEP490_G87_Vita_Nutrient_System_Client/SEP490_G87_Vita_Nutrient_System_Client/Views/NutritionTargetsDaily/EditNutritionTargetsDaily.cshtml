@@ -119,8 +119,6 @@
             </div>
 
 
-
-
             <!-- Danh sách thực phẩm đã loại trừ -->
             <div id="excluded-ingredients-list" class="excluded-list mt-3">
                 @if (ViewBag.SelectedIngredients != null)
@@ -129,15 +127,15 @@
                     {
                         <div class="excluded-item" data-id="@ingredient.Id">
                             @ingredient.Name
-                            <button type="button" class="remove-ingredient-button btn btn-danger btn-sm">❌</button>
+                            <button type="button" class="remove-ingredient-button btn btn-danger btn-sm">:x:</button>
                         </div>
                     }
                 }
             </div>
+
             <!-- Giá trị AvoidIngredient -->
             <input type="hidden" id="avoid-ingredient" name="AvoidIngredient" value="@Model.AvoidIngredient" />
         </div>
-
 
 
 
@@ -310,6 +308,90 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const ingredientSelector = document.getElementById('ingredient-selector');
+        const addIngredientButton = document.getElementById('add-ingredient-button');
+        const excludedIngredientsList = document.getElementById('excluded-ingredients-list');
+        const avoidIngredientInput = document.getElementById('avoid-ingredient');
+
+        // Hàm thêm thực phẩm vào danh sách loại trừ
+        function addExcludedIngredient() {
+            const selectedValue = ingredientSelector.value;
+            const selectedText = ingredientSelector.options[ingredientSelector.selectedIndex].text;
+
+            if (!selectedValue) {
+                alert("Vui lòng chọn một thực phẩm để loại trừ!");
+                return;
+            }
+
+            // Kiểm tra xem thực phẩm đã được chọn hay chưa
+            const existingItem = excludedIngredientsList.querySelector(`[data-id="${selectedValue}"]`);
+            if (existingItem) {
+                alert("Thực phẩm này đã được thêm vào danh sách loại trừ!");
+                return;
+            }
+
+            // Tạo và thêm thực phẩm vào danh sách hiển thị
+            createExcludedIngredientItem(selectedValue, selectedText);
+        }
+
+        // Hàm tạo và thêm phần tử thực phẩm loại trừ
+        function createExcludedIngredientItem(id, name) {
+            const item = document.createElement('div');
+            item.className = 'excluded-item';
+            item.dataset.id = id;
+            item.textContent = name;
+
+            // Nút xóa cho từng thành phần
+            const removeButton = document.createElement('button');
+            removeButton.textContent = "❌";
+            removeButton.className = "remove-ingredient-button";
+
+            // Gắn sự kiện xóa
+            removeButton.addEventListener('click', function () {
+                item.remove();
+                updateAvoidIngredient();
+            });
+
+            item.appendChild(removeButton);
+            excludedIngredientsList.appendChild(item);
+
+            // Cập nhật giá trị AvoidIngredient
+            updateAvoidIngredient();
+        }
+
+        // Hàm cập nhật giá trị AvoidIngredient
+        function updateAvoidIngredient() {
+            const selectedIds = Array.from(excludedIngredientsList.children).map(item => item.dataset.id);
+            avoidIngredientInput.value = selectedIds.join(';');
+        }
+
+        // Gắn sự kiện cho nút thêm
+        addIngredientButton.addEventListener('click', addExcludedIngredient);
+
+        // Gắn sự kiện cho các thực phẩm đã được tải từ server
+        Array.from(excludedIngredientsList.children).forEach(item => {
+            const removeButton = item.querySelector('.remove-ingredient-button');
+            if (removeButton) {
+                removeButton.addEventListener('click', function () {
+                    item.remove();
+                    updateAvoidIngredient();
+                });
+            }
+        });
+        // Cập nhật giá trị AvoidIngredient ban đầu
+        updateAvoidIngredient();
+    });
+
+
+
+    </script>
+
+
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const ingredientSelector = document.getElementById('ingredient-selector');
         const ingredientDropdown = document.getElementById('ingredient-dropdown');
         const ingredientSearch = document.getElementById('ingredient-search');
         const ingredientList = document.getElementById('ingredient-list');
@@ -372,17 +454,16 @@
                 alert('Thực phẩm này đã được thêm vào danh sách!');
                 return;
             }
-
             const item = document.createElement('div');
             item.className = 'excluded-item';
             item.dataset.id = id;
             item.textContent = name;
 
             const removeButton = document.createElement('button');
-            removeButton.textContent = "❌";
+            removeButton.textContent = ":x:";
             removeButton.className = "remove-ingredient-button btn btn-danger btn-sm";
 
-            // Gắn sự kiện xóa cho nút "❌"
+            // Gắn sự kiện xóa cho nút ":x:"
             removeButton.addEventListener('click', function () {
                 item.remove();
                 updateAvoidIngredient();
@@ -406,23 +487,22 @@
             }
         });
 
-        // Không cần giới hạn số lượng mục hiển thị, chỉ cần bật thanh cuộn qua CSS
-        function applyScrollBehavior() {
-            ingredientList.style.maxHeight = '240px'; // Giới hạn chiều cao (8 mục, khoảng 30px mỗi mục)
-            ingredientList.style.overflowY = 'auto'; // Thanh cuộn dọc
+        // Loại bỏ thanh cuộn ở dropdown container
+        if (ingredientDropdown) {
+            ingredientDropdown.style.overflow = "visible"; // Không bật thanh cuộn
+            ingredientDropdown.style.maxHeight = "none"; // Không giới hạn chiều cao
         }
 
-        // Khởi tạo thanh cuộn cho danh sách
-        applyScrollBehavior();
-
-        // Khởi tạo sự kiện cho các mục đã tải
+        // Áp dụng thanh cuộn cho danh sách thực phẩm
+        if (ingredientList) {
+            ingredientList.style.maxHeight = "240px"; // Giới hạn chiều cao
+            ingredientList.style.overflowY = "auto"; // Thanh cuộn dọc
+            ingredientList.style.overflowX = "hidden"; // Không có thanh cuộn ngang
+        }
+        // Gọi hàm khởi tạo sự kiện xóa cho danh sách đã tải
         initializeRemoveButtons();
     });
 
 
 
-
-
-    </script>
-
-
+</script>

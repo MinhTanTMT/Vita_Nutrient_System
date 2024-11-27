@@ -6,6 +6,9 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
+using Microsoft.AspNetCore.Authentication.Google;
+using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
+using System.Security.Principal;
 
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
@@ -56,6 +59,64 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View();
         }
 
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPasswordAsync(string Email)
+        {
+            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/Users/APIForgotPassword?emailGoogle={Email}");
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                ViewBag.AlertMessage = "Your password has been sent.";
+                return View();
+            }
+            else
+            {
+                ViewBag.AlertMessage = "This email does not exist.";
+                return View();
+            }
+
+
+        }
+
+
+
+        [HttpPost, Authorize]
+        public async Task<IActionResult> UpdateUserRole(string role)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized(); // Nếu người dùng chưa đăng nhập, trả về lỗi 401
+            }
+
+            var claims = User.Claims.ToList();
+
+            // Loại bỏ Claim cũ
+            var oldRoleClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+            if (oldRoleClaim != null)
+            {
+                claims.Remove(oldRoleClaim);
+            }
+
+            // Thêm Claim Role mới
+            claims.Add(new Claim(ClaimTypes.Role, role));
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+            // Chuyển hướng về trang chủ sau khi thành công
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> Login(string account, string password)
         {
@@ -67,18 +128,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     HttpContent content = res.Content;
                     string data = await content.ReadAsStringAsync();
-                    dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
+                    UserLoginRegister u = JsonConvert.DeserializeObject<UserLoginRegister>(data);
 
-                    HttpContext.Session.SetString("UserId", (string)u.userId);
-
-                    importStringToSession("takeFullName", u.fullName, "string");
-                    importStringToSession("imageUrl", u.urlimage, "URL");
+                    HttpContext.Session.SetString("UserId", (string)(u.UserId.ToString()));
+                    importStringToSession("takeFullName", u.FullName, "string");
+                    importStringToSession("imageUrl", u.Urlimage, "URL");
 
                     var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name,(string) u.account),
-                    new Claim(ClaimTypes.Role,(string) u.roleName),
-                    new Claim("UserId", (string)u.userId)
+                    new Claim(ClaimTypes.Name,(string) u.Account),
+                    new Claim(ClaimTypes.Role,(string) u.RoleName),
+                    new Claim("UserId", (string)(u.UserId.ToString()))
                 };
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties
@@ -88,17 +148,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-                    if (((string)u.roleName).Equals("Admin"))
+                    if (((string)u.RoleName).Equals("Admin"))
                     {
                         return RedirectToAction("AdminDashboard", "Admin");
                     }
-                    else if (((string)u.roleName).Equals("Nutritionist"))
+                    else if (((string)u.RoleName).Equals("Nutritionist"))
                     {
-                        return RedirectToAction("NutritionistHome", "Nutritionist");
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
+                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.UserId}");
 
                         if (res2.StatusCode == System.Net.HttpStatusCode.OK)
                         {
@@ -157,12 +217,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<IActionResult> Register(string account, string password, string confirm)
         {
             try
             {
-
                 if (!password.Equals(confirm))
                 {
                     ViewBag.AlertMessage = "Invalid login attempt. 1";
@@ -176,7 +236,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 else
                 {
                     short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
-                    User user = new User()
+                    UserLoginRegister user = new UserLoginRegister()
                     {
                         Account = account,
                         Password = password,
@@ -194,13 +254,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         {
                             HttpContent content = resLogin.Content;
                             string data = await content.ReadAsStringAsync();
-                            dynamic u = JsonConvert.DeserializeObject<dynamic>(data);
+                            UserLoginRegister u = JsonConvert.DeserializeObject<UserLoginRegister>(data);
+
+                            HttpContext.Session.SetString("UserId", (string)(u.UserId.ToString()));
+                            importStringToSession("takeFullName", u.FullName, "string");
+                            importStringToSession("imageUrl", u.Urlimage, "URL");
 
                             var claims = new List<Claim>
                         {
-                            new Claim(ClaimTypes.Name,(string) u.account),
-                            new Claim(ClaimTypes.Role,(string) u.roleName),
-                            new Claim("UserId", (string)u.userId)
+                            new Claim(ClaimTypes.Name,(string) u.Account),
+                            new Claim(ClaimTypes.Role,(string) u.RoleName),
+                            new Claim("UserId", (string)(u.UserId.ToString()))
 
                         };
 
@@ -213,7 +277,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                            HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.userId}");
+                            HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.UserId}");
                             if (res2.StatusCode == System.Net.HttpStatusCode.OK)
                             {
                                 return RedirectToAction("Index", "Home");
@@ -235,12 +299,93 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         return View();
                     }
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
                 return View();
             }
         }
+
+
+        [HttpGet]
+        public IActionResult LoginGoogeAccount()
+        {
+            // Kích hoạt đăng nhập bằng Google
+            return Challenge(new AuthenticationProperties
+            {
+                RedirectUri = "/Home/GoogleCallback" // Sau khi đăng nhập thành công, chuyển hướng về trang chủ
+            }, GoogleDefaults.AuthenticationScheme);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GoogleCallback()
+        {
+            var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var name = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+            AdminSevices adminSevices = new AdminSevices();
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                // Tạo đối tượng chứa thông tin người dùng
+                short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
+                UserLoginRegister user = new UserLoginRegister()
+                {
+                    Password = adminSevices.GeneratePassword(20),
+                    Account = email,
+                    AccountGoogle = email,
+                    Role = roleUser,
+                    IsActive = true
+                };
+
+                HttpResponseMessage resLoginGoogle = await client.PostAsJsonAsync(client.BaseAddress + "/Users/RegisterLoginGoogle", user); // cái này kiểm tra nếu chưa có tài khoản thì tạo mới, còn có rồi thì trả lại tài khoản đó
+                if (resLoginGoogle.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = resLoginGoogle.Content;
+                    string data = await content.ReadAsStringAsync();
+                    UserLoginRegister u = JsonConvert.DeserializeObject<UserLoginRegister>(data);
+
+                    var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name,(string) u.Account),
+                            new Claim(ClaimTypes.Role,(string) u.RoleName),
+                            new Claim("UserId", (string)(u.UserId.ToString()))
+
+                        };
+
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = false,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                    };
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                    HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.UserId}");
+                    if (res2.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Error", "Home");
+                    }
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Invalid login attempt. 3";
+                    return View();
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
+
 
 
         [Authorize]
@@ -257,6 +402,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             }
         }
+
 
         [HttpPost, Authorize]
         public async Task<IActionResult> Logout()
@@ -487,23 +633,47 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             // Tạo danh sách thông tin thành viên nhóm
             var teamMembers = new List<dynamic>
-    {
-        new { Name = "Trinh Minh Tan", Role = "Leader" },
-        new { Name = "Ngo Manh Tung", Role = "Member" },
-        new { Name = "Nguyen Tien Dung", Role = "Member" },
-        new { Name = "Do Van Son", Role = "Member" },
-        new { Name = "Vu Minh Chien", Role = "Member" }
-    };
+            {
+                new { Name = "Trinh Minh Tan", Role = "Leader" },
+                new { Name = "Ngo Manh Tung", Role = "Member" },
+                new { Name = "Nguyen Tien Dung", Role = "Member" },
+                new { Name = "Do Van Son", Role = "Member" },
+                new { Name = "Vu Minh Chien", Role = "Member" }
+            };
 
             // Truyền danh sách vào View
             return View(teamMembers);
         }
 
 
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
+        public IActionResult TermsOfService()
+        {
+            return View();
+        }
+        
+        public IActionResult HowItWorks()
+        {
+            return View();
+        }
+
+        public IActionResult ContactUs()
+        {
+            return View();
+        }
+
+        public IActionResult GiftCodes()
+        {
+            return View();
+        }
 
         ////////////////////////////////////////////////////////////
         /// Chiến
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////ContactUs
         ///
 
 

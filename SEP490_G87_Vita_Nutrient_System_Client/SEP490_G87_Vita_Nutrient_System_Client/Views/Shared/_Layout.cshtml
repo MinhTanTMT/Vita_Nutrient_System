@@ -81,7 +81,6 @@
                                         {
                                             <p class="mb-1 text-black">@Context.Session.GetString("takeFullName")</p>
                                         }
-
                                     </div>
                                 </a>
                                 <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
@@ -210,7 +209,7 @@
             </div>
         </nav>
         <!-- partial -->
-        <div class="container-fluid page-body-wrapper">
+        <div class="container-fluid page-body-wrapper" style="flex-wrap: wrap;">
             <!-- partial:partials/_sidebar.html -->
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
@@ -221,7 +220,7 @@
                         if (role != null)
                         {
                             <li class="nav-item nav-profile">
-                                <a href="#" class="nav-link">
+                                <a href="@Url.Action("UserProfileSon", "User")" class="nav-link">
                                     <div class="nav-profile-image">
 
                                         @if (Context.Session.GetString("imageUrl") != null)
@@ -271,28 +270,29 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListPackages", "Admin")">
+                                        <span class="menu-title">Package Management</span>
+                                        <i class="mdi mdi-package menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("Index", "News")">
                                         <span class="menu-title">News</span>
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
-                                </li>
+                                </li> 
 
 
                             }
                             else if (role.Equals("Nutritionist"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("GetAll", "NutritionRoute")">
-                                        <span class="menu-title">Quản lý lộ trình</span>
-                                        <i class="mdi mdi-newspaper menu-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("ListUser", "Nutritionist")">
+                                    <a class="nav-link" href="@Url.Action("GetInfoAllPremiumUserByNutritionist", "NutritionRoute")">
                                         <span class="menu-title">Quản lý khách hàng</span>
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
                                 </li>
+                                
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("NutritionistProfile", "Nutritionist")">
                                         <span class="menu-title">Thông tin của tôi</span>
@@ -351,13 +351,6 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("ListBlockedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Blocked</span>
-                                        <i class="mdi mdi-food-variant menu-icon"></i>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("PremiumUpgradeSuggestion", "Admin")">
-                                        <span class="menu-title"> Đăng kí Premium </span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
@@ -425,13 +418,6 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("PremiumUpgradeSuggestion", "Admin")">
-                                        <span class="menu-title"> Đăng kí Premium </span>
-                                        <i class="mdi mdi-food-variant menu-icon"></i>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("NutritionistServices", "Admin")">
                                         <span class="menu-title"> Đăng kí chuyên gia </span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
@@ -482,16 +468,16 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
-                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Nó hoạt động như thế nào</a></li>
+                                    <li><a href ="@Url.Action("HowItWorks", "Home")" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Cách thức hoạt động</a></li>
                                     <li><a href="@Url.Action("AboutUs", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Giới thiệu về chúng tôi</a></li>
-                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Mã quà tặng</a></li>
+                                    <li><a href="@Url.Action("GiftCodes", "Home")" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Mã quà tặng</a></li>
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
-                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Chính sách bảo mật</a></li>
-                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Điều khoản dịch vụ</a></li>
-                                    <li><a href="#" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Liên hệ với chúng tôi</a></li>
+                                    <li><a href="@Url.Action("PrivacyPolicy", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Chính sách bảo mật</a></li>
+                                    <li><a href="@Url.Action("TermsOfService", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Điều khoản dịch vụ</a></li>
+                                    <li><a href="@Url.Action("ContactUs", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Liên hệ với chúng tôi</a></li>
                                 </ul>
                             </div>
                         </div>

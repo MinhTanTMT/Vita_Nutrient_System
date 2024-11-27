@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Collections.Generic;
 using System.Data;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -22,8 +24,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ///
 
         private readonly HttpClient client = null;
+        private readonly UserSevices userSevices;
         public UserController()
         {
+            userSevices = new UserSevices();   
             Uri URIBase = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<Uri>("myUri");
             client = new HttpClient();
             client.BaseAddress = URIBase;
@@ -68,14 +72,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 //    }
                 //    else return RedirectToAction("Error2");
                 //}
-                return RedirectToAction("PageUpgratePremium");
+                return RedirectToAction("NutritionistServices", "Admin");
             }
 
 
             List<DataFoodAllDayOfWeekModify> dataFoodAllDayOfWeekModify = new List<DataFoodAllDayOfWeekModify>();
             foreach (var item in rootObjectFoodListWeek)
             {
-                List<SlotBranch> slotBranchesData = GetListCollection(item.dataListFoodMealOfTheDay.ToList());
+                List<SlotBranch> slotBranchesData = userSevices.GetListCollection(item.dataListFoodMealOfTheDay.ToList());
                 dataFoodAllDayOfWeekModify.Add(new DataFoodAllDayOfWeekModify { DayOfTheWeekId = item.DayOfTheWeekId, DayOfTheWeekIdStart = item.DayOfTheWeekIdStart, DayOfWeek = item.DayOfWeek, NameDayOfWeek = item.NameDayOfWeek, dataListFoodMealDayOfTheWeek = slotBranchesData.ToArray(), TotalCaloriesAllDay = slotBranchesData.Sum(x => x.TotalCaloriesPerMeal) });
             }
             ViewBag.myDay = myDay;
@@ -84,30 +88,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        public List<SlotBranch> GetListCollection(List<DataFoodListMealOfTheDay> rootObjectFoodList)
-        {
-            List<SlotBranch> slotBranchesData = new List<SlotBranch>();
-            var numberSlot = rootObjectFoodList.Select(x => new
-            {
-                x.SlotOfTheDay,
-                x.NameSlotOfTheDay
-            }).Distinct().ToList();
-
-            foreach (var item in numberSlot)
-            {
-                SlotBranch slotBranch = new SlotBranch()
-                {
-                    SlotOfTheDay = item.SlotOfTheDay,
-                    NameSlotOfTheDay = item.NameSlotOfTheDay,
-                    TotalCaloriesPerMeal = (float)Math.Round(rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.SettingDetail).ToArray().Sum(x => x.foodIdData.Sum(x => x.foodData.IngredientDetails100gReduceDTO.Energy)), 2),
-                    foodDataOfSlot = rootObjectFoodList.Where(x => x.SlotOfTheDay == item.SlotOfTheDay).OrderBy(x => x.OrderSettingDetail).ToArray()
-                };
-                slotBranchesData.Add(slotBranch);
-            }
-            return slotBranchesData;
-        }
-
-
+        
         [HttpGet]
         public async Task<IActionResult> PlanUserAsync(DateTime? myDay)
         {
@@ -143,10 +124,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else return RedirectToAction("Error2");
                 }
-                else return RedirectToAction("PageUpgratePremium");
+                else return RedirectToAction("NutritionistServices", "Admin");
+
             }
 
-            List<SlotBranch> slotBranchesData = GetListCollection(rootObjectFoodList);
+            List<SlotBranch> slotBranchesData = userSevices.GetListCollection(rootObjectFoodList);
 
             List <FoodList> foodListTotaAll = rootObjectFoodList
                 .SelectMany(item => item.foodIdData)
@@ -178,64 +160,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             ViewBag.myDay = myDay;
             ViewBag.userId = userId;
-            ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListTotaAll) : TotalAllTheIngredientsOfTheDish(nullData);
-            ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListNotEaten) : TotalAllTheIngredientsOfTheDish(nullData);
-            ViewBag.foodListEatenCalculated = foodListEaten.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListEaten) : TotalAllTheIngredientsOfTheDish(nullData);
-            ViewBag.foodListMissedCalculated = foodListMissed.Count() > 0 ? TotalAllTheIngredientsOfTheDish(foodListMissed) : TotalAllTheIngredientsOfTheDish(nullData);
+            ViewBag.APICompleteTheDish = client.BaseAddress + $"/GenerateMeal/APICompleteTheDish";
+            ViewBag.foodListTotaAllCalculated = foodListTotaAll.Count() > 0 ? userSevices.TotalAllTheIngredientsOfTheDish(foodListTotaAll) : userSevices.TotalAllTheIngredientsOfTheDish(nullData);
+            ViewBag.foodListNotEatenCalculated = foodListNotEaten.Count() > 0 ? userSevices.TotalAllTheIngredientsOfTheDish(foodListNotEaten) : userSevices.TotalAllTheIngredientsOfTheDish(nullData);
+            ViewBag.foodListEatenCalculated = foodListEaten.Count() > 0 ? userSevices.TotalAllTheIngredientsOfTheDish(foodListEaten) : userSevices.TotalAllTheIngredientsOfTheDish(nullData);
+            ViewBag.foodListMissedCalculated = foodListMissed.Count() > 0 ? userSevices.TotalAllTheIngredientsOfTheDish(foodListMissed) : userSevices.TotalAllTheIngredientsOfTheDish(nullData);
 
             return View(slotBranchesData.OrderBy(x => x.SlotOfTheDay));
-
-
-        }
-
-
-
-
-        public FoodList TotalAllTheIngredientsOfTheDish(IEnumerable<FoodList> dataFood)
-        {
-            FoodList totalfoodListDTO = new FoodList()
-            {
-                FoodListId = dataFood.First().FoodListId,
-                Name = dataFood.First().Name,
-                Describe = dataFood.First().Describe,
-                Rate = dataFood.First().Rate,
-                NumberRate = dataFood.First().NumberRate,
-                Urlimage = dataFood.First().Urlimage,
-                FoodTypeId = dataFood.First().FoodTypeId,
-                KeyNoteId = dataFood.First().KeyNoteId,
-                IsActive = dataFood.First().IsActive,
-                PreparationTime = dataFood.First().PreparationTime,
-                CookingTime = dataFood.First().CookingTime,
-                CookingDifficultyId = dataFood.First().CookingDifficultyId,
-                IngredientDetails100gReduceDTO = new Ingredientdetails100greducedto()
-                {
-                    Id = -1,
-                    KeyNoteId = -1,
-                    Name = "SummaryOfTheEntireList",
-                    Describe = "SummaryOfTheEntireList",
-                    Urlimage = "SummaryOfTheEntireList",
-                    TypeOfCalculationId = -1,
-                    Energy = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Energy),
-                    Protein = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Protein),
-                    Fat = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Fat),
-                    Carbohydrate = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Carbohydrate),
-                    Fiber = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Fiber),
-                    Sodium = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Sodium),
-                    Cholesterol = dataFood.Sum(x => x.IngredientDetails100gReduceDTO.Cholesterol)
-                },
-                KeyNote = new KeyNote
-                {
-                    Id = dataFood.First().KeyNote.Id,
-                    KeyList = dataFood.First().KeyNote.KeyList
-                },
-                ScaleAmounts = new ScaleAmounts
-                {
-                    FoodListId = dataFood.First().FoodListId,
-                    IngredientDetailsId = -1,
-                    ScaleAmount = -1
-                }
-            };
-            return totalfoodListDTO;
         }
 
 
@@ -249,7 +180,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PremiumUpgradeSuggestion");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("NutritionistServices", "Admin");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
@@ -276,7 +207,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PremiumUpgradeSuggestion");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("NutritionistServices", "Admin");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheMeal?myDay={myDay}&idUser={userId}");
@@ -302,7 +233,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             if (!role.Equals("UserPremium"))
             {
-                if (!(myDay <= DateTime.Now)) return RedirectToAction("PageUpgratePremium");
+                if (!(myDay <= DateTime.Now)) return RedirectToAction("NutritionistServices", "Admin");
             }
 
             HttpResponseMessage res = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIRefreshTheAllMeal?myDay={myDay}&idUser={userId}");
@@ -318,7 +249,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
 
         }
-
 
 
         [HttpGet]
@@ -353,8 +283,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 }
             }
-
-
             return View("PlanUser");
         }
 
@@ -382,7 +310,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
 
-
+        ////////////////////////////////////////////////////////////
+        /// Sơn
+        ////////////////////////////////////////////////////////////
+        ///
 
         [HttpGet("foodsList")]
         public async Task<IActionResult> FoodList(
@@ -419,11 +350,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     foods.RemoveAll(f => f.IsActive == false);
                     //remove foods that are blocked
                     foods.RemoveAll(food => foodIds.Contains(food.FoodListId));
-
-                    ////////////////////////////////////////////////////////////
-                    /// Sơn
-                    ////////////////////////////////////////////////////////////
-                    ///
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
@@ -551,6 +477,209 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/User/FoodDetail.cshtml");
             }
+        }
+
+        [HttpGet("Profile")]
+        public async Task<IActionResult> UserProfileSon()
+        {
+            try
+            {
+                int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+                // Lấy thông tin người dùng
+                HttpResponseMessage response = await client.GetAsync(
+                    client.BaseAddress + "/Users/GetUserDetail/" + userId);
+
+                // Lấy danh sách bệnh lý
+                HttpResponseMessage response1 = await client.GetAsync(
+                    client.BaseAddress + "/Disease/GetAllDiseases");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<ListOfDisease> diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(data1);
+
+                    // Tách UnderlyingDisease thành danh sách ID
+                    string underlyingDiseaseIds = userData.detailsInformation.underlyingDisease;
+                    List<int> diseaseIds = !string.IsNullOrEmpty(underlyingDiseaseIds)
+                        ? underlyingDiseaseIds.Split(';').Select(int.Parse).ToList()
+                        : new List<int>();
+
+                    // Lấy tên các bệnh lý
+                    var diseaseNames = diseases.Where(d => diseaseIds.Contains(d.Id)).Select(d => d.Name).ToList();
+
+                    //HttpContent content1 = response1.Content;
+                    //string data1 = await content1.ReadAsStringAsync();
+                    //List<ListOfDisease> diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(data1);
+
+                    User user = new()
+                    {
+                        UserId = userData.id,
+                        FirstName = userData.firstName,
+                        LastName = userData.lastName,
+                        Urlimage = userData.urlimage,
+                        Dob = userData.dob,
+                        Gender = userData.gender ?? false,
+                        Address = userData.address,
+                        Phone = userData.phone,
+                        UserRole = new UserRole
+                        {
+                            RoleId = userData.role.roleId,
+                            RoleName = userData.role.roleName,
+                        },
+                        UserDetail = new UserDetail
+                        {
+                            UserId = userData.id,
+                            DescribeYourself = userData.detailsInformation.description,
+                            Height = userData.detailsInformation.height,
+                            Weight = userData.detailsInformation.weight,
+                            Age = userData.detailsInformation.age,
+                            WantImprove = userData.detailsInformation.wantImprove,
+                            UnderlyingDisease = string.Join(", ", diseaseNames), // Gán tên bệnh lý
+                            InforConfirmGood = userData.detailsInformation.inforConfirmGood,
+                            InforConfirmBad = userData.detailsInformation.inforConfirmBad,
+                            IsPremium = userData.detailsInformation.isPremium
+                        },
+                        IsActive = userData.isActive,
+                        Account = userData.account,
+                    };
+
+                    ViewBag.user = user;
+                    //ViewBag.diseseas = diseases;
+                }
+                else
+                {
+                    ViewBag.AlertMessage = "Cannot get user profile! Please try later!";
+                }
+
+                return View("~/Views/User/UserInfo.cshtml");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                return View("~/Views/User/UserInfo.cshtml");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserInfo(int uid, string uacc, string ufn, string uln, int user_gender, DateTime udob, string uadd, string uphone)
+        {
+            try
+            {
+                var data = new
+                {
+                    userId= uid,
+                    firstName= ufn,
+                    lastName= uln,
+                    dob= udob,
+                    gender= user_gender == 1? true : false,
+                    address= uadd,
+                    phone= uphone?? ""
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Users/UpdateUserInfo", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update user failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update user successfully!";
+                }
+            }
+            catch(Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+            return await UserProfileSon();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi, string uUnderlyingDisease)
+        {
+            try
+            {
+                var data = new
+                {
+                    userId = uid,
+                    description = udesc,
+                    height = uheight,
+                    weight = uweight,
+                    age = uage,
+                    wantImprove = uwi,
+                    underlyingDisease = uUnderlyingDisease
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Users/UpdateUserDetails", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update user failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update user successfully!";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+            return await UserProfileSon();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(int uid, string uopw, string unpw, string ucpw)
+        {
+            try
+            {
+                var data = new
+                {
+                    userId = uid,
+                    oldPassword = uopw,
+                    newPassword = unpw,
+                    confirmPassword = ucpw
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PutAsync(client.BaseAddress + "/Users/ChangePassword", content);
+                HttpContent rContent = response.Content;
+                string message = await rContent.ReadAsStringAsync();
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = message;
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Change password successfully!";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+            return await UserProfileSon();
         }
 
         ////////////////////////////////////////////////////////////
