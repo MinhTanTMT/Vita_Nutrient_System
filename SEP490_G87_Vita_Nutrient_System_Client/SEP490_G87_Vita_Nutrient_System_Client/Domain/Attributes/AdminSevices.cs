@@ -5,6 +5,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes
     public class AdminSevices
     {
 
+
         public string GeneratePassword(int length, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = false)
         {
             if (length <= 0)

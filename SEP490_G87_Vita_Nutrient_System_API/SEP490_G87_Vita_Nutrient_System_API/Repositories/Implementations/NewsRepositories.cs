@@ -189,5 +189,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 })
                 .ToListAsync();
         }
+
+        public async Task<NewsEvaluationDTO> GetEvaluationByUserAsync(int articleId, int userId)
+        {
+            return await _context.NewsEvaluations
+                .Where(e => e.ArticlesNewsId == articleId && e.UserId == userId)
+                .Select(e => new NewsEvaluationDTO
+                {
+                    Id = e.Id,
+                    ArticlesNewsId = e.ArticlesNewsId,
+                    UserId = e.UserId,
+                    Ratting = e.Ratting
+                })
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

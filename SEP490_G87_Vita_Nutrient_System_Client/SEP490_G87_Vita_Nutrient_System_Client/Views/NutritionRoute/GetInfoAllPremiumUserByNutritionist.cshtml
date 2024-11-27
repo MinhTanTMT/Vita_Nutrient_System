@@ -30,7 +30,7 @@
             {
                 <tr class="clickable-row" data-href="@Url.Action("GetDetailsAllPremiumUserByNutritionist", new { userId = user.UserId })">
                     <td>
-                        <img src="@Url.Content(user.Urlimage)" alt="Image" style="width: 50px; height: 50px; object-fit: cover;" />
+                        <img src="@Url.Content(user.Urlimage)" alt="Image" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;" />
 
                     </td>
 
@@ -39,7 +39,7 @@
                     <td>@user.Height cm</td>
                     <td>@user.Age</td>
                     <td>@user.Phone</td>
-                    <td>
+                    <td id="underlying-disease-@user.UserId">
                         @if (user.UnderlyingDiseaseNames != null && user.UnderlyingDiseaseNames.Any())
                         {
                             @string.Join(", ", user.UnderlyingDiseaseNames)
@@ -50,10 +50,14 @@
                         }
                     </td>
 
-                    <td class="text-center">
-                        <a asp-action="GetDetailsAllPremiumUserByNutritionist" asp-route-userId="@user.UserId" class="btn btn-info btn-sm">
-                            <i class="fas fa-eye"></i> Xem chi tiết
-                        </a>
+                    <td style="text-align: center;">
+                        <button type="button" class="btn btn-primary btn-sm manage-disease-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#diseaseModal"
+                                data-userid="@user.UserId"
+                                data-username="@user.FullName">
+                            Quản lý Bệnh Lý
+                        </button>
                     </td>
                 </tr>
             }
@@ -72,20 +76,228 @@
         </ul>
     </nav>
 </div>
+<!-- Modal quản lý bệnh lý -->
+<div class="modal fade" id="diseaseModal" tabindex="-1" aria-labelledby="diseaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="diseaseModalLabel">Quản lý Bệnh Lý</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4>Bệnh lý của: <span id="modalUsername"></span></h4>
+                <div id="alertMessage" class="alert-message"></div>
+                <table class="table custom-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên Bệnh</th>
+                            <th>Mô Tả</th>
+                            <th style="text-align: center;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="diseaseList">
+                        <!-- Dữ liệu bệnh lý sẽ được tải qua AJAX -->
+                    </tbody>
+                </table>
+                <form id="addDiseaseForm">
+                    <div class="form-group">
+                        <label for="diseaseSelect">Thêm bệnh lý:</label>
+                        <select id="diseaseSelect" class="form-control">
+                            <!-- Các bệnh lý được load từ API -->
+                        </select>
+                        <button class="btn btn-success mt-2" onclick="addDisease()">Thêm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Xử lý click trên hàng
         const rows = document.querySelectorAll(".clickable-row");
         rows.forEach(row => {
-            row.addEventListener("click", function () {
-                const href = this.getAttribute("data-href");
-                if (href) {
-                    window.location.href = href;
+            row.addEventListener("click", function (e) {
+                // Kiểm tra nếu click không phải từ nút "Quản lý Bệnh Lý"
+                if (!e.target.closest('.manage-disease-btn')) {
+                    const href = this.getAttribute("data-href");
+                    if (href) {
+                        window.location.href = href;
+                    }
                 }
             });
         });
+
+        const modalElement = document.getElementById('diseaseModal');
+
+        // Hàm tải danh sách bệnh lý của người dùng
+        async function loadDiseaseList(userId) {
+            const diseaseList = document.getElementById('diseaseList');
+            diseaseList.innerHTML = '<tr><td colspan="4">Đang tải...</td></tr>';
+
+            try {
+                const response = await fetch(`/NutritionRoute/GetDiseasesByUserId?userId=${userId}`);
+                const diseases = await response.json();
+
+                if (diseases && diseases.length > 0) {
+                    diseaseList.innerHTML = diseases.map((disease, index) => `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${disease.name}</td>
+                            <td>${disease.describe}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="deleteDisease(${userId}, ${disease.id})">Xóa</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    diseaseList.innerHTML = '<tr><td colspan="4">Không có bệnh lý.</td></tr>';
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải danh sách bệnh lý:', error);
+                diseaseList.innerHTML = '<tr><td colspan="4">Không thể tải danh sách bệnh lý.</td></tr>';
+            }
+        }
+
+        // Hàm cập nhật cột Bệnh lý của user
+        async function updateUnderlyingDiseaseColumn(userId) {
+            try {
+                const response = await fetch(`/NutritionRoute/GetDiseasesByUserId?userId=${userId}`);
+                const diseases = await response.json();
+
+                // Lấy cột bệnh lý của user
+                const diseaseColumn = document.getElementById(`underlying-disease-${userId}`);
+
+                if (diseases && diseases.length > 0) {
+                    diseaseColumn.innerHTML = diseases.map(d => d.name).join(", ");
+                } else {
+                    diseaseColumn.innerHTML = '<span>Không có bệnh lý</span>';
+                }
+            } catch (error) {
+                console.error('Lỗi khi cập nhật cột Bệnh lý:', error);
+            }
+        }
+
+        // Khi mở modal, tải danh sách bệnh lý và các bệnh lý có thể thêm
+        document.querySelectorAll('.manage-disease-btn').forEach(button => {
+            button.addEventListener('click', async function () {
+                const userId = this.getAttribute('data-userid');
+                const userName = this.getAttribute('data-username');
+
+                document.getElementById('modalUsername').innerText = userName;
+
+                await loadDiseaseList(userId);
+
+                const diseaseSelect = document.getElementById('diseaseSelect');
+                diseaseSelect.innerHTML = '<option value="" disabled selected>Đang tải...</option>';
+
+                try {
+                    const response = await fetch('/NutritionRoute/GetAllDiseases');
+                    const allDiseases = await response.json();
+
+                    diseaseSelect.innerHTML = allDiseases.map(disease => `
+                        <option value="${disease.id}">${disease.name}</option>
+                    `).join('');
+                } catch (error) {
+                    console.error('Lỗi khi tải danh sách bệnh lý:', error);
+                    diseaseSelect.innerHTML = '<option>Không thể tải dữ liệu.</option>';
+                }
+
+                // Thêm bệnh lý
+                document.getElementById('addDiseaseForm').onsubmit = async (e) => {
+                    e.preventDefault();
+                    const diseaseId = diseaseSelect.value;
+                    const diseaseName = diseaseSelect.options[diseaseSelect.selectedIndex]?.text;
+
+                    if (!diseaseId) {
+                        showAlertMessage('Vui lòng chọn bệnh lý.', 'danger');
+                        return;
+                    }
+
+                    // Kiểm tra bệnh lý đã tồn tại chưa
+                    const existingDiseases = Array.from(document.querySelectorAll("#diseaseList tr td:nth-child(2)")).map(td => td.innerText);
+                    if (existingDiseases.includes(diseaseName)) {
+                        showAlertMessage('Bệnh lý này của người dùng đã tồn tại.', 'danger');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`/NutritionRoute/AddDisease`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userId, diseaseId }),
+                        });
+
+                        if (response.ok) {
+                            showAlertMessage('Thêm bệnh lý thành công.', 'add-success');
+                            await loadDiseaseList(userId); // Cập nhật danh sách bệnh lý
+                            updateUnderlyingDiseaseColumn(userId);
+                        } else {
+                            const errorResponse = await response.json();
+                            showAlertMessage(errorResponse.message || 'Thêm bệnh lý thất bại.', 'danger');
+                        }
+                    } catch (error) {
+                        console.error('Lỗi khi thêm bệnh lý:', error);
+                        showAlertMessage('Có lỗi xảy ra, vui lòng thử lại.', 'danger');
+                    }
+                };
+            });
+        });
+
+        // Xóa bệnh lý
+        window.deleteDisease = async function (userId, diseaseId) {
+            try {
+                const response = await fetch(`/NutritionRoute/DeleteDisease`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, diseaseId }),
+                });
+
+                if (response.ok) {
+                    showAlertMessage('Xóa bệnh lý thành công.', 'delete-success');
+                    await loadDiseaseList(userId); // Cập nhật danh sách bệnh lý
+                    updateUnderlyingDiseaseColumn(userId);
+                } else {
+                    showAlertMessage('Xóa bệnh lý thất bại.', 'danger');
+                }
+            } catch (error) {
+                console.error('Lỗi khi xóa bệnh lý:', error);
+                showAlertMessage('Có lỗi xảy ra, vui lòng thử lại.', 'danger');
+            }
+        };
+
+        // Khi đóng modal, chỉ cập nhật cột bệnh lý
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            const userId = document.querySelector(".manage-disease-btn[data-bs-target='#diseaseModal']").getAttribute('data-userid');
+            updateUnderlyingDiseaseColumn(userId); // Cập nhật cột bệnh lý của user
+        });
     });
+    function showAlertMessage(message, type) {
+        const alertMessage = document.getElementById('alertMessage');
+        alertMessage.style.display = 'block';
+        alertMessage.textContent = message;
+
+        // Loại bỏ tất cả các lớp cũ
+        alertMessage.className = 'alert-message';
+
+        // Thêm lớp mới dựa trên loại thông báo
+        if (type === 'add-success') {
+            alertMessage.classList.add('alert-add-success');
+        } else if (type === 'delete-success') {
+            alertMessage.classList.add('alert-delete-success');
+        } else if (type === 'danger') {
+            alertMessage.classList.add('alert-danger');
+        }
+
+        // Ẩn thông báo sau 2 giây
+        setTimeout(() => {
+            alertMessage.style.display = 'none';
+        }, 2000);
+    }
+
 </script>
 
 
@@ -231,4 +443,151 @@
             .pagination .page-link:hover {
                 background-color: #f3f3f3;
             }
+    /* Styling for Modal */
+    .modal-dialog {
+        max-width: 60%;; /* Giới hạn chiều rộng của modal */
+        margin: 30px auto;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+        background: linear-gradient(145deg, #ffffff, #f3f3f3);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px; /* Thu nhỏ khoảng cách padding */
+        border-bottom: 1px solid #e0e0e0;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .modal-title {
+        font-family: 'Roboto', sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .btn-close {
+        color: white;
+        background-color: transparent;
+        font-size: 18px;
+    }
+
+    .modal-body {
+        padding: 15px; /* Thu nhỏ khoảng cách padding */
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+    }
+
+        .modal-body h4 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px; /* Thu nhỏ font */
+            margin-bottom: 10px;
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px; /* Giảm khoảng cách bảng */
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .modal-body table th, .modal-body table td {
+                padding: 8px; /* Thu nhỏ padding của bảng */
+                text-align: left;
+                border-bottom: 1px solid #e0e0e0;
+                font-size: 14px; /* Thu nhỏ font trong bảng */
+            }
+
+            .modal-body table th {
+                background-color: #4CAF50;
+                color: white;
+                font-weight: bold;
+            }
+
+            .modal-body table tr:nth-child(even) {
+                background-color: #f3f3f3;
+            }
+
+            .modal-body table tr:hover {
+                background-color: #e8f5e9;
+                transition: background-color 0.3s ease;
+            }
+
+        .modal-body .form-group {
+            margin-top: 15px;
+        }
+
+        .modal-body select {
+            width: 100%;
+            padding: 8px; /* Thu nhỏ padding của select */
+            border: 1px solid #ddd;
+            border-radius: 5px;addDiseaseForm
+            outline: none;
+            font-size: 12px; /* Thu nhỏ font trong select */
+            font-family: 'Roboto', sans-serif;
+        }
+
+            .modal-body select:focus {
+                border-color: #4CAF50;
+                box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+            }
+
+        .modal-body button {
+            width: 100%;
+            padding: 10px; /* Thu nhỏ nút */
+            font-size: 14px; /* Thu nhỏ font nút */
+            font-weight: bold;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .modal-body button:hover {
+                background-color: #45a049;
+            }
+
+        .modal-body .btn-danger {
+            background-color: #f44336;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .modal-body .btn-danger:hover {
+                background-color: #d32f2f;
+            }
+
+    .alert-message {
+        display: none;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Thêm thành công */
+    .alert-add-success {
+        color: green; 
+    }
+    /* Xóa thành công*/
+    .alert-delete-success {
+        color: red;
+    }
+
+    .alert-danger {
+        color: orangered;
+    }
+
 </style>

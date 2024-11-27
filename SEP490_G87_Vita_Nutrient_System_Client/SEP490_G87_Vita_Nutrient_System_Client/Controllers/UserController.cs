@@ -11,7 +11,6 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -486,14 +485,36 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
+                // Lấy thông tin người dùng
                 HttpResponseMessage response = await client.GetAsync(
                     client.BaseAddress + "/Users/GetUserDetail/" + userId);
+
+                // Lấy danh sách bệnh lý
+                HttpResponseMessage response1 = await client.GetAsync(
+                    client.BaseAddress + "/Disease/GetAllDiseases");
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
                     dynamic userData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<ListOfDisease> diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(data1);
+
+                    // Tách UnderlyingDisease thành danh sách ID
+                    string underlyingDiseaseIds = userData.detailsInformation.underlyingDisease;
+                    List<int> diseaseIds = !string.IsNullOrEmpty(underlyingDiseaseIds)
+                        ? underlyingDiseaseIds.Split(';').Select(int.Parse).ToList()
+                        : new List<int>();
+
+                    // Lấy tên các bệnh lý
+                    var diseaseNames = diseases.Where(d => diseaseIds.Contains(d.Id)).Select(d => d.Name).ToList();
+
+                    //HttpContent content1 = response1.Content;
+                    //string data1 = await content1.ReadAsStringAsync();
+                    //List<ListOfDisease> diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(data1);
 
                     User user = new()
                     {
@@ -518,7 +539,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                             Weight = userData.detailsInformation.weight,
                             Age = userData.detailsInformation.age,
                             WantImprove = userData.detailsInformation.wantImprove,
-                            UnderlyingDisease = userData.detailsInformation.underlyingDisease,
+                            UnderlyingDisease = string.Join(", ", diseaseNames), // Gán tên bệnh lý
                             InforConfirmGood = userData.detailsInformation.inforConfirmGood,
                             InforConfirmBad = userData.detailsInformation.inforConfirmBad,
                             IsPremium = userData.detailsInformation.isPremium
@@ -698,7 +719,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi)
+        public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi, string uUnderlyingDisease)
         {
             try
             {
@@ -709,7 +730,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     height = uheight,
                     weight = uweight,
                     age = uage,
-                    wantImprove = uwi
+                    wantImprove = uwi,
+                    underlyingDisease = uUnderlyingDisease
                 };
 
                 string jsonData = JsonConvert.SerializeObject(data);
@@ -820,7 +842,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
         [HttpGet, Authorize(Roles = "User, UserPremium")]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = "")
+        public async Task<IActionResult> ListLikedFoods(int page = 1, int pageSize = 10, string search = "")
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
 
@@ -1001,7 +1023,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
 
             // Call the API to get blocked foods
-            var response = await client.GetAsync($"Users/{userId}/blocked-foods?Search={search}&Page={page}&PageSize={pageSize}");
+            var response = await client.GetAsync(client.BaseAddress + $"/Users/{userId}/blocked-foods?Search={search}&Page={page}&PageSize={pageSize}");
             if (response.IsSuccessStatusCode)
             {
                 var responseData = await response.Content.ReadAsStringAsync();
@@ -1011,8 +1033,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.CurrentPage = blockedFoods.CurrentPage;
                 return View(blockedFoods.Items);
             }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error: {response.StatusCode}, Content: {errorContent}");
+                return View("Error");
+            }
 
-            return View("Error"); // Show an error view if the API call fails
+            // Show an error view if the API call fails
         }
 
         [HttpPost]

@@ -37,5 +37,19 @@ public partial class MealSettingsDetailDTO
 
     public short? OrderNumber { get; set; }
 
-    public int? Calories { get; set; }
+    public short? Calories { get; set; }
+
+    public short? CarbsMin { get; set; }
+
+    public short? CarbsMax { get; set; }
+
+    public short? FatsMin { get; set; }
+
+    public short? FatsMax { get; set; }
+
+    public short? ProteinMin { get; set; }
+
+    public short? ProteinMax { get; set; }
+
+    public short? MinimumFiber { get; set; }
 }

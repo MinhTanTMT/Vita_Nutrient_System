@@ -153,12 +153,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             {
                 return BadRequest();
             }
+
             
+
             // update vu tich trong 7 ngay
             if (model.MyDay.DayOfYear <= DateTime.Now.DayOfYear && model.MyDay.DayOfYear >= (DateTime.Now.DayOfYear-7))
             {
                 if (model.StatusSymbol.Equals("-"))
                 {
+ 
                     return Ok(await generateMealRepositories.ModifiedCompleteTheDish(model, "+", null, null));
                 }
                 else if (model.StatusSymbol.Equals("+"))
@@ -181,7 +184,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-
         [HttpPost("APIgetThisListOfDishes")]
         public async Task<IActionResult> APIgetThisListOfDishes(
         [FromBody] DataFoodListMealOfTheDay dataFoodListMealOfTheDay,
@@ -191,7 +193,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
             return Ok(await generateMealRepositories.GetThisListOfDishesInputMealDay(dataFoodListMealOfTheDay, userId, myDay));
         }
-
 
 
         [HttpPost("APISelectReplaceCurrentFood")]

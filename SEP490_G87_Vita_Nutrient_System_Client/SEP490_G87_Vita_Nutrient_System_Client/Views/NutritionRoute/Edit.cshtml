@@ -4,6 +4,18 @@
 
 <div class="container mt-5">
     <h2 class="page-title text-center mb-4">Chỉnh Sửa Lộ Trình Dinh Dưỡng</h2>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger shadow">
+            <ul class="alert-list">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <i class="fas fa-exclamation-circle alert-icon"></i>
+                    @error.ErrorMessage
+                }
+            </ul>
+        </div>
+    }
     <form asp-controller="NutritionRoute" asp-action="Edit" method="post" enctype="multipart/form-data" class="edit-form p-4 rounded shadow">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="UserId" />
@@ -28,13 +40,14 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="StartDate" class="form-label">Ngày Bắt Đầu</label>
-            <input type="date" asp-for="StartDate" class="form-control" required />
+            <label for="StartDate" class="form-label">Ngày Bắt Đầu: (tháng/ngày/năm)</label>
+            <input type="date" asp-for="StartDate" class="form-control" readonly />
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
 
+
         <div class="form-group mb-3">
-            <label for="EndDate" class="form-label">Ngày Kết Thúc</label>
+            <label for="EndDate" class="form-label">Ngày Kết Thúc: (tháng/ngày/năm)</label>
             <input type="date" asp-for="EndDate" class="form-control" required />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
@@ -174,6 +187,53 @@
         font-weight: 500;
         margin-left: 10px;
     }
+
+    .alert {
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        font-family: 'Roboto', sans-serif;
+        margin-top: 20px;
+    }
+
+    .alert-icon {
+        font-size: 24px;
+        margin-right: 10px;
+        color: #721c24;
+    }
+
+    .alert-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #721c24;
+    }
+
+    .alert-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+        .alert-list li {
+            margin-bottom: 5px;
+            padding-left: 25px;
+            position: relative;
+            font-size: 16px;
+            color: #721c24;
+        }
+
+            .alert-list li:before {
+                content: '\2022';
+                color: #721c24;
+                font-weight: bold;
+                font-size: 20px;
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
 </style>
 
 

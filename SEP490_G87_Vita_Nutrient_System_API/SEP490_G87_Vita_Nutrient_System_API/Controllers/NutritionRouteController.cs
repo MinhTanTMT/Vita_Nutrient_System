@@ -100,19 +100,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return NoContent();
         }
 
-        /*[HttpGet("{nutritionistId}/user/{userId}/unfinished")]
-        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId)
+        [HttpGet("{nutritionistId}/user/{userId}/unfinished/{userListManagementId}")]
+        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId, int userListManagementId)
         {
-            var routes = await _nutritionRouteRepositories.GetUsersWithUnfinishedRoutesAsync(nutritionistId, userId);
-            return Ok(routes); 
-        }*/
-
-        [HttpGet("{nutritionistId}/user/{userId}/unfinished")]
-        public async Task<IActionResult> HasUnfinishedRoute(int nutritionistId, int userId)
-        {
-            var routes = await _nutritionRouteRepositories.HasUnfinishedRouteAsync(nutritionistId, userId);
-            return Ok(routes);
+            var hasUnfinishedRoute = await _nutritionRouteRepositories.HasUnfinishedRouteAsync(nutritionistId, userId, userListManagementId);
+            return Ok(hasUnfinishedRoute);
         }
+
 
         [HttpGet("{nutritionistId}/user/{userId}/route/{userListManagementId}")]
         public async Task<ActionResult<IEnumerable<NutritionRouteDTO>>> GetNutritionRoutes(int nutritionistId, int userId, int userListManagementId)
@@ -120,10 +114,76 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var routes = await _nutritionRouteRepositories.GetNutritionRoutesAsync(nutritionistId, userId, userListManagementId);
             if (routes == null || !routes.Any())
             {
-                return Ok("Không tìm thấy lộ trình nào cho gói đăng ký này.");
+                // Trả về danh sách rỗng thay vì chuỗi
+                return Ok(new List<NutritionRouteDTO>());
             }
             return Ok(routes);
         }
 
+        [HttpGet("user/{userId}/diseases")]
+        public async Task<ActionResult<IEnumerable<ListOfDiseaseDTO>>> GetDiseaseByUserId(int userId)
+        {
+            var diseases = await _nutritionRouteRepositories.GetDiseaseByUserIdAsync(userId);
+            if (diseases == null || !diseases.Any())
+            {
+                return Ok(new List<ListOfDiseaseDTO>());
+            }
+            return Ok(diseases);
+        }
+
+        [HttpPost("AddDiseasesOfUser")]
+        public async Task<IActionResult> CreateDisease([FromBody] AddDiseaseRequest data)
+        {
+            var isCreated = await _nutritionRouteRepositories.CreateDiseaseAsync(data.UserId, data.DiseaseId);
+            if (!isCreated)
+            {
+                return BadRequest("Không thể thêm bệnh nền. Bệnh đã tồn tại hoặc dữ liệu không hợp lệ.");
+            }
+            return Ok("Thêm bệnh nền thành công.");
+        }
+
+        [HttpDelete("user/{userId}/diseases/{diseaseId}")]
+        public async Task<IActionResult> DeleteDisease(int userId, int diseaseId)
+        {
+            var isDeleted = await _nutritionRouteRepositories.DeleteDiseaseAsync(userId, diseaseId);
+            if (!isDeleted)
+            {
+                return BadRequest("Không thể xóa bệnh nền. Bệnh không tồn tại hoặc dữ liệu không hợp lệ.");
+            }
+            return Ok("Xóa bệnh nền thành công.");
+        }
+
+        [HttpPut("updateIsDone")]
+        public async Task<IActionResult> UpdateIsDone([FromQuery] int createById, [FromQuery] int userId)
+        {
+            if (createById <= 0 || userId <= 0)
+            {
+                return BadRequest("CreateById hoặc UserId không hợp lệ.");
+            }
+
+            try
+            {
+                var isUpdated = await _nutritionRouteRepositories.UpdateIsDoneAsync(createById, userId);
+                if (!isUpdated)
+                {
+                    return NotFound("Không tìm thấy lộ trình cần cập nhật hoặc tất cả lộ trình đã hoàn thành.");
+                }
+
+                return Ok("Cập nhật trạng thái IsDone thành công.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi hệ thống: {ex.Message}");
+            }
+        }
+
+
+    }
+
+
+    public class AddDiseaseRequest
+    {
+        public int UserId { get; set; }
+        public int DiseaseId { get; set; }
     }
 }

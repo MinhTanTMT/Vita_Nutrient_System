@@ -257,7 +257,7 @@
 
                     $.each(response, function (index, item) {
                         $.each(item.foodIdData, function (index2, item2) {
-                            if (item2.positionFood == positionFood) {
+                            // if (item2.positionFood == positionFood) {
                                 // Kiểm tra nếu món ăn chưa có trong danh sách `jsonListFoodId`
                                 if (!jsonListFoodId.includes(item2.foodData.foodListId)) {
                                     var rowContent = `
@@ -273,7 +273,7 @@
                     `;
                                     ListFoodDiv.append(rowContent); // Thêm nội dung vào danh sách
                                 }
-                            }
+                            // }
                         });
                     });
                 },

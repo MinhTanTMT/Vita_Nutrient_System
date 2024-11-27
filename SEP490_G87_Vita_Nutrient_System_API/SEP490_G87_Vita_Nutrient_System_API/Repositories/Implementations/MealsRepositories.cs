@@ -493,7 +493,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             mealSettingsDetail.IsActive = model.IsActive;
             mealSettingsDetail.OrderNumber = model.OrderNumber;
             mealSettingsDetail.Name = model.Name;
-            mealSettingsDetail.Calories = (short)model.Calories;
+            mealSettingsDetail.Calories = model.Calories;
+            mealSettingsDetail.CarbsMin = model.CarbsMin;
+            mealSettingsDetail.CarbsMax = model.CarbsMax;
+            mealSettingsDetail.FatsMin = model.FatsMin;
+            mealSettingsDetail.FatsMax = model.FatsMax;
+            mealSettingsDetail.ProteinMin = model.ProteinMin;
+            mealSettingsDetail.ProteinMax = model.ProteinMax;
+            mealSettingsDetail.MinimumFiber = model.MinimumFiber;
             _context.MealSettingsDetails.Update(mealSettingsDetail);
             await _context.SaveChangesAsync();
         }

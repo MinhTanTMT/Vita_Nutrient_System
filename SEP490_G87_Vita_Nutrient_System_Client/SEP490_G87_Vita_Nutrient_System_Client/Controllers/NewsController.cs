@@ -139,18 +139,29 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> DetailsForUsers(int id)
         {
             ViewData["ApiBaseUrl"] = client.BaseAddress;
+
             try
             {
-                var response = await client.GetAsync($"api/news/{id}");
-
-                if (response.IsSuccessStatusCode)
+                var articleResponse = await client.GetAsync($"api/news/{id}");
+                if (!articleResponse.IsSuccessStatusCode)
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var article = JsonConvert.DeserializeObject<ArticlesNews>(data);
-                    return View(article); // Sử dụng View riêng cho user
+                    return NotFound();
                 }
 
-                return NotFound();
+                var articleData = await articleResponse.Content.ReadAsStringAsync();
+                var article = JsonConvert.DeserializeObject<ArticlesNews>(articleData);
+
+                // Lấy đánh giá của người dùng hiện tại
+                var userId = int.Parse(User.FindFirst("UserId")?.Value);
+                var evaluationResponse = await client.GetAsync($"api/news/{id}/evaluations/{userId}");
+                if (evaluationResponse.IsSuccessStatusCode)
+                {
+                    var evaluationData = await evaluationResponse.Content.ReadAsStringAsync();
+                    var evaluation = JsonConvert.DeserializeObject<NewsEvaluation>(evaluationData);
+                    article.UserRate = evaluation.Ratting; // Gán đánh giá của người dùng vào bài viết
+                }
+
+                return View(article);
             }
             catch (Exception ex)
             {
@@ -158,6 +169,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return View();
             }
         }
+
 
         [HttpGet]
         public IActionResult Create()
@@ -446,11 +458,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         // Phương thức phụ để kiểm tra xem người dùng đã đánh giá bài viết chưa
         private async Task<NewsEvaluation> CheckUserEvaluation(int articleId, int userId)
         {
-            var response = await client.GetAsync($"/api/news/{articleId}/evaluations/{userId}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<NewsEvaluation>(data);
+                var response = await client.GetAsync($"/api/news/{articleId}/evaluations/{userId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<NewsEvaluation>(data);
+                }
+                else
+                {
+                    Console.WriteLine($"API Response Error: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking user evaluation: {ex.Message}");
             }
             return null;
         }

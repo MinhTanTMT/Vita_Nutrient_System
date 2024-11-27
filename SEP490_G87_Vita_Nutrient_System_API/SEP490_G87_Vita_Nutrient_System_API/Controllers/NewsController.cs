@@ -123,5 +123,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var evaluations = await _newsRepositories.GetEvaluationsByArticleIdAsync(articleId);
             return Ok(evaluations);
         }
+
+        [HttpGet("{articleId}/evaluations/{userId}")]
+        public async Task<ActionResult<NewsEvaluationDTO>> GetEvaluationByUser(int articleId, int userId)
+        {
+            var evaluation = await _newsRepositories.GetEvaluationByUserAsync(articleId, userId);
+            if (evaluation == null)
+            {
+                return NotFound();
+            }
+            return Ok(evaluation);
+        }
+
     }
 }

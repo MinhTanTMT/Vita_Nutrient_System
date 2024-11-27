@@ -11,6 +11,7 @@
     <form asp-action="CreateMealSettingsDetail" method="post">
         <input type="hidden" asp-for="MealSettingsId" />
         <input type="hidden" asp-for="DayOfTheWeekId" />
+        <input type="hidden" name="userId" value="@ViewBag.UserId" />
         <div class="form-group">
             <label for="Name">Tên bữa ăn</label>
             <input asp-for="Name" class="form-control" />
@@ -19,12 +20,6 @@
             <label for="SlotOfTheDayId">Thứ tự ăn trong ngày</label>
             <select asp-for="SlotOfTheDayId" class="form-control" asp-items="ViewBag.SlotOfTheDays"></select>
         </div>
-        @* <div class="form-group">
-            <label for="NutritionTargetsDailyId">Chọn mục tiêu dinh dưỡng hàng ngày</label>
-            <select asp-for="NutritionTargetsDailyId" class="form-control" asp-items="ViewBag.NutritionTargetsDaily"></select>
-        </div> *@
-
-
         <div class="form-group">
             <label for="SkipCreationProcess">
                 Bỏ qua quá trình tạo
@@ -89,7 +84,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Tạo Mới</button>
-        <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = Model.DayOfTheWeekId })" class="btn btn-secondary">Hủy</a>
+        <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = Model.DayOfTheWeekId,userId = ViewBag.UserId })" class="btn btn-secondary">Hủy</a>
     </form>
     @if (ViewBag.ErrorMessage != null)
     {

@@ -41,9 +41,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("Login")]
-        public async Task<ActionResult<User>> APIGetUserLogin(string account, string password)
+        public async Task<ActionResult<UserLoginRegister>> APIGetUserLogin(string account, string password)
         {
-            var dataReturn = repositories.GetUserLogin(account, password);
+            var dataReturn = await repositories.GetUserLogin(account, password);
             if (dataReturn == null)
             {
                 return NotFound();
@@ -58,7 +58,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("checkExit")]
         public async Task<ActionResult<User>> APIGetUserByAccount(string account)
         {
-            var dataReturn = repositories.CheckExitAccountUser(account);
+            var dataReturn = await repositories.CheckExitAccountUser(account);
 
             if (dataReturn)
             {
@@ -73,17 +73,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
         [HttpPost("Register")]
-        public async Task<ActionResult<User>> GetUserRegister(User user)
+        public async Task<ActionResult<UserLoginRegister>> GetUserRegister(UserLoginRegister user)
         {
-            var dataReturn = repositories.GetUserRegister(user);
+            var dataReturn = await repositories.GetUserRegister(user);
             return Ok(user);
         }
 
 
         [HttpPost("RegisterLoginGoogle")]
-        public async Task<ActionResult<User>> APIGetRegisterLoginGoogle(User user)
+        public async Task<ActionResult<UserLoginRegister>> APIGetRegisterLoginGoogle(UserLoginRegister user)
         {
-            var dataReturn = repositories.GetRegisterLoginGoogle(user);
+            var dataReturn = await repositories.GetRegisterLoginGoogle(user);
             return Ok(dataReturn);
         }
 
@@ -279,6 +279,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             u.Weight = request.Weight;
             u.Age = request.Age;
             u.WantImprove = request.WantImprove;
+            u.UnderlyingDisease = request.UnderlyingDisease;
 
             _repositories.UpdateUserDetails(u);
 

@@ -16,14 +16,24 @@
             <i class="fas fa-arrow-left"></i> Quay lại
         </a>
 
-        <!-- Nút Tạo Lộ Trình Mới -->
-        <a asp-action="Create"
-           asp-route-userId="@ViewData["UserId"]"
-           asp-route-userListManagementId="@ViewData["UserListManagementId"]"
-           asp-route-packageName="@ViewData["PackageName"]"
-           class="btn btn-primary btn-lg">
-            <i class="fas fa-plus-circle"></i> Tạo Lộ Trình Mới
-        </a>
+
+        <div class="text-start mb-3">
+            @if (!(bool)ViewData["HasUnfinishedRoute"])
+            {
+                <!-- Nút Tạo Lộ Trình Mới -->
+                <a asp-action="Create"
+                   asp-route-userId="@ViewData["UserId"]"
+                   asp-route-userListManagementId="@ViewData["UserListManagementId"]"
+                   asp-route-packageName="@ViewData["PackageName"]"
+                   class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus-circle"></i> Tạo Lộ Trình Mới
+                </a>
+            }
+            else
+            {
+                <span class="text-danger">Bạn phải hoàn thành lộ trình hiện tại trước khi tạo lộ trình mới.</span>
+            }
+        </div>
 
     </div>
 
@@ -47,7 +57,8 @@
                 @for (int i = 0; i < Model.Count; i++)
                 {
                     var route = Model[i];
-                    <tr class="clickable-row" data-href="@Url.Action("Details", new { id = route.Id, userId = ViewData["UserId"], userListManagementId = ViewData["UserListManagementId"], packageName = ViewData["PackageName"] })">
+                    // sưả vào đấy
+                    <tr class="clickable-row" data-href="@Url.Action("MealSettingsDetailToList", "Meal", new { userId = ViewData["UserId"] })">
                         <td>@(i + 1)</td>
                         <td class="text-truncate" style="max-width: 150px;">@route.Name</td>
                         <td class="text-truncate" style="max-width: 150px;">@route.Describe</td>
@@ -59,14 +70,17 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <a asp-action="Edit"
-                               asp-route-id="@route.Id"
-                               asp-route-userId="@ViewData["UserId"]"
-                               asp-route-userListManagementId="@ViewData["UserListManagementId"]"
-                               asp-route-packageName="@ViewData["PackageName"]"
-                               class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
+                            @if (route.IsDone.HasValue && !route.IsDone.Value)
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-id="@route.Id"
+                                   asp-route-userId="@ViewData["UserId"]"
+                                   asp-route-userListManagementId="@ViewData["UserListManagementId"]"
+                                   asp-route-packageName="@ViewData["PackageName"]"
+                                   class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                            }
 
                             <a asp-action="Delete"
                                asp-route-id="@route.Id"
@@ -77,6 +91,7 @@
                                 <i class="fas fa-trash"></i> Xóa
                             </a>
                         </td>
+
                     </tr>
                 }
             }
