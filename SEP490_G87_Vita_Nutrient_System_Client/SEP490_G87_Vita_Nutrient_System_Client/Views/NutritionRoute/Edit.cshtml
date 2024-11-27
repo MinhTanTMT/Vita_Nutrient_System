@@ -41,9 +41,10 @@
 
         <div class="form-group mb-3">
             <label for="StartDate" class="form-label">Ngày Bắt Đầu: (tháng/ngày/năm)</label>
-            <input type="date" asp-for="StartDate" class="form-control" required />
+            <input type="date" asp-for="StartDate" class="form-control" readonly />
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
+
 
         <div class="form-group mb-3">
             <label for="EndDate" class="form-label">Ngày Kết Thúc: (tháng/ngày/năm)</label>

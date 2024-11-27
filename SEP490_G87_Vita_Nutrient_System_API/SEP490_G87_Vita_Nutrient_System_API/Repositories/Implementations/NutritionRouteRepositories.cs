@@ -120,7 +120,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 CreateById = nutritionRouteDto.CreateById,
                 Name = nutritionRouteDto.Name,
                 Describe = nutritionRouteDto.Describe,
-                StartDate = nutritionRouteDto.StartDate?.Date,
+                StartDate = DateTime.Now,
                 EndDate = nutritionRouteDto.EndDate?.Date,
                 IsDone = nutritionRouteDto.IsDone
             };
