@@ -120,7 +120,7 @@
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
               "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Implementations\\GenerateMealRepositories.cs",
-              "ViewState": "AgIAACwCAAAAAAAAAAAUwDICAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAC8CAAAAAAAAAAAwwDMCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-27T11:47:55.203Z",
               "EditorCaption": ""
@@ -135,8 +135,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-11-27T11:36:24.878Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-27T11:36:24.878Z"
             },
             {
               "$type": "Document",
@@ -148,8 +147,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Repositories\\Interfaces\\IFoodRepositories.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAA8wBEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-27T10:49:01.776Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-27T10:49:01.776Z"
             },
             {
               "$type": "Document",
