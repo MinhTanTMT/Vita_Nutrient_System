@@ -69,14 +69,17 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <a asp-action="Edit"
-                               asp-route-id="@route.Id"
-                               asp-route-userId="@ViewData["UserId"]"
-                               asp-route-userListManagementId="@ViewData["UserListManagementId"]"
-                               asp-route-packageName="@ViewData["PackageName"]"
-                               class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
+                            @if (route.IsDone.HasValue && !route.IsDone.Value)
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-id="@route.Id"
+                                   asp-route-userId="@ViewData["UserId"]"
+                                   asp-route-userListManagementId="@ViewData["UserListManagementId"]"
+                                   asp-route-packageName="@ViewData["PackageName"]"
+                                   class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                            }
 
                             <a asp-action="Delete"
                                asp-route-id="@route.Id"
@@ -87,6 +90,7 @@
                                 <i class="fas fa-trash"></i> Xóa
                             </a>
                         </td>
+
                     </tr>
                 }
             }

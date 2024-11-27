@@ -194,7 +194,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             var nutritionRoute = new NutritionRoute
             {
                 UserId = userId,
-                CreateById = int.Parse(User.FindFirst("UserId")?.Value)
+                CreateById = int.Parse(User.FindFirst("UserId")?.Value),
+                StartDate = DateTime.Now
             };
 
             return View(nutritionRoute);
@@ -205,6 +206,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NutritionRoute nutritionRoute, int userId, int userListManagementId, string packageName)
         {
+            if (nutritionRoute.StartDate == null)
+            {
+                nutritionRoute.StartDate = DateTime.Now; // Thiết lập mặc định
+            }
             try
             {
                 ViewData["UserId"] = userId;
