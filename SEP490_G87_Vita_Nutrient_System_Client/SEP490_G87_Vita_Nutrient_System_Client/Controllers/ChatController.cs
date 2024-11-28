@@ -45,10 +45,34 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Room(int roomId)
+        public async Task<IActionResult> Room(int? roomId)
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            // Nếu roomId không có giá trị, gọi API GetRoomsByUser để lấy phòng chat của người dùng
+            if (roomId == null)
+            {
+                HttpResponseMessage responseRoom = await client.GetAsync($"api/Chat/GetRoomsByUser/{userId}");
 
+                if (responseRoom.IsSuccessStatusCode)
+                {
+                    string data = await responseRoom.Content.ReadAsStringAsync();
+                    var rooms = JsonConvert.DeserializeObject<List<RoomModel>>(data);
+
+                    if (rooms != null && rooms.Count == 1)
+                    {
+                        // Lấy phòng đầu tiên và chuyển tới phòng đó
+                        roomId = rooms[0].Id;
+                    }
+                    else
+                    {
+                        return RedirectToAction("NutritionistServices", "Admin");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("NutritionistServices", "Admin");
+                }
+            }
             // Gọi API để lấy tin nhắn của room
             HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Chat/GetMessagesByRoom/{roomId}");
             if (response.IsSuccessStatusCode)
