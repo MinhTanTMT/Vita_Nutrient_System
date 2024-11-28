@@ -315,24 +315,35 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
-            if (dataFood.ingredientDetails100gReduceDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
 
+            double targetSodiumEveryday = 2300;
+            double targetCholesterolEveryday = 300;
+            MealSettingsDetail mealSettingsDetailData = await _context.MealSettingsDetails.FindAsync(MealSettingsDetailsId);
+            int numberOfMealDay = await _context.MealSettingsDetails
+                .Where(x => x.MealSettingsId == mealSettingsDetailData.MealSettingsId
+                            && x.DayOfTheWeekId == mealSettingsDetailData.DayOfTheWeekId)
+                .CountAsync();
 
-            double targetSodium = 2300;
-            double targetCholesterol = 300;
+            //double targetSodium = 2300;
+            //double targetCholesterol = 300;
+
+            double targetSodium = targetSodiumEveryday/numberOfMealDay;
+            double targetCholesterol = targetCholesterolEveryday/numberOfMealDay;
+
             if (nutritionTargetsDaily.LimitDailySodium ?? false) { }
             else
             {
-                if (dataFood.ingredientDetails100gReduceDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
+                if (dataFood.ingredientDetails100gDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
             }
             if (nutritionTargetsDaily.LimitDailyCholesterol ?? false) { }
             else
             {
-                if (dataFood.ingredientDetails100gReduceDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
+                if (dataFood.ingredientDetails100gDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
             }
             return true;
         }
@@ -422,8 +433,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (dataFood.ingredientDetails100gDTO.Protein < nutritionTargetsDaily.ProteinMin * (1 - proteinTolerance) || dataFood.ingredientDetails100gDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
             if (dataFood.ingredientDetails100gDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
 
-            double targetSodium = 2300; // sửa lại phải nhân với số bữa melstting từ đó chia ra mỗi bữa nhiều hất bao nhiêu
-            double targetCholesterol = 300; // sửa lại phải nhân với số bữa melstting từ đó chia ra mỗi bữa nhiều hất bao nhiêu
+            double targetSodiumEveryday = 2300;
+            double targetCholesterolEveryday = 300;
+            MealSettingsDetail mealSettingsDetailData = await _context.MealSettingsDetails.FindAsync(MealSettingsDetailsId);
+            int numberOfMealDay = await _context.MealSettingsDetails
+                .Where(x => x.MealSettingsId == mealSettingsDetailData.MealSettingsId
+                            && x.DayOfTheWeekId == mealSettingsDetailData.DayOfTheWeekId)
+                .CountAsync();
+
+            //double targetSodium = 2300;
+            //double targetCholesterol = 300;
+
+            double targetSodium = targetSodiumEveryday / numberOfMealDay;
+            double targetCholesterol = targetCholesterolEveryday / numberOfMealDay;
 
             if (nutritionTargetsDaily.LimitDailySodium ?? false) { }
             else
@@ -437,66 +459,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             return true;
         }
-
-
-
-        //public async Task<bool> CheckForUserMealSettingsDetails(FoodListDTO dataFood, int MealSettingsDetailsId)
-        //{
-        //    MealSettingsDetail mealSettingsDetail = _context.MealSettingsDetails.Find(MealSettingsDetailsId);
-
-        //    if (!await CheckKeyListAndData(dataFood, mealSettingsDetail)) return false;
-
-        //    double calorieTolerance;
-        //    double carbTolerance;
-        //    double fatTolerance;
-        //    double proteinTolerance;
-        //    double fiberTolerance;
-        //    double sodiumTolerance;
-        //    double cholesterolTolerance;
-
-        //    if (mealSettingsDetail.NutritionFocus ?? true)
-        //    {
-        //        calorieTolerance = 0.1;
-        //        carbTolerance = 0.0;
-        //        fatTolerance = 0.0;
-        //        proteinTolerance = 0.0;
-        //        fiberTolerance = 0.0;
-        //        sodiumTolerance = 0.0;
-        //        cholesterolTolerance = 0.0;
-        //    }
-        //    else
-        //    {
-        //        calorieTolerance = 0.1; // 10%
-        //        carbTolerance = 0.15; // 15%
-        //        fatTolerance = 0.1; // 10%
-        //        proteinTolerance = 0.1; // 10%
-        //        fiberTolerance = 0.15; // 15%
-        //        sodiumTolerance = 0.1; // 10%
-        //        cholesterolTolerance = 0.1; // 10%
-        //    }
-
-        //    NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
-        //    if (dataFood.ingredientDetails100gReduceDTO.Energy < nutritionTargetsDaily.Calories * (1 - calorieTolerance) || dataFood.ingredientDetails100gReduceDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
-        //    if (dataFood.ingredientDetails100gReduceDTO.Carbohydrate < nutritionTargetsDaily.CarbsMin * (1 - carbTolerance) || dataFood.ingredientDetails100gReduceDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
-        //    if (dataFood.ingredientDetails100gReduceDTO.Fat < nutritionTargetsDaily.FatsMin * (1 - fatTolerance) || dataFood.ingredientDetails100gReduceDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
-        //    if (dataFood.ingredientDetails100gReduceDTO.Protein < nutritionTargetsDaily.ProteinMin * (1 - proteinTolerance) || dataFood.ingredientDetails100gReduceDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
-        //    if (dataFood.ingredientDetails100gReduceDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
-
-        //    double targetSodium = 2300; // sửa lại phải nhân với số bữa melstting từ đó chia ra mỗi bữa nhiều hất bao nhiêu
-        //    double targetCholesterol = 300; // sửa lại phải nhân với số bữa melstting từ đó chia ra mỗi bữa nhiều hất bao nhiêu
-
-        //    if (nutritionTargetsDaily.LimitDailySodium ?? false) { }
-        //    else
-        //    {
-        //        if (dataFood.ingredientDetails100gReduceDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
-        //    }
-        //    if (nutritionTargetsDaily.LimitDailyCholesterol ?? false) { }
-        //    else
-        //    {
-        //        if (dataFood.ingredientDetails100gReduceDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
-        //    }
-        //    return true;
-        //}
 
 
         private bool IsValidSize(string value, string size)
@@ -537,10 +499,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Describe = "SummaryOfTheEntireList",
                     Urlimage = "SummaryOfTheEntireList",
                     TypeOfCalculationId = -1,
-
-
-
-                    // Tổng hợp dữ liệu từ danh sách với ingredientDetails100gDTO
                     Energy = dataFood.Sum(x => x.ingredientDetails100gDTO.Energy),
                     Water = dataFood.Sum(x => x.ingredientDetails100gDTO.Water),
                     Protein = dataFood.Sum(x => x.ingredientDetails100gDTO.Protein),
@@ -557,10 +515,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Sucrose = dataFood.Sum(x => x.ingredientDetails100gDTO.Sucrose),
                     Calcium = dataFood.Sum(x => x.ingredientDetails100gDTO.Calcium),
                     Iron = dataFood.Sum(x => x.ingredientDetails100gDTO.Iron),
-
-
-
-                    // Tổng hợp dữ liệu từ ingredientDetails100gDTO
                     Magnesium = dataFood.Sum(x => x.ingredientDetails100gDTO.Magnesium),
                     Manganese = dataFood.Sum(x => x.ingredientDetails100gDTO.Manganese),
                     Phosphorous = dataFood.Sum(x => x.ingredientDetails100gDTO.Phosphorous),
@@ -579,11 +533,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     VitaminB9 = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminB9),
                     VitaminH = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminH),
                     VitaminB12 = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminB12),
-
-
-
-
-                    // Tổng hợp dữ liệu từ ingredientDetails100gDTO
                     VitaminA = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminA),
                     VitaminD = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminD),
                     VitaminE = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminE),
@@ -602,10 +551,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     PalmiticC160 = dataFood.Sum(x => x.ingredientDetails100gDTO.PalmiticC160),
                     MargaricC170 = dataFood.Sum(x => x.ingredientDetails100gDTO.MargaricC170),
                     StearicC180 = dataFood.Sum(x => x.ingredientDetails100gDTO.StearicC180),
-
-
-
-                    // Tổng hợp dữ liệu từ ingredientDetails100gDTO
                     ArachidicC200 = dataFood.Sum(x => x.ingredientDetails100gDTO.ArachidicC200),
                     BehenicC220 = dataFood.Sum(x => x.ingredientDetails100gDTO.BehenicC220),
                     LignocericC240 = dataFood.Sum(x => x.ingredientDetails100gDTO.LignocericC240),
@@ -626,12 +571,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Methionin = dataFood.Sum(x => x.ingredientDetails100gDTO.Methionin),
                     Tryptophan = dataFood.Sum(x => x.ingredientDetails100gDTO.Tryptophan),
                     Phenylalanin = dataFood.Sum(x => x.ingredientDetails100gDTO.Phenylalanin),
-
-
-
-
-
-                    // Tổng hợp dữ liệu từ ingredientDetails100gDTO
                     Threonin = dataFood.Sum(x => x.ingredientDetails100gDTO.Threonin),
                     Valin = dataFood.Sum(x => x.ingredientDetails100gDTO.Valin),
                     Leucin = dataFood.Sum(x => x.ingredientDetails100gDTO.Leucin),
@@ -646,8 +585,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Glycin = dataFood.Sum(x => x.ingredientDetails100gDTO.Glycin),
                     Prolin = dataFood.Sum(x => x.ingredientDetails100gDTO.Prolin),
                     Serin = dataFood.Sum(x => x.ingredientDetails100gDTO.Serin)
-
-
 
 
                 },
@@ -666,53 +603,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return totalfoodListDTO;
         }
 
-
-        //public async Task<FoodListDTO> TotalAllTheIngredientsOfTheDish(IEnumerable<FoodListDTO> dataFood)
-        //{
-        //    FoodListDTO totalfoodListDTO = new FoodListDTO()
-        //    {
-        //        FoodListId = dataFood.First().FoodListId,
-        //        Name = dataFood.First().Name,
-        //        Describe = dataFood.First().Describe,
-        //        Rate = dataFood.First().Rate,
-        //        NumberRate = dataFood.First().NumberRate,
-        //        Urlimage = dataFood.First().Urlimage,
-        //        FoodTypeId = dataFood.First().FoodTypeId,
-        //        KeyNoteId = dataFood.First().KeyNoteId,
-        //        IsActive = dataFood.First().IsActive,
-        //        PreparationTime = dataFood.First().PreparationTime,
-        //        CookingTime = dataFood.First().CookingTime,
-        //        CookingDifficultyId = dataFood.First().CookingDifficultyId,
-        //        ingredientDetails100gReduceDTO = new IngredientDetails100gReduceDTO()
-        //        {
-        //            Id = -1,
-        //            KeyNoteId = -1,
-        //            Name = "SummaryOfTheEntireList",
-        //            Describe = "SummaryOfTheEntireList",
-        //            Urlimage = "SummaryOfTheEntireList",
-        //            TypeOfCalculationId = -1,
-        //            Energy = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Energy),
-        //            Protein = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Protein),
-        //            Fat = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Fat),
-        //            Carbohydrate = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Carbohydrate),
-        //            Fiber = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Fiber),
-        //            Sodium = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Sodium),
-        //            Cholesterol = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Cholesterol)
-        //        },
-        //        KeyNote = new KeyNoteDTO
-        //        {
-        //            Id = dataFood.First().KeyNote.Id,
-        //            KeyList = dataFood.First().KeyNote.KeyList
-        //        },
-        //        ScaleAmounts = new ScaleAmountDTO
-        //        {
-        //            FoodListId = dataFood.First().FoodListId,
-        //            IngredientDetailsId = -1,
-        //            ScaleAmount1 = -1
-        //        }
-        //    };
-        //    return totalfoodListDTO;
-        //}
 
         public async Task<IEnumerable<FoodListDTO>> TakeAllTheIngredientsOfTheDish(int idFoodListId)
         {
@@ -755,10 +645,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                                          Describe = ingredientDetails100gs.Describe,
                                                          Urlimage = ingredientDetails100gs.Urlimage,
                                                          TypeOfCalculationId = ingredientDetails100gs.TypeOfCalculationId,
-
-
-
-
                                                          Energy = ingredientDetails100gs.Energy / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Water = ingredientDetails100gs.Water / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Protein = ingredientDetails100gs.Protein / averageCramCount * scaleAmounts.ScaleAmount1,
@@ -775,12 +661,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                                          Sucrose = ingredientDetails100gs.Sucrose / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Calcium = ingredientDetails100gs.Calcium / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Iron = ingredientDetails100gs.Iron / averageCramCount * scaleAmounts.ScaleAmount1,
-
-
-
-
-
-
                                                          Magnesium = ingredientDetails100gs.Magnesium / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Manganese = ingredientDetails100gs.Manganese / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Phosphorous = ingredientDetails100gs.Phosphorous / averageCramCount * scaleAmounts.ScaleAmount1,
@@ -803,12 +683,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                                          VitaminD = ingredientDetails100gs.VitaminD / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          VitaminE = ingredientDetails100gs.VitaminE / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          VitaminK = ingredientDetails100gs.VitaminK / averageCramCount * scaleAmounts.ScaleAmount1,
-
-
-
-
-
-
                                                          BetaCaroten = ingredientDetails100gs.BetaCaroten / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          AlphaCaroten = ingredientDetails100gs.AlphaCaroten / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          BetaCryptoxanthin = ingredientDetails100gs.BetaCryptoxanthin / averageCramCount * scaleAmounts.ScaleAmount1,
@@ -826,13 +700,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                                          ArachidicC200 = ingredientDetails100gs.ArachidicC200 / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          BehenicC220 = ingredientDetails100gs.BehenicC220 / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          LignocericC240 = ingredientDetails100gs.LignocericC240 / averageCramCount * scaleAmounts.ScaleAmount1,
-
-
-
-
-
-
-
                                                          TotalMonounsaturatedFattyAcid = ingredientDetails100gs.TotalMonounsaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          MyristoleicC141 = ingredientDetails100gs.MyristoleicC141 / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          PalmitoleicC161 = ingredientDetails100gs.PalmitoleicC161 / averageCramCount * scaleAmounts.ScaleAmount1,
@@ -852,11 +719,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                                          Phenylalanin = ingredientDetails100gs.Phenylalanin / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Threonin = ingredientDetails100gs.Threonin / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Valin = ingredientDetails100gs.Valin / averageCramCount * scaleAmounts.ScaleAmount1,
-
-
-
-
-
                                                          Leucin = ingredientDetails100gs.Leucin / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Isoleucin = ingredientDetails100gs.Isoleucin / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Arginin = ingredientDetails100gs.Arginin / averageCramCount * scaleAmounts.ScaleAmount1,
@@ -880,68 +742,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return dataFood;
 
         }
-
-
-        //public async Task<IEnumerable<FoodListDTO>> TakeAllTheIngredientsOfTheDish(int idFoodListId)
-        //{
-
-        //    double averageCramCount = 100.0;
-
-
-        //    IEnumerable<FoodListDTO> dataFood = (from scaleAmounts in _context.ScaleAmounts
-        //                                         join foodLists in _context.FoodLists
-        //    on scaleAmounts.FoodListId equals foodLists.FoodListId
-        //                                         join ingredientDetails100gs in _context.IngredientDetails100gs
-        //                                         on scaleAmounts.IngredientDetailsId equals ingredientDetails100gs.Id
-        //                                         join keyNotes in _context.KeyNotes
-        //                                         on foodLists.KeyNoteId equals keyNotes.Id
-        //                                         where scaleAmounts.FoodListId == idFoodListId
-        //                                         select new FoodListDTO
-        //                                         {
-        //                                             FoodListId = foodLists.FoodListId,
-        //                                             Name = foodLists.Name,
-        //                                             Describe = foodLists.Describe,
-        //                                             Rate = foodLists.Rate,
-        //                                             NumberRate = foodLists.NumberRate,
-        //                                             Urlimage = foodLists.Urlimage,
-        //                                             FoodTypeId = foodLists.FoodTypeId,
-        //                                             KeyNoteId = foodLists.KeyNoteId,
-        //                                             KeyNote = new KeyNoteDTO
-        //                                             {
-        //                                                 Id = keyNotes.Id,
-        //                                                 KeyList = keyNotes.KeyList
-        //                                             },
-        //                                             IsActive = foodLists.IsActive,
-        //                                             PreparationTime = foodLists.PreparationTime,
-        //                                             CookingTime = foodLists.CookingTime,
-        //                                             CookingDifficultyId = foodLists.CookingDifficultyId,
-        //                                             ingredientDetails100gReduceDTO = new IngredientDetails100gReduceDTO
-        //                                             {
-        //                                                 Id = ingredientDetails100gs.Id,
-        //                                                 KeyNoteId = ingredientDetails100gs.KeyNoteId,
-        //                                                 Name = ingredientDetails100gs.Name,
-        //                                                 Describe = ingredientDetails100gs.Describe,
-        //                                                 Urlimage = ingredientDetails100gs.Urlimage,
-        //                                                 TypeOfCalculationId = ingredientDetails100gs.TypeOfCalculationId,
-        //                                                 Energy = ingredientDetails100gs.Energy / averageCramCount * scaleAmounts.ScaleAmount1,
-        //                                                 Protein = ingredientDetails100gs.Protein / averageCramCount * scaleAmounts.ScaleAmount1,
-        //                                                 Fat = ingredientDetails100gs.Fat / averageCramCount * scaleAmounts.ScaleAmount1,
-        //                                                 Carbohydrate = ingredientDetails100gs.Carbohydrate / averageCramCount * scaleAmounts.ScaleAmount1,
-        //                                                 Fiber = ingredientDetails100gs.Fiber / averageCramCount * scaleAmounts.ScaleAmount1,
-        //                                                 Sodium = ingredientDetails100gs.Sodium / averageCramCount * scaleAmounts.ScaleAmount1,
-        //                                                 Cholesterol = ingredientDetails100gs.Cholesterol / averageCramCount * scaleAmounts.ScaleAmount1
-        //                                             },
-        //                                             ScaleAmounts = new ScaleAmountDTO
-        //                                             {
-        //                                                 FoodListId = scaleAmounts.FoodListId,
-        //                                                 IngredientDetailsId = scaleAmounts.IngredientDetailsId,
-        //                                                 ScaleAmount1 = scaleAmounts.ScaleAmount1
-        //                                             }
-        //                                         }).ToList();
-        //    return dataFood;
-
-        //}
-
 
 
         public async Task<bool> FillInDishIdInDailyDish(int idUser, DateTime MyDay)
@@ -1465,8 +1265,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         {
                             if (arrayData[i].Contains($"SlotOfTheDay={dataprocess.SlotOfTheDay};SettingDetail={dataprocess.SettingDetail};OrderNumber={dataprocess.OrderNumber}:"))
                             {
+                                MealSetting mealSettingGet = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == dataprocess.UserId);
 
-                                MealSettingsDetail mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == dataprocess.SettingDetail && x.IsActive == true);
+                                MealSettingsDetail mealSettingsDetail = new MealSettingsDetail();
+                                if (mealSettingGet.SameScheduleEveryDay ?? false)
+                                {
+                                    mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == dataprocess.SettingDetail && x.IsActive == true && x.DayOfTheWeekId == 8);
+                                }
+                                else
+                                {
+                                    mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == dataprocess.SettingDetail && x.IsActive == true && x.DayOfTheWeekId != 8);
+                                }
 
                                 if (mealSettingsDetail != null)
                                 {

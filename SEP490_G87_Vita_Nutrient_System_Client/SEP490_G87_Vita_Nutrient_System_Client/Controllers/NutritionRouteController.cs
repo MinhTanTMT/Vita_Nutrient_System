@@ -195,7 +195,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 UserId = userId,
                 CreateById = int.Parse(User.FindFirst("UserId")?.Value),
-                StartDate = DateTime.Now
+                StartDate = DateTime.Today
             };
 
             return View(nutritionRoute);

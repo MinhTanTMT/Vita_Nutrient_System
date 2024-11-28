@@ -101,6 +101,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     IsDone = userListManagement.IsDone
                 });
                 await _context.SaveChangesAsync();
+                User userData = await _context.Users.FindAsync(userListManagement.UserId);
+                await _context.Rooms.AddAsync(new Room { Name = $" {userData.FirstName} {userData.LastName}", NutritionId = userListManagement.NutritionistId, UserId = userListManagement.UserId });
             }
             else
             {

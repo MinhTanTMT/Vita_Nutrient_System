@@ -198,7 +198,7 @@
                                 trayDiv.append(foodItem);
                             });
 
-                            let totalCalories = item.foodIdData.reduce((sum, item2) => sum + item2.foodData.ingredientDetails100gReduceDTO.energy, 0).toFixed(2);
+                            let totalCalories = item.foodIdData.reduce((sum, item2) => sum + item2.foodData.ingredientDetails100gDTO.energy, 0).toFixed(2);
 
                             trayDiv.append(`
                     <div class="flex items-center justify-between w-full mt-2">
@@ -266,7 +266,7 @@
                             <h3 class="text-white font-semibold">${item2.foodData.name}</h3>
                             <p class="text-sm text-gray-300">${item2.foodData.describe}</p>
                             <div class="flex items-center justify-between w-full mt-2">
-                                <span class="text-orange-400 text-sm">${parseFloat(item2.foodData.ingredientDetails100gReduceDTO.energy).toFixed(2)} Calories</span>
+                                <span class="text-orange-400 text-sm">${parseFloat(item2.foodData.ingredientDetails100gDTO.energy).toFixed(2)} Calories</span>
                                 <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="SelectReplaceCurrentFood(@Model.SlotOfTheDay, @Model.SettingDetail, ${foodListId}, '-', @ViewBag.userId, '@ViewBag.myDay', ${positionFood}, @Model.OrderSettingDetail, ${item2.foodData.foodListId})">Pick</button>
                             </div>
                         </div>

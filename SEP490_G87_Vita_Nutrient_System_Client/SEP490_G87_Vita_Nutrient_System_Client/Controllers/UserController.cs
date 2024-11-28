@@ -153,7 +153,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 .ToList();
 
             List<FoodList> nullData = new List<FoodList> { new FoodList {
-                        IngredientDetails100gReduceDTO = new Ingredientdetails100greducedto {  },
+                        IngredientDetails100gDTO = new IngredientDetails100gDTO {  },
                         KeyNote = new KeyNote { } ,
                         ScaleAmounts = new ScaleAmounts {  } } };
 

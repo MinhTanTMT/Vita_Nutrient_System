@@ -16,9 +16,4 @@ public class UsersRepositoriesTests
         _mockContext = new Mock<Sep490G87VitaNutrientSystemContext>();
         _userRepository = new UsersRepositories();
     }
-
-
-
-
-
 }
