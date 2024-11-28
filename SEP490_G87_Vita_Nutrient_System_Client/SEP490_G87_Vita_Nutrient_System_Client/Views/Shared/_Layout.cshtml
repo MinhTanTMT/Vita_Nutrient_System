@@ -370,6 +370,12 @@
                                 </li>
 
                                 <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListCollectionFoods", "User")">
+                                        <span class="menu-title">Danh Sách Bộ Sưu Tập</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("ListBlockedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Blocked</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
@@ -388,8 +394,6 @@
                                     </a>
                                 </li>
 
-
-                                
                             }
                             else if (role.Equals("User"))
                             {
@@ -430,14 +434,18 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-
                                 <li class="nav-item">
                                                 <a class="nav-link" href="@Url.Action("ListLikedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("ListCollectionFoods", "User")">
+                                        <span class="menu-title">Danh Sách Bộ Sưu Tập</span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("ListBlockedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Blocked</span>
