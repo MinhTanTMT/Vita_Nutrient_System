@@ -8,5 +8,7 @@
         public short? Weight { get; set; }
         public short? Age { get; set; }
         public double? ActivityLevel { get; set; }
+        public string? UnderlyingDisease { get; set; }
+        public List<string>? UnderlyingDiseaseNames { get; set; }
     }
 }

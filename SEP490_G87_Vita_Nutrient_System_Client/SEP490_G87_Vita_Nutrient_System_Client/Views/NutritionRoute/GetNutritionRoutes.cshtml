@@ -18,7 +18,7 @@
 
 
         <div class="text-start mb-3">
-            @if (!(bool)ViewData["HasUnfinishedRoute"])
+            @if (ViewData["HasUnfinishedRoute"] != null && !(bool)ViewData["HasUnfinishedRoute"])
             {
                 <!-- Nút Tạo Lộ Trình Mới -->
                 <a asp-action="Create"
@@ -33,6 +33,7 @@
             {
                 <span class="text-danger">Bạn phải hoàn thành lộ trình hiện tại trước khi tạo lộ trình mới.</span>
             }
+
         </div>
 
     </div>
@@ -125,10 +126,7 @@
             </ul>
         </nav>
     }
-    else
-    {
-        <p class="text-center">Không có dữ liệu để hiển thị.</p>
-    }
+    
 
 </div>
 

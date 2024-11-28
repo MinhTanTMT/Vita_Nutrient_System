@@ -19,9 +19,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userDetails.UserId);
             if (userEntity != null)
             {
-                userEntity.Gender = userDetails.Gender; 
+                userEntity.Gender = userDetails.Gender;
                 _context.Users.Update(userEntity);
             }
+
             var userDetailEntity = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.UserId == userDetails.UserId);
             if (userDetailEntity != null)
             {
@@ -29,16 +30,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 userDetailEntity.Weight = userDetails.Weight;
                 userDetailEntity.Age = userDetails.Age;
                 userDetailEntity.ActivityLevel = userDetails.ActivityLevel;
+
                 double bmr;
                 double weight = userDetails.Weight ?? 0;
                 double height = userDetails.Height ?? 0;
                 double age = userDetails.Age ?? 0;
 
-                if (userDetails.Gender == true) 
+                if (userDetails.Gender == true)
                 {
                     bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
                 }
-                else 
+                else
                 {
                     bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
                 }
@@ -61,15 +63,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         tdee = bmr * 1.9;
                         break;
                     default:
-                        tdee = bmr * 1.2; 
+                        tdee = bmr * 1.2;
                         break;
                 }
                 userDetailEntity.Calo = (int)tdee;
+
+                // Cập nhật danh sách bệnh lý
+                if (userDetails.UnderlyingDiseaseNames != null && userDetails.UnderlyingDiseaseNames.Count > 0)
+                {
+                    userDetailEntity.UnderlyingDisease = string.Join(", ", userDetails.UnderlyingDiseaseNames);
+                }
+                else
+                {
+                    userDetailEntity.UnderlyingDisease = null; // Hoặc giá trị mặc định
+                }
+
                 _context.UserDetails.Update(userDetailEntity);
             }
 
             await _context.SaveChangesAsync();
         }
+
 
         public UserDetail GetUserDetail(int userId)
         {
