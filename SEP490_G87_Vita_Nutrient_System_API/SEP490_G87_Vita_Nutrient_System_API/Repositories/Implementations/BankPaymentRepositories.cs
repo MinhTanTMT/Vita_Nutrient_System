@@ -101,8 +101,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     IsDone = userListManagement.IsDone
                 });
                 await _context.SaveChangesAsync();
+
+                var RoomUserPremium = await _context.Rooms.FirstOrDefaultAsync(x => x.UserId == userListManagement.UserId && x.NutritionId == userListManagement.NutritionistId);
                 User userData = await _context.Users.FindAsync(userListManagement.UserId);
-                await _context.Rooms.AddAsync(new Room { Name = $" {userData.FirstName} {userData.LastName}", NutritionId = userListManagement.NutritionistId, UserId = userListManagement.UserId });
+                if (RoomUserPremium == null)
+                {
+                    await _context.Rooms.AddAsync(new Room { Name = $" {userData.FirstName} {userData.LastName}", NutritionId = userListManagement.NutritionistId, UserId = userListManagement.UserId });
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    RoomUserPremium.Name = $" {userData.FirstName} {userData.LastName}";
+                    await _context.SaveChangesAsync();
+                }
             }
             else
             {

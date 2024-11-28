@@ -559,7 +559,7 @@
                         <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fat, 2) g</p>
                         <p class=" mb-5">@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fiber, 2) gam</p>
                         <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fat, 2) g</p>
-                        <p>Chưa có g</p>
+                        <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Sodium, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Cholesterol, 2) g</p>
                     </div>
 
@@ -571,7 +571,7 @@
                         <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fat, 2) g</p>
                         <p class=" mb-5">@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fiber, 2) gam</p>
                         <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fat, 2) g</p>
-                        <p>Chưa có g</p>
+                        <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Sodium, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Cholesterol, 2) g</p>
                     </div>
                 </div>
@@ -604,34 +604,372 @@
 
             <!-- Nutrition Info Table -->
             <div class="grid grid-cols-3 gap-4 text-left">
-                <div><strong>Nutrient</strong></div>
-                <div><strong>Amount</strong></div>
-                <div><strong>Target</strong></div>
+                <div><strong>Vi chất</strong></div>
+                <div><strong>Đã tiêu thụ</strong></div>
+                <div><strong>Tổng lượng</strong></div>
 
-                <div>Calories</div>
+                <div>Năng lượng</div>
                 <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Energy, 2)</div>
                 <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Energy, 2)</div>
 
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
-                    Carbs
-                </div>
-                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Carbohydrate, 2) g</div>
-                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Carbohydrate, 2) g</div>
+                <div>Nước</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Water, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Water, 2) g</div>
 
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-                    Fat
-                </div>
+                <div>Protein</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Protein, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Protein, 2) g</div>
+
+                <div>Chất béo</div>
                 <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fat, 2) g</div>
                 <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fat, 2) g</div>
 
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
-                    Protein
-                </div>
-                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Protein, 2) g</div>
-                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Protein, 2) g</div>
+                <div>Carbohydrate</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Carbohydrate, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Carbohydrate, 2) g</div>
+
+                <div>Chất xơ</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fiber, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fiber, 2) g</div>
+
+                <div>Tro</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Ash, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Ash, 2) g</div>
+
+                <div>Đường</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Sugar, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Sugar, 2) g</div>
+
+                <div>Galactose</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Galactose, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Galactose, 2) g</div>
+
+                <div>Maltose</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Maltose, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Maltose, 2) g</div>
+
+                <div>Lactose</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Lactose, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Lactose, 2) g</div>
+
+                <div>Fructose</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fructose, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fructose, 2) g</div>
+
+                <div>Glucose</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Glucose, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Glucose, 2) g</div>
+
+                <div>Sucrose</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Sucrose, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Sucrose, 2) g</div>
+
+                <div>Canxi</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Calcium, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Calcium, 2) g</div>
+
+                <div>Sắt</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Iron, 2) a</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Iron, 2) g</div>
+
+                <div>Magie</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Magnesium, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Magnesium, 2) g</div>
+
+                <div>Mangan</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Manganese, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Manganese, 2) g</div>
+
+                <div>Phốt pho</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Phosphorous, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Phosphorous, 2) g</div>
+
+                <div>Kali</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Potassium, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Potassium, 2) g</div>
+
+
+
+
+
+
+                <div>Natri</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Sodium, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Sodium, 2) g</div>
+
+                <div>Kẽm</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Zinc, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Zinc, 2) g</div>
+
+                <div>Đồng</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Copper, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Copper, 2) g</div>
+
+                <div>Selen</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Selenium, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Selenium, 2) g</div>
+
+                <div>Vitamin C</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminC, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminC, 2) g</div>
+
+                <div>Vitamin B1</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminB1, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminB1, 2) g</div>
+
+                <div>Vitamin B2</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminB2, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminB2, 2) g</div>
+
+                <div>Vitamin PP (Niacin)</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminPp, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminPp, 2) g</div>
+
+                <div>Vitamin B5</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminB5, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminB5, 2) g</div>
+
+                <div>Vitamin B6</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminB6, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminB6, 2) g</div>
+
+                <div>Folat</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Folat, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Folat, 2) g</div>
+
+                <div>Vitamin B9</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminB9, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminB9, 2) g</div>
+
+                <div>Vitamin H (Biotin)</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminH, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminH, 2) g</div>
+
+                <div>Vitamin B12</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminB12, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminB12, 2) g</div>
+
+                <div>Vitamin A</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminA, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminA, 2) g</div>
+
+                <div>Vitamin D</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminD, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminD, 2) g</div>
+
+                <div>Vitamin E</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminE, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminE, 2) g</div>
+
+                <div>Vitamin K</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.VitaminK, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.VitaminK, 2) g</div>
+
+
+
+
+
+
+
+                <div>Beta-Caroten</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.BetaCaroten, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.BetaCaroten, 2) g</div>
+
+                <div>Alpha-Caroten</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.AlphaCaroten, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.AlphaCaroten, 2) g</div>
+
+                <div>Beta-Cryptoxanthin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.BetaCryptoxanthin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.BetaCryptoxanthin, 2) g</div>
+
+                <div>Lycopen</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Lycopen, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Lycopen, 2) g</div>
+
+                <div>Lutein và Zeaxanthin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.LuteinVsZeaxanthin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.LuteinVsZeaxanthin, 2) g</div>
+
+                <div>Purin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Purin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Purin, 2) g</div>
+
+                <div>Tổng Isoflavone</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.TotalIsoflavone, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.TotalIsoflavone, 2) g</div>
+
+                <div>Daidzein</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Daidzein, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Daidzein, 2) g</div>
+
+                <div>Genistein</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Genistein, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Genistein, 2) g</div>
+
+                <div>Glycetin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Glycetin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Glycetin, 2) g</div>
+
+                <div>Tổng axit béo bão hòa</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.TotalSaturatedFattyAcid, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.TotalSaturatedFattyAcid, 2) g</div>
+
+                <div>Palmitic C16:0</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.PalmiticC160, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.PalmiticC160, 2) g</div>
+
+                <div>Margaric C17:0</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.MargaricC170, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.MargaricC170, 2) g</div>
+
+                <div>Stearic C18:0</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.StearicC180, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.StearicC180, 2) g</div>
+
+                <div>Arachidic C20:0</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.ArachidicC200, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.ArachidicC200, 2) g</div>
+
+                <div>Behenic C22:0</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.BehenicC220, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.BehenicC220, 2) g</div>
+
+                <div>Lignoceric C24:0</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.LignocericC240, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.LignocericC240, 2) g</div>
+
+                <div>Tổng axit béo không bão hòa đơn</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.TotalMonounsaturatedFattyAcid, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.TotalMonounsaturatedFattyAcid, 2) g</div>
+
+
+
+
+
+                <div>Myristoleic C14:1</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.MyristoleicC141, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.MyristoleicC141, 2) g</div>
+
+                <div>Palmitoleic C16:1</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.PalmitoleicC161, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.PalmitoleicC161, 2) g</div>
+
+                <div>Oleic C18:1</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.OleicC181, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.OleicC181, 2) g</div>
+
+                <div>Tổng axit béo không bão hòa đa</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.TotalPolyunsaturatedFattyAcid, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.TotalPolyunsaturatedFattyAcid, 2) g</div>
+
+                <div>Linoleic C18:2 N6</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.LinoleicC182N6, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.LinoleicC182N6, 2) g</div>
+
+                <div>Linolenic C18:2 N3</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.LinolenicC182N3, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.LinolenicC182N3, 2) g</div>
+
+                <div>Arachidonic C20:4</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.ArachidonicC204, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.ArachidonicC204, 2) g</div>
+
+                <div>Eicosapentaenoic C20:5 N3</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.EicosapentaenoicC205N3, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.EicosapentaenoicC205N3, 2) g</div>
+
+                <div>Docosahexaenoic C22:6 N3</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.DocosahexaenoicC226N3, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.DocosahexaenoicC226N3, 2) g</div>
+
+                <div>Tổng axit béo trans</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.TotalTransFattyAcid, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.TotalTransFattyAcid, 2) g</div>
+
+                <div>Cholesterol</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Cholesterol, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Cholesterol, 2) g</div>
+
+                <div>Phytosterol</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Phytosterol, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Phytosterol, 2) g</div>
+
+                <div>Lysin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Lysin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Lysin, 2) g</div>
+
+                <div>Methionin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Methionin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Methionin, 2) g</div>
+
+                <div>Tryptophan</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Tryptophan, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Tryptophan, 2) g</div>
+
+                <div>Phenylalanin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Phenylalanin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Phenylalanin, 2) g</div>
+
+
+
+                <div>Threonin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Threonin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Threonin, 2) g</div>
+
+                <div>Valin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Valin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Valin, 2) g</div>
+
+                <div>Leucin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Leucin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Leucin, 2) g</div>
+
+                <div>Isoleucin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Isoleucin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Isoleucin, 2) g</div>
+
+                <div>Arginin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Arginin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Arginin, 2) g</div>
+
+                <div>Histidin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Histidin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Histidin, 2) g</div>
+
+                <div>Cystin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Cystin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Cystin, 2) g</div>
+
+                <div>Tyrosin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Tyrosin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Tyrosin, 2) g</div>
+
+                <div>Alanin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Alanin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Alanin, 2) g</div>
+
+                <div>Acid Aspartic</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.AcidAspartic, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.AcidAspartic, 2) g</div>
+
+                <div>Acid Glutamic</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.AcidGlutamic, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.AcidGlutamic, 2) g</div>
+
+                <div>Glycin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Glycin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Glycin, 2) g</div>
+
+                <div>Prolin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Prolin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Prolin, 2) g</div>
+
+                <div>Serin</div>
+                <div>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Serin, 2) g</div>
+                <div>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Serin, 2) g</div>
+
+
 
                 <!-- Add more rows as needed -->
             </div>
