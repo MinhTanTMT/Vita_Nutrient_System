@@ -360,7 +360,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 {
                     Dictionary<string, string> dataProcess1 = await SplitAndProcess1(item);
 
-                    if (IsNumeric(dataProcess1.Values.FirstOrDefault().ToString()))
+                    if (await IsNumeric(dataProcess1.Values.FirstOrDefault().ToString()))
                     {
                         if (dataProcess1.Keys.FirstOrDefault().Equals("WantCooking"))
                         {
@@ -461,19 +461,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        private bool IsValidSize(string value, string size)
-        {
-            if (int.TryParse(value, out int numericValue))
-            {
-                return numericValue.ToString() == size;
-            }
-            return value.Equals(size, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public bool IsNumeric(string str)
-        {
-            return int.TryParse(str, out _);
-        }
 
         public async Task<FoodListDTO> TotalAllTheIngredientsOfTheDish(IEnumerable<FoodListDTO> dataFood)
         {
@@ -1292,8 +1279,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                             {
                                                 if (foodOfSlot.idFood == dataprocess.IdFood && foodOfSlot.statusSymbol.Equals(dataprocess.StatusSymbol) && foodOfSlot.positionFood == dataprocess.PositionFood)
                                                 {
-                                                    GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-                                                    await generateMealRepositories.ConsolerLog($" {foodOfSlot.idFood} + {statusSymbolReplace}");
+                                                    //GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+                                                    //await generateMealRepositories.ConsolerLog($" {foodOfSlot.idFood} + {statusSymbolReplace}");
                                                     stringListIdOfSlot.Append($"{foodOfSlot.idFood}{statusSymbolReplace};");
                                                 }
                                                 else
@@ -1445,6 +1432,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay.txt", DateTime.Now + content);
             return true;
+        }
+
+
+        public async Task<bool> IsNumeric(string str)
+        {
+            return int.TryParse(str, out _);
         }
 
     }
