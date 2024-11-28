@@ -1,4 +1,4 @@
-﻿<link rel="stylesheet" href="/css/userPhysicalStatistics.css" />
+﻿@* <link rel="stylesheet" href="/css/userPhysicalStatistics.css" /> *@
 @model SEP490_G87_Vita_Nutrient_System_Client.Models.UserPhysicalStatistics
 
 @{
@@ -71,7 +71,7 @@
             <div class="col-sm-9">
                 <input type="text" class="form-control user-info-input" id="underlyingDiseaseInput"
                        placeholder="Bệnh lý"
-                       value="@string.Join(", ", Model.UnderlyingDiseaseNames ?? new List<string> { "Không có bệnh lý nào được ghi nhận" })"
+                       value="@string.Join("; ", Model.UnderlyingDiseaseNames ?? new List<string> { "Không có bệnh lý nào được ghi nhận" })"
                        readonly>
             </div>
             <div class="col-sm-3">

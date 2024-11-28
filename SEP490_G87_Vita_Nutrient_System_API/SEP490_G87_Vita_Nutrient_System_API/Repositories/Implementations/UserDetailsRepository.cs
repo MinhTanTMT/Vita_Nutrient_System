@@ -71,7 +71,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 // Cập nhật danh sách bệnh lý
                 if (userDetails.UnderlyingDiseaseNames != null && userDetails.UnderlyingDiseaseNames.Count > 0)
                 {
-                    userDetailEntity.UnderlyingDisease = string.Join(", ", userDetails.UnderlyingDiseaseNames);
+                    userDetailEntity.UnderlyingDisease = string.Join("; ", userDetails.UnderlyingDiseaseNames);
                 }
                 else
                 {
