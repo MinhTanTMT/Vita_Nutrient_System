@@ -82,13 +82,11 @@
                                 </a>
                             }
 
-                            <a asp-action="Delete"
-                               asp-route-id="@route.Id"
+                            <a asp-action="MealSettingsDetailToList"
+                               asp-controller="Meal"
                                asp-route-userId="@ViewData["UserId"]"
-                               asp-route-userListManagementId="@ViewData["UserListManagementId"]"
-                               asp-route-packageName="@ViewData["PackageName"]"
                                class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash"></i> Xóa
+                                <i class="fas fa-eye"></i> Xem chi tiết
                             </a>
                         </td>
 
