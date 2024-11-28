@@ -82,9 +82,10 @@
                                 </a>
                             }
 
-                            <a href="javascript:void(0);"
-                               data-href="@Url.Action("MealSettingsDetailToList", "Meal", new { userId = ViewData["UserId"] })"
-                               class="btn btn-danger btn-sm meal-settings-detail">
+                            <a asp-action="MealSettingsDetailToList"
+                               asp-controller="Meal"
+                               asp-route-userId="@ViewData["UserId"]"
+                               class="btn btn-danger btn-sm">
                                 <i class="fas fa-eye"></i> Xem chi tiết
                             </a>
                         </td>
@@ -132,15 +133,6 @@
         const rows = document.querySelectorAll(".clickable-row");
         rows.forEach(row => {
             row.addEventListener("click", function () {
-                const href = this.getAttribute("data-href");
-                if (href) {
-                    window.location.href = href;
-                }
-            });
-        });
-        const detailButtons = document.querySelectorAll(".meal-settings-detail");
-        detailButtons.forEach(button => {
-            button.addEventListener("click", function () {
                 const href = this.getAttribute("data-href");
                 if (href) {
                     window.location.href = href;
