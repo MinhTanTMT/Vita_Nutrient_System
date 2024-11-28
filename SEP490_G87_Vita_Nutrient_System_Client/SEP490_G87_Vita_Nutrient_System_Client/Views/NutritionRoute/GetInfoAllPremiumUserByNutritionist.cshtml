@@ -15,31 +15,31 @@
     <table class="table custom-table align-middle">
         <thead>
             <tr>
-                <th>Ảnh người dùng</th>
-                <th>Họ và Tên</th>
-                <th>Cân nặng </th>
-                <th>Chiều cao</th>
-                <th>Tuổi</th>
-                <th>Số điện thoại</th>
-                <th>Bệnh lý</th>
-                <th style="text-align: center;">Hành Động</th>
+                <th class="text-center">Ảnh người dùng</th>
+                <th class="text-center">Họ và Tên</th>
+                <th class="text-center">Cân nặng </th>
+                <th class="text-center">Chiều cao</th>
+                <th class="text-center">Tuổi</th>
+                <th class="text-center">Số điện thoại</th>
+                <th class="text-center">Bệnh lý</th>
+                <th class="text-center">Hành Động</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var user in Model)
             {
                 <tr class="clickable-row" data-href="@Url.Action("GetDetailsAllPremiumUserByNutritionist", new { userId = user.UserId })">
-                    <td>
+                    <td class="text-center">
                         <img src="@Url.Content(user.Urlimage)" alt="Image" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;" />
 
                     </td>
 
-                    <td>@user.FullName</td>
-                    <td>@user.Weight kg</td>
-                    <td>@user.Height cm</td>
-                    <td>@user.Age</td>
-                    <td>@user.Phone</td>
-                    <td id="underlying-disease-@user.UserId">
+                    <td class="text-center">@user.FullName</td>
+                    <td class="text-center">@user.Weight kg</td>
+                    <td class="text-center">@user.Height cm</td>
+                    <td class="text-center">@user.Age</td>
+                    <td class="text-center">@user.Phone</td>
+                    <td class="text-center" idunderlying-disease-@user.UserId">
                         @if (user.UnderlyingDiseaseNames != null && user.UnderlyingDiseaseNames.Any())
                         {
                             @string.Join(", ", user.UnderlyingDiseaseNames)
@@ -50,7 +50,7 @@
                         }
                     </td>
 
-                    <td style="text-align: center;">
+                    <td class="text-center">
                         <button type="button" class="btn btn-primary btn-sm manage-disease-btn"
                                 data-bs-toggle="modal"
                                 data-bs-target="#diseaseModal"

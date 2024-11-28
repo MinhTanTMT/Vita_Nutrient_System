@@ -1,8 +1,18 @@
 ﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionRoute
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <div class="container mt-5">
-    <h2 class="text-center mb-4"><strong>Chi Tiết Lộ Trình Dinh Dưỡng</strong></h2>
+    <h2 class="text-center mb-4"><strong>Chi Tiết @ViewData["PackageName"]</strong></h2>
 
+    <!-- Nút Quay lại -->
+    <a asp-action="GetNutritionRoutes"
+       asp-route-userId="@ViewData["UserId"]"
+       asp-route-userListManagementId="@ViewData["UserListManagementId"]"
+       asp-route-packageName="@ViewData["PackageName"]"
+       asp-route-pageNumber="@ViewData["CurrentPage"]"
+       class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
     <div class="detail-box p-4 mb-4">
         <p><strong>Người Sử Dụng:</strong> @Model.FullName</p>
         <p><strong>Tên Lộ Trình:</strong> @Model.Name</p>
@@ -12,7 +22,7 @@
         <p><strong>Trạng Thái:</strong> @(Model.IsDone == true ? "Hoàn Thành" : "Chưa Hoàn Thành")</p>
     </div>
 
-    <div class="text-center">
+   @*  <div class="text-center">
         <a asp-action="GetNutritionRoutes"
            asp-route-userId="@ViewData["UserId"]"
            asp-route-userListManagementId="@ViewData["UserListManagementId"]"
@@ -21,12 +31,12 @@
             Quay lại
         </a>
         <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-lg">Xóa</a>
-    </div>
+    </div> *@
 </div>
 
 <style>
     .container {
-        max-width: 80%;
+        max-width: 40%;
         background-color: #f9f9f9;
         padding: 20px;
         border-radius: 8px;
@@ -61,6 +71,7 @@
 
     .btn-secondary {
         background-color: #6c757d;
+        border-color: #6c757d;
         color: white;
     }
 

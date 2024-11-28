@@ -177,6 +177,62 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
         }
 
+        [HttpPut("rate")]
+        public async Task<IActionResult> RateNutritionist([FromQuery] int userId, [FromQuery] int nutritionistId, [FromQuery] int userListManagementId, [FromQuery] short rate)
+        {
+            if (rate < 1 || rate > 5)
+            {
+                return BadRequest("Điểm đánh giá không hợp lệ. Điểm phải từ 1 đến 5.");
+            }
+
+            var isRated = await _nutritionRouteRepositories.RateNutritionistAsync(userId, nutritionistId, userListManagementId, rate);
+            if (!isRated)
+            {
+                return BadRequest("Không thể đánh giá. Gói đăng ký chưa hoàn thành hoặc đã hết hạn đánh giá.");
+            }
+
+            return Ok("Đánh giá thành công.");
+        }
+
+
+        [HttpGet("nutritionist/{nutritionistId}/ratings")]
+        public async Task<ActionResult<IEnumerable<UserListManagementDTO>>> GetRatingsByNutritionistId(int nutritionistId)
+        {
+            var ratings = await _nutritionRouteRepositories.GetRatingsByNutritionistIdAsync(nutritionistId);
+            if (ratings == null || !ratings.Any())
+            {
+                return Ok(new List<UserListManagementDTO>()); // Trả về danh sách rỗng nếu không có đánh giá
+            }
+            return Ok(ratings);
+        }
+
+        [HttpGet("user/{userId}/details-premium")]
+        public async Task<ActionResult<IEnumerable<UserListManagementDTO>>> GetDetailsAllPremiumUserByUser(int userId)
+        {
+            var details = await _nutritionRouteRepositories.GetDetailsAllPremiumUserByUserAsync(userId);
+            if (details == null || !details.Any())
+            {
+                return Ok(new List<UserListManagementDTO>()); // Trả về danh sách rỗng nếu không có gói nào
+            }
+            return Ok(details);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 
