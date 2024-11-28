@@ -10,5 +10,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Models
         public List<ListOfDisease> ListOfDiseases { get; set; }
         public List<ListFoodAndDisease> FoodAndDiseases { get; set; }
         public Dictionary<int, List<RecipeDT>> RecipesByFood { get; set; }
+        public string apiUrl { get; set; }
     }
 }
