@@ -299,6 +299,12 @@
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index", "Chat")">
+                                        <span class="menu-title"> Trò Chuyện </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                             }
                             else if (role.Equals("UserPremium"))
                             {
@@ -361,7 +367,12 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-                               
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Room", "Chat")">
+                                        <span class="menu-title"> Trò Chuyện </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                             }
                             else if (role.Equals("User"))
                             {
@@ -416,7 +427,12 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Room", "Chat")">
+                                        <span class="menu-title"> Trò Chuyện </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("NutritionistServices", "Admin")">
                                         <span class="menu-title"> Đăng kí chuyên gia </span>
