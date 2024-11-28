@@ -30,7 +30,10 @@ public partial class FoodListDTO
 
     public short? CookingDifficultyId { get; set; }
 
-    public virtual IngredientDetails100gReduceDTO ingredientDetails100gReduceDTO { get; set; } = null!;
+    //public virtual IngredientDetails100gReduceDTO ingredientDetails100gReduceDTO { get; set; } = null!;
+
+    public virtual IngredientDetails100gDTO ingredientDetails100gDTO { get; set; } = null!;
+
     public virtual ScaleAmountDTO ScaleAmounts { get; set; } = null!;
 
     public virtual ICollection<FoodAndDiseaseDTO> FoodAndDiseases { get; set; } = new List<FoodAndDiseaseDTO>();

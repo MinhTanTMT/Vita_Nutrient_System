@@ -158,7 +158,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else
                     {
-                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.UserId}");
+                        HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APISystemUserConfiguration?idUser={u.UserId}");
 
                         if (res2.StatusCode == System.Net.HttpStatusCode.OK)
                         {
