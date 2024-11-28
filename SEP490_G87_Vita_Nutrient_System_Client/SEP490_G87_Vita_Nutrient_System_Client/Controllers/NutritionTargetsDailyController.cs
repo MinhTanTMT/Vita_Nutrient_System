@@ -19,7 +19,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditNutritionTargetsDaily(int id)
+        public async Task<IActionResult> EditNutritionTargetsDaily(int id,int userId)
         {
             NutritionTargetOfMeal nutritionTargetsDaily = null;
             NutritionTargetsDaily additionalNutritionData = null;
@@ -97,14 +97,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return RedirectToAction("MealSettingsDetailToList", "Meal");
             }
 
-
-            
+            ViewBag.UserId = userId;
             return View(nutritionTargetsDaily);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> EditNutritionTargetsDaily(int id, NutritionTargetOfMeal model)
+        public async Task<IActionResult> EditNutritionTargetsDaily(int id, NutritionTargetOfMeal model, int userId)
         {
             try
             {
@@ -113,7 +112,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("MealSettingsDetailToList", "Meal");
+                    return RedirectToAction("MealSettingsDetailToList", "Meal", new { userId = userId });
+
                 }
                 else
                 {
@@ -124,8 +124,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 TempData["ErrorMessage"] = $"Lỗi trong quá trình gọi API: {ex.Message}";
             }
-
-            return View("EditMealSettingsDetail", model);
+            ViewBag.UserId = userId;
+            return View("EditNutritionTargetsDaily", model);
         }
 
        

@@ -104,7 +104,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
                     Weight = src.NutritionistDetail.Weight ?? null,
                     Age = src.NutritionistDetail.Age ?? null,
                     Rate = src.NutritionistDetail.Rate ?? null,
-                    NumberRate = src.NutritionistDetail.NumberRate ?? null
+                    NumberRate = src.NutritionistDetail.NumberRate ?? null,
+                    ExpertPackagesId = src.NutritionistDetail.ExpertPackagesId ?? null
                 }
                 : new NutritionistDetailResponse.NutritionistDetail
                 {
@@ -114,7 +115,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
                     Weight = null,
                     Age = null,
                     Rate = null,
-                    NumberRate = null
+                    NumberRate = null,
+                    ExpertPackagesId = null
                 }));
 
             //From ExpertPackage to ExpertPackageResponse

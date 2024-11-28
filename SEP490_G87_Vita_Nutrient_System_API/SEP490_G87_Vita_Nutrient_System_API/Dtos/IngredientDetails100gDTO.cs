@@ -17,7 +17,9 @@ public partial class IngredientDetails100gDTO
 
     public short TypeOfCalculationId { get; set; }
 
-    public short? Energy { get; set; }
+    //public short? Energy { get; set; }
+
+    public double? Energy { get; set; }
 
     public double? Water { get; set; }
 
@@ -188,10 +190,4 @@ public partial class IngredientDetails100gDTO
     public double? Prolin { get; set; }
 
     public double? Serin { get; set; }
-
-    //public virtual KeyNoteDTO? KeyNote { get; set; }
-
-    //public virtual ICollection<ScaleAmountDTO> ScaleAmounts { get; set; } = new List<ScaleAmountDTO>();
-
-    //public virtual TypeOfCalculationDTO TypeOfCalculationDTO { get; set; } = null!;
 }

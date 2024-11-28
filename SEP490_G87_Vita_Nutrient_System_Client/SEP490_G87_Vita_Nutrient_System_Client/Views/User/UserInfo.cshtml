@@ -3,7 +3,6 @@
 *@
 @{
     User u = ViewBag.user;
-    // List<ListOfDisease> diseases = ViewBag.diseases;
 }
 <link rel="stylesheet" href="~/css/nutritionistDetail.css">
 <link rel="stylesheet" href="~/css/userProfile.css">
@@ -72,6 +71,7 @@ else
                                 <div class="basic-info">
                                     <form asp-controller="User" asp-action="UpdateUserInfo" method="post">
                                         <input type="hidden" name="uid" value="@u.UserId">
+                                        <input type="hidden" name="page" value="user" required />
 
                                         <div class="form-group row">
                                             <label for="user-account-input" class="col-sm-3 col-form-label">Account</label>
@@ -215,6 +215,7 @@ else
         <div class="modal1-body">
             <form id="changePassForm" asp-controller="User" asp-action="ChangePassword" method="post">
                 <input type="hidden" name="uid" value="@u.UserId" required />
+                <input type="hidden" name="page" value="user" required />
 
                 <label>Old Password:</label>
                 <input class="ms-auto" type="password" name="uopw" required />

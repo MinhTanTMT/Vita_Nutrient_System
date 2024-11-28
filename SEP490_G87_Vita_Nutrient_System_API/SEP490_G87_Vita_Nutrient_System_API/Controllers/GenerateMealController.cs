@@ -211,12 +211,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
 
-        [HttpGet("APIFirstMealSetting")]
-        public async Task<IActionResult> APIFirstMealSetting(int idUser)
+        [HttpGet("APISystemUserConfiguration")]
+        public async Task<IActionResult> APISystemUserConfiguration(int idUser)
         {
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.CreateMealSetting(idUser));
+            if (await generateMealRepositories.CreateMealSetting(idUser))
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
-
 }

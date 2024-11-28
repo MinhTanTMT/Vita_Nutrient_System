@@ -38,7 +38,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize(Roles = "User")]
         public async Task<IActionResult> QRCodePaymentPageAsync()
         {
             try
@@ -127,7 +127,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Roles = "User")]
         public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration, int TypeInsert)
         {
             var configuration = new ConfigurationBuilder()
@@ -179,7 +179,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         //}
         
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize(Roles = "User")]
         public async Task<IActionResult> NutritionistServicesAsync()
         {
             try
@@ -247,65 +247,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        
 
-        public static string GeneratePassword(int length, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = true)
-        {
-            if (length <= 0)
-            {
-                throw new ArgumentException("Password length must be greater than 0.");
-            }
-
-            // Các bộ ký tự có thể sử dụng
-            const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const string lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
-            const string numberChars = "0123456789";
-            const string specialChars = "!@#$%^&*()-_=+[]{}|;:,.<>?/";
-
-            // Chuỗi ký tự được chọn để tạo mật khẩu
-            string characterPool = "";
-
-            if (includeUppercase)
-            {
-                characterPool += uppercaseChars;
-            }
-
-            if (includeLowercase)
-            {
-                characterPool += lowercaseChars;
-            }
-
-            if (includeNumbers)
-            {
-                characterPool += numberChars;
-            }
-
-            if (includeSpecialChars)
-            {
-                characterPool += specialChars;
-            }
-
-            if (string.IsNullOrEmpty(characterPool))
-            {
-                throw new ArgumentException("At least one character type must be selected.");
-            }
-
-            // Tạo mật khẩu
-            var random = new Random();
-            var passwordBuilder = new StringBuilder();
-
-            for (int i = 0; i < length; i++)
-            {
-                int randomIndex = random.Next(characterPool.Length);
-                passwordBuilder.Append(characterPool[randomIndex]);
-            }
-
-            return passwordBuilder.ToString();
-        }
-
-
-
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminDashboardAsync()
         {
             try
@@ -1200,6 +1143,111 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
 
             return await ListPackages();
+        }
+
+        [HttpGet("admin/foodmanagement/foodingredient/{foodId}")]
+        public async Task<IActionResult> FoodListIngredients(int foodId)
+        {
+            try
+            {
+                // get food
+                HttpResponseMessage response =
+                        await client.GetAsync(client.BaseAddress + "/Food/GetFoodById/" + foodId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HttpContent content = response.Content;
+                    string data = await content.ReadAsStringAsync();
+                    dynamic result = JsonConvert.DeserializeObject<dynamic>(data);
+                    FoodList food = result.food.ToObject<FoodList>();
+
+                    // get all ingredients
+                    HttpResponseMessage response1 =
+                            await client.GetAsync(client.BaseAddress + "/Ingredient/GetAllIngredients");
+                    HttpContent content1 = response1.Content;
+                    string data1 = await content1.ReadAsStringAsync();
+                    List<IngredientDetails100g> ingredients = JsonConvert.DeserializeObject<List<IngredientDetails100g>>(data1);
+
+                    //get food ingredients
+                    HttpResponseMessage response2 =
+                            await client.GetAsync(client.BaseAddress + "/Food/GetFoodIngredient/" + foodId);
+                    HttpContent content2 = response2.Content;
+                    string data2 = await content2.ReadAsStringAsync();
+                    List<IngredientDetails100g> foodIngredients = JsonConvert.DeserializeObject<List<IngredientDetails100g>>(data2);
+
+                    ingredients.RemoveAll(item => foodIngredients.Any(fi => fi.Id == item.Id));
+
+                    ViewBag.food = food;
+                    ViewBag.allIngredients = ingredients;
+                    ViewBag.foodIngredients = foodIngredients;
+                }
+            }
+            catch(Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return View("~/Views/Admin/FoodIngredients.cshtml");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddIngredientToFood(int foodId, int ingreId, double amount)
+        {
+            try
+            {
+                var data = new
+                {
+                    foodid = foodId,
+                    ingredientId = ingreId,
+                    amount = amount
+                };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Food/AddIngredientToFood", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Add ingredient failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Add ingredient successfully!";
+                }
+            }
+            catch(Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await FoodListIngredients(foodId);
+        }
+
+        [HttpGet("admin/foodmanagement/deleteingredient/{foodId}/{ingreId}")]
+        public async Task<IActionResult> RemoveIngredientFromFood(int foodId, int ingreId)
+        {
+            try
+            {
+                HttpResponseMessage response =
+                    await client.DeleteAsync(client.BaseAddress + "/Food/DeleteIngredientFromFood/" + foodId + "/" + ingreId);
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Cannot remove ingredient! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Remove ingredient successfully!";
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+
+            return await FoodListIngredients(foodId);
         }
 
         ////////////////////////////////////////////////////////////

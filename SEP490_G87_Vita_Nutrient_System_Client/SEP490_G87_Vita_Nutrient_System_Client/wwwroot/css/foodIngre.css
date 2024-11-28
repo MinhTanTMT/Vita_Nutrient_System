@@ -1,0 +1,68 @@
+﻿.hr {
+    width: 95%;
+    margin: auto;
+    height: 1px;
+    background: gray;
+    margin: 16px 0;
+    position: relative;
+}
+
+.hr-content {
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0 10px 0 0;
+    background: white;
+}
+
+.food-section{
+    padding-bottom: 20px;
+}
+
+.ingre {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    background-color: #fff;
+    border: 0;
+    border-radius: 0;
+    overflow-anchor: none;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.action-icon{
+    font-size: xx-large;
+}
+
+.food-ingredients-section {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.food-info .food-name {
+    font-size: 30px;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+
+.food-info .food-desc {
+    font-size: 15px;
+    color: gray;
+    padding: 5px 10px;
+}
+
+.add-ingre-section{
+    margin-top: 40px;
+    padding: 0px 0px 0 15px;
+}

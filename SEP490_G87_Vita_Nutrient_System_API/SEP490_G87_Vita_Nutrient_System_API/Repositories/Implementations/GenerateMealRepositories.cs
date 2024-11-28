@@ -315,24 +315,35 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
-            if (dataFood.ingredientDetails100gReduceDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
 
+            double targetSodiumEveryday = 2300;
+            double targetCholesterolEveryday = 300;
+            MealSettingsDetail mealSettingsDetailData = await _context.MealSettingsDetails.FindAsync(MealSettingsDetailsId);
+            int numberOfMealDay = await _context.MealSettingsDetails
+                .Where(x => x.MealSettingsId == mealSettingsDetailData.MealSettingsId
+                            && x.DayOfTheWeekId == mealSettingsDetailData.DayOfTheWeekId)
+                .CountAsync();
 
-            double targetSodium = 2300;
-            double targetCholesterol = 300;
+            //double targetSodium = 2300;
+            //double targetCholesterol = 300;
+
+            double targetSodium = targetSodiumEveryday/numberOfMealDay;
+            double targetCholesterol = targetCholesterolEveryday/numberOfMealDay;
+
             if (nutritionTargetsDaily.LimitDailySodium ?? false) { }
             else
             {
-                if (dataFood.ingredientDetails100gReduceDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
+                if (dataFood.ingredientDetails100gDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
             }
             if (nutritionTargetsDaily.LimitDailyCholesterol ?? false) { }
             else
             {
-                if (dataFood.ingredientDetails100gReduceDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
+                if (dataFood.ingredientDetails100gDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
             }
             return true;
         }
@@ -416,24 +427,35 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             NutritionTargetsDaily nutritionTargetsDaily = await _context.NutritionTargetsDailies.FindAsync(mealSettingsDetail.NutritionTargetsDailyId);
-            if (dataFood.ingredientDetails100gReduceDTO.Energy < nutritionTargetsDaily.Calories * (1 - calorieTolerance) || dataFood.ingredientDetails100gReduceDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Carbohydrate < nutritionTargetsDaily.CarbsMin * (1 - carbTolerance) || dataFood.ingredientDetails100gReduceDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Fat < nutritionTargetsDaily.FatsMin * (1 - fatTolerance) || dataFood.ingredientDetails100gReduceDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Protein < nutritionTargetsDaily.ProteinMin * (1 - proteinTolerance) || dataFood.ingredientDetails100gReduceDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
-            if (dataFood.ingredientDetails100gReduceDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Energy < nutritionTargetsDaily.Calories * (1 - calorieTolerance) || dataFood.ingredientDetails100gDTO.Energy > nutritionTargetsDaily.Calories * (1 + calorieTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Carbohydrate < nutritionTargetsDaily.CarbsMin * (1 - carbTolerance) || dataFood.ingredientDetails100gDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Fat < nutritionTargetsDaily.FatsMin * (1 - fatTolerance) || dataFood.ingredientDetails100gDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Protein < nutritionTargetsDaily.ProteinMin * (1 - proteinTolerance) || dataFood.ingredientDetails100gDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
 
-            double targetSodium = 2300; // sửa lại phải nhân với số bữa melstting từ đó chia ra mỗi bữa nhiều hất bao nhiêu
-            double targetCholesterol = 300; // sửa lại phải nhân với số bữa melstting từ đó chia ra mỗi bữa nhiều hất bao nhiêu
+            double targetSodiumEveryday = 2300;
+            double targetCholesterolEveryday = 300;
+            MealSettingsDetail mealSettingsDetailData = await _context.MealSettingsDetails.FindAsync(MealSettingsDetailsId);
+            int numberOfMealDay = await _context.MealSettingsDetails
+                .Where(x => x.MealSettingsId == mealSettingsDetailData.MealSettingsId
+                            && x.DayOfTheWeekId == mealSettingsDetailData.DayOfTheWeekId)
+                .CountAsync();
+
+            //double targetSodium = 2300;
+            //double targetCholesterol = 300;
+
+            double targetSodium = targetSodiumEveryday / numberOfMealDay;
+            double targetCholesterol = targetCholesterolEveryday / numberOfMealDay;
 
             if (nutritionTargetsDaily.LimitDailySodium ?? false) { }
             else
             {
-                if (dataFood.ingredientDetails100gReduceDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
+                if (dataFood.ingredientDetails100gDTO.Sodium > targetSodium * (1 + sodiumTolerance)) return false;
             }
             if (nutritionTargetsDaily.LimitDailyCholesterol ?? false) { }
             else
             {
-                if (dataFood.ingredientDetails100gReduceDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
+                if (dataFood.ingredientDetails100gDTO.Cholesterol > targetCholesterol * (1 + cholesterolTolerance)) return false;
             }
             return true;
         }
@@ -469,7 +491,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 PreparationTime = dataFood.First().PreparationTime,
                 CookingTime = dataFood.First().CookingTime,
                 CookingDifficultyId = dataFood.First().CookingDifficultyId,
-                ingredientDetails100gReduceDTO = new IngredientDetails100gReduceDTO()
+                ingredientDetails100gDTO = new IngredientDetails100gDTO()
                 {
                     Id = -1,
                     KeyNoteId = -1,
@@ -477,13 +499,94 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Describe = "SummaryOfTheEntireList",
                     Urlimage = "SummaryOfTheEntireList",
                     TypeOfCalculationId = -1,
-                    Energy = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Energy),
-                    Protein = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Protein),
-                    Fat = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Fat),
-                    Carbohydrate = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Carbohydrate),
-                    Fiber = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Fiber),
-                    Sodium = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Sodium),
-                    Cholesterol = dataFood.Sum(x => x.ingredientDetails100gReduceDTO.Cholesterol)
+                    Energy = dataFood.Sum(x => x.ingredientDetails100gDTO.Energy),
+                    Water = dataFood.Sum(x => x.ingredientDetails100gDTO.Water),
+                    Protein = dataFood.Sum(x => x.ingredientDetails100gDTO.Protein),
+                    Fat = dataFood.Sum(x => x.ingredientDetails100gDTO.Fat),
+                    Carbohydrate = dataFood.Sum(x => x.ingredientDetails100gDTO.Carbohydrate),
+                    Fiber = dataFood.Sum(x => x.ingredientDetails100gDTO.Fiber),
+                    Ash = dataFood.Sum(x => x.ingredientDetails100gDTO.Ash),
+                    Sugar = dataFood.Sum(x => x.ingredientDetails100gDTO.Sugar),
+                    Galactose = dataFood.Sum(x => x.ingredientDetails100gDTO.Galactose),
+                    Maltose = dataFood.Sum(x => x.ingredientDetails100gDTO.Maltose),
+                    Lactose = dataFood.Sum(x => x.ingredientDetails100gDTO.Lactose),
+                    Fructose = dataFood.Sum(x => x.ingredientDetails100gDTO.Fructose),
+                    Glucose = dataFood.Sum(x => x.ingredientDetails100gDTO.Glucose),
+                    Sucrose = dataFood.Sum(x => x.ingredientDetails100gDTO.Sucrose),
+                    Calcium = dataFood.Sum(x => x.ingredientDetails100gDTO.Calcium),
+                    Iron = dataFood.Sum(x => x.ingredientDetails100gDTO.Iron),
+                    Magnesium = dataFood.Sum(x => x.ingredientDetails100gDTO.Magnesium),
+                    Manganese = dataFood.Sum(x => x.ingredientDetails100gDTO.Manganese),
+                    Phosphorous = dataFood.Sum(x => x.ingredientDetails100gDTO.Phosphorous),
+                    Potassium = dataFood.Sum(x => x.ingredientDetails100gDTO.Potassium),
+                    Sodium = dataFood.Sum(x => x.ingredientDetails100gDTO.Sodium),
+                    Zinc = dataFood.Sum(x => x.ingredientDetails100gDTO.Zinc),
+                    Copper = dataFood.Sum(x => x.ingredientDetails100gDTO.Copper),
+                    Selenium = dataFood.Sum(x => x.ingredientDetails100gDTO.Selenium),
+                    VitaminC = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminC),
+                    VitaminB1 = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminB1),
+                    VitaminB2 = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminB2),
+                    VitaminPp = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminPp),
+                    VitaminB5 = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminB5),
+                    VitaminB6 = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminB6),
+                    Folat = dataFood.Sum(x => x.ingredientDetails100gDTO.Folat),
+                    VitaminB9 = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminB9),
+                    VitaminH = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminH),
+                    VitaminB12 = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminB12),
+                    VitaminA = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminA),
+                    VitaminD = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminD),
+                    VitaminE = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminE),
+                    VitaminK = dataFood.Sum(x => x.ingredientDetails100gDTO.VitaminK),
+                    BetaCaroten = dataFood.Sum(x => x.ingredientDetails100gDTO.BetaCaroten),
+                    AlphaCaroten = dataFood.Sum(x => x.ingredientDetails100gDTO.AlphaCaroten),
+                    BetaCryptoxanthin = dataFood.Sum(x => x.ingredientDetails100gDTO.BetaCryptoxanthin),
+                    Lycopen = dataFood.Sum(x => x.ingredientDetails100gDTO.Lycopen),
+                    LuteinVsZeaxanthin = dataFood.Sum(x => x.ingredientDetails100gDTO.LuteinVsZeaxanthin),
+                    Purin = dataFood.Sum(x => x.ingredientDetails100gDTO.Purin),
+                    TotalIsoflavone = dataFood.Sum(x => x.ingredientDetails100gDTO.TotalIsoflavone),
+                    Daidzein = dataFood.Sum(x => x.ingredientDetails100gDTO.Daidzein),
+                    Genistein = dataFood.Sum(x => x.ingredientDetails100gDTO.Genistein),
+                    Glycetin = dataFood.Sum(x => x.ingredientDetails100gDTO.Glycetin),
+                    TotalSaturatedFattyAcid = dataFood.Sum(x => x.ingredientDetails100gDTO.TotalSaturatedFattyAcid),
+                    PalmiticC160 = dataFood.Sum(x => x.ingredientDetails100gDTO.PalmiticC160),
+                    MargaricC170 = dataFood.Sum(x => x.ingredientDetails100gDTO.MargaricC170),
+                    StearicC180 = dataFood.Sum(x => x.ingredientDetails100gDTO.StearicC180),
+                    ArachidicC200 = dataFood.Sum(x => x.ingredientDetails100gDTO.ArachidicC200),
+                    BehenicC220 = dataFood.Sum(x => x.ingredientDetails100gDTO.BehenicC220),
+                    LignocericC240 = dataFood.Sum(x => x.ingredientDetails100gDTO.LignocericC240),
+                    TotalMonounsaturatedFattyAcid = dataFood.Sum(x => x.ingredientDetails100gDTO.TotalMonounsaturatedFattyAcid),
+                    MyristoleicC141 = dataFood.Sum(x => x.ingredientDetails100gDTO.MyristoleicC141),
+                    PalmitoleicC161 = dataFood.Sum(x => x.ingredientDetails100gDTO.PalmitoleicC161),
+                    OleicC181 = dataFood.Sum(x => x.ingredientDetails100gDTO.OleicC181),
+                    TotalPolyunsaturatedFattyAcid = dataFood.Sum(x => x.ingredientDetails100gDTO.TotalPolyunsaturatedFattyAcid),
+                    LinoleicC182N6 = dataFood.Sum(x => x.ingredientDetails100gDTO.LinoleicC182N6),
+                    LinolenicC182N3 = dataFood.Sum(x => x.ingredientDetails100gDTO.LinolenicC182N3),
+                    ArachidonicC204 = dataFood.Sum(x => x.ingredientDetails100gDTO.ArachidonicC204),
+                    EicosapentaenoicC205N3 = dataFood.Sum(x => x.ingredientDetails100gDTO.EicosapentaenoicC205N3),
+                    DocosahexaenoicC226N3 = dataFood.Sum(x => x.ingredientDetails100gDTO.DocosahexaenoicC226N3),
+                    TotalTransFattyAcid = dataFood.Sum(x => x.ingredientDetails100gDTO.TotalTransFattyAcid),
+                    Cholesterol = dataFood.Sum(x => x.ingredientDetails100gDTO.Cholesterol),
+                    Phytosterol = dataFood.Sum(x => x.ingredientDetails100gDTO.Phytosterol),
+                    Lysin = dataFood.Sum(x => x.ingredientDetails100gDTO.Lysin),
+                    Methionin = dataFood.Sum(x => x.ingredientDetails100gDTO.Methionin),
+                    Tryptophan = dataFood.Sum(x => x.ingredientDetails100gDTO.Tryptophan),
+                    Phenylalanin = dataFood.Sum(x => x.ingredientDetails100gDTO.Phenylalanin),
+                    Threonin = dataFood.Sum(x => x.ingredientDetails100gDTO.Threonin),
+                    Valin = dataFood.Sum(x => x.ingredientDetails100gDTO.Valin),
+                    Leucin = dataFood.Sum(x => x.ingredientDetails100gDTO.Leucin),
+                    Isoleucin = dataFood.Sum(x => x.ingredientDetails100gDTO.Isoleucin),
+                    Arginin = dataFood.Sum(x => x.ingredientDetails100gDTO.Arginin),
+                    Histidin = dataFood.Sum(x => x.ingredientDetails100gDTO.Histidin),
+                    Cystin = dataFood.Sum(x => x.ingredientDetails100gDTO.Cystin),
+                    Tyrosin = dataFood.Sum(x => x.ingredientDetails100gDTO.Tyrosin),
+                    Alanin = dataFood.Sum(x => x.ingredientDetails100gDTO.Alanin),
+                    AcidAspartic = dataFood.Sum(x => x.ingredientDetails100gDTO.AcidAspartic),
+                    AcidGlutamic = dataFood.Sum(x => x.ingredientDetails100gDTO.AcidGlutamic),
+                    Glycin = dataFood.Sum(x => x.ingredientDetails100gDTO.Glycin),
+                    Prolin = dataFood.Sum(x => x.ingredientDetails100gDTO.Prolin),
+                    Serin = dataFood.Sum(x => x.ingredientDetails100gDTO.Serin)
+
+
                 },
                 KeyNote = new KeyNoteDTO
                 {
@@ -499,6 +602,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             };
             return totalfoodListDTO;
         }
+
 
         public async Task<IEnumerable<FoodListDTO>> TakeAllTheIngredientsOfTheDish(int idFoodListId)
         {
@@ -533,7 +637,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                                      PreparationTime = foodLists.PreparationTime,
                                                      CookingTime = foodLists.CookingTime,
                                                      CookingDifficultyId = foodLists.CookingDifficultyId,
-                                                     ingredientDetails100gReduceDTO = new IngredientDetails100gReduceDTO
+                                                     ingredientDetails100gDTO = new IngredientDetails100gDTO
                                                      {
                                                          Id = ingredientDetails100gs.Id,
                                                          KeyNoteId = ingredientDetails100gs.KeyNoteId,
@@ -542,12 +646,91 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                                          Urlimage = ingredientDetails100gs.Urlimage,
                                                          TypeOfCalculationId = ingredientDetails100gs.TypeOfCalculationId,
                                                          Energy = ingredientDetails100gs.Energy / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Water = ingredientDetails100gs.Water / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Protein = ingredientDetails100gs.Protein / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Fat = ingredientDetails100gs.Fat / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Carbohydrate = ingredientDetails100gs.Carbohydrate / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Fiber = ingredientDetails100gs.Fiber / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Ash = ingredientDetails100gs.Ash / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Sugar = ingredientDetails100gs.Sugar / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Galactose = ingredientDetails100gs.Galactose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Maltose = ingredientDetails100gs.Maltose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Lactose = ingredientDetails100gs.Lactose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Fructose = ingredientDetails100gs.Fructose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Glucose = ingredientDetails100gs.Glucose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Sucrose = ingredientDetails100gs.Sucrose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Calcium = ingredientDetails100gs.Calcium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Iron = ingredientDetails100gs.Iron / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Magnesium = ingredientDetails100gs.Magnesium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Manganese = ingredientDetails100gs.Manganese / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Phosphorous = ingredientDetails100gs.Phosphorous / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Potassium = ingredientDetails100gs.Potassium / averageCramCount * scaleAmounts.ScaleAmount1,
                                                          Sodium = ingredientDetails100gs.Sodium / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Cholesterol = ingredientDetails100gs.Cholesterol / averageCramCount * scaleAmounts.ScaleAmount1
+                                                         Zinc = ingredientDetails100gs.Zinc / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Copper = ingredientDetails100gs.Copper / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Selenium = ingredientDetails100gs.Selenium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminC = ingredientDetails100gs.VitaminC / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminB1 = ingredientDetails100gs.VitaminB1 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminB2 = ingredientDetails100gs.VitaminB2 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminPp = ingredientDetails100gs.VitaminPp / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminB5 = ingredientDetails100gs.VitaminB5 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminB6 = ingredientDetails100gs.VitaminB6 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Folat = ingredientDetails100gs.Folat / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminB9 = ingredientDetails100gs.VitaminB9 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminH = ingredientDetails100gs.VitaminH / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminB12 = ingredientDetails100gs.VitaminB12 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminA = ingredientDetails100gs.VitaminA / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminD = ingredientDetails100gs.VitaminD / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminE = ingredientDetails100gs.VitaminE / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         VitaminK = ingredientDetails100gs.VitaminK / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         BetaCaroten = ingredientDetails100gs.BetaCaroten / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         AlphaCaroten = ingredientDetails100gs.AlphaCaroten / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         BetaCryptoxanthin = ingredientDetails100gs.BetaCryptoxanthin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Lycopen = ingredientDetails100gs.Lycopen / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         LuteinVsZeaxanthin = ingredientDetails100gs.LuteinVsZeaxanthin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Purin = ingredientDetails100gs.Purin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         TotalIsoflavone = ingredientDetails100gs.TotalIsoflavone / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Daidzein = ingredientDetails100gs.Daidzein / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Genistein = ingredientDetails100gs.Genistein / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Glycetin = ingredientDetails100gs.Glycetin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         TotalSaturatedFattyAcid = ingredientDetails100gs.TotalSaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         PalmiticC160 = ingredientDetails100gs.PalmiticC160 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         MargaricC170 = ingredientDetails100gs.MargaricC170 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         StearicC180 = ingredientDetails100gs.StearicC180 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         ArachidicC200 = ingredientDetails100gs.ArachidicC200 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         BehenicC220 = ingredientDetails100gs.BehenicC220 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         LignocericC240 = ingredientDetails100gs.LignocericC240 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         TotalMonounsaturatedFattyAcid = ingredientDetails100gs.TotalMonounsaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         MyristoleicC141 = ingredientDetails100gs.MyristoleicC141 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         PalmitoleicC161 = ingredientDetails100gs.PalmitoleicC161 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         OleicC181 = ingredientDetails100gs.OleicC181 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         TotalPolyunsaturatedFattyAcid = ingredientDetails100gs.TotalPolyunsaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         LinoleicC182N6 = ingredientDetails100gs.LinoleicC182N6 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         LinolenicC182N3 = ingredientDetails100gs.LinolenicC182N3 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         ArachidonicC204 = ingredientDetails100gs.ArachidonicC204 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         EicosapentaenoicC205N3 = ingredientDetails100gs.EicosapentaenoicC205N3 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         DocosahexaenoicC226N3 = ingredientDetails100gs.DocosahexaenoicC226N3 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         TotalTransFattyAcid = ingredientDetails100gs.TotalTransFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Cholesterol = ingredientDetails100gs.Cholesterol / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Phytosterol = ingredientDetails100gs.Phytosterol / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Lysin = ingredientDetails100gs.Lysin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Methionin = ingredientDetails100gs.Methionin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Tryptophan = ingredientDetails100gs.Tryptophan / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Phenylalanin = ingredientDetails100gs.Phenylalanin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Threonin = ingredientDetails100gs.Threonin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Valin = ingredientDetails100gs.Valin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Leucin = ingredientDetails100gs.Leucin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Isoleucin = ingredientDetails100gs.Isoleucin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Arginin = ingredientDetails100gs.Arginin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Histidin = ingredientDetails100gs.Histidin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Cystin = ingredientDetails100gs.Cystin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Tyrosin = ingredientDetails100gs.Tyrosin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Alanin = ingredientDetails100gs.Alanin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         AcidAspartic = ingredientDetails100gs.AcidAspartic / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         AcidGlutamic = ingredientDetails100gs.AcidGlutamic / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Glycin = ingredientDetails100gs.Glycin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Prolin = ingredientDetails100gs.Prolin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                         Serin = ingredientDetails100gs.Serin / averageCramCount * scaleAmounts.ScaleAmount1
                                                      },
                                                      ScaleAmounts = new ScaleAmountDTO
                                                      {
@@ -561,10 +744,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-
         public async Task<bool> FillInDishIdInDailyDish(int idUser, DateTime MyDay)
         {
-            MyDay = DateTime.Now;
             MealSetting MealSettingDataOfUser = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == idUser);
             int getNutritionRouteId;
             NutritionRoute activeNutritionRoute = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= MyDay && nr.EndDate >= MyDay && nr.UserId == idUser && nr.IsDone == false);
@@ -1084,8 +1265,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         {
                             if (arrayData[i].Contains($"SlotOfTheDay={dataprocess.SlotOfTheDay};SettingDetail={dataprocess.SettingDetail};OrderNumber={dataprocess.OrderNumber}:"))
                             {
+                                MealSetting mealSettingGet = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == dataprocess.UserId);
 
-                                MealSettingsDetail mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == dataprocess.SettingDetail && x.IsActive == true);
+                                MealSettingsDetail mealSettingsDetail = new MealSettingsDetail();
+                                if (mealSettingGet.SameScheduleEveryDay ?? false)
+                                {
+                                    mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == dataprocess.SettingDetail && x.IsActive == true && x.DayOfTheWeekId == 8);
+                                }
+                                else
+                                {
+                                    mealSettingsDetail = await _context.MealSettingsDetails.FirstOrDefaultAsync(x => x.Id == dataprocess.SettingDetail && x.IsActive == true && x.DayOfTheWeekId != 8);
+                                }
 
                                 if (mealSettingsDetail != null)
                                 {
@@ -1233,7 +1423,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
 
             var myMealSetting = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == userId);
-            
             if (myMealSetting == null)
             {
                 await _context.MealSettings.AddAsync(new MealSetting { UserId = userId, DayOfTheWeekStartId = 8, SameScheduleEveryDay = true , FoodTypeIdWant = 1});
@@ -1241,14 +1430,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             var userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == userId);
-
             if (userDetail == null)
             {
                 await _context.UserDetails.AddAsync(new UserDetail { UserId = userId });
                 await _context.SaveChangesAsync();
             }
 
-            return true;
+            var CheckDataAll = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (CheckDataAll.Height == null || CheckDataAll.Weight == null || CheckDataAll.Age == null || CheckDataAll.ActivityLevel == null || CheckDataAll.Calo == null) return false;
+            else return true;
         }
 
         public async Task<bool> ConsolerLog(string content)
@@ -1256,8 +1446,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             File.WriteAllText(@"C:\Users\msi\Desktop\SEP490_G87\Referent\DaChayDenDay.txt", DateTime.Now + content);
             return true;
         }
-
-
 
     }
 }

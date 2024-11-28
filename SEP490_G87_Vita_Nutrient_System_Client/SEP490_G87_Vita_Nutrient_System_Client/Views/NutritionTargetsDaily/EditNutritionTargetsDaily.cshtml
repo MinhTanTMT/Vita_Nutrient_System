@@ -7,6 +7,7 @@
         <form asp-action="EditNutritionTargetsDaily" method="post">
             <input asp-for="ExerciseIntensityId" type="hidden" />
             <input asp-for="NutritionTargetsDailyId" type="hidden" />
+            <input type="hidden" name="userId" value="@ViewBag.UserId" />
             <!-- Title -->
             <div class="form-group">
                 <label asp-for="Title">Title</label>
@@ -173,7 +174,7 @@
             <!-- Save Button -->
             <div class="form-group mt-4">
                 <button type="submit" class="btn btn-primary">Lưu</button>
-                <a href="@Url.Action("MealSettingsDetailToList", "Meal")" class="btn btn-secondary">Hủy</a>
+            <a href="@Url.Action("MealSettingsDetailToList", "Meal",new { userId = @ViewBag.UserId })" class="btn btn-secondary">Hủy</a>
             </div>
         </form>
     </div>
