@@ -859,6 +859,61 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View("Error"); // Show an error view if the API call fails
         }
 
+        [HttpPost, Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> UnlikeFood([FromQuery] int foodId)
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            var response = await client.PostAsync($"{client.BaseAddress}/Users/{userId}/unlike-food/{foodId}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Failed to unlike food" });
+        }
+
+        [HttpGet, Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> ListCollectionFoods(int page = 1, int pageSize = 10, string search = "")
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            var response = await client.GetAsync($"{client.BaseAddress}/Users/{userId}/collection-foods?Search={search}&Page={page}&PageSize={pageSize}");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                var likedFoods = JsonConvert.DeserializeObject<LikedFoodsResponse>(responseData);
+                ViewBag.Search = search;
+                ViewBag.TotalPages = likedFoods.TotalPages;
+                ViewBag.CurrentPage = likedFoods.CurrentPage;
+                return View(likedFoods.Items);
+            }
+            return View("Error"); // Show an error view if the API call fails
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> SaveFoodCollection(int foodId)
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            var apiUrl = $"{client.BaseAddress}/Users/{userId}/save-food-collection/{foodId}";
+
+            var response = await client.PostAsync(apiUrl, null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Food item saved to your collection!";
+                return RedirectToAction("ListCollectionFoods");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to save the food item.";
+                return RedirectToAction("ListCollectionFoods");
+            }
+        }
+
+
 
         ////////////////////////////////////////////////////////////
         /// Chiến
@@ -1043,13 +1098,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             // Show an error view if the API call fails
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Unblock(int foodId)
+        [HttpPost, Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> Unblock([FromQuery] int foodId)
         {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            // Call the API to unblock the food
-            var response = await client.PostAsync($"Users/{userId}/unblock-food/{foodId}", null);
+            var response = await client.PostAsync($"{client.BaseAddress}/Users/{userId}/unblock-food/{foodId}", null);
             if (response.IsSuccessStatusCode)
             {
                 return Json(new { success = true });
@@ -1057,5 +1111,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             return Json(new { success = false, message = "Failed to unblock food" });
         }
+
     }
 }

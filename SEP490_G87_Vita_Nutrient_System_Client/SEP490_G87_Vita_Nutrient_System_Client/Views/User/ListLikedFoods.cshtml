@@ -56,35 +56,26 @@
 
 <script>
     async function unlikeFood(foodId) {
-        const userId = '@User.FindFirst("UserId")?.Value'; // Get userId from claims
-
-        // Construct the desired API URL
-        const apiUrl = `https://localhost:7045/api/Users/${userId}/unlike-food/${foodId}`;
-
         try {
-            const response = await fetch(apiUrl, {
+            console.log(foodId);
+            const response = await fetch(`@Url.Action("UnlikeFood", "User")?foodId=${foodId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 }
             });
 
-            // Check the response text directly as it's a plain string
-            const result = await response.text();
+            const result = await response.json();
 
-            if (result === "Success") {
+            if (result.success) {
                 alert("Unliked successfully.");
-                location.reload(); // Reload to refresh the list after unliking
-            } else if (result === "Not Found") {
-                alert("Food item not found.");
+                location.reload();
             } else {
-                alert("Unexpected response: " + result);
+                alert(result.message || "Failed to unlike food.");
             }
         } catch (error) {
-            console.error("Error unliking food:", error);
-            alert("Error unliking food.");
+            console.error("Error unlike food:", error);
+            alert("Error unlike food.");
         }
     }
-
-
 </script>

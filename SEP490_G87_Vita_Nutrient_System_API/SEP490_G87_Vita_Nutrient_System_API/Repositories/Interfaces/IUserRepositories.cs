@@ -21,11 +21,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         dynamic GetUserById(int id);
         dynamic ChangePassword(ChangePasswordDTO model);
         Task<UserLoginRegister> GetRegisterLoginGoogle(UserLoginRegister user);
-        Task<PagedResult<FoodList>> GetLikedFoods(int userId, GetLikeFoodDTO model);
-        Task<string> LikeOrUnlikeFood(int userId, int foodId);
-        Task<string> UnblockFood(int userId, int foodId);
-        Task<PagedResult<FoodList>> GetBlockedFoods(int userId, GetLikeFoodDTO model);
-
 
 
         ////////////////////////////////////////////////////////////
@@ -63,6 +58,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
+
+        Task<PagedResult<FoodList>> GetLikedFoods(int userId, GetLikeFoodDTO model);
+        Task<string> LikeOrUnlikeFood(int userId, int foodId);
+        Task<string> UnblockFood(int userId, int foodId);
+        Task<PagedResult<FoodList>> GetBlockedFoods(int userId, GetLikeFoodDTO model);
+        Task<PagedResult<FoodList>> ListCollectionFood(int userId, GetLikeFoodDTO model);
+        Task<string> SaveCollection(int userId, int foodId);
 
     }
 }

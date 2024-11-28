@@ -56,29 +56,23 @@
 
 <script>
     async function unblockFood(foodId) {
-        const userId = '@User.FindFirst("UserId")?.Value'; // Get userId from claims
-
-        // Construct the desired API URL
-        const apiUrl = `https://localhost:7045/api/Users/${userId}/unblock-food/${foodId}`;
-
         try {
-            const response = await fetch(apiUrl, {
+            // Gọi đến hàm Unblock trong controller thông qua URL được tạo bởi Razor
+            console.log(foodId);
+            const response = await fetch(`@Url.Action("Unblock", "User")?foodId=${foodId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 }
             });
 
-            // Check the response text directly as it's a plain string
-            const result = await response.text();
+            const result = await response.json();
 
-            if (result === "Success") {
+            if (result.success) {
                 alert("Unblocked successfully.");
-                location.reload(); // Reload to refresh the list after unblocking
-            } else if (result === "Not Found") {
-                alert("Food item not found.");
+                location.reload();
             } else {
-                alert("Unexpected response: " + result);
+                alert(result.message || "Failed to unblock food.");
             }
         } catch (error) {
             console.error("Error unblocking food:", error);
@@ -86,3 +80,4 @@
         }
     }
 </script>
+
