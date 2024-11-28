@@ -11,6 +11,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
     {
         private readonly Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
         public FoodRepositories() { }
+
+        public bool IsFoodExisted(int foodId)
+        {
+            return _context.FoodLists.Find(foodId) is not null;
+        }
         public FoodList? GetFood(int foodId)
         {
             return _context.FoodLists.Include(food => food.FoodType)
@@ -160,6 +165,30 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.SaveChangesAsync();
 
             return "Save Recipe successfully!";
+        }
+
+        public void AddIngredientToFood(int foodId, int ingredientId, double amount)
+        {
+            ScaleAmount s = new ScaleAmount
+            {
+                FoodListId = foodId,
+                IngredientDetailsId = ingredientId,
+                ScaleAmount1 = amount
+            };
+
+            _context.ScaleAmounts.Add(s);
+            _context.SaveChanges();
+        }
+        public void RemoveIngredientFromFood(int foodId, int ingredientId)
+        {
+            ScaleAmount s = _context.ScaleAmounts
+                .SingleOrDefault(sa => sa.FoodListId == foodId && sa.IngredientDetailsId == ingredientId);
+
+            if (s is not null)
+            {
+                _context.ScaleAmounts.Remove(s);
+                _context.SaveChanges();
+            }
         }
     }
 }

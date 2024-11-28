@@ -81,5 +81,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.Entry<UserDetail>(userDetail).State = EntityState.Modified;
             _context.SaveChanges();
         }
+
+        public NutritionistDetail GetNutritionistDetail(int nutritionistId)
+        {
+            return _context.NutritionistDetails.SingleOrDefault(u => u.NutritionistId == nutritionistId);
+        }
+
+        public void UpdateNutritionistDetails(NutritionistDetail nutritionistDetail)
+        {
+            _context.Entry<NutritionistDetail>(nutritionistDetail).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
     }
 }

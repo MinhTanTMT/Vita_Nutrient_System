@@ -1,0 +1,178 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    User u = ViewBag.admin;
+}
+<link rel="stylesheet" href="~/css/nutritionistDetail.css">
+<link rel="stylesheet" href="~/css/userProfile.css">
+<link rel="stylesheet" href="~/css/toast.css" />
+
+
+<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
+<input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+@if (u is null)
+{
+    <div>Cannot get admin profile! Try again later!</div>
+}
+else
+{
+    <div class="row" style="flex-basis: 100%;">
+        <div class="col-12 grid-margin">
+            <div class="card profile-wrapper">
+                <div class="row">
+                    <div class="profile-left col-4">
+                        <div class="avatar">
+                            @if (u.Urlimage == null || u.Urlimage.Length == 0)
+                            {
+                                <img src="~/images/default_avatar.png" alt="avatar" style="width: 100%" />
+                            }
+                            else
+                            {
+                                <img src="@u.Urlimage" alt="avatar"
+                                     onerror="this.src='/images/default_avatar.png'; this.onerror=null; " />
+                            }
+                        </div>
+
+                        <div class="name">
+                            @u.FirstName @u.LastName
+                        </div>
+
+                        <div class="description">
+                            @if (u.UserDetail is null
+                           || u.UserDetail.DescribeYourself is null
+                           || u.UserDetail.DescribeYourself.Length == 0)
+                            {
+                                <p>No description</p>
+                            }
+                            else
+                            {
+                                <p>@u.UserDetail.DescribeYourself</p>
+                            }
+                        </div>
+
+                        <div class="description">
+                            <button type="submit" class="btn btn-gradient-primary me-2" onclick="openChangePassModal();">
+                                Change password
+                            </button>
+                        </div>
+                    </div>
+
+
+
+                    <div class="profile-right col-8">
+
+                        <div class="tab-navigation">
+                            <button class="tab-button active" onclick="openTab(event, 'tab1')">Basic Info</button>
+                        </div>
+                        <div>
+                            <div id="tab1" class="tab-content active">
+                                <div class="basic-info">
+                                    <form asp-controller="User" asp-action="UpdateUserInfo" method="post">
+                                        <input type="hidden" name="uid" value="@u.UserId">
+                                        <input type="hidden" name="page" value="admin" required />
+
+                                        <div class="form-group row">
+                                            <label for="user-account-input" class="col-sm-3 col-form-label">Account</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uacc" disabled class="form-control user-info-input" id="user-account-input" placeholder="User Account" value="@u.Account">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-firstname-input" class="col-sm-3 col-form-label">First name</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="ufn" class="form-control" id="user-firstname-input" required placeholder="Enter your firstname" value="@u.FirstName">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Last name</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uln" class="form-control" id="user-lastname-input" required placeholder="Enter your lastname" value="@u.LastName">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Gender</label>
+                                            <div class="form-group gender">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input type="radio" class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(u.Gender is null ? "checked" : (bool)u.Gender ? "checked" : "")> Male <i class="input-helper"></i>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input type="radio" class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(u.Gender is null ? "" : (bool)u.Gender ? "" : "checked")> Female <i class="input-helper"></i>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Date of birth</label>
+                                            <div class="col-sm-9">
+                                                <input type="date" name="udob" class="form-control" id="user-lastname-input" placeholder="Enter your Date of birth" required value="@(u.Dob is null? "" : u.Dob.Value.ToString("yyyy-MM-dd"))">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-address-input" class="col-sm-3 col-form-label">Address</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uadd" class="form-control" id="user-address-input" placeholder="Enter your address" value="@u.Address">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="user-phone-input" class="col-sm-3 col-form-label">Phone number</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="uphone" class="form-control" id="user-phone-input" placeholder="Enter your Phone number" value="@u.Phone">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
+                                            Save
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- add package modal-->
+<div class="modal-overlay" id="modalOverlay">
+    <!-- Modal -->
+    <div class="modal1">
+        <div class="modal1-header">
+            <span>Change password</span>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal1-body">
+            <form id="changePassForm" asp-controller="User" asp-action="ChangePassword" method="post">
+                <input type="hidden" name="uid" value="@u.UserId" required />
+                <input type="hidden" name="page" value="admin" required />
+
+                <label>Old Password:</label>
+                <input class="ms-auto" type="password" name="uopw" required />
+
+                <label>New Password:</label>
+                <input class="ms-auto" type="password" name="unpw" required />
+
+                <label>Confirm Password:</label>
+                <input class="ms-auto" type="password" name="ucpw" required />
+                <div class="modal1-footer">
+                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button class="btn-save" type="submit" onclick="ChangePass()">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="toast"></div>
+
+<script src="~/js/userprofile.js"></script>
+<script src="~/js/toast.js"></script>
+

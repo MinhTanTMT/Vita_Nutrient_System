@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
@@ -40,7 +41,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             //get food
             FoodList food = foodRepositories.GetFood(foodId);
-
+            if(food is null)
+            {
+                return BadRequest("Food not found!");
+            }
             //get slot of the day of food
             string keyList = foodRepositories.GetKeynote((int)food.KeyNoteId)?.KeyList;
 
@@ -111,6 +115,46 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<string> SaveFoodRecipes([FromBody] SaveFoodRecipeDTO model)
         {
             return await foodRepositories.SaveFoodRecipe(model);
+        }
+
+        [HttpGet("GetFoodIngredient/{foodId}")]
+        public async Task<ActionResult> GetFoodIngredient(int foodId)
+        {
+            if (foodRepositories.IsFoodExisted(foodId))
+            {
+                List<ScaleAmount> scaleAmounts = foodRepositories.GetIngredientByFoodId(foodId);
+
+                var result = scaleAmounts.Select(s => new
+                {
+                    Id = s.IngredientDetailsId,
+                    Name = s.IngredientDetails.Name,
+                    Urlimage = s.IngredientDetails.Urlimage,
+                    Describe = s.IngredientDetails.Describe,
+                    Amount = s.ScaleAmount1
+                }).ToList();
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("Food not found!");
+            }
+        }
+
+        [HttpPost("AddIngredientToFood")]
+        public async Task<ActionResult> AddIngredientToFood([FromBody] AddIngredientToFoodRequest request)
+        {
+            foodRepositories.AddIngredientToFood(request.FoodId, request.IngredientId, request.Amount);
+
+            return Ok("Add successful!");
+        }
+
+        [HttpDelete("DeleteIngredientFromFood/{foodId}/{ingredientId}")]
+        public async Task<ActionResult> DeleteIngredientFromFood(int foodId, int ingredientId)
+        {
+            foodRepositories.RemoveIngredientFromFood(foodId, ingredientId);
+
+            return Ok("Remove successful!");
         }
     }
 }
