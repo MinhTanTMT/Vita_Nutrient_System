@@ -376,11 +376,20 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("GetDetailsAllPremiumUserByUser", "NutritionRoute")">
+                                        <span class="menu-title"> Đánh giá chuyên gia </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("Room", "Chat")">
                                         <span class="menu-title"> Trò Chuyện </span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
+
+
+                                
                             }
                             else if (role.Equals("User"))
                             {
@@ -441,7 +450,12 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("GetDetailsAllPremiumUserByUser", "NutritionRoute")">
+                                        <span class="menu-title"> Đánh giá chuyên gia </span>
+                                        <i class="mdi mdi-food-variant menu-icon"></i>
+                                    </a>
+                                </li>
                             }
                             else
                             {
@@ -487,16 +501,17 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
-                                    <li><a href ="@Url.Action("HowItWorks", "Home")" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Cách thức hoạt động</a></li>
-                                    <li><a href="@Url.Action("AboutUs", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Giới thiệu về chúng tôi</a></li>
-                                    <li><a href="@Url.Action("GiftCodes", "Home")" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Mã quà tặng</a></li>
+                                    <li><a href ="@Url.Action("HowItWorks", "Home")" style="text-decoration: none; color: white; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Cách thức hoạt động</a></li>
+                                    <li><a href="@Url.Action("AboutUs", "Home" )" style="text-decoration: none; color: white; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Giới thiệu về chúng tôi</a></li>
+                                    <!-- <li><a href="@Url.Action("GiftCodes", "Home")" style="text-decoration: none; color: white; font-size: 16px;"
+                                                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Mã quà tặng</a></li> -->
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
-                                    <li><a href="@Url.Action("PrivacyPolicy", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Chính sách bảo mật</a></li>
-                                    <li><a href="@Url.Action("TermsOfService", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Điều khoản dịch vụ</a></li>
-                                    <li><a href="@Url.Action("ContactUs", "Home" )" style="text-decoration: none; color: #007bff; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Liên hệ với chúng tôi</a></li>
+                                    <li><a href="@Url.Action("PrivacyPolicy", "Home" )" style="text-decoration: none; color: white; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Chính sách bảo mật</a></li>
+                                    <li><a href="@Url.Action("TermsOfService", "Home" )" style="text-decoration: none; color: white; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Điều khoản dịch vụ</a></li>
+                                    <li><a href="@Url.Action("ContactUs", "Home" )" style="text-decoration: none; color: white; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Liên hệ với chúng tôi</a></li>
                                 </ul>
                             </div>
                         </div>

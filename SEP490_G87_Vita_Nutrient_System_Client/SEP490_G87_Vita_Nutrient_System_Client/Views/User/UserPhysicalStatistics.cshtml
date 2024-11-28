@@ -6,7 +6,7 @@
 }
 
 <div class="container">
-    <h2 class="title">Thống kế chỉ số cá nhân</h2>
+    <h2 class="title">Thông tin thể chất và bệnh lý</h2>
 
     <form asp-action="UserPhysicalStatistics" method="post" class="personal-info-form" id="userInfoForm">
         @Html.AntiForgeryToken()
@@ -43,7 +43,7 @@
         </div>
 
         <div class="form-group">
-            <label for="Age" class="col-label">Tuổi(năm):</label>
+            <label for="Age" class="col-label">Tuổi:</label>
             <div class="col-input">
                 <input asp-for="Age" class="form-control"
                        oninvalid="this.setCustomValidity('Chỉ hỗ trợ nhập tuổi từ 5 đến 100.')"
@@ -52,11 +52,6 @@
                        min="5" max="100" required />
             </div>
         </div>
-
-
-
-
-
 
         <div class="form-group row">
             <label for="ActivityLevel" class="col-label">Mức độ hoạt động:</label>
@@ -70,6 +65,24 @@
                 </select>
             </div>
         </div>
+
+        <div class="form-group row">
+            <label for="underlyingDiseaseInput" class="col-label">Bệnh lý:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control user-info-input" id="underlyingDiseaseInput"
+                       placeholder="Bệnh lý"
+                       value="@string.Join(", ", Model.UnderlyingDiseaseNames ?? new List<string> { "Không có bệnh lý nào được ghi nhận" })"
+                       readonly>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-primary btn-sm manage-disease-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#diseaseModal">
+                    Quản lý Bệnh Lý
+                </button>
+            </div>
+        </div>
+
 
         <div class="form-group row">
             <div class="col-label"></div>
@@ -98,7 +111,163 @@
     </div>
 </div>
 
+
+<!-- Modal Quản lý Bệnh Lý -->
+<div class="modal fade" id="diseaseModal" tabindex="-1" aria-labelledby="diseaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="diseaseModalLabel">Quản lý Bệnh Lý</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Khu vực thông báo -->
+                <div id="diseaseAlertMessage" class="alert alert-danger d-none"></div>
+
+                <!-- Danh sách bệnh lý hiện tại -->
+                <div class="table-responsive">
+                    <table class="table custom-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên Bệnh</th>
+                                <th>Mô Tả</th>
+                                <th style="text-align: center;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="currentDiseasesList">
+                            <!-- Danh sách bệnh lý hiện tại sẽ được nạp -->
+                        </tbody>
+                    </table>
+                </div>
+                <hr />
+                <!-- Dropdown thêm bệnh lý -->
+                <div class="mb-3">
+                    <label for="diseaseSelect" class="form-label fw-semibold">Thêm bệnh lý:</label>
+                    <div class="d-flex align-items-center">
+                        <select class="form-select me-2" id="diseaseSelect" style="flex: 3;">
+                            @if (ViewBag.Diseases != null)
+                            {
+                                foreach (var disease in ViewBag.Diseases as List<SEP490_G87_Vita_Nutrient_System_Client.Models.ListOfDisease>)
+                                {
+                                    <option value="@disease.Id">@disease.Name</option>
+                                }
+                            }
+                        </select>
+                        <button type="button" class="btn btn-success" id="addDiseaseBtn" style="flex: 1; max-width: 100px;">Thêm</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveDiseasesButton">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const diseases = @Html.Raw(Json.Serialize(ViewBag.Diseases ?? new List<object>()));
+        const userDiseases = @Html.Raw(Json.Serialize(Model.UnderlyingDiseaseNames ?? new List<string>()));
+
+        const currentDiseasesList = document.getElementById('currentDiseasesList');
+        const diseaseSelect = document.getElementById('diseaseSelect');
+        const saveDiseasesButton = document.getElementById('saveDiseasesButton');
+        const addDiseaseBtn = document.getElementById('addDiseaseBtn');
+
+        function loadCurrentDiseases() {
+            currentDiseasesList.innerHTML = '';
+            userDiseases.forEach((disease, index) => {
+                const diseaseData = diseases.find(d => d.Name === disease);
+                if (diseaseData) {
+                    currentDiseasesList.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${diseaseData.Name}</td>
+                            <td>${diseaseData.Describe}</td>
+                            <td style="text-align: center;">
+                                <button class="btn btn-danger btn-sm remove-disease-btn" data-id="${diseaseData.Id}">Xóa</button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+        }
+
+        function loadDiseaseDropdown() {
+            diseaseSelect.innerHTML = '';
+            diseases.forEach(disease => {
+                const option = document.createElement('option');
+                option.value = disease.Id;
+                option.textContent = disease.Name;
+                diseaseSelect.appendChild(option);
+            });
+        }
+
+        addDiseaseBtn.addEventListener('click', function () {
+            const selectedId = diseaseSelect.value;
+            const selectedDisease = diseases.find(d => d.Id == selectedId);
+            if (selectedDisease && !userDiseases.includes(selectedDisease.Name)) {
+                userDiseases.push(selectedDisease.Name);
+                loadCurrentDiseases();
+            }
+        });
+
+        currentDiseasesList.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-disease-btn')) {
+                const diseaseId = e.target.getAttribute('data-id');
+                const diseaseName = diseases.find(d => d.Id == diseaseId).Name;
+                const index = userDiseases.indexOf(diseaseName);
+                if (index > -1) {
+                    userDiseases.splice(index, 1);
+                    loadCurrentDiseases();
+                }
+            }
+        });
+
+        saveDiseasesButton.addEventListener('click', function () {
+            const selectedDiseases = diseases
+                .filter(disease => userDiseases.includes(disease.Name))
+                .map(disease => disease.Id)
+                .join(';');
+
+            fetch('/UserPhysicalStatistics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    UserId: @Model.UserId,
+                    Gender: @Model.Gender?.ToString(),
+                    Height: @Model.Height,
+                    Weight: @Model.Weight,
+                    Age: @Model.Age,
+                    ActivityLevel: @Model.ActivityLevel,
+                    UnderlyingDisease: selectedDiseases
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Cập nhật bệnh lý thành công!');
+                        location.reload();
+                    } else {
+                        alert('Có lỗi xảy ra: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra trong quá trình cập nhật.');
+                });
+        });
+
+        loadCurrentDiseases();
+        loadDiseaseDropdown();
+    });
+
+</script>
+
+<script>
+    
     // Thêm sự kiện `blur` để kiểm tra từng trường nhập khi người dùng rời khỏi input
     document.querySelectorAll(".form-control").forEach((input) => {
         input.addEventListener("blur", function () {
@@ -205,7 +374,8 @@
                 Height: $("#Height").val(),
                 Weight: $("#Weight").val(),
                 Age: $("#Age").val(),
-                ActivityLevel: $("#ActivityLevel").val()
+                ActivityLevel: $("#ActivityLevel").val(),
+                UnderlyingDisease: $("UnderlyingDisease").val()
             },
             headers: {
                 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()

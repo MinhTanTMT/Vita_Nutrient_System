@@ -1,0 +1,514 @@
+﻿@model List<SEP490_G87_Vita_Nutrient_System_Client.Models.UserListManagement>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
+<div class="container">
+    <h1 class="page-title text-center">Danh sách gói đăng ký</h1>
+    <p class="subtitle text-center">Quản lý các gói dịch vụ một cách dễ dàng và nhanh chóng</p>
+
+
+
+    <table class="table custom-table align-middle">
+        <thead>
+            <tr>
+                <th class="text-center">Ảnh chuyên gia</th>
+                <th class="text-center">Chuyên gia</th>
+                <th class="text-center">Người dùng</th>
+                <th class="text-center">Gói đăng ký</th>
+                <th class="text-center">Thời gian</th>
+                <th class="text-center">Trạng thái</th>
+                <th class="text-center">Đánh giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var route in Model)
+                {
+                    <tr class="clickable-row" >
+                        <td class="text-center">
+                            <img src="@Url.Content(route.UrlImage)" alt="Image" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                        </td>
+                        <td class="text-center">@route.NutritionistName</td>
+                        <td class="text-center">@route.UserName</td>
+                        <td class="text-center" style="max-width: 200px;">@route.Describe</td>
+                        <td class="text-center">@($"{route.StartDate:dd/MM/yyyy} - {route.EndDate:dd/MM/yyyy}")</td>
+
+                        <td class="text-center">
+                            <span class="badge @(route.IsDone == true ? "badge-active" : "badge-inactive")">
+                                @(route.IsDone == true ? "Hoàn thành" : "Chưa hoàn thành")
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div>
+                                <span class="rating-stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= route.Rate)
+                                        {
+                                            <i class="fas fa-star text-warning"></i> <!-- Sao đầy -->
+                                        }
+                                        else
+                                        {
+                                            <i class="far fa-star text-muted"></i> <!-- Sao rỗng -->
+                                        }
+                                    }
+                                </span>
+                            </div>
+                            @if (route.IsDone == true && route.EndDate != null && DateTime.Now <= route.EndDate.Value.AddDays(7))
+                            {
+
+                                <button class="btn btn-sm btn-outline-secondary mt-1" data-bs-toggle="modal" data-bs-target="#rateModal"
+                                        data-id="@route.UserId"
+                                        data-nutritionist-id="@route.NutritionistId"
+                                        data-userlist-id="@route.Id"
+                                        data-is-done="@route.IsDone.ToString().ToLower()" 
+                                        data-end-date="@route.EndDate?.ToString("yyyy-MM-dd")" 
+                                        data-nutritionist="@route.NutritionistName" 
+                                        data-current-rate="@route.Rate">
+                                    Đánh giá
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không thể đánh giá</span>
+                            }
+                        </td>
+
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Không có dữ liệu để hiển thị.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @* <div class="text-center">
+    <a asp-action="GetInfoAllPremiumUserByNutritionist" class="btn btn-primary mb-3"> Quay lại </a>
+    </div> *@
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+            {
+                <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
+                    <a class="page-link" asp-action="GetDetailsAllPremiumUserByNutritionist" asp-route-pageNumber="@i" asp-route-search="@ViewData["search"]">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<div class="modal fade" id="rateModal" tabindex="-1" aria-labelledby="rateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rateModalLabel">Đánh giá chuyên gia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="rateForm">
+                    <input type="hidden" id="userId" name="userId" />
+                    <input type="hidden" id="nutritionistId" name="nutritionistId" />
+                    <input type="hidden" id="userListManagementId" name="userListManagementId" />
+
+                    <!-- Thông báo lỗi hoặc thành công -->
+                    <div id="rateMessage" class="alert d-none"></div>
+
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Đánh giá</label>
+                        <div id="ratingStars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="fas fa-star text-muted star" data-rate="@i"></i>
+                            }
+                        </div>
+                    </div>
+                </form>
+                <div id="rateError" class="text-danger d-none">Bạn không thể đánh giá gói này.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="submitRating">Gửi đánh giá</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const rateModal = document.getElementById('rateModal');
+        const userIdInput = document.getElementById('userId');
+        const nutritionistIdInput = document.getElementById('nutritionistId');
+        const userListManagementIdInput = document.getElementById('userListManagementId');
+        const ratingStars = document.getElementById('ratingStars');
+        let selectedRate = 0;
+
+        // Hiển thị thông tin khi mở modal
+        rateModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const isDone = button.getAttribute('data-is-done') === "true";
+            const endDate = new Date(button.getAttribute('data-end-date'));
+            const currentDate = new Date(); // Lấy ngày hiện tại
+
+            // Kiểm tra điều kiện
+            const canRate = isDone && currentDate <= new Date(endDate.getTime() + 7 * 24 * 60 * 60 * 1000);           
+
+            // Nếu không đủ điều kiện, hiển thị thông báo lỗi và vô hiệu hóa nút
+            if (!canRate) {
+                document.getElementById('rateError').classList.remove('d-none');
+                document.getElementById('submitRating').setAttribute('disabled', 'true');
+            } else {
+                document.getElementById('rateError').classList.add('d-none');
+                document.getElementById('submitRating').removeAttribute('disabled');
+            }
+
+            // Thiết lập các giá trị ẩn trong modal
+            userIdInput.value = button.getAttribute('data-id');
+            nutritionistIdInput.value = button.getAttribute('data-nutritionist-id');
+            userListManagementIdInput.value = button.getAttribute('data-userlist-id');
+            console.log("UserId:", userIdInput.value);
+            console.log("NutritionistId:", nutritionistIdInput.value);
+            console.log("UserListManagementId:", userListManagementIdInput.value);
+
+            // Đặt lại sao
+            const stars = ratingStars.querySelectorAll('.star');
+            stars.forEach(star => {
+                star.classList.remove('text-warning');
+                star.classList.add('text-muted');
+            });
+
+            // Hiển thị đánh giá hiện tại
+            const currentRate = parseInt(button.getAttribute('data-current-rate')) || 0;
+            for (let i = 0; i < currentRate; i++) {
+                stars[i].classList.remove('text-muted');
+                stars[i].classList.add('text-warning');
+            }
+
+            selectedRate = currentRate;
+        });
+
+
+        // Xử lý sự kiện khi chọn sao
+        ratingStars.addEventListener('click', function (event) {
+            if (event.target.classList.contains('star')) {
+                const rate = parseInt(event.target.getAttribute('data-rate'));
+                selectedRate = rate;
+
+                // Cập nhật hiển thị sao
+                const stars = ratingStars.querySelectorAll('.star');
+                stars.forEach((star, index) => {
+                    if (index < rate) {
+                        star.classList.remove('text-muted');
+                        star.classList.add('text-warning');
+                    } else {
+                        star.classList.remove('text-warning');
+                        star.classList.add('text-muted');
+                    }
+                });
+            }
+        });
+
+        // Gửi đánh giá
+        document.getElementById('submitRating').addEventListener('click', async function () {
+            const userId = userIdInput.value;
+            const nutritionistId = nutritionistIdInput.value;
+            const userListManagementId = userListManagementIdInput.value;
+            const messageDiv = document.getElementById('rateMessage');
+
+            console.log({
+                UserId: userId,
+                NutritionistId: nutritionistId,
+                UserListManagementId: userListManagementId,
+                Rate: selectedRate
+            });
+
+            if (selectedRate === 0) {
+                messageDiv.textContent = 'Vui lòng chọn số sao.';
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.classList.remove('d-none');
+                return;
+            }
+
+            try {
+
+                const response = await fetch('/NutritionRoute/Rate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        UserId: userId,
+                        NutritionistId: nutritionistId,
+                        UserListManagementId: userListManagementId,
+                        Rate: selectedRate
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.textContent = 'Đánh giá thành công!';
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.classList.remove('d-none');
+
+                    // Reload dữ liệu sau 2 giây
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    messageDiv.textContent = result.message || 'Đã xảy ra lỗi.';
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.classList.remove('d-none');
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Đã xảy ra lỗi trong quá trình gửi đánh giá.';
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.classList.remove('d-none');
+            }
+        });
+    });
+</script>
+
+
+
+<style>
+    .container {
+        max-width: 90%;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+        color: #333;
+    }
+
+    .page-title {
+        font-size: 32px;
+        color: #4CAF50;
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        color: #666;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .custom-table {
+        font-family: 'Roboto', sans-serif;
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+        .custom-table th, .custom-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .custom-table thead th {
+            background-color: #4CAF50;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .custom-table tr:nth-child(even) {
+            background-color: #f3f3f3;
+        }
+
+        .custom-table tr:hover {
+            background-color: #e8f5e9;
+        }
+
+    /* Căn chỉnh trung tâm */
+    table th, table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    .badge {
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        color: #fff;
+    }
+
+    .badge-active {
+        background-color: #4CAF50;
+    }
+
+    .badge-inactive {
+        background-color: #f44336;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+        color: #fff;
+    }
+
+
+    .btn {
+        margin-right: 8px;
+        border-radius: 8px;
+        font-family: 'Roboto', sans-serif;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-sm {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .btn-primary {
+        background-color: #5cb85c;
+        border-color: #4cae4c;
+        color: #fff;
+    }
+
+        .btn-primary:hover {
+            background-color: #4cae4c;
+        }
+
+    .btn-info {
+        background-color: #1E88E5;
+        border-color: #1E88E5;
+    }
+
+        .btn-info:hover {
+            background-color: #1565C0;
+        }
+
+    .btn-warning {
+        background-color: #FFC107;
+        border-color: #FFC107;
+        color: #fff;
+    }
+
+        .btn-warning:hover {
+            background-color: #FFA000;
+        }
+
+    .btn-danger {
+        background-color: #f44336;
+        border-color: #f44336;
+        color: #fff;
+    }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+    .btn-outline-secondary {
+        color: #4CAF50;
+        border-color: #4CAF50;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+    .clickable-row {
+        cursor: pointer;
+    }
+
+        .clickable-row:hover {
+            transition: background-color 0.3s ease;
+        }
+
+    .pagination {
+        margin-top: 20px;
+    }
+
+        .pagination .page-item.active .page-link {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            color: #fff;
+        }
+
+        .pagination .page-link {
+            color: #4CAF50;
+        }
+
+            .pagination .page-link:hover {
+                background-color: #f3f3f3;
+            }
+
+    .text-danger {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .rating-stars .fa-star {
+        font-size: 18px;
+        margin-right: 2px;
+    }
+
+        .rating-stars .fa-star.text-warning {
+            color: #ffc107; /* Vàng */
+        }
+
+        .rating-stars .fa-star.text-muted {
+            color: #ddd; /* Xám nhạt */
+        }
+    /* Styling for Modal */
+    .modal-dialog {
+        max-width: 20%;
+        ; /* Giới hạn chiều rộng của modal */
+        margin: 30px auto;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+        background: linear-gradient(145deg, #ffffff, #f3f3f3);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px; /* Thu nhỏ khoảng cách padding */
+        border-bottom: 1px solid #e0e0e0;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .modal-title {
+        font-family: 'Roboto', sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .alert {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+</style>

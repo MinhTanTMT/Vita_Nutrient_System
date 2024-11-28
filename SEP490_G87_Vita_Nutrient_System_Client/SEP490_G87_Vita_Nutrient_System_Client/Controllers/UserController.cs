@@ -868,27 +868,49 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> UserPhysicalStatistics()
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            // Lấy thông tin người dùng và thông số vật lý
             HttpResponseMessage userRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserById/{userId}");
             HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetOnlyUserDetail/{userId}");
+            HttpResponseMessage diseaseRes = await client.GetAsync(client.BaseAddress + "/Disease/GetAllDiseases");
 
-            if (userDetailsRes.IsSuccessStatusCode)
+            if (userDetailsRes.IsSuccessStatusCode && diseaseRes.IsSuccessStatusCode)
             {
+                // Deserialize dữ liệu
                 var user = JsonConvert.DeserializeObject<User>(await userRes.Content.ReadAsStringAsync());
-                var userPhysicalStatistics = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailsRes.Content.ReadAsStringAsync());
+                var userDetails = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailsRes.Content.ReadAsStringAsync());
+                var diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(await diseaseRes.Content.ReadAsStringAsync());
+
+                // Xử lý bệnh lý
+                string underlyingDiseaseIds = userDetails?.UnderlyingDisease; // Dữ liệu từ API
+                List<int> diseaseIds = !string.IsNullOrEmpty(underlyingDiseaseIds)
+                    ? underlyingDiseaseIds.Split(';').Select(int.Parse).ToList()
+                    : new List<int>();
+
+                var diseaseNames = diseases.Where(d => diseaseIds.Contains(d.Id)).Select(d => d.Name).ToList();
+
+                // Cập nhật model với thông tin bệnh lý
                 var model = new UserPhysicalStatistics
                 {
-                      UserId = userPhysicalStatistics.UserId,
-                      Gender = user.Gender,
-                      Height = userPhysicalStatistics.Height,
-                      Weight = userPhysicalStatistics.Weight,
-                      Age = userPhysicalStatistics.Age,
-                      ActivityLevel = userPhysicalStatistics.ActivityLevel
-    };
-                return View(userPhysicalStatistics);
+                    UserId = userDetails.UserId,
+                    Gender = userDetails.Gender,
+                    Height = userDetails.Height,
+                    Weight = userDetails.Weight,
+                    Age = userDetails.Age,
+                    ActivityLevel = userDetails.ActivityLevel,
+                    UnderlyingDisease = userDetails.UnderlyingDisease,
+                    UnderlyingDiseaseNames = diseaseNames
+                };
+
+                // Đưa danh sách bệnh lý vào ViewBag nếu cần hiển thị toàn bộ
+                ViewBag.Diseases = diseases;
+
+                return View(model);
             }
 
             return View("Error");
         }
+ 
         [HttpPost("UserPhysicalStatistics")]
         public async Task<IActionResult> UserPhysicalStatistics(UserPhysicalStatistics model)
         {
@@ -916,7 +938,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 Height = model.Height,
                 Weight = model.Weight,
                 Age = model.Age,
-                ActivityLevel = model.ActivityLevel
+                ActivityLevel = model.ActivityLevel,
+                UnderlyingDisease = model.UnderlyingDisease
             };
 
             var jsonContent = new StringContent(JsonConvert.SerializeObject(userDetailsDTO), Encoding.UTF8, "application/json");

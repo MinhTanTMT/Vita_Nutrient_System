@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http;
@@ -21,7 +22,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Nutritionist")]
         public async Task<IActionResult> GetInfoAllPremiumUserByNutritionist(string search, int pageNumber = 1, int pageSize = 10)
         {
             try
@@ -66,7 +67,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View(new List<User>());
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Nutritionist")]
         public async Task<IActionResult> GetDetailsAllPremiumUserByNutritionist(int userId, string search, int pageNumber = 1, int pageSize = 10)
         {
             try
@@ -105,7 +106,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View(new List<UserListManagement>()); 
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Nutritionist")]
         public async Task<IActionResult> GetNutritionRoutes(int userId, int userListManagementId, string packageName, int pageNumber = 1, int pageSize = 10)
         {
            
@@ -166,7 +167,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // GET: NutritionRoute/Details/{id}
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Nutritionist")]
         public async Task<IActionResult> Details(int id, int userId, int userListManagementId, string packageName)
         {
             HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/{id}");
@@ -184,7 +185,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // GET: NutritionRoute/Create
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Nutritionist")]
         public async Task<IActionResult> Create(int userId, int userListManagementId, string packageName)
         {
             ViewData["UserId"] = userId;
@@ -208,7 +209,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             if (nutritionRoute.StartDate == null)
             {
-                nutritionRoute.StartDate = DateTime.Now; // Thiết lập mặc định
+                nutritionRoute.StartDate = DateTime.Today; // Thiết lập mặc định
             }
             try
             {
@@ -255,7 +256,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         if (nutritionRoute.StartDate.Value.Date < selectedPackage.StartDate.Value.Date 
                             || nutritionRoute.EndDate.Value.Date > selectedPackage.EndDate.Value.Date)
                         {
-                            ModelState.AddModelError(string.Empty, $"Thời gian của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                            ModelState.AddModelError(string.Empty, $"Thời gian của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToString("dd/MM/yyyy")} đến {selectedPackage.EndDate?.ToString("dd/MM/yyyy")}.");
                             return View(nutritionRoute);
                         }
 
@@ -278,14 +279,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         // Ngày bắt đầu phải lớn hơn ngày kết thúc của lộ trình trước
                         if (nutritionRoute.StartDate.Value.Date <= lastRoute.EndDate.Value.Date)
                         {
-                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải lớn hơn ngày kết thúc của lộ trình trước đó ({lastRoute.EndDate?.ToShortDateString()}).");
+                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải lớn hơn ngày kết thúc của lộ trình trước đó ({lastRoute.EndDate?.ToString("dd/MM/yyyy")}).");
                             return View(nutritionRoute);
                         }
 
                         // Ngày kết thúc phải nằm trong thời gian của gói
                         if (nutritionRoute.EndDate.Value.Date > selectedPackage.EndDate.Value.Date)
                         {
-                            ModelState.AddModelError(string.Empty, $"Ngày kết thúc của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                            ModelState.AddModelError(string.Empty, $"Ngày kết thúc của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToString("dd/MM/yyyy")} đến {selectedPackage.EndDate?.ToString("dd/MM/yyyy")}.");
                             return View(nutritionRoute);
                         }
                     }
@@ -325,7 +326,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // GET: NutritionRoute/Edit/{id}
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Nutritionist")]
         public async Task<IActionResult> Edit(int id, int userId, int userListManagementId, string packageName)
         {
             try
@@ -414,7 +415,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         if (nutritionRoute.StartDate.Value.Date < selectedPackage.StartDate.Value.Date 
                             || nutritionRoute.StartDate.Value.Date > selectedPackage.EndDate.Value.Date)
                         {
-                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToString("dd/MM/yyyy")} đến {selectedPackage.EndDate?.ToString("dd/MM/yyyy")}.");
                             return View(nutritionRoute);
                         }
                     }
@@ -424,7 +425,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         var previousRoute = sortedRoutes[currentIndex - 1];
                         if (nutritionRoute.StartDate.Value.Date <= previousRoute.EndDate.Value.Date)
                         {
-                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải lớn hơn ngày kết thúc của lộ trình trước đó ({previousRoute.EndDate?.ToShortDateString()}).");
+                            ModelState.AddModelError(string.Empty, $"Ngày bắt đầu của lộ trình phải lớn hơn ngày kết thúc của lộ trình trước đó ({previousRoute.EndDate?.ToString("dd/MM/yyyy")}).");
                             return View(nutritionRoute);
                         }
                     }
@@ -432,7 +433,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     // Kiểm tra ngày kết thúc của lộ trình với gói đăng ký
                     if (nutritionRoute.EndDate.Value.Date > selectedPackage.EndDate.Value.Date)
                     {
-                        ModelState.AddModelError(string.Empty, $"Ngày kết thúc của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToShortDateString()} đến {selectedPackage.EndDate?.ToShortDateString()}.");
+                        ModelState.AddModelError(string.Empty, $"Ngày kết thúc của lộ trình phải nằm trong khoảng từ {selectedPackage.StartDate?.ToString("dd/MM/yyyy")} đến {selectedPackage.EndDate?.ToString("dd/MM/yyyy")}.");
                         return View(nutritionRoute);
                     }
 
@@ -645,12 +646,96 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return Json(new { success = false, message = $"Lỗi hệ thống: {ex.Message}" });
             }
         }
-    
+
+        [HttpGet, Authorize(Roles = "User,UserPremium")]
+        public async Task<IActionResult> GetDetailsAllPremiumUserByUser(int userId, string search, int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+                HttpResponseMessage response = await client.GetAsync($"api/nutritionroute/user/{userId}/details-premium");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    var routes = JsonSerializer.Deserialize<List<UserListManagement>>(data, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (routes == null || !routes.Any())
+                    {
+                        ViewData["TotalPages"] = 0;
+                        ViewData["CurrentPage"] = pageNumber;
+                        return View(new List<UserListManagement>());
+                    }
+
+                    // Phân trang
+                    int totalItems = routes.Count;
+                    var paginatedRoutes = routes.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                    // Truyền thông tin phân trang vào ViewData
+                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    ViewData["CurrentPage"] = pageNumber;
+                    ViewData["UserId"] = userId;
+
+                    return View(paginatedRoutes);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Có lỗi xảy ra: {ex.Message}");
+            }
+
+            return View(new List<UserListManagement>());
+        }
+        [HttpPost]
+        public async Task<JsonResult> Rate([FromBody] RateRequest request)
+        {
+            if (request.UserId <= 0 || request.NutritionistId <= 0 || request.UserListManagementId <= 0 || request.Rate < 1 || request.Rate > 5)
+            {
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ." });
+            }
+
+            try
+            {
+                // Gửi yêu cầu PUT tới API
+                var response = await client.PutAsync(
+                    $"api/nutritionroute/rate?userId={request.UserId}&nutritionistId={request.NutritionistId}&userListManagementId={request.UserListManagementId}&rate={request.Rate}",
+                    null // Không cần nội dung body
+                );
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Đánh giá thành công!" });
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    return Json(new { success = false, message = errorMessage });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Lỗi hệ thống: {ex.Message}" });
+            }
+        }
+
+        
+
+
+
+
+
+
     }
 
     public class AddDiseaseRequest
     {
         public int UserId { get; set; }
         public int DiseaseId { get; set; }
+    }
+    public class RateRequest
+    {
+        public int UserId { get; set; }
+        public int NutritionistId { get; set; }
+        public int UserListManagementId { get; set; }
+        public short Rate { get; set; }
     }
 }
