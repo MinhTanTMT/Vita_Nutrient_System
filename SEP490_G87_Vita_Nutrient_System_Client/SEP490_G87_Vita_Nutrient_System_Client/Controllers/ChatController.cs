@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_Client.Hubs;
@@ -26,7 +27,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         // Hiển thị danh sách phòng chat
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Nutritionist")]
         public async Task<IActionResult> Index()
         
         {
@@ -44,7 +45,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View("Error"); // Nếu API trả lỗi
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Nutritionist,UserPremium")]
         public async Task<IActionResult> Room(int? roomId)
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
@@ -108,7 +109,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // Gửi tin nhắn
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Nutritionist,UserPremium")]
         public async Task<IActionResult> SendMessage([FromBody] MessageModel message)
         {
             // Lấy thông tin người dùng (tên) từ API hoặc dịch vụ

@@ -88,7 +88,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium")]
         public async Task<IActionResult> PlanUserAsync(DateTime? myDay)
         {
             string role = User.FindFirst(ClaimTypes.Role)?.Value;
@@ -170,7 +170,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium")]
         public async Task<IActionResult> RefreshTheMeal(DateTime myDay)
         {
 
@@ -197,7 +197,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium")]
         public async Task<IActionResult> RefreshTheMealWeek(DateTime myDay)
         {
 
@@ -223,7 +223,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium")]
         public async Task<IActionResult> RefreshTheMealAllWeek(DateTime myDay)
         {
 
@@ -250,7 +250,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium")]
         public async Task<IActionResult> ChangeAnotherDish(int SlotOfTheDay, int SettingDetail, int OrderSettingDetail, DateTime myDaySelect)
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
