@@ -288,13 +288,17 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("FoodList", "Admin")">
+                                        <span class="menu-title">News</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("Index", "News")">
                                         <span class="menu-title">News</span>
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
                                 </li> 
-
-
                             }
                             else if (role.Equals("Nutritionist"))
                             {
@@ -304,10 +308,15 @@
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
                                 </li>
-                                
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("NutritionistProfile", "Nutritionist")">
-                                        <span class="menu-title">Thông tin của tôi</span>
+                                    <a class="nav-link" href="@Url.Action("FoodList", "Admin")">
+                                        <span class="menu-title">News</span>
+                                        <i class="mdi mdi-newspaper menu-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("FoodList", "Admin")">
+                                        <span class="menu-title">News</span>
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
                                 </li>
