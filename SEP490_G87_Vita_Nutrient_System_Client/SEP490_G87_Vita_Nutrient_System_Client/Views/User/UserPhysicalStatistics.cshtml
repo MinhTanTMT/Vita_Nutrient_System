@@ -172,6 +172,7 @@
                         const newBadge = document.createElement("span");
                         newBadge.className = "badge bg-primary disease-badge";
                         newBadge.dataset.name = diseaseName;
+                        newBadge.dataset.id = diseaseId;
                         newBadge.innerHTML = `
                             <span>${diseaseName}</span>
                             <button type="button" class="btn-close remove-disease-btn"></button>
