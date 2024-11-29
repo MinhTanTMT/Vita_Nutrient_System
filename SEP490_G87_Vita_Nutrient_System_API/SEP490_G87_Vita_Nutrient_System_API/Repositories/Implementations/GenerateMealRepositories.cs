@@ -1406,7 +1406,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        public async Task<bool> CreateMealSetting(int userId)
+        public async Task<bool> SystemUserConfiguration(int userId)
         {
 
             var myMealSetting = await _context.MealSettings.FirstOrDefaultAsync(x => x.UserId == userId);

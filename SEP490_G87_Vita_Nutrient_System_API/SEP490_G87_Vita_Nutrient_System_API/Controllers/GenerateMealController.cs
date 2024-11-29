@@ -23,19 +23,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     [ApiController]
     public class GenerateMealController : ControllerBase
     {
-
-        Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext(); // xoa sau
-
         private IGenerateMealRepositories repositories = new GenerateMealRepositories();
-
-        private MapperConfiguration config;
-        private IMapper mapper;
-        public GenerateMealController()
-        {
-            config = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
-            mapper = config.CreateMapper();
-        }
-
 
 
         [HttpGet("APIRun")]
@@ -47,17 +35,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             //return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
 
 
-            List<DietWithFoodType> courseList = _context.DietTypes
-            .SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
-            {
-                DietTypeId = a.DietTypeId,
-                FoodTypeId = b.FoodTypeId
-            })
-            .ToList();
+            //List<DietWithFoodType> courseList = _context.DietTypes
+            //.SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
+            //{
+            //    DietTypeId = a.DietTypeId,
+            //    FoodTypeId = b.FoodTypeId
+            //})
+            //.ToList();
 
 
 
-            return Ok(courseList);
+            return Ok("courseList");
         }
 
 
@@ -72,7 +60,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APIListMealOfTheDay(DateTime myDay, int idUser)
         {
 
-            await repositories.CreateMealSetting(idUser);
+            await repositories.SystemUserConfiguration(idUser);
 
             IEnumerable<DataFoodListMealOfTheDay> dataFoodListMealOfTheDays;
 
@@ -111,7 +99,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIListMealOfTheWeek")]
         public async Task<ActionResult<IEnumerable<DataFoodAllDayOfWeek>>> APIListMealOfTheWeek(DateTime myDay, int idUser)
         {
-            await repositories.CreateMealSetting(idUser);
+            await repositories.SystemUserConfiguration(idUser);
             IEnumerable<DataFoodAllDayOfWeek> dataFoodAllDayOfWeek = await repositories.ListMealOfTheWeek(myDay, idUser);
             return Ok(dataFoodAllDayOfWeek);
         }
@@ -206,7 +194,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APISystemUserConfiguration")]
         public async Task<IActionResult> APISystemUserConfiguration(int idUser)
         {
-            if (await repositories.CreateMealSetting(idUser))
+            if (await repositories.SystemUserConfiguration(idUser))
             {
                 return Ok();
             }

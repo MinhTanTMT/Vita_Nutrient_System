@@ -31,5 +31,9 @@ public partial class UserDetail
 
     public int? Calo { get; set; }
 
+    public DateTime? TimeUpdate { get; set; }
+
+    public int? WeightGoal { get; set; }
+
     public virtual User User { get; set; } = null!;
 }

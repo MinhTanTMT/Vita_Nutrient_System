@@ -61,10 +61,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<bool> ModifiedCompleteTheDish(FoodStatusUpdateModel dataprocess, string? statusSymbolReplace, int? idFoodReplace, List<KeyValuePair<int, string?>>? listIdFoodChange);
 
         Task<IEnumerable<DataFoodListMealOfTheDay>> CreateListOfAlternativeDishes(List<int>? listIdFood, int MealSettingsDetailsId, int numberOfCreation, int foodSelectionType);
-
-        Task<bool> CreateMealSetting(int userId);
-
+        
         Task<bool> IsNumeric(string str);
+
+        Task<bool> SystemUserConfiguration(int userId);
+
 
     }
 

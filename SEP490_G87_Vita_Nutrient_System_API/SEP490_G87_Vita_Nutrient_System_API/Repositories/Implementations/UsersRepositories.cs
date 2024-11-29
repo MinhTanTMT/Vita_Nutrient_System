@@ -172,7 +172,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Account.Equals(account));
 
-            //var user = await _context.Users.Include(u => u.RoleNavigation).FirstOrDefaultAsync(u => u.Account.Equals(account) && u.Password.Equals(passwordEncrypt) && u.IsActive == true);
             if (user == null)
             {
                 return null;

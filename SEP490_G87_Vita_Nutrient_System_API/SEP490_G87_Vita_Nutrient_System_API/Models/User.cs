@@ -53,7 +53,7 @@ public partial class User
 
     public virtual NutritionistDetail? NutritionistDetail { get; set; }
 
-    public virtual Role? RoleNavigation { get; set; } = null!;
+    public virtual Role RoleNavigation { get; set; } = null!;
 
     public virtual ICollection<Room> RoomNutritions { get; set; } = new List<Room>();
 

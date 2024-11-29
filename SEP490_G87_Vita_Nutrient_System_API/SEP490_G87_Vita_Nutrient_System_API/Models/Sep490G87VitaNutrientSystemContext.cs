@@ -725,6 +725,7 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             entity.Property(e => e.DescribeYourself).HasMaxLength(500);
             entity.Property(e => e.InforConfirmBad).HasMaxLength(500);
             entity.Property(e => e.InforConfirmGood).HasMaxLength(500);
+            entity.Property(e => e.TimeUpdate).HasColumnType("datetime");
             entity.Property(e => e.UnderlyingDisease).HasMaxLength(500);
             entity.Property(e => e.WantImprove).HasMaxLength(500);
 
