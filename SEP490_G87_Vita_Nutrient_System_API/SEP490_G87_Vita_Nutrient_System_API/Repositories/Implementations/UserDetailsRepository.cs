@@ -68,15 +68,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 }
                 userDetailEntity.Calo = (int)tdee;
 
-                // Cập nhật danh sách bệnh lý
-                if (userDetails.UnderlyingDiseaseNames != null && userDetails.UnderlyingDiseaseNames.Count > 0)
-                {
-                    userDetailEntity.UnderlyingDisease = string.Join(", ", userDetails.UnderlyingDiseaseNames);
-                }
-                else
-                {
-                    userDetailEntity.UnderlyingDisease = null; // Hoặc giá trị mặc định
-                }
+                
 
                 _context.UserDetails.Update(userDetailEntity);
             }

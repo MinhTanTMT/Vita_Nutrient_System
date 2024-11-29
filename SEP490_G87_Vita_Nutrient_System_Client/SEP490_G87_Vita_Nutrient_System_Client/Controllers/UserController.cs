@@ -719,7 +719,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi, string uUnderlyingDisease)
+        public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi)
         {
             try
             {
@@ -730,8 +730,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     height = uheight,
                     weight = uweight,
                     age = uage,
-                    wantImprove = uwi,
-                    underlyingDisease = uUnderlyingDisease
+                    wantImprove = uwi
+                   
                 };
 
                 string jsonData = JsonConvert.SerializeObject(data);
@@ -994,7 +994,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 Weight = model.Weight,
                 Age = model.Age,
                 ActivityLevel = model.ActivityLevel,
-                UnderlyingDisease = model.UnderlyingDisease
             };
 
             var jsonContent = new StringContent(JsonConvert.SerializeObject(userDetailsDTO), Encoding.UTF8, "application/json");
