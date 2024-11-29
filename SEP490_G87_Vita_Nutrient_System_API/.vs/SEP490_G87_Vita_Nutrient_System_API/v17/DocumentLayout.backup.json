@@ -136,7 +136,7 @@
               "RelativeDocumentMoniker": "SEP490_G87_Vita_Nutrient_System_API\\Models\\UserDetail.cs",
               "ToolTip": "D:\\SEP490_G87_Vita_Nutrient_System\\Vita_Nutrient_System\\SEP490_G87_Vita_Nutrient_System_API\\SEP490_G87_Vita_Nutrient_System_API\\Models\\UserDetail.cs",
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Models\\UserDetail.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAmwCEAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAmwBYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-29T07:43:16.932Z",
               "EditorCaption": ""
@@ -151,8 +151,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Models\\Sep490G87VitaNutrientSystemContext.cs",
               "ViewState": "AgIAAEwAAAAAAAAAAAAqwF0AAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-29T07:41:08.996Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-29T07:41:08.996Z"
             },
             {
               "$type": "Document",
@@ -164,8 +163,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Models\\User.cs",
               "ViewState": "AgIAADMAAAAAAAAAAAAcwDoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-29T07:41:03.835Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-29T07:41:03.835Z"
             },
             {
               "$type": "Document",
@@ -249,8 +247,7 @@
               "RelativeToolTip": "SEP490_G87_Vita_Nutrient_System_API\\Controllers\\UsersController.cs",
               "ViewState": "AgIAADkAAAAAAAAAAAAwwE0AAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-29T02:07:05.983Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-29T02:07:05.983Z"
             }
           ]
         }
