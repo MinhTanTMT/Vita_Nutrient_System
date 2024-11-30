@@ -21,9 +21,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
         public async Task<IEnumerable<Room>> GetRoomsByNutritionIdAsync(int nutritionID)
         {
-            return await _context.Rooms
+            // Lấy các phòng theo nutritionID
+            var rooms = await _context.Rooms
                 .Where(r => r.NutritionId == nutritionID)
+                .Include(r => r.User) 
                 .ToListAsync();
+
+            if (rooms == null || !rooms.Any())
+            {
+                return Enumerable.Empty<Room>();
+            }       
+            var filteredRooms = rooms.Where(r => r.User.Role == 3).ToList();
+
+            return filteredRooms;
         }
 
         public async Task<Room?> GetRoomByUserAndNutritionIdAsync(int userId, int nutritionId)
