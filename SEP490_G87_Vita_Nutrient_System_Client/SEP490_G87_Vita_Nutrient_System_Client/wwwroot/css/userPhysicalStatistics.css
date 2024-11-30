@@ -1,5 +1,5 @@
 ﻿.container {
-    max-width: 700px; /* Tăng chiều rộng để form thoáng hơn */
+    max-width: 70%; /* Tăng chiều rộng để form thoáng hơn */
     margin: 0 auto;
     padding: 30px; /* Tăng padding để tạo không gian rộng rãi hơn */
     background-color: #f7f3f9;
@@ -175,3 +175,5 @@
     display: block;
     transition: all 0.3s ease;
 }
+
+

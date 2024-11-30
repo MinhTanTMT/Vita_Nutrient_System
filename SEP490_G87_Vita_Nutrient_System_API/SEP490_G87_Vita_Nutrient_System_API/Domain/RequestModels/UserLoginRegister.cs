@@ -2,6 +2,8 @@
 {
     public class UserLoginRegister
     {
+        public UserLoginRegister() { }
+
         public int UserId { get; set; }
 
         public string? Urlimage { get; set; }

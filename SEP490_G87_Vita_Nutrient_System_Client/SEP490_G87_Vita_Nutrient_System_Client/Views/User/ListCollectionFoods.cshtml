@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "Your Food Collection";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Your Food Collection</h2>
+
+    <!-- Tìm kiếm -->
+    <div class="row mb-4">
+        <div class="col-md-6 offset-md-3">
+            <form method="get" class="input-group">
+                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search food..." />
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Thông báo thành công hoặc lỗi -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- Bảng danh sách món ăn -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Rate</th>
+                    <th>Preparation Time</th>
+                    <th>Cooking Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var food in Model)
+                {
+                    <tr>
+                        <td>@food.Name</td>
+                        <td>@food.Describe</td>
+                        <td>@food.Rate (based on @food.NumberRate reviews)</td>
+                        <td>@food.PreparationTime mins</td>
+                        <td>@food.CookingTime mins</td>
+                        <td>
+                            <!-- Nút hủy món ăn khỏi bộ sưu tập -->
+                            <form action="@Url.Action("SaveFoodCollection", new { foodId = food.FoodListId })" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <div>
+        <span>Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
+    </div>
+    <div class="d-flex justify-content-center mt-4">
+        
+        <div>
+            <ul class="pagination">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("ListCollectionFoods", new { page = i, pageSize = 10, search = ViewBag.Search })">@i</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Tùy chỉnh thêm CSS cho giao diện -->
+<style>
+    .pagination-container {
+        margin-top: 20px;
+    }
+
+        .pagination-container .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+    }
+</style>

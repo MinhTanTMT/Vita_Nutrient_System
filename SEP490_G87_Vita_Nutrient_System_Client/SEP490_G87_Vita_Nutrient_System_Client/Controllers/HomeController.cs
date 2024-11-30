@@ -218,13 +218,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(string account, string password, string confirm)
+        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm)
         {
             try
             {
                 if (!password.Equals(confirm))
                 {
-                    ViewBag.AlertMessage = "Invalid login attempt. 1";
+                    ViewBag.AlertMessage = "Password mismatch";
                     return View();
                 }
                 if (await checkExsitAsync(account))
@@ -237,6 +237,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
                     UserLoginRegister user = new UserLoginRegister()
                     {
+                        FirstName = firstName,
+                        LastName = lastName,
                         Account = account,
                         Password = password,
                         Role = roleUser,
@@ -332,6 +334,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
                 UserLoginRegister user = new UserLoginRegister()
                 {
+                    FirstName = name,
+                    LastName = "",
                     Password = adminSevices.GeneratePassword(20),
                     Account = email,
                     AccountGoogle = email,
@@ -363,14 +367,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                    HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APIFirstMealSetting?idUser={u.UserId}");
+                    HttpResponseMessage res2 = await client.GetAsync(client.BaseAddress + $"/GenerateMeal/APISystemUserConfiguration?idUser={u.UserId}");
                     if (res2.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        return RedirectToAction("Error", "Home");
+                        return RedirectToAction("SaveUserAndCreateMeals", "Meal");
                     }
                 }
                 else

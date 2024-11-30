@@ -15,6 +15,7 @@ using System;
 using Castle.Core.Configuration;
 using Humanizer;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.DataFoodList;
+using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 {
@@ -22,18 +23,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
     [ApiController]
     public class GenerateMealController : ControllerBase
     {
-
-        Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
-
-
-        private MapperConfiguration config;
-        private IMapper mapper;
-        public GenerateMealController()
-        {
-            config = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
-            mapper = config.CreateMapper();
-        }
-
+        private IGenerateMealRepositories repositories = new GenerateMealRepositories();
 
 
         [HttpGet("APIRun")]
@@ -45,17 +35,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             //return Ok(await generateMealRepositories.ListMealOfTheDay(DateTime.ParseExact("30/10/2024 00:00:00", "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture), 1));
 
 
-            List<DietWithFoodType> courseList = _context.DietTypes
-            .SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
-            {
-                DietTypeId = a.DietTypeId,
-                FoodTypeId = b.FoodTypeId
-            })
-            .ToList();
+            //List<DietWithFoodType> courseList = _context.DietTypes
+            //.SelectMany(x => x.FoodTypes, (a, b) => new DietWithFoodType
+            //{
+            //    DietTypeId = a.DietTypeId,
+            //    FoodTypeId = b.FoodTypeId
+            //})
+            //.ToList();
 
 
 
-            return Ok(courseList);
+            return Ok("courseList");
         }
 
 
@@ -69,13 +59,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIListMealOfTheDay")]
         public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APIListMealOfTheDay(DateTime myDay, int idUser)
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
-            await generateMealRepositories.CreateMealSetting(idUser);
+            await repositories.SystemUserConfiguration(idUser);
 
             IEnumerable<DataFoodListMealOfTheDay> dataFoodListMealOfTheDays;
 
-            dataFoodListMealOfTheDays = await generateMealRepositories.ListMealOfTheDay(myDay, idUser);
+            dataFoodListMealOfTheDays = await repositories.ListMealOfTheDay(myDay, idUser);
 
             if (dataFoodListMealOfTheDays.Count() > 0)
             {
@@ -87,9 +76,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
             else
             {
-                if (await generateMealRepositories.FillInDishIdInDailyDishWithCondition(idUser, myDay))
+                if (await repositories.FillInDishIdInDailyDishWithCondition(idUser, myDay))
                 {
-                    dataFoodListMealOfTheDays = await generateMealRepositories.ListMealOfTheDay(myDay, idUser);
+                    dataFoodListMealOfTheDays = await repositories.ListMealOfTheDay(myDay, idUser);
                     if (dataFoodListMealOfTheDays.Count() > 0)
                     {
                         return Ok(dataFoodListMealOfTheDays);
@@ -110,9 +99,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIListMealOfTheWeek")]
         public async Task<ActionResult<IEnumerable<DataFoodAllDayOfWeek>>> APIListMealOfTheWeek(DateTime myDay, int idUser)
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            await generateMealRepositories.CreateMealSetting(idUser);
-            IEnumerable<DataFoodAllDayOfWeek> dataFoodAllDayOfWeek = await generateMealRepositories.ListMealOfTheWeek(myDay, idUser);
+            await repositories.SystemUserConfiguration(idUser);
+            IEnumerable<DataFoodAllDayOfWeek> dataFoodAllDayOfWeek = await repositories.ListMealOfTheWeek(myDay, idUser);
             return Ok(dataFoodAllDayOfWeek);
         }
 
@@ -121,11 +109,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIRefreshTheMeal")]
         public async Task<IActionResult> APIRefreshTheMealy(DateTime myDay, int idUser)
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
             if (myDay.DayOfYear >= DateTime.Now.DayOfYear)
             {
-                return Ok(await generateMealRepositories.FillInDishIdInDailyDishWithCondition(idUser, myDay));
+                return Ok(await repositories.FillInDishIdInDailyDishWithCondition(idUser, myDay));
             }
             else
             {
@@ -137,8 +124,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIRefreshTheAllMeal")]
         public async Task<IActionResult> APIRefreshTheAllMeal(DateTime myDay, int idUser)
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.RegenerateListMealOfTheWeek(myDay, idUser));
+            return Ok(await repositories.RegenerateListMealOfTheWeek(myDay, idUser));
 
         }
 
@@ -146,8 +132,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpPost("APICompleteTheDish")]
         public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APICompleteTheDish([FromBody] FoodStatusUpdateModel model)
         {
-            
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
             if (!ModelState.IsValid)
             {
@@ -155,18 +139,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
 
             
-
             // update vu tich trong 7 ngay
             if (model.MyDay.DayOfYear <= DateTime.Now.DayOfYear && model.MyDay.DayOfYear >= (DateTime.Now.DayOfYear-7))
             {
                 if (model.StatusSymbol.Equals("-"))
                 {
  
-                    return Ok(await generateMealRepositories.ModifiedCompleteTheDish(model, "+", null, null));
+                    return Ok(await repositories.ModifiedCompleteTheDish(model, "+", null, null));
                 }
                 else if (model.StatusSymbol.Equals("+"))
                 {
-                    return Ok(await generateMealRepositories.ModifiedCompleteTheDish(model, "-", null, null));
+                    return Ok(await repositories.ModifiedCompleteTheDish(model, "-", null, null));
                 }
                 return Ok();
             }
@@ -179,8 +162,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpPost("APICreateListOfAlternativeDishes")]
         public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APICreateListOfAlternativeDishes([FromBody] AlternativeDishesRequest request, [FromQuery] int foodSelectionType)
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.CreateListOfAlternativeDishes(request.ListIdFood, request.MealSettingsDetailsId, request.NumberOfCreation, foodSelectionType));
+            return Ok(await repositories.CreateListOfAlternativeDishes(request.ListIdFood, request.MealSettingsDetailsId, request.NumberOfCreation, foodSelectionType));
         }
 
 
@@ -190,8 +172,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [FromQuery] int userId,
         [FromQuery] DateTime myDay)
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            return Ok(await generateMealRepositories.GetThisListOfDishesInputMealDay(dataFoodListMealOfTheDay, userId, myDay));
+            return Ok(await repositories.GetThisListOfDishesInputMealDay(dataFoodListMealOfTheDay, userId, myDay));
         }
 
 
@@ -200,22 +181,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [FromBody] FoodStatusUpdateModel model,
         [FromQuery] int idFoodSelect)
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            return Ok(await generateMealRepositories.ModifiedCompleteTheDish(model, null, idFoodSelect, null));
+            return Ok(await repositories.ModifiedCompleteTheDish(model, null, idFoodSelect, null));
         }
 
 
         [HttpGet("APISystemUserConfiguration")]
         public async Task<IActionResult> APISystemUserConfiguration(int idUser)
         {
-            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            if (await generateMealRepositories.CreateMealSetting(idUser))
+            if (await repositories.SystemUserConfiguration(idUser))
             {
                 return Ok();
             }

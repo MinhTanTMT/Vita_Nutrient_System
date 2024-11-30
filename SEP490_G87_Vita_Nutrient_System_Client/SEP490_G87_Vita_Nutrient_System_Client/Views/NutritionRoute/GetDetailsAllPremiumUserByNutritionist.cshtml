@@ -36,14 +36,14 @@
         <table class="table custom-table align-middle">
             <thead>
                 <tr>
-                    <th>Ảnh người dùng</th>
-                    <th>Người dùng</th>
-                    <th>Chuyên gia</th>
-                    <th>Gói đăng ký</th>
-                    <th>Ngày bắt đầu</th>
-                    <th>Ngày kết thúc</th>
-                    <th>Trạng thái</th>
-                    <th>Đánh giá</th>
+                    <th class="text-center">Ảnh người dùng</th>
+                    <th class="text-center">Người dùng</th>
+                    <th class="text-center">Chuyên gia</th>
+                    <th class="text-center">Gói đăng ký</th>
+                    <th class="text-center">Ngày bắt đầu</th>
+                    <th class="text-center">Ngày kết thúc</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-center">Đánh giá</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,20 +52,20 @@
                     @foreach (var route in Model)
                     {
                         <tr class="clickable-row" data-href="@Url.Action("GetNutritionRoutes", new { userId = route.UserId, userListManagementId = route.Id, packageName = route.Describe })">
-                            <td>
+                            <td class="text-center">
                                 <img src="@Url.Content(route.UrlImage)" alt="Image" class="img-thumbnail" style="width: 60px; height: 60px;" />
                             </td>
-                            <td>@route.UserName</td>
-                            <td>@route.NutritionistName</td>
-                            <td class="text-truncate" style="max-width: 200px;">@route.Describe</td>
-                            <td>@route.StartDate?.ToString("dd/MM/yyyy")</td>
-                            <td>@route.EndDate?.ToString("dd/MM/yyyy")</td>
-                            <td>
+                            <td class="text-center">@route.UserName</td>
+                            <td class="text-center">@route.NutritionistName</td>
+                            <td class="text-center" style="max-width: 200px;">@route.Describe</td>
+                            <td class="text-center">@route.StartDate?.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">@route.EndDate?.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">
                                 <span class="badge @(route.IsDone == true ? "badge-active" : "badge-inactive")">
                                     @(route.IsDone == true ? "Hoàn thành" : "Chưa hoàn thành")
                                 </span>
                             </td>
-                        <td>
+                            <td class="text-center">
                             <span class="rating-stars">
                                 @for (int i = 1; i <= 5; i++)
                                 {

@@ -719,7 +719,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi, string uUnderlyingDisease)
+        public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi)
         {
             try
             {
@@ -730,8 +730,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     height = uheight,
                     weight = uweight,
                     age = uage,
-                    wantImprove = uwi,
-                    underlyingDisease = uUnderlyingDisease
+                    wantImprove = uwi
+                   
                 };
 
                 string jsonData = JsonConvert.SerializeObject(data);
@@ -859,6 +859,61 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View("Error"); // Show an error view if the API call fails
         }
 
+        [HttpPost, Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> UnlikeFood([FromQuery] int foodId)
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            var response = await client.PostAsync($"{client.BaseAddress}/Users/{userId}/unlike-food/{foodId}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Failed to unlike food" });
+        }
+
+        [HttpGet, Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> ListCollectionFoods(int page = 1, int pageSize = 10, string search = "")
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            var response = await client.GetAsync($"{client.BaseAddress}/Users/{userId}/collection-foods?Search={search}&Page={page}&PageSize={pageSize}");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                var likedFoods = JsonConvert.DeserializeObject<LikedFoodsResponse>(responseData);
+                ViewBag.Search = search;
+                ViewBag.TotalPages = likedFoods.TotalPages;
+                ViewBag.CurrentPage = likedFoods.CurrentPage;
+                return View(likedFoods.Items);
+            }
+            return View("Error"); // Show an error view if the API call fails
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> SaveFoodCollection(int foodId)
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            var apiUrl = $"{client.BaseAddress}/Users/{userId}/save-food-collection/{foodId}";
+
+            var response = await client.PostAsync(apiUrl, null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Food item saved to your collection!";
+                return RedirectToAction("ListCollectionFoods");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to save the food item.";
+                return RedirectToAction("ListCollectionFoods");
+            }
+        }
+
+
 
         ////////////////////////////////////////////////////////////
         /// Chiến
@@ -868,27 +923,49 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> UserPhysicalStatistics()
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            // Lấy thông tin người dùng và thông số vật lý
             HttpResponseMessage userRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserById/{userId}");
             HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetOnlyUserDetail/{userId}");
+            HttpResponseMessage diseaseRes = await client.GetAsync(client.BaseAddress + "/Disease/GetAllDiseases");
 
-            if (userDetailsRes.IsSuccessStatusCode)
+            if (userDetailsRes.IsSuccessStatusCode && diseaseRes.IsSuccessStatusCode)
             {
+                // Deserialize dữ liệu
                 var user = JsonConvert.DeserializeObject<User>(await userRes.Content.ReadAsStringAsync());
-                var userPhysicalStatistics = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailsRes.Content.ReadAsStringAsync());
+                var userDetails = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailsRes.Content.ReadAsStringAsync());
+                var diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(await diseaseRes.Content.ReadAsStringAsync());
+
+                // Xử lý bệnh lý
+                string underlyingDiseaseIds = userDetails?.UnderlyingDisease; // Dữ liệu từ API
+                List<int> diseaseIds = !string.IsNullOrEmpty(underlyingDiseaseIds)
+                    ? underlyingDiseaseIds.Split(';').Select(int.Parse).ToList()
+                    : new List<int>();
+
+                var diseaseNames = diseases.Where(d => diseaseIds.Contains(d.Id)).Select(d => d.Name).ToList();
+
+                // Cập nhật model với thông tin bệnh lý
                 var model = new UserPhysicalStatistics
                 {
-                      UserId = userPhysicalStatistics.UserId,
-                      Gender = user.Gender,
-                      Height = userPhysicalStatistics.Height,
-                      Weight = userPhysicalStatistics.Weight,
-                      Age = userPhysicalStatistics.Age,
-                      ActivityLevel = userPhysicalStatistics.ActivityLevel
-    };
-                return View(userPhysicalStatistics);
+                    UserId = userDetails.UserId,
+                    Gender = userDetails.Gender,
+                    Height = userDetails.Height,
+                    Weight = userDetails.Weight,
+                    Age = userDetails.Age,
+                    ActivityLevel = userDetails.ActivityLevel,
+                    UnderlyingDisease = userDetails.UnderlyingDisease,
+                    UnderlyingDiseaseNames = diseaseNames
+                };
+
+                // Đưa danh sách bệnh lý vào ViewBag nếu cần hiển thị toàn bộ
+                ViewBag.Diseases = diseases;
+
+                return View(model);
             }
 
             return View("Error");
         }
+ 
         [HttpPost("UserPhysicalStatistics")]
         public async Task<IActionResult> UserPhysicalStatistics(UserPhysicalStatistics model)
         {
@@ -916,7 +993,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 Height = model.Height,
                 Weight = model.Weight,
                 Age = model.Age,
-                ActivityLevel = model.ActivityLevel
+                ActivityLevel = model.ActivityLevel,
             };
 
             var jsonContent = new StringContent(JsonConvert.SerializeObject(userDetailsDTO), Encoding.UTF8, "application/json");
@@ -1043,13 +1120,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             // Show an error view if the API call fails
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Unblock(int foodId)
+        [HttpPost, Authorize(Roles = "User, UserPremium")]
+        public async Task<IActionResult> Unblock([FromQuery] int foodId)
         {
-            int userId = int.Parse(User.FindFirst("UserId")?.Value); // Assuming UserId is in claims
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            // Call the API to unblock the food
-            var response = await client.PostAsync($"Users/{userId}/unblock-food/{foodId}", null);
+            var response = await client.PostAsync($"{client.BaseAddress}/Users/{userId}/unblock-food/{foodId}", null);
             if (response.IsSuccessStatusCode)
             {
                 return Json(new { success = true });
@@ -1057,5 +1133,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
             return Json(new { success = false, message = "Failed to unblock food" });
         }
+
     }
 }

@@ -279,7 +279,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             u.Weight = request.Weight;
             u.Age = request.Age;
             u.WantImprove = request.WantImprove;
-            u.UnderlyingDisease = request.UnderlyingDisease;
 
             _repositories.UpdateUserDetails(u);
 
@@ -345,6 +344,27 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             var paginatedFoods = await repositories.GetBlockedFoods(userId, model);
 
             return Ok(paginatedFoods);
+        }
+
+        [HttpGet("{userId}/collection-foods")]
+        public async Task<IActionResult> GetCollectionFood(int userId, [FromQuery] GetLikeFoodDTO model)
+        {
+            var paginatedFoods = await repositories.ListCollectionFood(userId, model);
+
+            return Ok(paginatedFoods);
+        }
+
+        [HttpPost("{userId}/save-food-collection/{foodId}")]
+        public async Task<IActionResult> SaveCollection(int userId, int foodId)
+        {
+            User u = repositories.GetUserById(userId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+            repositories.SaveCollection(userId, foodId);
+            return NoContent();
         }
     }
 }

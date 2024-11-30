@@ -30,6 +30,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             mapper = config.CreateMapper();
         }
 
+
         ////////////////////////////////////////////////////////////
         /// Tân
         ////////////////////////////////////////////////////////////
@@ -172,7 +173,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Account.Equals(account));
 
-            //var user = await _context.Users.Include(u => u.RoleNavigation).FirstOrDefaultAsync(u => u.Account.Equals(account) && u.Password.Equals(passwordEncrypt) && u.IsActive == true);
             if (user == null)
             {
                 return null;
@@ -504,7 +504,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (query == null)
             {
-                throw new ApplicationException("Not found!");
+                return null;
             }
 
             if (!string.IsNullOrEmpty(model.Search))
@@ -542,5 +542,50 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return "Success";
         }
 
+        public async Task<PagedResult<FoodList>> ListCollectionFood(int userId, GetLikeFoodDTO model)
+        {
+            var query = _context.FoodSelections
+                .Where(fs => fs.UserId == userId && (bool)fs.IsCollection)
+                .Join(_context.FoodLists, fs => fs.FoodListId, f => f.FoodListId, (fs, f) => f);
+
+            if (query == null)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(f => f.Name.Contains(model.Search));
+            }
+
+            int totalRecords = query.Count();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)model.PageSize);
+
+            var paginatedFoods = await query
+                .Skip((model.Page - 1) * model.PageSize)
+                .Take(model.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<FoodList>
+            {
+                Items = paginatedFoods,
+                TotalPages = totalPages,
+                CurrentPage = model.Page
+            };
+        }
+
+        public async Task<string> SaveCollection(int userId, int foodId)
+        {
+            var foodSelection = await _context.FoodSelections
+                .FirstOrDefaultAsync(fs => fs.UserId == userId && fs.FoodListId == foodId);
+
+            if (foodSelection == null) return "Not found";
+
+            foodSelection.IsCollection = !foodSelection.IsCollection;
+            _context.Update(foodSelection);
+            await _context.SaveChangesAsync();
+
+            return "Success";
+        }
     }
 }

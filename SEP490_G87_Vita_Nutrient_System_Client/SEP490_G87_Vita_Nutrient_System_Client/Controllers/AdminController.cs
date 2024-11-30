@@ -4,7 +4,7 @@ using SEP490_G87_Vita_Nutrient_System_Client.Domain.Enums;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http.Headers;
 using System.Text;
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Principal;
 using static System.Net.WebRequestMethods;
 using System.Xml.Linq;
@@ -38,7 +38,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize(Roles = "User")]
         public async Task<IActionResult> QRCodePaymentPageAsync()
         {
             try
@@ -98,7 +98,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                         if (typeInsert == 1) ViewData["UserListManagement"] = new UserListManagement { NutritionistId = NutritionistId ?? 0, UserId = userId, Describe = Describe, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(Duration ?? 0), IsDone = false };
                         else ViewData["UserListManagement"] = new UserListManagement { NutritionistId = roleAdmin, UserId = userId, Describe = Describe, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(Duration ?? 0), IsDone = false };
-  
+
                         HttpResponseMessage res2 = await client.PostAsJsonAsync(client.BaseAddress + $"/BankPayment/APIModifyDataTransactionsSystem", transactionsSystem);
                         if (res.StatusCode == System.Net.HttpStatusCode.OK)
                         {
@@ -127,7 +127,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Roles = "User")]
         public IActionResult PaymentForPaidServices(int NutritionistId, string? Describe, decimal Price, short Duration, int TypeInsert)
         {
             var configuration = new ConfigurationBuilder()
@@ -177,9 +177,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         //    // Truyền danh sách lên view
         //    return View(systemPremiumPackages);
         //}
-        
 
-        [HttpGet, Authorize]
+
+        [HttpGet, Authorize(Roles = "User")]
         public async Task<IActionResult> NutritionistServicesAsync()
         {
             try
@@ -247,65 +247,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        
 
-        public static string GeneratePassword(int length, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = true)
-        {
-            if (length <= 0)
-            {
-                throw new ArgumentException("Password length must be greater than 0.");
-            }
-
-            // Các bộ ký tự có thể sử dụng
-            const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const string lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
-            const string numberChars = "0123456789";
-            const string specialChars = "!@#$%^&*()-_=+[]{}|;:,.<>?/";
-
-            // Chuỗi ký tự được chọn để tạo mật khẩu
-            string characterPool = "";
-
-            if (includeUppercase)
-            {
-                characterPool += uppercaseChars;
-            }
-
-            if (includeLowercase)
-            {
-                characterPool += lowercaseChars;
-            }
-
-            if (includeNumbers)
-            {
-                characterPool += numberChars;
-            }
-
-            if (includeSpecialChars)
-            {
-                characterPool += specialChars;
-            }
-
-            if (string.IsNullOrEmpty(characterPool))
-            {
-                throw new ArgumentException("At least one character type must be selected.");
-            }
-
-            // Tạo mật khẩu
-            var random = new Random();
-            var passwordBuilder = new StringBuilder();
-
-            for (int i = 0; i < length; i++)
-            {
-                int randomIndex = random.Next(characterPool.Length);
-                passwordBuilder.Append(characterPool[randomIndex]);
-            }
-
-            return passwordBuilder.ToString();
-        }
-
-
-
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminDashboardAsync()
         {
             try
@@ -338,14 +281,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                         ViewBag.GraphDataString0 = JsonConvert.SerializeObject(graphData[0]);
                         ViewBag.GraphDataString1 = JsonConvert.SerializeObject(graphData[1]);
-                        ViewBag.GraphDataString2 = JsonConvert.SerializeObject(graphData[2]); 
-                        ViewBag.GraphDataString3 = JsonConvert.SerializeObject((graphData.SelectMany(row => row).Max()/100)*111); 
+                        ViewBag.GraphDataString2 = JsonConvert.SerializeObject(graphData[2]);
+                        ViewBag.GraphDataString3 = JsonConvert.SerializeObject((graphData.SelectMany(row => row).Max() / 100) * 111);
                     }
 
                     ViewBag.MoneyInThisMonth = MoneyInThisMonth;
                     ViewBag.MoneyOutThisMonth = MoneyOutThisMonth;
                     ViewBag.BalanceThisMonth = BalanceThisMonth;
-                    
+
                     return View(transactionsSystemData);
                 }
 
@@ -404,7 +347,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     HttpContent normalUserContent = normalUserResponse.Content;
                     string data = await normalUserContent.ReadAsStringAsync();
-                    List<dynamic> normalUsersData = JsonConvert.DeserializeObject< List<dynamic>>(data);
+                    List<dynamic> normalUsersData = JsonConvert.DeserializeObject<List<dynamic>>(data);
 
                     HttpContent premiumUserContent = premiumUserResponse.Content;
                     string data1 = await premiumUserContent.ReadAsStringAsync();
@@ -452,7 +395,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         }
                         ).ToList();
 
-                    users = users.Concat( premiumUsers ).ToList();
+                    users = users.Concat(premiumUsers).ToList();
 
                     // Search logic
                     if (!string.IsNullOrEmpty(searchQuery))
@@ -495,7 +438,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 HttpResponseMessage response =
                     await client.GetAsync(client.BaseAddress + "/Users/GetUserDetail/" + userId);
 
-                if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
                     string data = await content.ReadAsStringAsync();
@@ -605,7 +548,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 {
                     ViewBag.AlertMessage = "Cannot get list nutritionists! Please try again!";
                 }
-                
+
                 ViewBag.SearchQuery = searchQuery;
 
                 return View("~/Views/Admin/NutritionistManagement/ListNutritionist.cshtml");
@@ -675,14 +618,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         dynamic packagesData = JsonConvert.DeserializeObject<dynamic>(data1);
 
                         ExpertPackage package = new ExpertPackage
-                            {
-                                Id = packagesData.id,
-                                NutritionistDetailsId = packagesData.nutritionistDetailsId,
-                                Name = packagesData.name,
-                                Describe = packagesData.describe,
-                                Price = packagesData.price,
-                                Duration = packagesData.duration
-                            };
+                        {
+                            Id = packagesData.id,
+                            NutritionistDetailsId = packagesData.nutritionistDetailsId,
+                            Name = packagesData.name,
+                            Describe = packagesData.describe,
+                            Price = packagesData.price,
+                            Duration = packagesData.duration
+                        };
 
                         ViewBag.package = package;
                     }
@@ -725,7 +668,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.AlertMessage = "Cannot update user status! Please try again!";
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
@@ -789,7 +732,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
@@ -826,7 +769,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.SuccessMessage = "Add ingredient successfully!";
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
@@ -859,7 +802,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 ViewBag.keyNotes = keyNotes;
                 ViewBag.typesOfCalculation = typesOfCalculation;
-                
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HttpContent content = response.Content;
@@ -874,7 +817,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
                 return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml");
@@ -1010,7 +953,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
-                HttpResponseMessage response = 
+                HttpResponseMessage response =
                     await client.DeleteAsync(client.BaseAddress + "/Ingredient/RemoveIngredient/" + Id);
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
@@ -1021,7 +964,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.SuccessMessage = "Delete ingredient successfully!";
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
@@ -1101,10 +1044,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 var data = new
                 {
-                    id= 0,
-                    name= p_name,
-                    describe= p_desc,
-                    price= p_price,
+                    id = 0,
+                    name = p_name,
+                    describe = p_desc,
+                    price = p_price,
                     duration = p_duration
                 };
 
@@ -1185,7 +1128,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     ViewBag.AlertMessage = errMsg;
                 }
-                else if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                else if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     ViewBag.SuccessMessage = "Delete package successfully!";
                 }
@@ -1239,7 +1182,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.foodIngredients = foodIngredients;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
@@ -1275,7 +1218,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.SuccessMessage = "Add ingredient successfully!";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
@@ -1311,7 +1254,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
-
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<IActionResult> FoodList(string search, string diseaseSearch)
         {
             var foodList = await GetFoodList(search);
@@ -1339,16 +1282,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 CookingDifficulties = cookingDifficulty,
                 ListOfDiseases = listOfDisease,
                 FoodAndDiseases = foodAndDiseases,
-                RecipesByFood = recipesByFood
+                RecipesByFood = recipesByFood,
+                apiUrl = client.BaseAddress.ToString()
             };
 
             return View(viewModel);
         }
 
-
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<List<RecipeDT>> GetFoodRecipes(int foodId)
         {
-            var requestUrl = $"https://localhost:7045/api/Food/GetFoodRecipe/{foodId}";
+            var requestUrl = $"{client.BaseAddress}/Food/GetFoodRecipe/{foodId}";
 
             var response = await client.GetAsync(requestUrl);
             if (!response.IsSuccessStatusCode)
@@ -1362,7 +1306,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return recipes ?? new List<RecipeDT>();
         }
 
-
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<List<Food>> GetFoodList(string search)
         {
             var requestUrl = client.BaseAddress + $"/Nutrition/get-food-list?search={search}";
@@ -1380,64 +1324,60 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> SaveFood(Food food)
         {
-            using (var httpClient = new HttpClient())
+            var apiUrl = client.BaseAddress + "/Nutrition/save-food";
+            var foodData = new
             {
-                var apiUrl = client.BaseAddress + "/Nutrition/save-food";
-                var foodData = new
-                {
-                    food.FoodListId,
-                    food.Name,
-                    food.Describe,
-                    food.Rate,
-                    food.NumberRate,
-                    food.UrlImage,
-                    food.FoodTypeId,
-                    food.KeyNoteId,
-                    food.IsActive,
-                    food.PreparationTime,
-                    food.CookingTime,
-                    food.CookingDifficultyId
-                };
+                food.FoodListId,
+                food.Name,
+                food.Describe,
+                food.Rate,
+                food.NumberRate,
+                food.UrlImage,
+                food.FoodTypeId,
+                food.KeyNoteId,
+                food.IsActive,
+                food.PreparationTime,
+                food.CookingTime,
+                food.CookingDifficultyId
+            };
 
-                var content = new StringContent(JsonConvert.SerializeObject(foodData), Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(apiUrl, content);
+            var content = new StringContent(JsonConvert.SerializeObject(foodData), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(apiUrl, content);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["Message"] = "Create/Update food thành công!";
-                }
-                else
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    TempData["Message"] = "Có lỗi xảy ra khi tạo/cập nhật food.";
-                    Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật food.");
-                    Console.WriteLine("Status Code: " + response.StatusCode);
-                    Console.WriteLine("Error Content: " + errorContent);
-                }
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Message"] = "Create/Update food thành công!";
             }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                TempData["Message"] = "Có lỗi xảy ra khi tạo/cập nhật food.";
+                Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật food.");
+                Console.WriteLine("Status Code: " + response.StatusCode);
+                Console.WriteLine("Error Content: " + errorContent);
+            }
+
 
             return RedirectToAction("FoodList");
         }
 
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<List<FoodType>> GetFoodTypes()
         {
-            using (var client = new HttpClient())
+            var response = await client.GetAsync($"{client.BaseAddress}/Food/GetFoodTypes");
+            if (response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri("https://localhost:7045/");
-                var response = await client.GetAsync("api/Food/GetFoodTypes");
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseData = await response.Content.ReadAsStringAsync();
-                    var foodTypesResponse = JsonConvert.DeserializeObject<List<FoodType>>(responseData);
-                    return foodTypesResponse;
-                }
-                return new List<FoodType>();
+                var responseData = await response.Content.ReadAsStringAsync();
+                var foodTypesResponse = JsonConvert.DeserializeObject<List<FoodType>>(responseData);
+                return foodTypesResponse;
             }
+            return new List<FoodType>();
         }
 
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<List<KeyNote>> GetKeyNotes()
         {
             var requestUrl = client.BaseAddress + "/KeyNote/GetKeyNotes";
@@ -1467,6 +1407,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return keyNoteResponse ?? new List<KeyNote>();
         }
 
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<List<CookingDifficulty>> GetCookingDifficulty()
         {
             var requestUrl = client.BaseAddress + "/CookingDifficulties/GetAllCookingDifficulties";
@@ -1483,6 +1424,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return cookingDifficultyResponse ?? new List<CookingDifficulty>();
         }
 
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<List<ListOfDisease>> GetDiseaseList(string search)
         {
             var requestUrl = client.BaseAddress + $"/Nutrition/list-disease?search={search}";
@@ -1499,7 +1441,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return diseaseListResponse ?? new List<ListOfDisease>();
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> SaveDisease(ListOfDisease disease)
         {
             using (var httpClient = new HttpClient())
@@ -1532,39 +1474,37 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("FoodList");
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> SaveFoodAndDisease(FoodAndDisease model)
         {
-            using (var httpClient = new HttpClient())
+            var apiUrl = client.BaseAddress + "/Nutrition/create-food-and-disease";
+            var diseaseData = new
             {
-                var apiUrl = client.BaseAddress + "/Nutrition/create-food-and-disease";
-                var diseaseData = new
-                {
-                    model.FoodListId,
-                    model.ListOfDiseasesId,
-                    model.Describe,
-                    model.IsGoodOrBad
-                };
-                var content = new StringContent(JsonConvert.SerializeObject(diseaseData), Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(apiUrl, content);
+                model.FoodListId,
+                model.ListOfDiseasesId,
+                model.Describe,
+                model.IsGoodOrBad
+            };
+            var content = new StringContent(JsonConvert.SerializeObject(diseaseData), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(apiUrl, content);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["Message"] = "Tạo/Cập nhật bảng so sánh thành công!";
-                }
-                else
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    TempData["Message"] = "Có lỗi xảy ra khi tạo/cập nhật bảng so sánh.";
-                    Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật bảng so sánh.");
-                    Console.WriteLine("Status Code: " + response.StatusCode);
-                    Console.WriteLine("Error Content: " + errorContent);
-                }
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Message"] = "Tạo/Cập nhật bảng so sánh thành công!";
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                TempData["Message"] = "Có lỗi xảy ra khi tạo/cập nhật bảng so sánh.";
+                Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật bảng so sánh.");
+                Console.WriteLine("Status Code: " + response.StatusCode);
+                Console.WriteLine("Error Content: " + errorContent);
             }
 
             return RedirectToAction("FoodList");
         }
 
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<List<ListFoodAndDisease>> GetFoodAndDiseaseList()
         {
             var requestUrl = client.BaseAddress + "/Nutrition/get-all-food-and-disease";
@@ -1581,32 +1521,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return diseaseListResponse ?? new List<ListFoodAndDisease>();
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> SaveFoodRecipe([FromBody] SaveFoodRecipeDTO model)
         {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("https://localhost:7045/");
-                    var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("api/Food/SaveFoodRecipes", content);
+            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"{client.BaseAddress}/Food/SaveFoodRecipes", content);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return Json(new { success = true, message = "Recipe saved successfully!" });
-                    }
-                    else
-                    {
-                        var errorContent = await response.Content.ReadAsStringAsync();
-                        return Json(new { success = false, message = $"Failed to save recipe: {errorContent}" });
-                    }
-                }
-            }
-            catch (Exception ex)
+            if (response.IsSuccessStatusCode)
             {
-                return Json(new { success = false, message = $"Error: {ex.Message}" });
+                return Json(new { success = true, message = "Recipe saved successfully!" });
             }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                return Json(new { success = false, message = $"Failed to save recipe: {errorContent}" });
+            }
+
         }
 
     }

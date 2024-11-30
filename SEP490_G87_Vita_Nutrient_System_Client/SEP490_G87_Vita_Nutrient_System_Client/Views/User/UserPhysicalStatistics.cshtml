@@ -6,7 +6,7 @@
 }
 
 <div class="container">
-    <h2 class="title">Thống kế chỉ số cá nhân</h2>
+    <h2 class="title">Thông tin thể chất và bệnh lý</h2>
 
     <form asp-action="UserPhysicalStatistics" method="post" class="personal-info-form" id="userInfoForm">
         @Html.AntiForgeryToken()
@@ -43,7 +43,7 @@
         </div>
 
         <div class="form-group">
-            <label for="Age" class="col-label">Tuổi(năm):</label>
+            <label for="Age" class="col-label">Tuổi:</label>
             <div class="col-input">
                 <input asp-for="Age" class="form-control"
                        oninvalid="this.setCustomValidity('Chỉ hỗ trợ nhập tuổi từ 5 đến 100.')"
@@ -52,11 +52,6 @@
                        min="5" max="100" required />
             </div>
         </div>
-
-
-
-
-
 
         <div class="form-group row">
             <label for="ActivityLevel" class="col-label">Mức độ hoạt động:</label>
@@ -70,6 +65,54 @@
                 </select>
             </div>
         </div>
+
+        <div class="form-group row">
+            <label for="underlyingDiseaseInput" class="col-label">Bệnh lý:</label>
+            <div class="col-sm-9">
+                <div id="currentDiseasesContainer">
+                    @if (Model.UnderlyingDiseaseNames != null && Model.UnderlyingDiseaseNames.Any())
+                    {
+                        foreach (var disease in ViewBag.Diseases as List<SEP490_G87_Vita_Nutrient_System_Client.Models.ListOfDisease>)
+                        {
+                            if (Model.UnderlyingDiseaseNames.Contains(disease.Name))
+                            {
+                                <span class="badge bg-primary disease-badge" data-id="@disease.Id" data-name="@disease.Name">
+                                    @disease.Name
+                                    <button type="button" class="btn-close btn-close-white btn-sm remove-disease-btn"></button>
+
+                                </span>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <span id="noDiseasesText">Không có bệnh lý nào được ghi nhận.</span>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="diseaseSelect" class="col-label">Thêm bệnh lý:</label>
+            <div class="col-sm-12 d-flex align-items-center">
+                <select id="diseaseSelect" class="form-control me-2" style="flex: 1;">
+                    @if (ViewBag.Diseases != null)
+                    {
+                        foreach (var disease in ViewBag.Diseases as List<SEP490_G87_Vita_Nutrient_System_Client.Models.ListOfDisease>)
+                        {
+                            <option value="@disease.Id">@disease.Name</option>
+                        }
+                    }
+                </select>
+                <button type="button" class="btn btn-success btn-sm" id="addDiseaseBtn">Thêm</button>
+            </div>
+            <!-- Input ẩn UserId -->
+            <input type="hidden" name="uid" value="@Model.UserId" />
+
+        </div>
+
+
 
         <div class="form-group row">
             <div class="col-label"></div>
@@ -98,7 +141,109 @@
     </div>
 </div>
 
+
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const userId = document.querySelector("input[name='uid']").value;
+
+        // Sự kiện khi nhấn nút "Thêm bệnh lý"
+        document.getElementById("addDiseaseBtn").addEventListener("click", () => {
+            const diseaseId = document.getElementById("diseaseSelect").value;
+            const diseaseName = document.getElementById("diseaseSelect").selectedOptions[0].textContent;
+
+            if (!diseaseId || !userId) {
+                alert("Vui lòng chọn bệnh và đảm bảo User ID hợp lệ.");
+                return;
+            }
+
+            fetch(`/NutritionRoute/AddDisease`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ userId, diseaseId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Thêm bệnh lý vào danh sách
+                        const container = document.getElementById("currentDiseasesContainer");
+                        const newBadge = document.createElement("span");
+                        newBadge.className = "badge bg-primary disease-badge";
+                        newBadge.dataset.name = diseaseName;
+                        newBadge.dataset.id = diseaseId;
+                        newBadge.innerHTML = `
+                            <span>${diseaseName}</span>
+                            <button type="button" class="btn-close remove-disease-btn"></button>
+                        `;
+                        container.appendChild(newBadge);
+
+                        // Xóa thông báo "Không có bệnh lý"
+                        const noDiseasesText = document.getElementById("noDiseasesText");
+                        if (noDiseasesText) noDiseasesText.remove();
+
+                        // Gắn sự kiện xóa cho nút mới
+                        setupRemoveDiseaseButton(newBadge.querySelector(".remove-disease-btn"));
+
+                        //alert("Thêm bệnh lý thành công!");
+                    } else {
+                        alert(data.message || "Có lỗi xảy ra khi thêm bệnh lý.");
+                    }
+                })
+                .catch(() => alert("Có lỗi xảy ra khi kết nối với server."));
+        });
+
+        // Xử lý xóa bệnh lý
+        function setupRemoveDiseaseButton(button) {
+            button.addEventListener("click", () => {
+                const diseaseBadge = button.closest(".disease-badge");
+                const diseaseId = diseaseBadge.dataset.id;
+                const userId = document.querySelector("input[name='uid']").value;
+
+                console.log("User ID:", userId);
+                console.log("Disease ID:", diseaseId);
+
+                if (!userId || !diseaseId) {
+                    alert("User ID hoặc Disease ID không hợp lệ.");
+                    return;
+                }
+
+                fetch(`/NutritionRoute/DeleteDisease`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ userId, diseaseId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            diseaseBadge.remove();
+
+                            // Nếu không còn bệnh, hiển thị "Không có bệnh lý"
+                            const container = document.getElementById("currentDiseasesContainer");
+                            if (!container.querySelector(".disease-badge")) {
+                                container.innerHTML = '<span id="noDiseasesText">Không có bệnh lý nào được ghi nhận.</span>';
+                            }
+
+                            //alert("Xóa bệnh lý thành công!");
+                        } else {
+                            alert(data.message || "Có lỗi xảy ra khi xóa bệnh lý.");
+                        }
+                    })
+                    .catch(() => alert("Có lỗi xảy ra khi kết nối với server."));
+            });
+        }
+
+        // Gắn sự kiện xóa cho các nút xóa hiện có
+        document.querySelectorAll(".remove-disease-btn").forEach(button => {
+            setupRemoveDiseaseButton(button);
+        });
+    });
+
+
     // Thêm sự kiện `blur` để kiểm tra từng trường nhập khi người dùng rời khỏi input
     document.querySelectorAll(".form-control").forEach((input) => {
         input.addEventListener("blur", function () {
@@ -205,7 +350,8 @@
                 Height: $("#Height").val(),
                 Weight: $("#Weight").val(),
                 Age: $("#Age").val(),
-                ActivityLevel: $("#ActivityLevel").val()
+                ActivityLevel: $("#ActivityLevel").val(),
+                UnderlyingDisease: $("UnderlyingDisease").val()
             },
             headers: {
                 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()

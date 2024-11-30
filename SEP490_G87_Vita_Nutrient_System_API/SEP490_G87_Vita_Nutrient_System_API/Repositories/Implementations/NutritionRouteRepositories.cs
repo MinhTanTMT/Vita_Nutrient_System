@@ -120,7 +120,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 CreateById = nutritionRouteDto.CreateById,
                 Name = nutritionRouteDto.Name,
                 Describe = nutritionRouteDto.Describe,
-                StartDate = DateTime.Now,
+                StartDate = nutritionRouteDto.StartDate,
                 EndDate = nutritionRouteDto.EndDate?.Date,
                 IsDone = nutritionRouteDto.IsDone
             };
@@ -350,10 +350,91 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             // Cập nhật IsDone
             route.IsDone = true;
+            route.EndDate = DateTime.Today;
             _context.NutritionRoutes.Update(route);
             await _context.SaveChangesAsync();
             return true;
         }
+
+
+        public async Task<bool> RateNutritionistAsync(int userId, int nutritionistId, int userListManagementId, short rate)
+        {
+            if (rate < 1 || rate > 5)
+            {
+                return false; // Điểm đánh giá không hợp lệ
+            }
+
+            // Lấy gói đăng ký
+            var userList = await _context.UserListManagements
+                .FirstOrDefaultAsync(ul => ul.Id == userListManagementId
+                                           && ul.UserId == userId
+                                           && ul.NutritionistId == nutritionistId);
+
+            if (userList == null)
+            {
+                return false; // Không tìm thấy gói đăng ký
+            }
+
+            // Kiểm tra trạng thái hoàn thành
+            if (userList.IsDone != true)
+            {
+                return false; // Gói chưa hoàn thành, không được đánh giá
+            }
+
+            // Kiểm tra thời gian (chỉ trong vòng 7 ngày sau khi hết thời hạn)
+            if (userList.EndDate == null || userList.EndDate.Value.AddDays(7) < DateTime.Now)
+            {
+                return false; // Quá hạn đánh giá
+            }
+
+            // Cập nhật điểm đánh giá
+            userList.Rate = rate;
+            _context.UserListManagements.Update(userList);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+
+        public async Task<IEnumerable<UserListManagementDTO>> GetRatingsByNutritionistIdAsync(int nutritionistId)
+        {
+            return await _context.UserListManagements
+                .Where(ul => ul.NutritionistId == nutritionistId && ul.Rate.HasValue)
+                .Select(ul => new UserListManagementDTO
+                {
+                    Id = ul.Id,
+                    NutritionistId = ul.NutritionistId,
+                    UserId = ul.UserId,
+                    Rate = ul.Rate,
+                    UserName = ul.User.FirstName + " " + ul.User.LastName,
+                    StartDate = ul.StartDate,
+                    EndDate = ul.EndDate,
+                    Describe = ul.Describe
+                }).ToListAsync();
+        }
+
+        public async Task<IEnumerable<UserListManagementDTO>> GetDetailsAllPremiumUserByUserAsync(int userId)
+        {
+            return await _context.UserListManagements
+                .Where(ul => ul.UserId == userId) // Lọc theo userId
+                .Include(ul => ul.Nutritionist)  // Bao gồm thông tin chuyên gia dinh dưỡng
+                .Select(ul => new UserListManagementDTO
+                {
+                    Id = ul.Id,
+                    NutritionistId = ul.NutritionistId,
+                    UserId = ul.UserId,
+                    Describe = ul.Describe,
+                    StartDate = ul.StartDate,
+                    EndDate = ul.EndDate,
+                    Rate = ul.Rate,
+                    IsDone = ul.IsDone,
+                    UserName = ul.User.FirstName + " " + ul.User.LastName,
+                    NutritionistName = ul.Nutritionist.FirstName + " " + ul.Nutritionist.LastName,
+                    UrlImage = ul.Nutritionist.Urlimage // Hình ảnh của chuyên gia
+                })
+                .ToListAsync();
+        }
+
 
     }
 
