@@ -94,6 +94,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
                     ViewData["UserId"] = userId;
+                    ViewData["UserName"] = routes.FirstOrDefault()?.UserName;
+
 
                     return View(paginatedRoutes);                     
                 }
