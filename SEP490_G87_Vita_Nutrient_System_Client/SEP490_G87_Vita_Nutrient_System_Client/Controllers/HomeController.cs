@@ -9,6 +9,7 @@ using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using Microsoft.AspNetCore.Authentication.Google;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
@@ -154,7 +155,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else if (((string)u.RoleName).Equals("Nutritionist"))
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "ListUser");
                     }
                     else
                     {
@@ -220,8 +221,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm)
         {
+            string pattern = @"^(?!.*@.*\.(com|net|org|edu|gov|info|co|io)$)(?!.*[^\x00-\x7F]).+$";
             try
             {
+                if (!Regex.IsMatch(account, pattern) || !Regex.IsMatch(account, pattern))
+                {
+                    ViewBag.AlertMessage = "Please enter continuous characters without accents and not gmail.";
+                    return View();
+                }
                 if (!password.Equals(confirm))
                 {
                     ViewBag.AlertMessage = "Password mismatch";
