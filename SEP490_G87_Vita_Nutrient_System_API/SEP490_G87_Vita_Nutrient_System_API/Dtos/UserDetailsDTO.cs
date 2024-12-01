@@ -27,6 +27,9 @@
         public double? ActivityLevel { get; set; }
 
         public int? Calo { get; set; }
+        public DateTime? TimeUpdate { get; set; }
+
+        public int? WeightGoal { get; set; }
     }
 
 }

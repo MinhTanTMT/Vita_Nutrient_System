@@ -157,6 +157,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(userDetail);
         }
+        [HttpGet("GetUserPhysicalStatisticsDTOByUserIdAsync/{userId}")]
+        public async Task<IActionResult> GetUserPhysicalStatisticsDTOByUserIdAsync(int userId)
+        {
+            var userDetail = await repositories.GetUserPhysicalStatisticsDTOByUserIdAsync(userId);
+
+            if (userDetail == null)
+            {
+                return NotFound(new { message = "UserDetail not found" });
+            }
+
+            return Ok(userDetail);
+        }
         [HttpGet("GetNutritionistDetail/{id}")]
         public async Task<ActionResult<dynamic>> GetNutritionistDetail(int id)
         {
@@ -192,7 +204,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _repositories.SaveUserDetails(userDetails);
             return Ok(new { message = "User details updated successfully." });
         }
+        [HttpPost("UpdateUserWeightGoal")]
+        public async Task<IActionResult> UpdateUserWeightGoal([FromBody] UserPhysicalStatisticsDTO userDetails)
+        {
+            if (userDetails == null || userDetails.UserId <= 0)
+            {
+                return BadRequest(new { message = "Invalid user details data." });
+            }
 
+            await _repositories.SaveUserWeightGoal(userDetails);
+            return Ok(new { message = "User details updated successfully." });
+        }
         [HttpPost("UpdateUserStatus")]
         public async Task<ActionResult<string>> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
         {

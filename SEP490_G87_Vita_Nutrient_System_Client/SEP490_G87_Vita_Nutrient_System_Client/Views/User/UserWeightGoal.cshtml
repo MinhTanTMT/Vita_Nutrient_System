@@ -1,0 +1,153 @@
+﻿<link rel="stylesheet" href="/css/UserWeightGoal.css" />
+@model SEP490_G87_Vita_Nutrient_System_Client.Models.UserPhysicalStatistics
+
+<div class="container">
+    <h4 class="title">Mục tiêu cân nặng</h4>
+
+    <form asp-action="UserWeightGoal" method="post" class="personal-info-form" id="userInfoForm">
+        @Html.AntiForgeryToken()
+
+        <!-- Input hidden để lưu thông tin người dùng và các thông số cần tính toán calo -->
+        <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+        <input type="hidden" asp-for="Height" value="@Model.Height" />
+        <input type="hidden" asp-for="Age" value="@Model.Age" />
+        <input type="hidden" asp-for="Gender" value="@Model.Gender" />
+        <input type="hidden" asp-for="ActivityLevel" value="@Model.ActivityLevel" />
+
+        <!-- Hiển thị thông tin người dùng mà có thể chỉnh sửa -->
+        <div class="form-group">
+            <label for="Weight" class="col-label">Cân nặng (kg):</label>
+            <div class="col-input">
+                <input asp-for="Weight" class="form-control" required value="@Model.Weight" />
+            </div>
+        </div>
+
+        <!-- Mục tiêu cân nặng - Lựa chọn -->
+        <div class="form-group">
+            <label for="WeightGoal">Mục tiêu cân nặng</label>
+            <select asp-for="WeightGoal" class="form-control" required>
+                <option value="1" >Giảm mỡ</option>
+                <option value="2" >Duy trì cân nặng</option>
+                <option value="3" >Xây dựng cơ bắp</option>
+            </select>
+        </div>
+
+        <!-- Ngày cập nhật - Chỉ hiển thị -->
+        <div class="form-group">
+            <label for="TimeUpdate">Ngày cập nhật</label>
+            <input type="text" class="form-control" id="TimeUpdate" name="TimeUpdate" value="@Model.TimeUpdate?.ToString("dd/MM/yyyy")" readonly />
+        </div>
+
+        <!-- Nút để tính toán mục tiêu dinh dưỡng -->
+        <div class="form-group row">
+            <div class="col-label"></div>
+            <div class="col-input">
+                <button type="button" class="btn btn-primary" onclick="showNutritionalGoals()">Cập nhật mục tiêu dinh dưỡng</button>
+            </div>
+        </div>
+
+        <div id="successMessage" class="alert alert-success" style="display:none;"></div>
+        <div id="errorMessage" class="alert alert-danger" style="display:none;"></div>
+    </form>
+</div>
+
+<!-- Modal cho bảng "Mục tiêu dinh dưỡng của tôi" -->
+<div id="nutritionalGoalsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>Cập nhật mục tiêu dinh dưỡng</h3>
+        <p>Lượng Calo: <span id="caloriesValue"></span> calo</p>
+        <ul>
+            <li><span class="dot yellow"></span> ~ <span id="carbsValue"></span>g (40%) Carbs</li>
+            <li><span class="dot blue"></span> ~ <span id="fatsValue"></span>g (30%) Fats</li>
+            <li><span class="dot purple"></span> ~ <span id="proteinsValue"></span>g (30%) Proteins</li>
+        </ul>
+        <button type="button" class="btn btn-primary" onclick="submitForm()">Lưu</button>
+    </div>
+</div>
+
+<script>
+    // Hàm khi nhấn nút "Cập nhật mục tiêu"
+    function showNutritionalGoals() {
+        // Lấy các giá trị từ form
+        const height = parseFloat(document.querySelector('input[name="Height"]').value);
+        const weight = parseFloat(document.querySelector('input[name="Weight"]').value);
+        const age = parseFloat(document.querySelector('input[name="Age"]').value);
+        const gender = document.querySelector('input[name="Gender"]').value === "true";
+        const activityLevel = parseFloat(document.querySelector('input[name="ActivityLevel"]').value) || 1.2;
+        const weightGoal = parseInt(document.querySelector('select[name="WeightGoal"]').value); // Lấy giá trị mục tiêu cân nặng
+
+       
+
+        // Tính BMR (Basal Metabolic Rate) - Tốc độ trao đổi chất cơ bản
+        let bmr = gender
+            ? (10 * weight) + (6.25 * height) - (5 * age) + 5  // Nam
+            : (10 * weight) + (6.25 * height) - (5 * age) - 161; // Nữ
+
+        // Tính TDEE (Total Daily Energy Expenditure) - Tổng lượng calo tiêu thụ mỗi ngày
+        let tdee = Math.round(bmr * activityLevel);
+        // Điều chỉnh TDEE theo mục tiêu cân nặng
+        if (weightGoal === 1) { // Giảm mỡ
+            tdee = tdee - tdee * 0.15;
+        } else if (weightGoal === 2) { // Duy trì cân nặng
+            tdee = tdee; // Không thay đổi
+        } else if (weightGoal === 3) { // Xây dựng cơ bắp
+            tdee = tdee + tdee * 0.15;
+        }
+        tdee = Math.round(tdee)
+        // Tính lượng carbs, fats và protein
+        const carbs = Math.round(tdee * 0.4 / 4); // Carbs chiếm 40% tổng TDEE
+        const fats = Math.round(tdee * 0.3 / 9); // Fats chiếm 30% tổng TDEE
+        const proteins = Math.round(tdee * 0.3 / 4); // Protein chiếm 30% tổng TDEE
+
+        // Cập nhật giá trị vào modal
+        document.getElementById("caloriesValue").textContent = Math.round(tdee);
+        document.getElementById("carbsValue").textContent = carbs;
+        document.getElementById("fatsValue").textContent = fats;
+        document.getElementById("proteinsValue").textContent = proteins;
+
+        // Hiển thị bảng modal
+        document.getElementById("nutritionalGoalsModal").style.display = "block";
+    }
+
+
+    function closeModal() {
+        document.getElementById("nutritionalGoalsModal").style.display = "none";
+    }
+
+    // Hàm gửi dữ liệu khi người dùng lưu
+    function submitForm() {
+        closeModal();
+        $.ajax({
+            url: '@Url.Action("UserWeightGoal", "User")',
+            type: 'POST',
+            data: {
+                UserId: $("input[name='UserId']").val(),
+                Weight: $("input[name='Weight']").val(),
+                WeightGoal: $("select[name='WeightGoal']").val(),
+                TimeUpdate: $("input[name='TimeUpdate']").val(),
+                // Các thông tin khác để tính toán calo
+                Height: $("input[name='Height']").val(),
+                Age: $("input[name='Age']").val(),
+                Gender: $("input[name='Gender']").val(),
+                ActivityLevel: $("input[name='ActivityLevel']").val(),
+            },
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (response) {
+                if (response.success) {
+                    $("#successMessage").text(response.message).show();
+                    $("#errorMessage").hide();
+                } else {
+                    $("#errorMessage").text(response.message).show();
+                    $("#successMessage").hide();
+                }
+            },
+            error: function () {
+                $("#errorMessage").text("Có lỗi xảy ra trong quá trình lưu thông tin.").show();
+                $("#successMessage").hide();
+            }
+        });
+    }
+</script>

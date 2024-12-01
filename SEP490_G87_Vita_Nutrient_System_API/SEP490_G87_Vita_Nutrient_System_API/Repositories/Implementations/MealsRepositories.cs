@@ -929,7 +929,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 Height = userStats.Height,
                 Weight = userStats.Weight,
                 Age = userStats.Age,
-                ActivityLevel = userStats.ActivityLevel
+                ActivityLevel = userStats.ActivityLevel,
+                TimeUpdate = userStats.TimeUpdate
             };
 
             // Tìm User dựa vào UserId
@@ -946,6 +947,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 userDetailEntity.Weight = userDetails.Weight;
                 userDetailEntity.Age = userDetails.Age;
                 userDetailEntity.ActivityLevel = userDetails.ActivityLevel;
+                userDetailEntity.TimeUpdate = userDetails.TimeUpdate;
                 double bmr;
                 double weight = userDetails.Weight ?? 0;
                 double height = userDetails.Height ?? 0;
