@@ -1254,7 +1254,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Tùng
         ////////////////////////////////////////////////////////////
         ///
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<IActionResult> FoodList(string search, string diseaseSearch)
         {
             var foodList = await GetFoodList(search);
@@ -1289,7 +1289,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View(viewModel);
         }
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<List<RecipeDT>> GetFoodRecipes(int foodId)
         {
             var requestUrl = $"{client.BaseAddress}/Food/GetFoodRecipe/{foodId}";
@@ -1306,7 +1306,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return recipes ?? new List<RecipeDT>();
         }
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<List<Food>> GetFoodList(string search)
         {
             var requestUrl = client.BaseAddress + $"/Nutrition/get-food-list?search={search}";
@@ -1324,7 +1324,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpPost, Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<IActionResult> SaveFood(Food food)
         {
             var apiUrl = client.BaseAddress + "/Nutrition/save-food";
@@ -1364,7 +1364,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("FoodList");
         }
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<List<FoodType>> GetFoodTypes()
         {
             var response = await client.GetAsync($"{client.BaseAddress}/Food/GetFoodTypes");
@@ -1377,7 +1377,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return new List<FoodType>();
         }
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<List<KeyNote>> GetKeyNotes()
         {
             var requestUrl = client.BaseAddress + "/KeyNote/GetKeyNotes";
@@ -1407,7 +1407,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return keyNoteResponse ?? new List<KeyNote>();
         }
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<List<CookingDifficulty>> GetCookingDifficulty()
         {
             var requestUrl = client.BaseAddress + "/CookingDifficulties/GetAllCookingDifficulties";
@@ -1424,7 +1424,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return cookingDifficultyResponse ?? new List<CookingDifficulty>();
         }
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<List<ListOfDisease>> GetDiseaseList(string search)
         {
             var requestUrl = client.BaseAddress + $"/Nutrition/list-disease?search={search}";
@@ -1441,7 +1441,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return diseaseListResponse ?? new List<ListOfDisease>();
         }
 
-        [HttpPost, Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<IActionResult> SaveDisease(ListOfDisease disease)
         {
             using (var httpClient = new HttpClient())
@@ -1474,7 +1474,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("FoodList");
         }
 
-        [HttpPost, Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<IActionResult> SaveFoodAndDisease(FoodAndDisease model)
         {
             var apiUrl = client.BaseAddress + "/Nutrition/create-food-and-disease";
@@ -1504,7 +1504,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("FoodList");
         }
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<List<ListFoodAndDisease>> GetFoodAndDiseaseList()
         {
             var requestUrl = client.BaseAddress + "/Nutrition/get-all-food-and-disease";
@@ -1521,7 +1521,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return diseaseListResponse ?? new List<ListFoodAndDisease>();
         }
 
-        [HttpPost, Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Admin, Nutritionist")]
         public async Task<IActionResult> SaveFoodRecipe([FromBody] SaveFoodRecipeDTO model)
         {
             var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
