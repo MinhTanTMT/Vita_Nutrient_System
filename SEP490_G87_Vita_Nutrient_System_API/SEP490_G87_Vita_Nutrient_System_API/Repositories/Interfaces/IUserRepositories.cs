@@ -21,7 +21,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         dynamic GetUserById(int id);
         dynamic ChangePassword(ChangePasswordDTO model);
         Task<UserLoginRegister> GetRegisterLoginGoogle(UserLoginRegister user);
-
+        Task<String> EncryptPassword(string password);
+        Task<String> DecryptPassword(string encryptedPassword);
 
         ////////////////////////////////////////////////////////////
         /// Dũng
