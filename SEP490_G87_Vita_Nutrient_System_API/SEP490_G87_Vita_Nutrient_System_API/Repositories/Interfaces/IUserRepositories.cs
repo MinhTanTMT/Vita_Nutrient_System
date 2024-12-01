@@ -14,7 +14,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         ///
         ///
 
-        Task<bool> CheckExitAccountUser(string account);
+        Task<bool> CheckAccountUserNull(string account);
         Task<bool> ForgotPassword(string emailGoogle);
         Task<UserLoginRegister> GetUserLogin(string account, string password);
         Task<UserLoginRegister> GetUserRegister(UserLoginRegister user);

@@ -155,7 +155,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     }
                     else if (((string)u.RoleName).Equals("Nutritionist"))
                     {
-                        return RedirectToAction("Index", "ListUser");
+                        return RedirectToAction("GetInfoAllPremiumUserByNutritionist", "NutritionRoute");
                     }
                     else
                     {

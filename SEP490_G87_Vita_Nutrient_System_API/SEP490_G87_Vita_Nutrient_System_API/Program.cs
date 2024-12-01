@@ -6,6 +6,7 @@ using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 
 // Add services to the container.
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -21,7 +22,7 @@ builder.Services.AddDbContext<Sep490G87VitaNutrientSystemContext>(
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClient",
-        builder => builder.WithOrigins("https://localhost:7069")
+        builder => builder.WithOrigins(allowedOrigins)
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials());
@@ -41,7 +42,11 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 /*app.MapHub<ChatHub>("/chatHub");*/
-app.UseHttpsRedirection();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseCors("AllowClient");
 app.UseAuthorization();
 
