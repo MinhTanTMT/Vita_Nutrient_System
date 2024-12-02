@@ -23,7 +23,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Nutritionist")]
-        public async Task<IActionResult> GetInfoAllPremiumUserByNutritionist(string search, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetInfoAllPremiumUserByNutritionist(string search, int pageNumber = 1, int pageSize = 5)
         {
             try
             {
@@ -51,9 +51,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     int totalItems = users.Count;
                     var paginatedUsers = users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-                    // Truyền thông tin phân trang vào ViewData
-                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    // Thông tin phân trang
+                    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
+                    // Chỉ hiển thị phân trang nếu có từ 2 trang trở lên
+                    if (totalPages > 1)
+                    {
+                        ViewData["TotalPages"] = totalPages;
+                    }
 
                     return View(paginatedUsers);
                 }
@@ -68,7 +73,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Nutritionist")]
-        public async Task<IActionResult> GetDetailsAllPremiumUserByNutritionist(int userId, string search, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetDetailsAllPremiumUserByNutritionist(int userId, string search, int pageNumber = 1, int pageSize = 5)
         {
             try
             {
@@ -90,9 +95,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     int totalItems = routes.Count;
                     var paginatedRoutes = routes.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-                    // Truyền thông tin phân trang vào ViewData
-                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    // Thông tin phân trang
+                    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
+                    // Chỉ hiển thị phân trang nếu có từ 2 trang trở lên
+                    if (totalPages > 1)
+                    {
+                        ViewData["TotalPages"] = totalPages;
+                    }
                     ViewData["UserId"] = userId;
                     ViewData["UserName"] = routes.FirstOrDefault()?.UserName;
 
@@ -109,7 +119,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Nutritionist")]
-        public async Task<IActionResult> GetNutritionRoutes(int userId, int userListManagementId, string packageName, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetNutritionRoutes(int userId, int userListManagementId, string packageName, int pageNumber = 1, int pageSize = 5)
         {
            
             try
@@ -150,9 +160,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     int totalItems = routes.Count;
                     var paginatedRoutes = routes.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-                    // Gán giá trị vào ViewData
-                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    // Thông tin phân trang
+                    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
+                    // Chỉ hiển thị phân trang nếu có từ 2 trang trở lên
+                    if (totalPages > 1)
+                    {
+                        ViewData["TotalPages"] = totalPages;
+                    }
+                    else
+                    {
+                        ViewData["TotalPages"] = 1; // Nếu chỉ có 1 trang, vẫn phải gán giá trị cho ViewData["TotalPages"]
+                    }
 
                     return View(paginatedRoutes);
                 }
@@ -650,7 +669,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet, Authorize(Roles = "User,UserPremium")]
-        public async Task<IActionResult> GetDetailsAllPremiumUserByUser(int userId, string search, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetDetailsAllPremiumUserByUser(int userId, string search, int pageNumber = 1, int pageSize = 5)
         {
             try
             {

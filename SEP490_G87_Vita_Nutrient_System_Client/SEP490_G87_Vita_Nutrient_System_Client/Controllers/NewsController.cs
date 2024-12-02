@@ -23,7 +23,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // GET: List of all articles
         [HttpGet, Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Index(string searchTitle, int pageNumber = 1, int pageSize = 2)
+        public async Task<IActionResult> Index(string searchTitle, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
@@ -46,8 +46,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var paginatedArticles = articles.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
                     // Thông tin phân trang
-                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
+                    // Chỉ hiển thị phân trang nếu có từ 2 trang trở lên
+                    if (totalPages > 1)
+                    {
+                        ViewData["TotalPages"] = totalPages;
+                    }
+
 
                     return View(paginatedArticles);
                 }
@@ -65,8 +71,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // GET: List of all articles for users
-        [HttpGet]
-        
+        [HttpGet]        
         public async Task<IActionResult> IndexForUsers(string searchTitle, int pageNumber = 1, int pageSize = 2)
         {
             try
@@ -93,8 +98,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var paginatedArticles = articles.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
                     // Thông tin phân trang
-                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
+                    // Chỉ hiển thị phân trang nếu có từ 2 trang trở lên
+                    if (totalPages > 1)
+                    {
+                        ViewData["TotalPages"] = totalPages;
+                    }
 
                     return View(paginatedArticles);
                 }
