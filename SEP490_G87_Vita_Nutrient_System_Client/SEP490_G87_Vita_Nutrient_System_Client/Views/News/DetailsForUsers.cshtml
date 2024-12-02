@@ -23,11 +23,12 @@
     <hr />
 
     <div class="rating-section">
-        <h5>Đánh giá của bạn trước đó:</h5>
-        <div id="user-rating-stars" class="star-display"></div>
-        <h4>Đánh giá bài viết</h4>
+        
         @if (User.Identity.IsAuthenticated)
         {
+            <h5>Đánh giá của bạn trước đó:</h5>
+            <div id="user-rating-stars" class="star-display"></div>
+            <h4>Đánh giá bài viết</h4>
             <div class="star-rating">
                 <input type="radio" id="star5" name="rating" value="5" onclick="submitRating(5)" />
                 <label for="star5" title="5 sao"><i class="fa fa-star"></i></label>
@@ -40,9 +41,10 @@
                 <input type="radio" id="star1" name="rating" value="1" onclick="submitRating(1)" />
                 <label for="star1" title="1 sao"><i class="fa fa-star"></i></label>
             </div>
-            
+            <p id="rating-display">@Model.Rate?.ToString("0.00")/5 - (@Model.NumberRate bình chọn)</p>
         }
-        <p id="rating-display">@Model.Rate?.ToString("0.00")/5 - (@Model.NumberRate bình chọn)</p>
+        
+        
         
 
     </div>
