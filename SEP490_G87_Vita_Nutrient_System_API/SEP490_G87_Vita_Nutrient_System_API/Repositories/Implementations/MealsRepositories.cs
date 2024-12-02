@@ -929,7 +929,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 Height = userStats.Height,
                 Weight = userStats.Weight,
                 Age = userStats.Age,
-                ActivityLevel = userStats.ActivityLevel
+                ActivityLevel = userStats.ActivityLevel,
+                TimeUpdate = userStats.TimeUpdate,
+                WeightGoal = userStats.WeightGoal
             };
 
             // Tìm User dựa vào UserId
@@ -946,6 +948,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 userDetailEntity.Weight = userDetails.Weight;
                 userDetailEntity.Age = userDetails.Age;
                 userDetailEntity.ActivityLevel = userDetails.ActivityLevel;
+                userDetailEntity.TimeUpdate = userDetails.TimeUpdate;
+                userDetailEntity.WeightGoal = userDetails.WeightGoal;
                 double bmr;
                 double weight = userDetails.Weight ?? 0;
                 double height = userDetails.Height ?? 0;
@@ -981,7 +985,20 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         tdee = bmr * 1.2;
                         break;
                 }
-                userDetailEntity.Calo = (int)tdee;
+                tdee = (int)Math.Round(tdee);
+                if (userDetailEntity.WeightGoal == 1)
+                {
+                    tdee = tdee - tdee * 0.15;
+                }
+                else if (userDetailEntity.WeightGoal == 2)
+                {
+                    tdee = tdee;
+                }
+                else
+                {
+                    tdee = tdee + tdee * 0.15;
+                }
+                userDetailEntity.Calo = (int)Math.Round(tdee);
                 _context.UserDetails.Update(userDetailEntity);
             }
 
@@ -1016,7 +1033,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     NumberOfDishes = 3,
                     TypeFavoriteFood = userStats.FoodTypeIdWant.ToString(),
                     WantCookingId = 1,
-                    TimeAvailable = 30,
+                    TimeAvailable = 9999,
                     CookingDifficultyId = 2,
                     Name = slotId switch
                     {

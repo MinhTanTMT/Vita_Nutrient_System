@@ -1,4 +1,6 @@
-﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
     public class CreateMealSettingsDetail
     {
@@ -17,6 +19,8 @@
         public short CookingDifficultyId { get; set; }
         public bool? IsActive { get; set; }
         public short? OrderNumber { get; set; }
+        [Required(ErrorMessage = "Tên bữa ăn không được để trống.")]
+        [MaxLength(50, ErrorMessage = "Tên bữa ăn không được vượt quá 50 ký tự.")]
         public string? Name { get; set; }
         public short? Calories { get; set; }
 

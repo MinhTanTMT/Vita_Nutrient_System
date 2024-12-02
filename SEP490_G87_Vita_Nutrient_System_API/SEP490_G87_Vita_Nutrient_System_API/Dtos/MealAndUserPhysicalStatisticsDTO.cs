@@ -10,5 +10,7 @@
         public double? ActivityLevel { get; set; }
         public short FoodTypeIdWant { get; set; }
         public short? NumberFood  { get;set; }
+        public DateTime? TimeUpdate { get; set; }
+        public int? WeightGoal { get; set; }
     }
 }

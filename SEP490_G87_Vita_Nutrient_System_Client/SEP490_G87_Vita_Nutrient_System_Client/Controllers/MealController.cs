@@ -1,7 +1,7 @@
 ﻿    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Newtonsoft.Json;
-    using SEP490_G87_Vita_Nutrient_System_Client.Models;
+using SEP490_G87_Vita_Nutrient_System_Client.Models;
     using System;
 using System.Net;
 using System.Net.Http;
@@ -253,6 +253,10 @@ using System.Net.Http;
         [HttpPost]
         public async Task<IActionResult> UpdateDietType(int foodTypeIdWant, int userId)
         {
+            if (userId == 0)
+            {
+                userId = int.Parse(User.FindFirst("UserId")?.Value);
+            }
             try
             {
                 HttpResponseMessage mealSettingResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
@@ -407,6 +411,7 @@ using System.Net.Http;
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.UserId = userId;
                 await LoadDropDownLists();
                 return View(model);
             }
@@ -423,8 +428,9 @@ using System.Net.Http;
                 }
                 else
                 {
-                    var error = await response.Content.ReadAsStringAsync();
-                    ViewBag.ErrorMessage = $"Lỗi khi tạo bữa ăn: {error}";
+                    ViewBag.UserId = userId;
+                    await LoadDropDownLists();
+                    return View(model);
                 }
             }
             catch (Exception ex)
@@ -432,6 +438,7 @@ using System.Net.Http;
                 ViewBag.ErrorMessage = $"Lỗi trong quá trình gọi API: {ex.Message}";
             }
 
+            ViewBag.UserId = userId;
             await LoadDropDownLists();
             return View(model);
         }
@@ -537,6 +544,12 @@ using System.Net.Http;
         [HttpPost]
         public async Task<IActionResult> EditMealSettingsDetailAsync(int id, CreateMealSettingsDetail model, int userId)
         {
+            if (!ModelState.IsValid)
+            {
+                await LoadDropDownLists();
+                ViewBag.UserId = userId;
+                return View("EditMealSettingsDetail", model);
+            }
             if (userId == 0)
             {
                 userId = int.Parse(User.FindFirst("UserId")?.Value);
@@ -655,6 +668,12 @@ using System.Net.Http;
         [HttpPost]
         public async Task<IActionResult> EditMealSettingsDetailActiveAsync(int id, CreateMealSettingsDetail model, int userId)
         {
+            if (!ModelState.IsValid)
+            {
+                await LoadDropDownLists();
+                ViewBag.UserId = userId;
+                return View("EditMealSettingsDetailActive", model);
+            }
             if (userId == 0)
             {
                 userId = int.Parse(User.FindFirst("UserId")?.Value);
@@ -681,7 +700,7 @@ using System.Net.Http;
 
             await LoadDropDownLists();
             ViewBag.UserId = userId;
-            return View("EditMealSettingsDetail", model);
+            return View("EditMealSettingsDetailActive", model);
         }
 
         [HttpPost]
@@ -781,31 +800,45 @@ using System.Net.Http;
             try
             {
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
-                HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Food/GetDietType");
-                if (response.IsSuccessStatusCode)
+                HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetOnlyUserDetail/{userId}");
+                if (userDetailsRes.IsSuccessStatusCode)
                 {
-                    var jsonData = await response.Content.ReadAsStringAsync();
-                    var foodTypes = JsonConvert.DeserializeObject<List<DietType>>(jsonData)
-                        .Select(ft => new SelectListItem
+                    var userDetails = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailsRes.Content.ReadAsStringAsync());
+                    {
+                        if(!userDetails.TimeUpdate.HasValue)
                         {
-                            Value = ft.DietTypeId.ToString(),
-                            Text = ft.Name,
-                            Selected = false
-                        }).ToList();
-                    ViewBag.FoodTypes = foodTypes;
+                            HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Food/GetDietType");
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var jsonData = await response.Content.ReadAsStringAsync();
+                                var foodTypes = JsonConvert.DeserializeObject<List<DietType>>(jsonData)
+                                    .Select(ft => new SelectListItem
+                                    {
+                                        Value = ft.DietTypeId.ToString(),
+                                        Text = ft.Name,
+                                        Selected = false
+                                    }).ToList();
+                                ViewBag.FoodTypes = foodTypes;
+                            }
+                            else
+                            {
+                                ViewBag.FoodTypes = new List<SelectListItem>();
+                            }
+                            var model = new MealAndUserPhysicalStatistics
+                            {
+                                UserId = userId,
+                                NumberFood = 2,
+                                FoodTypeIdWant = 1
+                            };
+                            ViewData["HideSidebar"] = "true";
+                            return View(model);
+                        }
+                        else
+                        {
+                            return RedirectToAction("SaveUserAndCreateMeals", "Meal");
+                        }
+                    }
                 }
-                else
-                {
-                    ViewBag.FoodTypes = new List<SelectListItem>();
-                }
-                var model = new MealAndUserPhysicalStatistics
-                {
-                    UserId = userId,
-                    NumberFood = 2, 
-                    FoodTypeIdWant = 1 
-                };
-
-                return View(model);
             }
             catch (Exception ex)
             {
@@ -813,6 +846,7 @@ using System.Net.Http;
                 ViewBag.ErrorMessage = $"Lỗi trong quá trình tải trang: {ex.Message}";
                 return RedirectToAction("Error");
             }
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -829,6 +863,7 @@ using System.Net.Http;
 
             try
             {
+                userStats.TimeUpdate = DateTime.UtcNow;
                 var content = new StringContent(JsonConvert.SerializeObject(userStats), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync($"{client.BaseAddress}/Meals/SaveUserAndCreateMeals", content);
 
@@ -836,7 +871,7 @@ using System.Net.Http;
                 if (response.IsSuccessStatusCode)
                 {
                     // Thành công: Chuyển hướng đến danh sách bữa ăn
-                    return RedirectToAction("MealSettingsDetailToList");
+                    return RedirectToAction("PlanUser", "User");
                 }
                 else
                 {

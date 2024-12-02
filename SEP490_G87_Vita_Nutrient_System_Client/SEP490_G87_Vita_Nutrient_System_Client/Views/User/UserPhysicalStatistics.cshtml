@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Thông tin cá nhân";
+    string role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
 }
 
 <div class="container">
@@ -10,6 +11,8 @@
 
     <form asp-action="UserPhysicalStatistics" method="post" class="personal-info-form" id="userInfoForm">
         @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="WeightGoal" value="@Model.WeightGoal" />
+
         <div class="form-group row">
             <label for="Gender" class="col-label">Giới tính:</label>
             <div class="col-input">
@@ -65,55 +68,55 @@
                 </select>
             </div>
         </div>
-
-        <div class="form-group row">
-            <label for="underlyingDiseaseInput" class="col-label">Bệnh lý:</label>
-            <div class="col-sm-9">
-                <div id="currentDiseasesContainer">
-                    @if (Model.UnderlyingDiseaseNames != null && Model.UnderlyingDiseaseNames.Any())
-                    {
-                        foreach (var disease in ViewBag.Diseases as List<SEP490_G87_Vita_Nutrient_System_Client.Models.ListOfDisease>)
+        @if (role == "UserPremium")
+        {
+            <div class="form-group row">
+                <label for="underlyingDiseaseInput" class="col-label">Bệnh lý:</label>
+                <div class="col-sm-9">
+                    <div id="currentDiseasesContainer">
+                        @if (Model.UnderlyingDiseaseNames != null && Model.UnderlyingDiseaseNames.Any())
                         {
-                            if (Model.UnderlyingDiseaseNames.Contains(disease.Name))
+                            foreach (var disease in ViewBag.Diseases as List<SEP490_G87_Vita_Nutrient_System_Client.Models.ListOfDisease>)
                             {
-                                <span class="badge bg-primary disease-badge" data-id="@disease.Id" data-name="@disease.Name">
-                                    @disease.Name
-                                    <button type="button" class="btn-close btn-close-white btn-sm remove-disease-btn"></button>
+                                if (Model.UnderlyingDiseaseNames.Contains(disease.Name))
+                                {
+                                    <span class="badge bg-primary disease-badge" data-id="@disease.Id" data-name="@disease.Name">
+                                        @disease.Name
+                                        <button type="button" class="btn-close btn-close-white btn-sm remove-disease-btn"></button>
 
-                                </span>
+                                    </span>
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        <span id="noDiseasesText">Không có bệnh lý nào được ghi nhận.</span>
-                    }
-                </div>
-
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="diseaseSelect" class="col-label">Thêm bệnh lý:</label>
-            <div class="col-sm-12 d-flex align-items-center">
-                <select id="diseaseSelect" class="form-control me-2" style="flex: 1;">
-                    @if (ViewBag.Diseases != null)
-                    {
-                        foreach (var disease in ViewBag.Diseases as List<SEP490_G87_Vita_Nutrient_System_Client.Models.ListOfDisease>)
+                        else
                         {
-                            <option value="@disease.Id">@disease.Name</option>
+                            <span id="noDiseasesText">Không có bệnh lý nào được ghi nhận.</span>
                         }
-                    }
-                </select>
-                <button type="button" class="btn btn-success btn-sm" id="addDiseaseBtn">Thêm</button>
+                    </div>
+
+                </div>
             </div>
-            <!-- Input ẩn UserId -->
-            <input type="hidden" name="uid" value="@Model.UserId" />
 
-        </div>
+            <div class="form-group row">
+                <label for="diseaseSelect" class="col-label">Thêm bệnh lý:</label>
+                <div class="col-sm-12 d-flex align-items-center">
+                    <select id="diseaseSelect" class="form-control me-2" style="flex: 1;">
+                        @if (ViewBag.Diseases != null)
+                        {
+                            foreach (var disease in ViewBag.Diseases as List<SEP490_G87_Vita_Nutrient_System_Client.Models.ListOfDisease>)
+                            {
+                                <option value="@disease.Id">@disease.Name</option>
+                            }
+                        }
+                    </select>
+                    <button type="button" class="btn btn-success btn-sm" id="addDiseaseBtn">Thêm</button>
+                </div>
+                <!-- Input ẩn UserId -->
+                <input type="hidden" name="uid" value="@Model.UserId" />
 
-
-
+            </div>
+        }
+        
         <div class="form-group row">
             <div class="col-label"></div>
             <div class="col-input">
@@ -134,12 +137,13 @@
         <p>Lượng Calo: <span id="caloriesValue"></span> calo</p>
         <ul>
             <li><span class="dot yellow"></span> ~ <span id="carbsValue"></span>g (40%) Carbs</li>
-            <li><span class="dot blue"></span> ~ <span id="fatsValue"></span>g (30%) Chất béo</li>
-            <li><span class="dot purple"></span> ~ <span id="proteinsValue"></span>g (30%) Protein</li>
+            <li><span class="dot blue"></span> ~ <span id="fatsValue"></span>g (30%) Fats</li>
+            <li><span class="dot purple"></span> ~ <span id="proteinsValue"></span>g (30%) Proteins</li>
         </ul>
         <button type="button" class="btn btn-primary" onclick="submitForm()">Lưu</button>
     </div>
 </div>
+
 
 
 <script>
@@ -313,12 +317,21 @@
         const age = parseFloat(document.querySelector('input[name="Age"]').value);
         const gender = document.querySelector('select[name="Gender"]').value === "true";
         const activityLevel = parseFloat(document.querySelector('select[name="ActivityLevel"]').value) || 1.2;
+        const weightGoal = parseInt(document.querySelector('input[name="WeightGoal"]').value);
 
         let bmr = gender
             ? (10 * weight) + (6.25 * height) - (5 * age) + 5
             : (10 * weight) + (6.25 * height) - (5 * age) - 161;
-
-        let tdee = bmr * activityLevel;
+        let tdee = Math.round(bmr * activityLevel);
+        // Tính toán tdee dựa trên mục tiêu cân nặng
+        if (weightGoal === 1) { // Giảm mỡ
+            tdee = tdee - tdee * 0.15;
+        } else if (weightGoal === 2) { // Duy trì cân nặng
+            tdee = tdee; // Không thay đổi
+        } else if (weightGoal === 3) { // Xây dựng cơ bắp
+            tdee = tdee + tdee * 0.15;
+        }
+        tdee = Math.round(tdee)
 
         const carbs = Math.round(tdee * 0.4 / 4);
         const fats = Math.round(tdee * 0.3 / 9);
@@ -332,6 +345,7 @@
         // Hiển thị bảng modal
         document.getElementById("nutritionalGoalsModal").style.display = "block";
     }
+
 
 
 

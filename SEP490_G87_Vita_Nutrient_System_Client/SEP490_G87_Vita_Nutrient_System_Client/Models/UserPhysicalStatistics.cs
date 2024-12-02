@@ -10,5 +10,7 @@
         public double? ActivityLevel { get; set; }
         public string? UnderlyingDisease { get; set; }
         public List<string>? UnderlyingDiseaseNames { get; set; }
+        public DateTime? TimeUpdate { get; set; }
+        public int? WeightGoal { get; set; }
     }
 }

@@ -919,6 +919,84 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Chiến
         ////////////////////////////////////////////////////////////
         ///
+        [HttpGet("UserWeightGoal")]
+        public async Task<IActionResult> UserWeightGoal()
+        {
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+
+            // Lấy thông tin người dùng và thông số vật lý
+            HttpResponseMessage userRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserById/{userId}");
+            HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserPhysicalStatisticsDTOByUserIdAsync/{userId}");
+
+            if (userDetailsRes.IsSuccessStatusCode)
+            {
+                // Deserialize dữ liệu
+                var userDetails = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailsRes.Content.ReadAsStringAsync());
+
+                var model = new UserPhysicalStatistics
+                {
+                    UserId = userDetails.UserId,
+                    Gender = userDetails.Gender,
+                    Age = userDetails.Age,
+                    ActivityLevel = userDetails.ActivityLevel,
+                    Height = userDetails.Height,
+                    Weight = userDetails.Weight,
+                    TimeUpdate = userDetails.TimeUpdate,
+                    WeightGoal = userDetails.WeightGoal,
+                };
+                return View(model);
+            }
+            return View("Error");
+        }
+        [HttpPost("UserWeightGoal")]
+        public async Task<IActionResult> UserWeightGoal(UserPhysicalStatistics model)
+        {
+
+            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+            try
+            {
+                model.TimeUpdate = DateTime.UtcNow;
+                var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(client.BaseAddress + "/Users/UpdateUserWeightGoal", content);
+
+                // Kiểm tra phản hồi từ API
+                if (response.IsSuccessStatusCode)
+                {
+                    // Lấy MealSettingsDetail gần nhất của user
+                    HttpResponseMessage mealSettingResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
+                    if (mealSettingResponse.IsSuccessStatusCode)
+                    {
+                        var mealSettingData = await mealSettingResponse.Content.ReadAsStringAsync();
+                        var mealSetting = JsonConvert.DeserializeObject<MealSetting>(mealSettingData);
+                        HttpResponseMessage mealSettingDetailResponse = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingDetailByMealSettingId/{mealSetting.Id}");
+                        if (mealSettingDetailResponse.IsSuccessStatusCode)
+                        {
+                            var mealSettingDetailData = await mealSettingDetailResponse.Content.ReadAsStringAsync();
+                            var mealSettingDetail = JsonConvert.DeserializeObject<MealSetting>(mealSettingDetailData);
+                            if (mealSettingDetail != null)
+                            {
+                                // Gọi UpdateCalo cho MealSettingsDetail ID đầu tiên
+                                await client.PutAsync($"{client.BaseAddress}/Meals/UpdateCalo/{mealSettingDetail.Id}", null);
+                            }
+                        }
+                    }
+
+                    // Trả về kết quả thành công sau khi cập nhật
+                    return Json(new { success = true, message = "Thông tin cá nhân đã được lưu thành công và calo đã được cập nhật." });
+                }
+                else
+                {
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình lưu thông tin: " + errorResponse });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Trả về lỗi nếu có exception
+                return Json(new { success = false, message = $"Lỗi trong quá trình gọi API: {ex.Message}" });
+            }
+        }
+
         [HttpGet("UserPhysicalStatistics")]
         public async Task<IActionResult> UserPhysicalStatistics()
         {
@@ -927,6 +1005,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             // Lấy thông tin người dùng và thông số vật lý
             HttpResponseMessage userRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserById/{userId}");
             HttpResponseMessage userDetailsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetOnlyUserDetail/{userId}");
+            HttpResponseMessage userDetailPhisicalsRes = await client.GetAsync(client.BaseAddress + $"/Users/GetUserPhysicalStatisticsDTOByUserIdAsync/{userId}");
             HttpResponseMessage diseaseRes = await client.GetAsync(client.BaseAddress + "/Disease/GetAllDiseases");
 
             if (userDetailsRes.IsSuccessStatusCode && diseaseRes.IsSuccessStatusCode)
@@ -935,7 +1014,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 var user = JsonConvert.DeserializeObject<User>(await userRes.Content.ReadAsStringAsync());
                 var userDetails = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailsRes.Content.ReadAsStringAsync());
                 var diseases = JsonConvert.DeserializeObject<List<ListOfDisease>>(await diseaseRes.Content.ReadAsStringAsync());
-
+                var userDetailsPhisical = JsonConvert.DeserializeObject<UserPhysicalStatistics>(await userDetailPhisicalsRes.Content.ReadAsStringAsync());
                 // Xử lý bệnh lý
                 string underlyingDiseaseIds = userDetails?.UnderlyingDisease; // Dữ liệu từ API
                 List<int> diseaseIds = !string.IsNullOrEmpty(underlyingDiseaseIds)
@@ -948,11 +1027,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 var model = new UserPhysicalStatistics
                 {
                     UserId = userDetails.UserId,
-                    Gender = userDetails.Gender,
+                    Gender = userDetailsPhisical.Gender,
                     Height = userDetails.Height,
                     Weight = userDetails.Weight,
                     Age = userDetails.Age,
                     ActivityLevel = userDetails.ActivityLevel,
+                    WeightGoal = userDetails.WeightGoal,
                     UnderlyingDisease = userDetails.UnderlyingDisease,
                     UnderlyingDiseaseNames = diseaseNames
                 };
@@ -970,22 +1050,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         public async Task<IActionResult> UserPhysicalStatistics(UserPhysicalStatistics model)
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
-            if (!ModelState.IsValid)
-            {
-                return Json(new { success = false, message = "Dữ liệu không hợp lệ." });
-            }
-            if (model.Height < 50 || model.Height > 250)
-            {
-                return Json(new { success = false, message = "Vui lòng nhập chiều cao từ 50 cm đến 250 cm." });
-            }
-            if (model.Weight < 10 || model.Weight > 300)
-            {
-                return Json(new { success = false, message = "Vui lòng nhập cân nặng từ 10 kg đến 300 kg." });
-            }
-            if (model.Age < 5 || model.Age > 100)
-            {
-                return Json(new { success = false, message = "Chỉ hỗ trợ nhập tuổi từ 5 đến 100." });
-            }
             var userDetailsDTO = new UserPhysicalStatistics
             {
                 UserId = userId,
@@ -994,6 +1058,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 Weight = model.Weight,
                 Age = model.Age,
                 ActivityLevel = model.ActivityLevel,
+                WeightGoal = model.WeightGoal,
+                TimeUpdate = DateTime.UtcNow
             };
 
             var jsonContent = new StringContent(JsonConvert.SerializeObject(userDetailsDTO), Encoding.UTF8, "application/json");
@@ -1053,7 +1119,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     // Tính toán mục tiêu dinh dưỡng nếu dữ liệu hợp lệ
                     var model = new NutritionalGoals
                     {
-                        Calo = nutritionalGoals.Calo.Value, // Sử dụng .Value vì Calo là Nullable
+                        Calo = nutritionalGoals.Calo, 
                         Carbs = (int)(nutritionalGoals.Calo.Value * 0.4 / 4),  // 40% calo từ carbs (4 calo mỗi gram)
                         Fats = (int)(nutritionalGoals.Calo.Value * 0.3 / 9),   // 30% calo từ chất béo (9 calo mỗi gram)
                         Proteins = (int)(nutritionalGoals.Calo.Value * 0.3 / 4) // 30% calo từ protein (4 calo mỗi gram)

@@ -403,6 +403,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return await _context.UserDetails
                 .FirstOrDefaultAsync(ud => ud.UserId == userId);
         }
+        public async Task<UserPhysicalStatisticsDTO> GetUserPhysicalStatisticsDTOByUserIdAsync(int userId)
+        {
+            // Lấy thông tin từ bảng UserDetails kết hợp với bảng User để lấy Gender
+            var userDetails = await _context.UserDetails
+                .Where(ud => ud.UserId == userId)
+                .Select(ud => new UserPhysicalStatisticsDTO
+                {
+                    UserId = ud.UserId,
+                    Gender = ud.User.Gender,  // Lấy Gender từ bảng User
+                    Height = ud.Height,
+                    Weight = ud.Weight,
+                    Age = ud.Age,
+                    ActivityLevel = ud.ActivityLevel,
+                    TimeUpdate = ud.TimeUpdate,
+                    WeightGoal = ud.WeightGoal
+                })
+                .FirstOrDefaultAsync();
+
+            return userDetails;
+        }
         public User? GetUserDetailsInfo(int id)
         {
             var user = _context.Users
