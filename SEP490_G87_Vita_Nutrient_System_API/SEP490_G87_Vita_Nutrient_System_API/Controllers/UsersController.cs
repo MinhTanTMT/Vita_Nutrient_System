@@ -58,7 +58,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("checkExit")]
         public async Task<ActionResult<User>> APIGetUserByAccount(string account)
         {
-            var dataReturn = await repositories.CheckExitAccountUser(account);
+            var dataReturn = await repositories.CheckAccountUserNull(account);
 
             if (dataReturn)
             {
@@ -268,7 +268,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
 
             //kiem tra password cu~
-            if(!u.Password.Equals(request.OldPassword))
+            string decryptedCurrentPass = await repositories.DecryptPassword(u.Password);
+            if (!decryptedCurrentPass.Equals(request.OldPassword))
             {
                 return BadRequest("Old password wrong!");
             }
@@ -279,7 +280,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return BadRequest("Confirm password not match!");
             }
 
-            u.Password = request.NewPassword;
+            u.Password = await repositories.EncryptPassword(request.NewPassword);
 
             repositories.UpdateUser(u);
 

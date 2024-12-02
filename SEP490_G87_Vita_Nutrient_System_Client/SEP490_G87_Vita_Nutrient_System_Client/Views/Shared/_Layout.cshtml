@@ -1,4 +1,4 @@
-﻿    <!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -40,20 +40,12 @@
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
 
 
-@*                 <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/logo.svg" alt="logo" /></a>
-                <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img src="~/images/logo-mini.svg" alt="logo" /></a> *@
-                @if (ViewData["HideSidebar"] == "true")
-                {
-                    <style>
-                        .navbar {
-                            display: none;
-                        }
-                    </style>
-                }
-                <div class="navbar">
-                <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/logo-vitanuti.svg" alt="logo" /></a>
-                <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img src="~/images/LogoVitaNutri.jpg" alt="logo" /></a>
-                </div>
+                <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/logo.svg" alt="logo" /></a>
+                <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img src="~/images/logo-mini.svg" alt="logo" /></a>
+
+@*                 <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/logo-vitanuti.svg" alt="logo" /></a>
+                <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img src="~/images/LogoVitaNutri.jpg" alt="logo" /></a> *@
+
 
 
             </div>
@@ -226,15 +218,6 @@
         </nav>
         <!-- partial -->
         <div class="container-fluid page-body-wrapper" style="flex-wrap: wrap;">
-            <!-- Điều kiện ẩn sidebar -->
-            @if (ViewData["HideSidebar"] == "true")
-            {
-                <style>
-                    .sidebar {
-                        display: none;
-                    }
-                </style>
-            }
             <!-- partial:partials/_sidebar.html -->
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
@@ -312,7 +295,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("Index", "News")">
-                                        <span class="menu-title">News</span>
+                                        <span class="menu-title">Quản lý tin tức</span>
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
                                 </li> 
@@ -358,13 +341,7 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("UserWeightGoal", "User")">
-                                        <span class="menu-title">Mục Tiêu Cân Nặng</span>
-                                        <i class="mdi mdi-food-variant menu-icon"></i>
-                                    </a>
-                                </li>
-                                
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("PlanUser", "User")">
                                         <span class="menu-title">Kế hoạch bữa ăn</span>
@@ -444,12 +421,7 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("UserWeightGoal", "User")">
-                                        <span class="menu-title">Mục Tiêu Cân Nặng</span>
-                                        <i class="mdi mdi-food-variant menu-icon"></i>
-                                    </a>
-                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("PlanUser", "User")">
                                         <span class="menu-title">Kế hoạch bữa ăn</span>

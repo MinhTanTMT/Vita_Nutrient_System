@@ -315,7 +315,9 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <button type="button" class="btn btn-primary btn-sm" onclick="window.location.href='/admin/foodmanagement/foodingredient/@food.FoodListId'">
+                                    Scale amount
+                                </button>
                             </td>
                         </tr>
                     }
@@ -467,7 +469,7 @@
                                 <label class="form-label">Description:</label>
                                 <input type="text" class="form-control" name="Describe" required />
                             </div>
-                            <div class="form-check">
+                            <div class="mb-3 form-check">
                                 <input class="form-check-input" type="checkbox" name="IsGoodOrBad" value="true" id="isGoodOrBad">
                                 <label class="form-check-label" for="isGoodOrBad">Good for Disease</label>
                             </div>
@@ -616,21 +618,21 @@
             const recipes = await response.json();
             const recipeListContainer = document.getElementById(`recipeList_${foodId}`);
             recipeListContainer.innerHTML = recipes.map(recipe => `
-                    <div class="card mb-2">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>Numerical Order:</strong> ${recipe.numericalOrder}<br>
-                                <strong>Description:</strong> ${recipe.describe}
-                            </div>
-                            <div>
-                                <img src="${recipe.urlimage}" alt="Recipe Image" style="width: 100px; height: 100px; object-fit: cover;">
-                            </div>
-                            <button class="btn btn-warning btn-sm" onclick="showEditRecipeModal(${foodId}, ${recipe.recipeId}, '${recipe.describe}', '${recipe.urlimage}', ${recipe.numericalOrder})">
-                                Edit
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                                    <div class="card mb-2">
+                                        <div class="card-body d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Numerical Order:</strong> ${recipe.numericalOrder}<br>
+                                                <strong>Description:</strong> ${recipe.describe}
+                                            </div>
+                                            <div>
+                                                <img src="${recipe.urlimage}" alt="Recipe Image" style="width: 100px; height: 100px; object-fit: cover;">
+                                            </div>
+                                            <button class="btn btn-warning btn-sm" onclick="showEditRecipeModal(${foodId}, ${recipe.recipeId}, '${recipe.describe}', '${recipe.urlimage}', ${recipe.numericalOrder})">
+                                                Edit
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('');
         } else {
             alert('Failed to load recipes.');
         }
@@ -638,34 +640,34 @@
 
     async function showCreateRecipeModal(foodId) {
         const modalHtml = `
-                    <div class="modal fade" id="createRecipeModal" tabindex="-1" aria-labelledby="createRecipeModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form id="createRecipeForm" onsubmit="createRecipe(event, ${foodId})">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Create Recipe</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="hidden" name="numericalOrder" id="createNumericalOrder">
-                                        <div class="mb-3">
-                                            <label>Description:</label>
-                                            <input type="text" class="form-control" name="describe" required>
+                                    <div class="modal fade" id="createRecipeModal" tabindex="-1" aria-labelledby="createRecipeModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="createRecipeForm" onsubmit="createRecipe(event, ${foodId})">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Create Recipe</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="numericalOrder" id="createNumericalOrder">
+                                                        <div class="mb-3">
+                                                            <label>Description:</label>
+                                                            <input type="text" class="form-control" name="describe" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label>Image URL:</label>
+                                                            <input type="url" class="form-control" name="urlimage" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save Recipe</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label>Image URL:</label>
-                                            <input type="url" class="form-control" name="urlimage" required>
-                                        </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save Recipe</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                                `;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         $('#createRecipeModal').modal('show');
     }
@@ -701,37 +703,37 @@
 
     async function showEditRecipeModal(foodId, recipeId, description, urlImage, numericalOrder) {
         const modalHtml = `
-                <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form id="editRecipeForm" onsubmit="editRecipe(event, ${foodId}, ${recipeId})">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit Recipe</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label>Numerical Order:</label>
-                                        <input type="number" class="form-control" name="numericalOrder" value="${numericalOrder}" required>
+                                <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form id="editRecipeForm" onsubmit="editRecipe(event, ${foodId}, ${recipeId})">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit Recipe</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label>Numerical Order:</label>
+                                                        <input type="number" class="form-control" name="numericalOrder" value="${numericalOrder}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Description:</label>
+                                                        <input type="text" class="form-control" name="describe" value="${description}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Image URL:</label>
+                                                        <input type="url" class="form-control" name="urlimage" value="${urlImage}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label>Description:</label>
-                                        <input type="text" class="form-control" name="describe" value="${description}" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Image URL:</label>
-                                        <input type="url" class="form-control" name="urlimage" value="${urlImage}" required>
-                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            `;
+                            `;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         $('#editRecipeModal').modal('show');
     }
@@ -745,37 +747,37 @@
 
         // Tạo modal mới với dữ liệu cần chỉnh sửa
         const modalHtml = `
-                <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form id="editRecipeForm" onsubmit="editRecipe(event, ${foodId}, ${recipeId})">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit Recipe</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label>Numerical Order:</label>
-                                        <input type="number" class="form-control" name="numericalOrder" value="${numericalOrder}" required>
+                                <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form id="editRecipeForm" onsubmit="editRecipe(event, ${foodId}, ${recipeId})">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit Recipe</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label>Numerical Order:</label>
+                                                        <input type="number" class="form-control" name="numericalOrder" value="${numericalOrder}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Description:</label>
+                                                        <input type="text" class="form-control" name="describe" value="${description}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Image URL:</label>
+                                                        <input type="url" class="form-control" name="urlimage" value="${urlImage}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label>Description:</label>
-                                        <input type="text" class="form-control" name="describe" value="${description}" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Image URL:</label>
-                                        <input type="url" class="form-control" name="urlimage" value="${urlImage}" required>
-                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            `;
+                            `;
 
         // Thêm modal vào DOM
         document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -800,3 +802,33 @@
     }
 
 </script>
+
+<style>
+    /* Đảm bảo modal body có đủ không gian */
+    .modal-body {
+        padding: 1rem; /* Tăng padding để tránh phần tử bị sát viền */
+        overflow-y: auto; /* Thêm overflow để đảm bảo nội dung không bị tràn ra ngoài */
+        box-sizing: border-box; /* Đảm bảo padding tính vào chiều rộng của modal */
+    }
+
+    /* Căn chỉnh checkbox thẳng hàng với các input */
+    .form-check {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem; /* Khoảng cách giữa checkbox và các phần tử khác */
+        width: 100%; /* Đảm bảo checkbox chiếm toàn bộ chiều rộng của modal */
+        margin-left: 1rem; /* Dịch checkbox sang phải một chút để thẳng hàng với các input */
+    }
+
+    /* Đảm bảo checkbox không bị dẹt và hiển thị đúng */
+    .form-check-input {
+        width: 1.25rem; /* Kích thước checkbox */
+        height: 1.25rem; /* Chiều cao của checkbox */
+        margin-right: 0.5rem; /* Khoảng cách giữa checkbox và nhãn */
+    }
+
+    /* Căn chỉnh nhãn checkbox */
+    .form-check-label {
+        font-size: 1rem; /* Đảm bảo nhãn có kích thước phù hợp */
+    }
+</style>

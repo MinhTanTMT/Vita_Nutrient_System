@@ -22,7 +22,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         // GET: List of all articles
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string searchTitle, int pageNumber = 1, int pageSize = 2)
         {
             try
@@ -66,6 +66,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // GET: List of all articles for users
         [HttpGet]
+        
         public async Task<IActionResult> IndexForUsers(string searchTitle, int pageNumber = 1, int pageSize = 2)
         {
             try
@@ -110,7 +111,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // GET: Details of a single article
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int id)
         {
             try
@@ -151,14 +152,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 var articleData = await articleResponse.Content.ReadAsStringAsync();
                 var article = JsonConvert.DeserializeObject<ArticlesNews>(articleData);
 
-                // Lấy đánh giá của người dùng hiện tại
-                var userId = int.Parse(User.FindFirst("UserId")?.Value);
-                var evaluationResponse = await client.GetAsync($"api/news/{id}/evaluations/{userId}");
-                if (evaluationResponse.IsSuccessStatusCode)
+                // Lấy đánh giá của người dùng hiện tại nếu người dùng đã đăng nhập
+                if (User.Identity.IsAuthenticated)
                 {
-                    var evaluationData = await evaluationResponse.Content.ReadAsStringAsync();
-                    var evaluation = JsonConvert.DeserializeObject<NewsEvaluation>(evaluationData);
-                    article.UserRate = evaluation.Ratting; // Gán đánh giá của người dùng vào bài viết
+                    var userId = int.Parse(User.FindFirst("UserId")?.Value);
+                    var evaluationResponse = await client.GetAsync($"api/news/{id}/evaluations/{userId}");
+                    if (evaluationResponse.IsSuccessStatusCode)
+                    {
+                        var evaluationData = await evaluationResponse.Content.ReadAsStringAsync();
+                        var evaluation = JsonConvert.DeserializeObject<NewsEvaluation>(evaluationData);
+                        article.UserRate = evaluation.Ratting; // Gán đánh giá của người dùng vào bài viết
+                    }
                 }
 
                 return View(article);
@@ -171,7 +175,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -248,7 +252,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         // GET: Edit an article by id
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             try
@@ -356,7 +360,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // GET: Delete an article by id (hiển thị để xác nhận xóa)
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
