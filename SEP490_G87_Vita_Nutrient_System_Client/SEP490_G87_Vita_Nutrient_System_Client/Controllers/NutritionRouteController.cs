@@ -155,7 +155,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         ViewData["CurrentPage"] = pageNumber;
                         return View(new List<NutritionRoute>());
                     }
-
+                    /*// Kiểm tra ngày hiện tại và cập nhật trạng thái isDone
+                    foreach (var route in routes)
+                    {
+                        if (DateTime.Today > route.EndDate)
+                        {
+                            route.IsDone = true;  // Cập nhật trạng thái lộ trình là đã hoàn thành
+                        }
+                        else
+                        {
+                            route.IsDone = false; // Nếu chưa đến ngày kết thúc, trạng thái là chưa hoàn thành
+                        }
+                    }*/
                     // Phân trang
                     int totalItems = routes.Count;
                     var paginatedRoutes = routes.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
