@@ -37,6 +37,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         ///
 
 
+        //public async Task<string> EncryptPassword(string password)
+        //{
+        //    // Kiểm tra nếu mật khẩu không rỗng hoặc null
+        //    if (string.IsNullOrEmpty(password))
+        //        throw new ArgumentException("Password cannot be null or empty", nameof(password));
+
+        //    // Hash mật khẩu bằng bcrypt (bcrypt sẽ tự động sinh salt)
+        //    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+        //    // Trả về hash của mật khẩu
+        //    return hashedPassword;
+        //}
+
+        //public async Task<bool> VerifyPassword(string enteredPassword, string storedHashedPassword)
+        //{
+        //    // So sánh mật khẩu người dùng nhập với mật khẩu đã hash lưu trữ
+        //    return BCrypt.Net.BCrypt.Verify(enteredPassword, storedHashedPassword);
+        //}
+
+
         public async Task<string> EncryptPassword(string password)
         {
             //if (string.IsNullOrEmpty(password))

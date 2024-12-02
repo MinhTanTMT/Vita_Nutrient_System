@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
 using SEP490_G87_Vita_Nutrient_System_API.Hubs;
@@ -53,3 +54,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
