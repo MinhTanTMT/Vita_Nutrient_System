@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Domain.ResponseModels;
@@ -34,7 +35,10 @@ builder.Services.AddScoped<IRoomRepositories, RoomRepositories>();
 builder.Services.AddScoped<IMessageRepositories, MessageRepositories>();
 
 var app = builder.Build();
-
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
