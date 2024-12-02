@@ -104,3 +104,53 @@
     .meal-actions .fa-times {
         color: red; /* Red color for delete */
     }
+.meal-group-title-123 {
+    font-family: 'Roboto', sans-serif;
+}
+.modal-header .modal-title {
+    font-family: 'Arial', sans-serif; /* Chọn font chữ dễ đọc */
+    font-size: 32px; /* Đặt kích thước chữ to hơn */
+    font-weight: bold; /* Làm cho chữ đậm */
+    color: #007bff; /* Màu chữ (Xanh lam) để làm nổi bật */
+    text-transform: uppercase; /* Viết hoa toàn bộ chữ để tiêu đề rõ ràng */
+    letter-spacing: 2px; /* Khoảng cách giữa các chữ */
+    line-height: 1.4; /* Tăng chiều cao dòng để chữ không bị sát nhau */
+    margin-bottom: 15px; /* Thêm khoảng cách dưới tiêu đề */
+    text-align: center; /* Căn giữa tiêu đề */
+}
+/* Thêm màu sắc cho các biểu tượng */
+i.fa-utensils {
+    color: #007bff; /* Màu xanh lam */
+}
+
+i.fa-leaf {
+    color: #28a745; /* Màu xanh lá */
+}
+
+i.fa-clock {
+    color: #ffc107; /* Màu vàng */
+}
+
+i.fa-cogs {
+    color: #dc3545; /* Màu đỏ */
+}
+
+/* Thêm hiệu ứng hover */
+i:hover {
+    transform: scale(1.2); /* Phóng to khi hover */
+    transition: transform 0.3s ease;
+}
+.text-right a {
+    background-color: #002f6c; /* Màu nền xanh */
+    color: white; /* Màu chữ trắng */
+    font-weight: bold;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    padding: 10px 20px; /* Thêm padding cho nút */
+    border-radius: 5px; /* Làm tròn góc nút */
+    text-decoration: none; /* Loại bỏ gạch dưới */
+}
+
+    .text-right a:hover {
+        background-color: #003f7d; /* Màu nền khi hover */
+    }

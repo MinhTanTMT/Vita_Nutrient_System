@@ -104,3 +104,85 @@
     content: "\f86d"; /* Biểu tượng mũ đầu bếp */
     font-family: FontAwesome;
 }
+/* Cải thiện kiểu chữ cho trạng thái "Đã Chọn" và "Chưa Chọn" */
+.meal-status {
+    font-size: 16px; /* Kích thước chữ vừa phải */
+    font-weight: 600; /* Độ đậm vừa phải để dễ đọc */
+    margin-top: 5px; /* Khoảng cách với các phần tử khác */
+}
+
+/* Màu sắc cho "Đã Chọn" (xanh) */
+.text-success {
+    color: #28a745; /* Màu xanh lá */
+    font-size: 18px; /* Kích thước chữ lớn hơn một chút */
+    padding-left: 8px; /* Khoảng cách với biểu tượng */
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+    transition: color 0.3s ease, transform 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+/* Màu sắc cho "Chưa Chọn" (đỏ) */
+.text-danger {
+    color: #dc3545; /* Màu đỏ */
+    font-size: 18px; /* Kích thước chữ lớn hơn */
+    padding-left: 8px; /* Khoảng cách với biểu tượng */
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+    transition: color 0.3s ease, transform 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+/* Tạo hiệu ứng hover khi di chuột vào */
+.meal-status span:hover {
+    transform: scale(1.1); /* Phóng to nhẹ khi hover */
+    cursor: pointer; /* Đổi con trỏ khi hover */
+}
+
+
+.text-success i {
+    color: #28a745; /* Đảm bảo biểu tượng xanh lá */
+    margin-right: 5px;
+}
+
+.text-danger i {
+    color: #dc3545; /* Đảm bảo biểu tượng đỏ */
+    margin-right: 5px;
+}
+
+/* Tạo một khoảng cách giữa các phần tử */
+.meal-status i {
+    font-size: 20px; /* Tăng kích thước biểu tượng */
+    margin-right: 5px; /* Khoảng cách giữa biểu tượng và chữ */
+}
+/* Cải thiện phông chữ cho tiêu đề meal-group-title */
+.meal-group-title {
+    font-weight: bold; /* In đậm chữ */
+    font-size: 36px; /* Chỉnh lại kích thước chữ */
+    font-family: 'Roboto', sans-serif;
+    color: #34495e; /* Màu chữ */
+    margin-top: 15px;
+    margin-bottom: 10px;
+    text-align: left;
+    line-height: 1.3; /* Khoảng cách dòng */
+    letter-spacing: 1px; /* Khoảng cách giữa các chữ */
+    text-transform: capitalize; /* Chữ hoa đầu mỗi từ */
+    padding: 10px; /* Padding để tạo khoảng cách */
+    background-color: #f5f5f5; /* Màu nền sáng */
+    border-radius: 5px; /* Bo góc */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); /* Bóng mờ nhẹ */
+}
+
+
+    /* Hiệu ứng hover cho tiêu đề */
+    .meal-group-title:hover {
+        color: #3498db; /* Chuyển màu chữ khi hover */
+        cursor: pointer; /* Con trỏ chuột thành tay khi hover */
+        text-decoration: underline; /* Gạch chân khi hover */
+    }
+
+    /* Đảm bảo rằng không bị ảnh hưởng bởi các thuộc tính khác */
+    .meal-group-title * {
+        font-size: inherit; /* Đảm bảo rằng tất cả các phần tử con không ảnh hưởng đến font-size */
+        font-weight: inherit;
+    }

@@ -835,7 +835,7 @@ using System.Net.Http;
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("SaveUserAndCreateMeals", "Meal");
                         }
                     }
                 }
@@ -871,7 +871,7 @@ using System.Net.Http;
                 if (response.IsSuccessStatusCode)
                 {
                     // Thành công: Chuyển hướng đến danh sách bữa ăn
-                    return RedirectToAction("MealSettingsDetailToList");
+                    return RedirectToAction("PlanUser", "User");
                 }
                 else
                 {

@@ -1,6 +1,7 @@
 ﻿<!-- plugins:css -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/css/MealSettingsDetailToList.css" />
 <link rel="stylesheet" href="/css/meal-list.css" />
 
@@ -15,12 +16,12 @@
 
 <div class="container">
     <div class="modal-header">
-        <h5 class="modal-title">Bố cục bữa ăn</h5>
+        <h1 class="modal-title" style="font-weight: bold; color: #002f6c; text-align: center; font-family: 'Roboto', sans-serif;">Bố cục bữa ăn</h1>
     </div>
 
     <div class="modal-body">
         <div class="form-group">
-            <label for="foodTypeIdWant">Chế độ ăn uống mong muốn</label>
+            <label style="font-weight: bold; font-family: 'Roboto', sans-serif;" for="foodTypeIdWant">Chế độ ăn uống mong muốn</label>
             <select id="foodTypeIdWant" name="FoodTypeIdWant" class="form-control" onchange="updateFoodType(this.value)">
                 @foreach (var foodType in ViewBag.FoodTypes as List<SelectListItem>)
                 {
@@ -31,9 +32,9 @@
 
 
         <div class="form-group">
-            <label for="dayOfTheWeekStartId">Ngày đầu tuần</label>
+            <label style="font-weight: bold; font-family: 'Roboto', sans-serif;" for="dayOfTheWeekStartId">Ngày đầu tuần</label>
              @if (selectedDayOfTheWeekStartId == "8")
-                {
+                {   
                     <span class="form-control">@daysOfWeek.FirstOrDefault(day => day.Value == "8").Text</span>
                 }
             else
@@ -50,7 +51,7 @@
         @if (role != "User")
         {
             <div class="form-group d-flex align-items-center">
-                <label for="sameScheduleEveryDay" class="mb-0 mr-3">Cùng một lịch trình mỗi ngày</label>
+                <label style="font-weight: bold; font-family: 'Roboto', sans-serif;" for="sameScheduleEveryDay" class="mb-0 mr-3">Cùng một lịch trình mỗi ngày</label>
                 <div class="form-check form-switch" style="margin-left: 50px;">
                     <input type="checkbox" id="sameScheduleEveryDay" name="SameScheduleEveryDay" class="form-check-input"
                            onchange="updateSameSchedule(this.checked);" @(sameScheduleEveryDay ? "checked" : "")>
@@ -63,7 +64,7 @@
             <div class="meal-list">
                 @foreach (var group in Model.Where(m => m.DayOfTheWeekId == 8).OrderBy(m => m.SlotOfTheDayId).GroupBy(m => m.SlotOfTheDayId))
                 {
-                    <h1 data-group-id="@group.Key">
+                    <h1 data-group-id="@group.Key" style="font-size: 28px; font-weight: bold; color: #002f6c; font-family: 'Roboto', sans-serif;">
                         @group.First().SlotOfTheDay
                     </h1>
 
@@ -74,27 +75,31 @@
                     {
                         <div id="meal-item-@meal.Id" class="meal-item d-flex align-items-center justify-content-between" data-group-id="@group.Key">
                             <div class="meal-info">
-                                <h6>@meal.Name</h6>
+                                <h6 style="font-weight: bold; font-family: 'Roboto', sans-serif;">@meal.Name</h6>
                                 <p>
-                                    <i class="fa fa-utensils"></i> <span>@meal.Size</span> &nbsp;
-                                    <i class="fa fa-leaf"></i> <span>@meal.CookingDifficulty</span> &nbsp;
-                                    <i class="fa fa-clock"></i> <span>@meal.SlotOfTheDay</span> &nbsp;
-                                    <span>@meal.WantCooking</span>
+                                    <i class="fa fa-utensils text-primary"></i> <span>@meal.Size</span> &nbsp;
+                                    <i class="fa fa-leaf text-success"></i> <span>@meal.CookingDifficulty</span> &nbsp;
+                                    <i class="fa fa-clock text-warning"></i> <span>@meal.SlotOfTheDay</span> &nbsp;
+                                    <i class="fa fa-cogs text-danger"></i> <span>@meal.WantCooking</span> 
                                 </p>
                             </div>
                             <div class="meal-actions d-flex">
                                 <a href="@Url.Action("EditMealSettingsDetailActive", "Meal", new { id = meal.Id ,userId = userId  })" class="btn btn-light btn-sm mr-1">
-                                    <i class="fas fa-pencil-alt" style="color: gray;"></i>
+                                    <i class="fas fa-pencil-alt" style="color: #007bff;"></i> <!-- Bút màu xanh nước biển -->
                                 </a>
                                 <button class="btn btn-light btn-sm mr-1" onclick="openEditNutrition(@meal.NutritionTargetsDailyId)">
-                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-eye" style="color: #28a745;"></i> <!-- Mắt màu xanh lá cây -->
                                 </button>
+
                                 <button class="btn btn-light btn-sm" onclick="changeOrderNumber(@meal.Id, 'up')"
-                                @(meal.OrderNumber == minOrderNumber ? "disabled" : "")>
+                                @(meal.OrderNumber == minOrderNumber ? "disabled" : "")
+                                        style="background-color: #ffc107; color: white;">
                                     <i class="fa fa-arrow-up"></i>
                                 </button>
+
                                 <button class="btn btn-light btn-sm ml-1" onclick="changeOrderNumber(@meal.Id, 'down')"
-                                @(meal.OrderNumber == maxOrderNumber ? "disabled" : "")>
+                                @(meal.OrderNumber == maxOrderNumber ? "disabled" : "")
+                                        style="background-color: #ffc107; color: white;">
                                     <i class="fa fa-arrow-down"></i>
                                 </button>
                                 <form asp-action="RemoveMealToList" asp-controller="Meal" method="post" style="display: inline;">
@@ -111,8 +116,14 @@
 
 
                 <div class="text-right mb-3">
-                    <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = 8, userId = ViewBag.UserId  })" class="btn btn-secondary">Thêm bữa ăn vào bố cục</a>
+                    <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = 8, userId = ViewBag.UserId  })"
+                       class="btn btn-secondary"
+                       style="font-weight: bold; text-align: center; font-family: 'Roboto', sans-serif;">
+                        Thêm bữa ăn vào bố cục
+                    </a>
                 </div>
+
+
             </div>
         }
 
@@ -138,7 +149,7 @@
                                 @foreach (var group in groupedMeals)
                                 {
                                     <!-- Thêm data-group-id vào tiêu đề nhóm -->
-                                    <h1 class="mt-3" data-group-id="@group.Key">@group.First().SlotOfTheDay</h1>
+                                    <h1 class="mt-3" data-group-id="@group.Key" style="font-size: 28px; font-weight: bold; color: #002f6c; font-family: 'Roboto', sans-serif;">@group.First().SlotOfTheDay</h1>
 
                                     var minOrderNumber = group.Min(m => m.OrderNumber);
                                     var maxOrderNumber = group.Max(m => m.OrderNumber);
@@ -148,28 +159,31 @@
                                         <!-- Thêm data-group-id vào meal-item để liên kết với nhóm -->
                                         <div id="meal-item-@meal.Id" class="meal-item d-flex align-items-center justify-content-between" data-group-id="@group.Key">
                                             <div class="meal-info">
-                                                <h6>@meal.Name</h6>
+                                                <h6 style="font-weight: bold; font-family: 'Roboto', sans-serif;">@meal.Name</h6>
                                                 <p>
-                                                    <i class="fa fa-utensils"></i> <span>@meal.Size</span> &nbsp;
-                                                    <i class="fa fa-leaf"></i> <span>@meal.CookingDifficulty</span> &nbsp;
-                                                    <i class="fa fa-clock"></i> <span>@meal.SlotOfTheDay</span> &nbsp;
-                                                    <span>@meal.WantCooking</span>
+                                                    <i class="fa fa-utensils text-primary"></i> <span>@meal.Size</span> &nbsp;
+                                                    <i class="fa fa-leaf text-success"></i> <span>@meal.CookingDifficulty</span> &nbsp;
+                                                    <i class="fa fa-clock text-warning"></i> <span>@meal.SlotOfTheDay</span> &nbsp;
+                                                    <i class="fa fa-cogs text-danger"></i> <span>@meal.WantCooking</span>
                                                 </p>
                                             </div>
                                             <div class="meal-actions d-flex">
                                                 <a href="@Url.Action("EditMealSettingsDetailActive", "Meal", new { id = meal.Id, userId = userId })" class="btn btn-light btn-sm mr-1">
-                                                    <i class="fas fa-pencil-alt" style="color: gray;"></i>
+                                                    <i class="fas fa-pencil-alt" style="color: #007bff;"></i>
                                                 </a>
                                                 <!-- Các nút điều chỉnh order number, và xóa bữa ăn -->
                                                 <button class="btn btn-light btn-sm mr-1" onclick="openEditNutrition(@meal.NutritionTargetsDailyId)">
-                                                    <i class="fa fa-eye"></i>
+                                                    <i class="fa fa-eye" style="color: #28a745;"></i>
                                                 </button>
                                                 <button class="btn btn-light btn-sm" onclick="changeOrderNumber(@meal.Id, 'up')"
-                                                @(meal.OrderNumber == minOrderNumber ? "disabled" : "")>
+                                                @(meal.OrderNumber == minOrderNumber ? "disabled" : "")
+                                                        style="background-color: #ffc107; color: white;">
                                                     <i class="fa fa-arrow-up"></i>
                                                 </button>
+
                                                 <button class="btn btn-light btn-sm ml-1" onclick="changeOrderNumber(@meal.Id, 'down')"
-                                                @(meal.OrderNumber == maxOrderNumber ? "disabled" : "")>
+                                                @(meal.OrderNumber == maxOrderNumber ? "disabled" : "")
+                                                        style="background-color: #ffc107; color: white;">
                                                     <i class="fa fa-arrow-down"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-light delete-meal-btn ml-1" onclick="removeMeal(@meal.Id, @ViewBag.UserId)">

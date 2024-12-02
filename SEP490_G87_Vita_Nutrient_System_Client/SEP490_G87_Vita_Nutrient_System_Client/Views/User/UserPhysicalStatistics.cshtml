@@ -11,7 +11,7 @@
 
     <form asp-action="UserPhysicalStatistics" method="post" class="personal-info-form" id="userInfoForm">
         @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="WeightGoal" />
+        <input type="hidden" asp-for="WeightGoal" value="@Model.WeightGoal" />
 
         <div class="form-group row">
             <label for="Gender" class="col-label">Giới tính:</label>

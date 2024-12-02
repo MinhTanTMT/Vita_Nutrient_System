@@ -10,7 +10,9 @@
 }
 <div class="container">
     <div class="modal-header">
-        <h5 class="modal-title">Danh sách  bữa ăn</h5>
+        <h1 class="modal-title" style="font-weight: bold; color: #388E3C; text-align: center; font-family: 'Roboto', sans-serif;">
+            Danh sách bữa ăn
+        </h1>
     </div>
 
     <div class="modal-body">
@@ -23,21 +25,37 @@
 
             @foreach (var group in groupedMeals)
             {
-                <h1 data-group-id="@group.Key" class="meal-group-title">
+                <h1 data-group-id="@group.Key" class="meal-group-title" style="font-size: 28px; font-weight: bold; color: #388E3C; font-family: 'Roboto', sans-serif;">
                     @group.First().SlotOfTheDay
                 </h1>
+
 
                 @foreach (var meal in group)
                 {
                     <div class="meal-item d-flex align-items-center justify-content-between" data-meal-id="@meal.Id" data-group-id="@group.Key">
                         <div class="meal-info">
-                            <h6>@meal.Name</h6>
+                            <h6 style="font-weight: bold; font-family: 'Roboto', sans-serif;">@meal.Name</h6>
                             <p>
-                                <i class="fa fa-utensils"></i> <span>@meal.Size</span> &nbsp;
-                                <i class="fa fa-leaf"></i> <span>@meal.CookingDifficulty</span> &nbsp;
-                                <i class="fa fa-clock"></i> <span>@meal.SlotOfTheDay</span> &nbsp;
-                                <span>@meal.WantCooking</span>
+                                <i class="fa fa-utensils text-primary"></i> <span>@meal.Size</span> &nbsp;
+                                <i class="fa fa-leaf text-success"></i> <span>@meal.CookingDifficulty</span> &nbsp;
+                                <i class="fa fa-clock text-warning"></i> <span>@meal.SlotOfTheDay</span> &nbsp;
+                                <i class="fa fa-cogs text-danger"></i> <span>@meal.WantCooking</span>
                             </p>
+                            <p class="meal-status">
+                                @if (meal.IsActive == true)
+                                {
+                                    <span class="text-success">
+                                        <i class="fa fa-check-circle"></i> ĐÃ CHỌN
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">
+                                        <i class="fa fa-times-circle"></i> CHƯA CHỌN
+                                    </span>
+                                }
+                            </p>
+
                         </div>
                         <div class="meal-actions d-flex">
                             <form asp-action="AddMealToList" asp-controller="Meal" method="post">
