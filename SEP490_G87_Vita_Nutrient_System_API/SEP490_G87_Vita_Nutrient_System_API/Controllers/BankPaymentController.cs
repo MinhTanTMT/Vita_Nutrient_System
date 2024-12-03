@@ -61,8 +61,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             UserLoginRegister abc = new UserLoginRegister()
             {
-                Account = "Nutri_4",
-                Password = "Nutri_4",
+                Account = "Nutri_3",
+                Password = "Nutri_3",
                 Role = 2
             };
 
