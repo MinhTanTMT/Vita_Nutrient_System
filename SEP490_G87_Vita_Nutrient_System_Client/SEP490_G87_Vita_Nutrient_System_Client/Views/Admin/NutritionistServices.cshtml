@@ -29,11 +29,11 @@
                             @foreach (var nutritionist in service.NutritionistDetails)
                             {
                                 <li class="bg-gray-100 p-4 rounded-lg shadow-md">
-                                    <h4 class="text-lg font-semibold text-gray-800">Chuyên gia ID: @nutritionist.NutritionistId</h4>
+                                    <h4 class="text-lg font-semibold text-gray-800" type="hidden">Chuyên gia ID: @nutritionist.NutritionistId</h4>
                                     <p class="text-gray-600"><strong>Giới thiệu:</strong> @nutritionist.DescribeYourself</p>
-                                    <p class="text-gray-600"><strong>Chiều cao:</strong> @nutritionist.Height cm</p>
-                                    <p class="text-gray-600"><strong>Cân nặng:</strong> @nutritionist.Weight kg</p>
-                                    <p class="text-gray-600"><strong>Tuổi:</strong> @nutritionist.Age</p>
+                                    <p class="text-gray-600"><strong>Chiều cao:  type="hidden"</strong> @nutritionist.Height cm</p>
+                                    <p class="text-gray-600"><strong>Cân nặng:  type="hidden"</strong> @nutritionist.Weight kg</p>
+                                    <p class="text-gray-600"><strong>Tuổi:  type="hidden"</strong> @nutritionist.Age</p>
                                     <p class="text-gray-600"><strong>Đánh giá:</strong> @nutritionist.Rate ⭐️ (dựa trên @nutritionist.NumberRate đánh giá)</p>
                                     <form asp-controller="Admin" asp-action="PaymentForPaidServices" method="post" class="mt-4">
                                         <input type="hidden" name="NutritionistId" value="@nutritionist.NutritionistId" />

@@ -284,7 +284,21 @@
             <div class="header-item">
                 <i class="fas fa-calendar-alt"></i>
                 <h3>ĐĂNG KÍ CHUYÊN GIA</h3>
-                <a href="#">Đăng kí ngay</a>
+
+                @{
+                    var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value.ToString();
+                }
+                @{
+                    if (role != null && role.Equals("User"))
+                    {
+                        <a href="@Url.Action("NutritionCheck", "Home")">Đăng kí ngay</a>
+                    }
+                    else
+                    {
+                        <a href="">Không có quyền đăng ký</a>
+                    }
+                }
+  
             </div>
         </div>
 
