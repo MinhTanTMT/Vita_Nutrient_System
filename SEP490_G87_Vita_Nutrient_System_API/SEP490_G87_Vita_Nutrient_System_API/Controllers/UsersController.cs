@@ -56,9 +56,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
         [HttpGet("checkExit")]
-        public async Task<ActionResult<User>> APIGetUserByAccount(string account)
+        public async Task<ActionResult<User>> APIGetUserByAccount(string account, string accGoogle)
         {
-            var dataReturn = await repositories.CheckAccountUserNull(account);
+            var dataReturn = await repositories.CheckAccountUserNull(account, accGoogle);
 
             if (dataReturn)
             {

@@ -46,12 +46,28 @@
                                     <small style="font-family: 'Roboto', sans-serif;" id="accountHelp" class="form-text text-muted">Tài khoản phải có từ 6 đến 20 ký tự.</small>
                                 </div>
                                 <div class="form-group">
+                                    <input style="font-family: 'Roboto', sans-serif;"
+                                           type="email"
+                                           class="form-control form-control-lg"
+                                           placeholder="Gmail"
+                                           name="accountGoogle"
+                                           required
+                                           title="Vui lòng nhập một địa chỉ Gmail hợp lệ (ví dụ: example@gmail.com)"
+                                           minlength="6"
+                                           maxlength="50">
+                                    <small style="font-family: 'Roboto', sans-serif;" id="accountHelp" class="form-text text-muted">
+                                        Tài khoản phải có từ 6 đến 50 ký tự và là địa chỉ Gmail hợp lệ.
+                                    </small>
+                                </div>
+
+
+                                <div class="form-group">
                                     <input style="font-family: 'Roboto', sans-serif;" type="password" class="form-control form-control-lg" id="password" placeholder="Mật khẩu" name="password" required minlength="6" maxlength="20">
-                                    <small style="font-family: 'Roboto', sans-serif;" id="passwordHelp" class="form-text text-muted">Tài khoản phải có từ 6 đến 20 ký tự.</small>
+                                    <small style="font-family: 'Roboto', sans-serif;" id="passwordHelp" class="form-text text-muted">Mật khẩu phải có từ 6 đến 20 ký tự.</small>
                                 </div>
                                 <div class="form-group">
                                     <input style="font-family: 'Roboto', sans-serif;" type="password" class="form-control form-control-lg" id="confirmPassword" placeholder="Nhập lại mật khẩu" name="confirm" required minlength="6" maxlength="20">
-                                    <small style="font-family: 'Roboto', sans-serif;" id="confirmPasswordHelp" class="form-text text-muted">Must match the password above.</small>
+                                    <small style="font-family: 'Roboto', sans-serif;" id="confirmPasswordHelp" class="form-text text-muted">Phải trùng với mật khẩu ở trên.</small>
                                 </div>
                                 <div class="mb-4">
                                     <div class="form-check">
