@@ -37,57 +37,57 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         ///
 
 
-        //public async Task<string> EncryptPassword(string password)
-        //{
-        //    // Kiểm tra nếu mật khẩu không rỗng hoặc null
-        //    if (string.IsNullOrEmpty(password))
-        //        throw new ArgumentException("Password cannot be null or empty", nameof(password));
-
-        //    // Hash mật khẩu bằng bcrypt (bcrypt sẽ tự động sinh salt)
-        //    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-
-        //    // Trả về hash của mật khẩu
-        //    return hashedPassword;
-        //}
-
-        //public async Task<bool> VerifyPassword(string enteredPassword, string storedHashedPassword)
-        //{
-        //    // So sánh mật khẩu người dùng nhập với mật khẩu đã hash lưu trữ
-        //    return BCrypt.Net.BCrypt.Verify(enteredPassword, storedHashedPassword);
-        //}
-
-
         public async Task<string> EncryptPassword(string password)
         {
-            //if (string.IsNullOrEmpty(password))
-            //    throw new ArgumentException("Password cannot be null or empty", nameof(password));
+            // Kiểm tra nếu mật khẩu không rỗng hoặc null
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentException("Password cannot be null or empty", nameof(password));
 
-            //using (Aes aes = Aes.Create())
-            //{
-            //    aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+            // Hash mật khẩu bằng bcrypt (bcrypt sẽ tự động sinh salt)
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
-            //    // Tạo IV động
-            //    aes.GenerateIV();
-            //    byte[] iv = aes.IV;
-
-            //    using (var encryptor = aes.CreateEncryptor(aes.Key, iv))
-            //    using (var ms = new MemoryStream())
-            //    {
-            //        // Lưu IV vào đầu dữ liệu
-            //        ms.Write(iv, 0, iv.Length);
-
-            //        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-            //        using (var writer = new StreamWriter(cs))
-            //        {
-            //            writer.Write(password);
-            //        }
-
-            //        return Convert.ToBase64String(ms.ToArray());
-            //    }
-            //}
-
-            return password;
+            // Trả về hash của mật khẩu
+            return hashedPassword;
         }
+
+        public async Task<bool> VerifyPassword(string enteredPassword, string storedHashedPassword)
+        {
+            // So sánh mật khẩu người dùng nhập với mật khẩu đã hash lưu trữ
+            return BCrypt.Net.BCrypt.Verify(enteredPassword, storedHashedPassword);
+        }
+
+
+        //public async Task<string> EncryptPassword(string password)
+        //{
+        //if (string.IsNullOrEmpty(password))
+        //    throw new ArgumentException("Password cannot be null or empty", nameof(password));
+
+        //using (Aes aes = Aes.Create())
+        //{
+        //    aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+
+        //    // Tạo IV động
+        //    aes.GenerateIV();
+        //    byte[] iv = aes.IV;
+
+        //    using (var encryptor = aes.CreateEncryptor(aes.Key, iv))
+        //    using (var ms = new MemoryStream())
+        //    {
+        //        // Lưu IV vào đầu dữ liệu
+        //        ms.Write(iv, 0, iv.Length);
+
+        //        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+        //        using (var writer = new StreamWriter(cs))
+        //        {
+        //            writer.Write(password);
+        //        }
+
+        //        return Convert.ToBase64String(ms.ToArray());
+        //    }
+        //}
+
+        //    return password;
+        //}
 
         /// <summary>
         /// Giải mã mật khẩu.
@@ -161,6 +161,60 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
+        public async Task<string> GeneratePassword(int length, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = false)
+        {
+            if (length <= 0)
+            {
+                throw new ArgumentException("Password length must be greater than 0.");
+            }
+
+            // Các bộ ký tự có thể sử dụng
+            const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+            const string numberChars = "0123456789";
+            const string specialChars = "!@#$%^&*()-_=+[]{}|;:,.<>?/";
+
+            // Chuỗi ký tự được chọn để tạo mật khẩu
+            string characterPool = "";
+
+            if (includeUppercase)
+            {
+                characterPool += uppercaseChars;
+            }
+
+            if (includeLowercase)
+            {
+                characterPool += lowercaseChars;
+            }
+
+            if (includeNumbers)
+            {
+                characterPool += numberChars;
+            }
+
+            if (includeSpecialChars)
+            {
+                characterPool += specialChars;
+            }
+
+            if (string.IsNullOrEmpty(characterPool))
+            {
+                throw new ArgumentException("At least one character type must be selected.");
+            }
+
+            // Tạo mật khẩu
+            var random = new Random();
+            var passwordBuilder = new StringBuilder();
+
+            for (int i = 0; i < length; i++)
+            {
+                int randomIndex = random.Next(characterPool.Length);
+                passwordBuilder.Append(characterPool[randomIndex]);
+            }
+
+            return passwordBuilder.ToString();
+        }
+
 
         public async Task<bool> ForgotPassword(string emailGoogle)
         {
@@ -169,11 +223,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 var inforAccount = await _context.Users.FirstOrDefaultAsync(x => x.AccountGoogle.Equals(emailGoogle));
                 if (inforAccount != null)
                 {
-                    string? Passwork = $"Mật khẩu hiện tại của bạn: {await DecryptPassword(inforAccount.Password)}";
+                    string newPass = await GeneratePassword(12);
+                    inforAccount.Password = await EncryptPassword(newPass);
+                    string? Passwork = $"Mật khẩu hiện tại của bạn: {newPass}";
                     await SendMail(emailGoogle, "Mật khẩu của bạn", Passwork);
                     return true;
                 }
-
                 return false;
             }
             catch (Exception ex)
@@ -197,7 +252,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             {
                 return null;
             }
-            else if (password.Equals(await DecryptPassword(user.Password)))
+            else if (await VerifyPassword(password, user.Password))
             {
                 var getDataRole = await _context.Roles.FindAsync(user.Role);
 
@@ -218,13 +273,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         }
 
-        public async Task<bool> CheckAccountUserNull(string account)
+        public async Task<bool> CheckAccountUserNull(string account, string accGoogle)
         {
             if (_context.Users == null)
             {
                 return false;
             }
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Account.Equals(account));
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Account.Equals(account) || u.AccountGoogle.Equals(accGoogle));
             if (user == null)
             {
                 return true;
@@ -240,6 +295,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 LastName = user.LastName,
                 Role = user.Role,
                 Account = user.Account,
+                AccountGoogle = user.AccountGoogle,
                 Password =  await EncryptPassword(user.Password),
                 IsActive = true
             };
@@ -627,5 +683,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             return "Success";
         }
+
     }
 }

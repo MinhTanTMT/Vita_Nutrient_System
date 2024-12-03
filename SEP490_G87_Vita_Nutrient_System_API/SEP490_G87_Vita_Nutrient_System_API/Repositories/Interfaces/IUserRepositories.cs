@@ -14,7 +14,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         ///
         ///
 
-        Task<bool> CheckAccountUserNull(string account);
+        Task<string> DecryptPassword(string encryptedPassword); // se bo som
+
+        Task<bool> CheckAccountUserNull(string account, string accGoogle);
         Task<bool> ForgotPassword(string emailGoogle);
         Task<UserLoginRegister> GetUserLogin(string account, string password);
         Task<UserLoginRegister> GetUserRegister(UserLoginRegister user);
@@ -22,7 +24,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         dynamic ChangePassword(ChangePasswordDTO model);
         Task<UserLoginRegister> GetRegisterLoginGoogle(UserLoginRegister user);
         Task<String> EncryptPassword(string password);
-        Task<String> DecryptPassword(string encryptedPassword);
+        Task<string> GeneratePassword(int length, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = false);
 
         ////////////////////////////////////////////////////////////
         /// Dũng
