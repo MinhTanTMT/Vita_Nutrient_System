@@ -65,16 +65,19 @@
     </table>
 
     <!-- Pagination -->
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
-            {
-                <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
-                    <a class="page-link" asp-action="GetInfoAllPremiumUserByNutritionist" asp-route-pageNumber="@i" asp-route-search="@ViewData["search"]">@i</a>
-                </li>
-            }
-        </ul>
-    </nav>
+    @if (ViewData["TotalPages"] != null && (int)ViewData["TotalPages"] > 1)
+    {
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+                {
+                    <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
+                        <a class="page-link" asp-action="GetInfoAllPremiumUserByNutritionist" asp-route-pageNumber="@i" asp-route-searchTitle="@ViewData["searchTitle"]">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
 </div>
 <!-- Modal quản lý bệnh lý -->
 <div class="modal fade" id="diseaseModal" tabindex="-1" aria-labelledby="diseaseModalLabel" aria-hidden="true">
@@ -302,14 +305,7 @@
 
 
 <style>
-    .container {
-        max-width: 90%;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+    
 
     .page-title {
         font-size: 32px;

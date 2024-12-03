@@ -23,7 +23,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
         // GET: List of all articles
         [HttpGet, Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Index(string searchTitle, int pageNumber = 1, int pageSize = 2)
+        public async Task<IActionResult> Index(string searchTitle, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
@@ -46,8 +46,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var paginatedArticles = articles.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
                     // Thông tin phân trang
-                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
+                    // Chỉ hiển thị phân trang nếu có từ 2 trang trở lên
+                    if (totalPages > 1)
+                    {
+                        ViewData["TotalPages"] = totalPages;
+                    }
+
 
                     return View(paginatedArticles);
                 }
@@ -65,8 +71,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // GET: List of all articles for users
-        [HttpGet]
-        
+        [HttpGet]        
         public async Task<IActionResult> IndexForUsers(string searchTitle, int pageNumber = 1, int pageSize = 2)
         {
             try
@@ -93,8 +98,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var paginatedArticles = articles.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
                     // Thông tin phân trang
-                    ViewData["TotalPages"] = (int)Math.Ceiling((double)totalItems / pageSize);
+                    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     ViewData["CurrentPage"] = pageNumber;
+                    // Chỉ hiển thị phân trang nếu có từ 2 trang trở lên
+                    if (totalPages > 1)
+                    {
+                        ViewData["TotalPages"] = totalPages;
+                    }
 
                     return View(paginatedArticles);
                 }
@@ -197,6 +207,23 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 // Kiểm tra và xử lý tệp hình ảnh
                 if (HeaderImage != null && HeaderImage.Length > 0)
                 {
+                    // Kiểm tra định dạng file (chỉ chấp nhận .jpg, .jpeg, .png, .gif)
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    var fileExtension = Path.GetExtension(HeaderImage.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("HeaderImage", "Chỉ chấp nhận các định dạng hình ảnh: .jpg, .jpeg, .png, .gif.");
+                        return View(article); // Trả về trang tạo bài viết với thông báo lỗi
+                    }
+
+                    // Kiểm tra kích thước file (giới hạn 5MB)
+                    if (HeaderImage.Length > 5 * 1024 * 1024) // 5MB
+                    {
+                        ModelState.AddModelError("HeaderImage", "Kích thước ảnh không được vượt quá 5MB.");
+                        return View(article); // Trả về trang tạo bài viết với thông báo lỗi
+                    }
+
                     var fileName = Path.GetFileName(HeaderImage.FileName);
                     var filePath = Path.Combine("wwwroot/images/news", fileName);
 
@@ -224,7 +251,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     Title = article.Title,
                     Content = article.Content,
                     IsActive = article.IsActive ?? true,
-                    DateCreated = article.DateCreated ?? DateTime.Now,
+                    DateCreated = DateTime.Today,
                     HeaderImage = article.HeaderImage
                 };
 
@@ -233,23 +260,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index"); // Chuyển hướng về trang Index khi thành công
+                    TempData["SuccessMessage"] = "Bài viết đã được tạo thành công!";
+                    return RedirectToAction("Index");
                 }
                 else
                 {
-                    // Ghi lại thông tin lỗi từ API
-                    string errorDetails = await response.Content.ReadAsStringAsync();
-                    ModelState.AddModelError(string.Empty, "Lỗi từ API: " + errorDetails);
+                    TempData["ErrorMessage"] = "Đã có lỗi xảy ra khi tạo bài viết. Vui lòng thử lại!";
+                    return View(article);
                 }
             }
             catch (Exception ex)
             {
-                // Xử lý lỗi bất ngờ
-                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+                TempData["ErrorMessage"] = "Có lỗi khi xử lý yêu cầu. Vui lòng thử lại sau.";
+                return View(article);
             }
-
-            return View(article); // Trả về view cùng dữ liệu khi có lỗi
         }
+
 
         // GET: Edit an article by id
         [HttpGet, Authorize(Roles = "Admin")]
@@ -292,6 +318,20 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 // Kiểm tra xem người dùng có chọn hình ảnh mới không
                 if (HeaderImage != null && HeaderImage.Length > 0)
                 {
+                    // Kiểm tra định dạng file (chỉ chấp nhận .jpg, .jpeg, .png, .gif)
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    var fileExtension = Path.GetExtension(HeaderImage.FileName).ToLower();
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("HeaderImage", "Chỉ chấp nhận các định dạng hình ảnh: .jpg, .jpeg, .png, .gif.");
+                        return View(article); // Trả về trang tạo bài viết với thông báo lỗi
+                    }
+                    // Kiểm tra kích thước file (giới hạn 5MB)
+                    if (HeaderImage.Length > 5 * 1024 * 1024) // 5MB
+                    {
+                        ModelState.AddModelError("HeaderImage", "Kích thước ảnh không được vượt quá 5MB.");
+                        return View(article); // Trả về trang tạo bài viết với thông báo lỗi
+                    }
                     var fileName = Path.GetFileName(HeaderImage.FileName);
                     var filePath = Path.Combine("wwwroot/images/news", fileName);
 

@@ -229,7 +229,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
 
             // Lọc lộ trình dinh dưỡng thuộc về gói đăng ký nâng cao này
-            return await _context.NutritionRoutes
+            var routes = await _context.NutritionRoutes
                 .Where(route => route.UserId == relatedUserListManagement.UserId
                                 && route.CreateById == relatedUserListManagement.NutritionistId
                                 && route.StartDate.Value.Date >= relatedUserListManagement.StartDate.Value.Date
@@ -248,7 +248,43 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     CreateByName = route.CreateBy.FirstName + " " + route.CreateBy.LastName,
                     UrlImage = route.User.Urlimage
                 }).ToListAsync();
+
+            // Kiểm tra ngày hiện tại và cập nhật trạng thái IsDone
+            foreach (var route in routes)
+            {
+                // Nếu ngày hiện tại lớn hơn ngày kết thúc lộ trình, thì đánh dấu là hoàn thành
+                if (DateTime.Now > route.EndDate)
+                {
+                    route.IsDone = true;
+                }
+                else
+                {
+                    route.IsDone = false;
+                }
+            }
+
+            // Sau khi cập nhật trạng thái IsDone, bạn có thể chọn lưu lại vào database nếu cần
+            // Nếu muốn lưu các thay đổi vào database, bạn có thể thực hiện thêm các lệnh cập nhật như sau:
+
+            // Để cập nhật các thay đổi vào database, bạn có thể cần lưu lại
+            foreach (var route in routes)
+            {
+                var routeEntity = await _context.NutritionRoutes
+                    .FirstOrDefaultAsync(r => r.Id == route.Id);
+
+                if (routeEntity != null)
+                {
+                    routeEntity.IsDone = route.IsDone;
+                    _context.NutritionRoutes.Update(routeEntity);
+                }
+            }
+
+            // Lưu thay đổi vào database
+            await _context.SaveChangesAsync();
+
+            return routes;
         }
+
 
         public async Task<IEnumerable<ListOfDiseaseDTO>> GetDiseaseByUserIdAsync(int userId)
         {
