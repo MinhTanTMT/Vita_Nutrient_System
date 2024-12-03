@@ -11,7 +11,7 @@
 
     <form asp-action="UserPhysicalStatistics" method="post" class="personal-info-form" id="userInfoForm">
         @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="WeightGoal" value="@Model.WeightGoal" />
+        <input type="hidden" asp-for="WeightGoal" />
 
         <div class="form-group row">
             <label for="Gender" class="col-label">Giới tính:</label>
@@ -319,19 +319,29 @@
         const activityLevel = parseFloat(document.querySelector('select[name="ActivityLevel"]').value) || 1.2;
         const weightGoal = parseInt(document.querySelector('input[name="WeightGoal"]').value);
 
+        console.log("Height: " + height); // Kiểm tra giá trị chiều cao
+        console.log("Weight: " + weight); // Kiểm tra giá trị cân nặng
+        console.log("Age: " + age); // Kiểm tra giá trị tuổi
+        console.log("Gender: " + gender); // Kiểm tra giá trị giới tính (true/false)
+        console.log("Activity Level: " + activityLevel); // Kiểm tra mức độ hoạt động
+        console.log("Weight Goal: " + weightGoal); // Kiểm tra mục tiêu cân nặng
+
         let bmr = gender
             ? (10 * weight) + (6.25 * height) - (5 * age) + 5
             : (10 * weight) + (6.25 * height) - (5 * age) - 161;
+        console.log("bmr: " + bmr);
         let tdee = Math.round(bmr * activityLevel);
-        // Tính toán tdee dựa trên mục tiêu cân nặng
-        if (weightGoal === 1) { // Giảm mỡ
+        // Điều chỉnh TDEE theo mục tiêu cân nặng
+        if (weightGoal == 1) { // Giảm mỡ
             tdee = tdee - tdee * 0.15;
-        } else if (weightGoal === 2) { // Duy trì cân nặng
+        } else if (weightGoal == 2) { // Duy trì cân nặng
             tdee = tdee; // Không thay đổi
-        } else if (weightGoal === 3) { // Xây dựng cơ bắp
+        } else if (weightGoal == 3) { // Xây dựng cơ bắp
             tdee = tdee + tdee * 0.15;
         }
+        console.log("tdee: " + bmr);
         tdee = Math.round(tdee)
+        console.log("tdee sau: " + bmr);
 
         const carbs = Math.round(tdee * 0.4 / 4);
         const fats = Math.round(tdee * 0.3 / 9);
@@ -365,6 +375,7 @@
                 Weight: $("#Weight").val(),
                 Age: $("#Age").val(),
                 ActivityLevel: $("#ActivityLevel").val(),
+                WeightGoal: $("#WeightGoal").val(),
                 UnderlyingDisease: $("UnderlyingDisease").val()
             },
             headers: {

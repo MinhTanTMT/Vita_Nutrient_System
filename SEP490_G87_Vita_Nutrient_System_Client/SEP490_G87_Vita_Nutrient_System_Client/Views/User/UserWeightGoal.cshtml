@@ -8,11 +8,13 @@
         @Html.AntiForgeryToken()
 
         <!-- Input hidden để lưu thông tin người dùng và các thông số cần tính toán calo -->
-        <input type="hidden" asp-for="UserId" value="@Model.UserId" />
-        <input type="hidden" asp-for="Height" value="@Model.Height" />
-        <input type="hidden" asp-for="Age" value="@Model.Age" />
-        <input type="hidden" asp-for="Gender" value="@Model.Gender" />
-        <input type="hidden" asp-for="ActivityLevel" value="@Model.ActivityLevel" />
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="Height"  />
+        <input type="hidden" asp-for="Age"  />
+        <input type="hidden" asp-for="Gender" value="@Model.Gender.ToString().ToLower()" />
+
+
+        <input type="hidden" asp-for="ActivityLevel"  />
 
         <!-- Hiển thị thông tin người dùng mà có thể chỉnh sửa -->
         <div class="form-group">
@@ -77,21 +79,18 @@
         const activityLevel = parseFloat(document.querySelector('input[name="ActivityLevel"]').value) || 1.2;
         const weightGoal = parseInt(document.querySelector('select[name="WeightGoal"]').value); // Lấy giá trị mục tiêu cân nặng
 
-       
-
         // Tính BMR (Basal Metabolic Rate) - Tốc độ trao đổi chất cơ bản
         let bmr = gender
-            ? (10 * weight) + (6.25 * height) - (5 * age) + 5  // Nam
-            : (10 * weight) + (6.25 * height) - (5 * age) - 161; // Nữ
+            ? (10 * weight) + (6.25 * height) - (5 * age) + 5
+            : (10 * weight) + (6.25 * height) - (5 * age) - 161;
 
         // Tính TDEE (Total Daily Energy Expenditure) - Tổng lượng calo tiêu thụ mỗi ngày
         let tdee = Math.round(bmr * activityLevel);
-        // Điều chỉnh TDEE theo mục tiêu cân nặng
-        if (weightGoal === 1) { // Giảm mỡ
+        if (weightGoal == 1) { // Giảm mỡ
             tdee = tdee - tdee * 0.15;
-        } else if (weightGoal === 2) { // Duy trì cân nặng
+        } else if (weightGoal == 2) { // Duy trì cân nặng
             tdee = tdee; // Không thay đổi
-        } else if (weightGoal === 3) { // Xây dựng cơ bắp
+        } else if (weightGoal == 3) { // Xây dựng cơ bắp
             tdee = tdee + tdee * 0.15;
         }
         tdee = Math.round(tdee)
