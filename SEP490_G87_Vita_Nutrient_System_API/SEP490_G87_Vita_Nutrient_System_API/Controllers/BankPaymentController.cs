@@ -61,12 +61,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             UserLoginRegister abc = new UserLoginRegister()
             {
-                Account = "tantestmaha4",
-                Password = "tantestmaha4",
-                
+                Account = "Nutri_3",
+                Password = "Nutri_3",
+                Role = 2
             };
 
-            return Ok(await usersRepositories.GetUserLogin("tantestmaha4" , "tantestmaha4"));
+            return Ok(await usersRepositories.GetUserRegister(abc));
 
 
         }

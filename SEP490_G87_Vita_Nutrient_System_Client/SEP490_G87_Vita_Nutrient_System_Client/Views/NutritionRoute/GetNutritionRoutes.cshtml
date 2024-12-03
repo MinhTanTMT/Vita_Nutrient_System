@@ -102,32 +102,24 @@
         </tbody>
     </table>
 
-    @{
-        int totalPages = ViewData["TotalPages"] != null ? (int)ViewData["TotalPages"] : 0;
-        int currentPage = ViewData["CurrentPage"] != null ? (int)ViewData["CurrentPage"] : 1;
-    }
-
-    @if (totalPages > 0)
+    <!-- Pagination -->
+    @if (ViewData["TotalPages"] != null && (int)ViewData["TotalPages"] > 1)
     {
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
-                @for (int i = 1; i <= totalPages; i++)
+                @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
                 {
-                    <li class="page-item @(i == currentPage ? "active" : "")">
-                        <a class="page-link" asp-action="GetNutritionRoutes" 
-                        asp-route-userId="@ViewData["UserId"]" 
-                        asp-route-userListManagementId="@ViewData["UserListManagementId"]" 
-                        asp-route-packageName="@ViewData["PackageName"]" 
-                        asp-route-pageNumber="@i" asp-route-pageSize="10">@i</a>
+                    <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
+                        <a class="page-link" asp-action="GetNutritionRoutes" asp-route-pageNumber="@i"
+                           asp-route-userId="@ViewData["UserId"]"
+                           asp-route-userListManagementId="@ViewData["UserListManagementId"]"
+                           asp-route-packageName="@ViewData["PackageName"]">@i</a>
                     </li>
                 }
             </ul>
         </nav>
     }
-    else
-    {
-        <p class="text-center">Không có dữ liệu để hiển thị.</p>
-    }
+    
 
 </div>
 
@@ -146,14 +138,7 @@
 </script>
 
 <style>
-    .container {
-        max-width: 90%;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+    
 
     .page-title {
         font-size: 32px;

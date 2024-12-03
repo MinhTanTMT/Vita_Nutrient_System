@@ -417,10 +417,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost, Authorize]
         public async Task<IActionResult> Logout()
         {
+
+            funtionabc();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Home");
         }
 
+
+        public bool funtionabc()
+        {
+
+            return true;
+        }
 
         public async Task<IActionResult> ToCopyTryCatch()
         {
@@ -443,7 +451,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Dũng
         ////////////////////////////////////////////////////////////
         ///
-
+    [HttpGet]
     public IActionResult NutritionCheck()
     {
         return View();
@@ -655,27 +663,31 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View(teamMembers);
         }
 
-
+        [HttpGet]
         public IActionResult PrivacyPolicy()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult TermsOfService()
         {
             return View();
         }
-        
+
+        [HttpGet]
         public IActionResult HowItWorks()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult ContactUs()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult GiftCodes()
         {
             return View();

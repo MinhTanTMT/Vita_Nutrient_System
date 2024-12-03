@@ -23,7 +23,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 
         public DateTime? DateCreated { get; set; }
 
-        [Url(ErrorMessage = "Hình ảnh tiêu đề phải là một URL hợp lệ.")]
         public string? HeaderImage { get; set; }
 
         public double? Rate { get; set; }
