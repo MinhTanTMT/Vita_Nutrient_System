@@ -273,6 +273,34 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         }
 
+
+        public async Task<bool> FunctionA(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> FunctionB(string account, string accGoogle)
+        {
+            User user = new User()
+            {
+                Account = account,
+                AccountGoogle = accGoogle
+            };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<User> FunctionC(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+
         public async Task<bool> CheckAccountUserNull(string account, string accGoogle)
         {
             if (_context.Users == null)

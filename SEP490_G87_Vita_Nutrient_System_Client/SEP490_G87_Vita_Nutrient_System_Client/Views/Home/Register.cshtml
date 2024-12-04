@@ -30,20 +30,20 @@
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left p-5">
                             <div class="brand-logo">
-                                <img src="~/images/logo.svg">
+                                <img src="~/images/LogoVitaNutri.jpg">
                             </div>
                             <h4 style="font-family: 'Roboto', sans-serif;">Bạn mới ở đây à?</h4>
                             <h6 class="font-weight-light" style="font-family: 'Roboto', sans-serif;">Đăng ký rất dễ dàng. Chỉ mất vài bước</h6>
                             <form class="pt-3" asp-action="Register" method="post" id="registerForm">
                                 <div class="form-group">
-                                    <input style="font-family: 'Roboto', sans-serif;" type="text" class="form-control form-control-lg" id="firstName" placeholder="Tên gọi" name="firstName" required minlength="1" maxlength="20">
+                                    <input style="font-family: 'Roboto', sans-serif;" type="text" class="form-control form-control-lg" id="firstName" placeholder="Tên gọi" name="firstName" required minlength="6" maxlength="50">
                                 </div>
                                 <div class="form-group">
-                                    <input style="font-family: 'Roboto', sans-serif;" type="text" class="form-control form-control-lg" id="lastName" placeholder="Tên đệm" name="lastName" required minlength="1" maxlength="20">
+                                    <input style="font-family: 'Roboto', sans-serif;" type="text" class="form-control form-control-lg" id="lastName" placeholder="Tên đệm" name="lastName" required minlength="6" maxlength="50">
                                 </div>
                                 <div class="form-group">
-                                    <input style="font-family: 'Roboto', sans-serif;" type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Tài khoản" name="account" required minlength="6" maxlength="20">
-                                    <small style="font-family: 'Roboto', sans-serif;" id="accountHelp" class="form-text text-muted">Tài khoản phải có từ 6 đến 20 ký tự.</small>
+                                    <input style="font-family: 'Roboto', sans-serif;" type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Tài khoản" name="account" required minlength="6" maxlength="50">
+                                    <small style="font-family: 'Roboto', sans-serif;" id="accountHelp" class="form-text text-muted">Tài khoản phải có từ 6 đến 50 ký tự.</small>
                                 </div>
                                 <div class="form-group">
                                     <input style="font-family: 'Roboto', sans-serif;"
@@ -62,11 +62,11 @@
 
 
                                 <div class="form-group">
-                                    <input style="font-family: 'Roboto', sans-serif;" type="password" class="form-control form-control-lg" id="password" placeholder="Mật khẩu" name="password" required minlength="6" maxlength="20">
-                                    <small style="font-family: 'Roboto', sans-serif;" id="passwordHelp" class="form-text text-muted">Mật khẩu phải có từ 6 đến 20 ký tự.</small>
+                                    <input style="font-family: 'Roboto', sans-serif;" type="password" class="form-control form-control-lg" id="password" placeholder="Mật khẩu" name="password" required minlength="6" maxlength="50">
+                                    <small style="font-family: 'Roboto', sans-serif;" id="passwordHelp" class="form-text text-muted">Mật khẩu phải có từ 6 đến 50 ký tự.</small>
                                 </div>
                                 <div class="form-group">
-                                    <input style="font-family: 'Roboto', sans-serif;" type="password" class="form-control form-control-lg" id="confirmPassword" placeholder="Nhập lại mật khẩu" name="confirm" required minlength="6" maxlength="20">
+                                    <input style="font-family: 'Roboto', sans-serif;" type="password" class="form-control form-control-lg" id="confirmPassword" placeholder="Nhập lại mật khẩu" name="confirm" required minlength="6" maxlength="50">
                                     <small style="font-family: 'Roboto', sans-serif;" id="confirmPasswordHelp" class="form-text text-muted">Phải trùng với mật khẩu ở trên.</small>
                                 </div>
                                 <div class="mb-4">
