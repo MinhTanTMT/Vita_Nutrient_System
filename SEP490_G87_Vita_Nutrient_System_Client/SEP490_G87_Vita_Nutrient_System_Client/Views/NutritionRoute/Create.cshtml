@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
 <div class="container mt-5">
-    <h1 class="page-title text-center mb-4"><strong>Tạo Lộ Trình Mới</strong></h1>
+    <h1 class="page-title text-center mb-4"><strong>Thêm mới</strong></h1>
     <!-- Nút Quay lại -->
     <a asp-action="GetNutritionRoutes"
        asp-route-userId="@ViewData["UserId"]"
@@ -40,14 +40,14 @@
 
         <!-- Tên lộ trình -->
         <div class="mb-3">
-            <label asp-for="Name" class="form-label">Tên lộ trình</label>
+            <label asp-for="Name" class="form-label">Tên lộ trình<span class="required">*</span></label>
             <input asp-for="Name" class="form-control" placeholder="Nhập tên lộ trình" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
         <!-- Mô tả -->
         <div class="mb-3">
-            <label asp-for="Describe" class="form-label">Mô tả</label>
+            <label asp-for="Describe" class="form-label">Mô tả<span class="required">*</span></label>
             <textarea asp-for="Describe" class="form-control" rows="3" placeholder="Nhập mô tả lộ trình"></textarea>
             <span asp-validation-for="Describe" class="text-danger"></span>
         </div>
@@ -62,7 +62,7 @@
 
         <!-- Ngày kết thúc -->
         <div class="mb-3">
-            <label asp-for="EndDate" class="form-label">Ngày kết thúc: (tháng/ngày/năm)</label>
+            <label asp-for="EndDate" class="form-label">Ngày kết thúc<span class="required">*</span>: (tháng/ngày/năm)</label>
             <input asp-for="EndDate" type="date" class="form-control" />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
@@ -73,7 +73,7 @@
 
         <!-- Nút Gửi -->
         <div class="form-group action-buttons text-center mb-4">
-            <input type="submit" value="Tạo lộ trình" class="btn btn-primary" />
+            <input type="submit" value="Thêm" class="btn btn-primary" />
         </div>
     </form>
 </div>

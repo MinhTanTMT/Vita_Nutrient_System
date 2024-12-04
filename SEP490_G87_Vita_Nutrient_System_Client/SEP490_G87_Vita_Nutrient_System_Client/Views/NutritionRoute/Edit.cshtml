@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
 <div class="container mt-5">
-    <h2 class="page-title text-center mb-4">Chỉnh Sửa Lộ Trình Dinh Dưỡng</h2>
+    <h2 class="page-title text-center mb-4">Cập nhật Lộ Trình Dinh Dưỡng</h2>
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger shadow">
@@ -28,13 +28,13 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="Name" class="form-label">Tên lộ trình</label>
+            <label for="Name" class="form-label">Tên lộ trình<span class="required">*</span></label>
             <textarea asp-for="Name" class="form-control"></textarea>
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
         <div class="form-group mb-3">
-            <label for="Describe" class="form-label">Mô Tả</label>
+            <label for="Describe" class="form-label">Mô Tả<span class="required">*</span></label>
             <textarea asp-for="Describe" class="form-control"></textarea>
             <span asp-validation-for="Describe" class="text-danger"></span>
         </div>
@@ -47,7 +47,7 @@
 
 
         <div class="form-group mb-3">
-            <label for="EndDate" class="form-label">Ngày Kết Thúc: (tháng/ngày/năm)</label>
+            <label for="EndDate" class="form-label">Ngày Kết Thúc<span class="required">*</span>: (tháng/ngày/năm)</label>
             <input type="date" asp-for="EndDate" class="form-control" required />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
@@ -64,7 +64,7 @@
 
         <div class="form-group text-center">
             <input type="hidden" asp-for="Id" />
-            <input type="submit" class="btn btn-primary" value="Lưu Thay Đổi">
+            <input type="submit" class="btn btn-primary" value="Cập nhật">
             <a asp-action="GetNutritionRoutes"
                asp-route-userId="@ViewData["UserId"]"
                asp-route-userListManagementId="@ViewData["UserListManagementId"]"
