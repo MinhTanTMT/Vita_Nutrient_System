@@ -82,8 +82,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "This email does not exist.";
                 return View();
             }
-
-
         }
 
 
@@ -208,6 +206,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
             }
         }
+
 
 
         [HttpGet]
@@ -357,6 +356,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     string data = await content.ReadAsStringAsync();
                     UserLoginRegister u = JsonConvert.DeserializeObject<UserLoginRegister>(data);
 
+                    importStringToSession("takeFullName", u.FullName, "string");
+                    importStringToSession("imageUrl", u.Urlimage, "URL");
+
                     var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name,(string) u.Account),
@@ -417,18 +419,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost, Authorize]
         public async Task<IActionResult> Logout()
         {
-
-            funtionabc();
+            HttpContext.Session.Remove("takeFullName");
+            HttpContext.Session.Remove("imageUrl");
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Home");
         }
 
 
-        public bool funtionabc()
-        {
-
-            return true;
-        }
 
         public async Task<IActionResult> ToCopyTryCatch()
         {
