@@ -182,22 +182,23 @@ else
                                                 <input type="text" name="uwi" class="form-control user-info-input" id="user-account-input" placeholder="" value="@u.UserDetail.WantImprove">
                                             </div>
                                         </div>
-                                        <div class="form-group row align-items-center">
-                                            <label for="user-account-input" class="col-sm-3 col-form-label">Underlying Disease</label>
-                                            <div class="col-sm-7">
-                                                <input type="text" class="form-control user-info-input" id="underlyingDiseaseInput" placeholder="Bệnh lý" value="@u.UserDetail.UnderlyingDisease" readonly>
+
+                                        @if(u.UserRole.RoleId == 3)
+                                        {
+                                            <div class="form-group row align-items-center">
+                                                <label for="user-account-input" class="col-sm-3 col-form-label">Underlying Disease</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control user-info-input" id="underlyingDiseaseInput" placeholder="Bệnh lý" value="@u.UserDetail.UnderlyingDisease" readonly>
+                                                </div>
+                                                <div class="col-sm-2 d-flex justify-content-end">
+                                                    <button type="button" class="btn btn-primary btn-sm manage-disease-btn"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#diseaseModal">
+                                                        Quản lý Bệnh Lý
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div class="col-sm-2 d-flex justify-content-end">
-                                                <button type="button" class="btn btn-primary btn-sm manage-disease-btn"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#diseaseModal">
-                                                    Quản lý Bệnh Lý
-                                                </button>
-                                            </div>
-                                        </div>
-
-
-
+                                        }
                                         <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
                                             Save
                                             </button>
