@@ -1255,15 +1255,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
         [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
-        public async Task<IActionResult> FoodList(string search, string diseaseSearch)
+        public async Task<IActionResult> FoodList(string search, string diseaseSearch, int foodPage = 1, int diseasePage = 1, int fAndDPage = 1)
         {
-            var foodList = await GetFoodList(search);
+            var foodList = await GetFoodList(search, foodPage);
 
             var foodTypes = await GetFoodTypes();
             var keyNotes = await GetKeyNotes();
             var cookingDifficulty = await GetCookingDifficulty();
-            var listOfDisease = await GetDiseaseList(diseaseSearch);
-            var foodAndDiseases = await GetFoodAndDiseaseList();
+            var listOfDisease = await GetDiseaseList(diseaseSearch, diseasePage);
+            var foodAndDiseases = await GetFoodAndDiseaseList(fAndDPage);
 
             // Tạo dictionary chứa danh sách recipe cho từng món ăn
             var recipesByFood = new Dictionary<int, List<RecipeDT>>();
@@ -1307,9 +1307,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
-        public async Task<List<Food>> GetFoodList(string search)
+        public async Task<List<Food>> GetFoodList(string search, int foodPage = 1, int foodPageSize = 10)
         {
-            var requestUrl = client.BaseAddress + $"/Nutrition/get-food-list?search={search}";
+            var requestUrl = client.BaseAddress + $"/Nutrition/get-food-list?search={search}&Page={foodPage}&pageSize={foodPageSize}";
+            Console.WriteLine("foodPage: "+ foodPage);
 
             var response = await client.GetAsync(requestUrl);
 
@@ -1318,49 +1319,98 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return new List<Food>();
             }
             var responseData = await response.Content.ReadAsStringAsync();
-            var foodListResponse = JsonConvert.DeserializeObject<List<Food>>(responseData);
+            var foodListResponse = JsonConvert.DeserializeObject<PagedResult<Food>>(responseData);
+            ViewBag.FoodSearch = search;
+            ViewBag.FoodTotalPages = foodListResponse.TotalPages;
+            ViewBag.FoodCurrentPage = foodListResponse.CurrentPage;
 
-            return foodListResponse ?? new List<Food>();
+            Console.WriteLine("Food count: "+foodListResponse.Items.Count());
+
+            return foodListResponse.Items ?? new List<Food>();
         }
 
-
         [HttpPost, Authorize(Roles = "Admin, Nutritionist")]
-        public async Task<IActionResult> SaveFood(Food food)
+        public async Task<IActionResult> SaveFood(Food food, IFormFile ImageFile)
         {
-            var apiUrl = client.BaseAddress + "/Nutrition/save-food";
-            var foodData = new
+            if (!ModelState.IsValid)
             {
-                food.FoodListId,
-                food.Name,
-                food.Describe,
-                food.Rate,
-                food.NumberRate,
-                food.UrlImage,
-                food.FoodTypeId,
-                food.KeyNoteId,
-                food.IsActive,
-                food.PreparationTime,
-                food.CookingTime,
-                food.CookingDifficultyId
-            };
-
-            var content = new StringContent(JsonConvert.SerializeObject(foodData), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(apiUrl, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["Message"] = "Create/Update food thành công!";
-            }
-            else
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                TempData["Message"] = "Có lỗi xảy ra khi tạo/cập nhật food.";
-                Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật food.");
-                Console.WriteLine("Status Code: " + response.StatusCode);
-                Console.WriteLine("Error Content: " + errorContent);
+                ViewBag.CreateFoodAlert = "Dữ liệu không hợp lệ";
             }
 
+            try
+            {
+                // Xử lý file ảnh upload
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    var fileExtension = Path.GetExtension(ImageFile.FileName).ToLower();
 
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        return Json(new { success = false, message = "Chỉ chấp nhận các định dạng hình ảnh: .jpg, .jpeg, .png, .gif." });
+                    }
+
+                    if (ImageFile.Length > 5 * 1024 * 1024) // 5MB
+                    {
+                        return Json(new { success = false, message = "Kích thước ảnh không được vượt quá 5MB." });
+                    }
+
+                    var fileName = Path.GetFileName(ImageFile.FileName);
+                    var filePath = Path.Combine("wwwroot/images/foods", fileName);
+
+                    if (!Directory.Exists("wwwroot/images/foods"))
+                    {
+                        Directory.CreateDirectory("wwwroot/images/foods");
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream);
+                    }
+
+                    food.UrlImage = "/images/foods/" + fileName;
+                }
+
+                // Chuẩn bị dữ liệu gửi qua API
+                var apiUrl = client.BaseAddress + "/Nutrition/save-food";
+                var foodData = new
+                {
+                    food.FoodListId,
+                    food.Name,
+                    food.Describe,
+                    food.Rate,
+                    food.NumberRate,
+                    food.UrlImage,
+                    food.FoodTypeId,
+                    food.KeyNoteId,
+                    food.IsActive,
+                    food.PreparationTime,
+                    food.CookingTime,
+                    food.CookingDifficultyId
+                };
+
+                var content = new StringContent(JsonConvert.SerializeObject(foodData), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    ViewBag.CreateFoodAlert = "Lưu thức ăn thành công!";
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Có lỗi xảy ra khi tạo/cập nhật food.");
+                    Console.WriteLine("Status Code: " + response.StatusCode);
+                    Console.WriteLine("Error Content: " + errorContent);
+
+                    ViewBag.CreateFoodAlert = "Có lỗi xảy ra khi lưu thức ăn";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                ViewBag.CreateFoodAlert = "Có lỗi xảy ra khi xử lý yêu cầu của bạn!";
+            }
             return RedirectToAction("FoodList");
         }
 
@@ -1425,9 +1475,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
-        public async Task<List<ListOfDisease>> GetDiseaseList(string search)
+        public async Task<List<ListOfDisease>> GetDiseaseList(string search, int page = 1, int pageSize = 10)
         {
-            var requestUrl = client.BaseAddress + $"/Nutrition/list-disease?search={search}";
+            var requestUrl = client.BaseAddress + $"/Nutrition/list-disease?search={search}&page={page}&pageSize={pageSize}";
 
             var response = await client.GetAsync(requestUrl);
 
@@ -1436,9 +1486,12 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return new List<ListOfDisease>();
             }
             var responseData = await response.Content.ReadAsStringAsync();
-            var diseaseListResponse = JsonConvert.DeserializeObject<List<ListOfDisease>>(responseData);
+            var diseaseListResponse = JsonConvert.DeserializeObject<PagedResult<ListOfDisease>>(responseData);
+            ViewBag.DiseaseSearch = search;
+            ViewBag.DiseaseTotalPages = diseaseListResponse.TotalPages;
+            ViewBag.DiseaseCurrentPage = diseaseListResponse.CurrentPage;
 
-            return diseaseListResponse ?? new List<ListOfDisease>();
+            return diseaseListResponse.Items ?? new List<ListOfDisease>();
         }
 
         [HttpPost, Authorize(Roles = "Admin, Nutritionist")]
@@ -1505,9 +1558,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Admin, Nutritionist")]
-        public async Task<List<ListFoodAndDisease>> GetFoodAndDiseaseList()
+        public async Task<List<ListFoodAndDisease>> GetFoodAndDiseaseList(int page = 1, int pageSize = 10)
         {
-            var requestUrl = client.BaseAddress + "/Nutrition/get-all-food-and-disease";
+            var requestUrl = client.BaseAddress + $"/Nutrition/get-all-food-and-disease?page={page}&pageSize={pageSize}";
 
             var response = await client.GetAsync(requestUrl);
 
@@ -1516,9 +1569,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return new List<ListFoodAndDisease>();
             }
             var responseData = await response.Content.ReadAsStringAsync();
-            var diseaseListResponse = JsonConvert.DeserializeObject<List<ListFoodAndDisease>>(responseData);
-
-            return diseaseListResponse ?? new List<ListFoodAndDisease>();
+            var diseaseListResponse = JsonConvert.DeserializeObject<PagedResult<ListFoodAndDisease>>(responseData);
+            ViewBag.FandDTotalPages = diseaseListResponse.TotalPages;
+            ViewBag.FandDCurrentPage = diseaseListResponse.CurrentPage;
+            return diseaseListResponse.Items ?? new List<ListFoodAndDisease>();
         }
 
         [HttpPost, Authorize(Roles = "Admin, Nutritionist")]

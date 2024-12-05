@@ -561,7 +561,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     Gender = gender
                 };
 
-                ViewBag.BirthDate = birthDate.ToString("yyyy-MM-dd");
+                ViewBag.BirthDate = birthDate.ToString("dd/MM/yyyy");
                 ViewBag.Weight = weight;
                 ViewBag.Height = height;
                 ViewBag.Gender = gender;

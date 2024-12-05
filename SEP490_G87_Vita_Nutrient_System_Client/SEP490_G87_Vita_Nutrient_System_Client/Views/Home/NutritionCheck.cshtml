@@ -1,4 +1,7 @@
 ﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.BMIResult
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
 <div class="container nutrition-check">
     <h2>KIỂM TRA CHỈ SỐ BMI</h2>
     <div class="divider"></div>
@@ -7,7 +10,7 @@
     <form asp-action="NutritionCheck" method="post">
         <div class="form-row">
             <div class="form-group">
-                <label for="birthDate">Ngày sinh: (VD:19/05/1980)</label>
+                <label for="birthDate">Ngày sinh<span class="required">*</span>: (dd: ngày/ mm: tháng/ yyyy: năm)</label>
                 <input type="date" id="birthDate" name="birthDate" required value="@ViewBag.BirthDate" />
                 @if (!string.IsNullOrEmpty(ViewBag.BirthDateError))
                 {
@@ -19,7 +22,7 @@
                 }
             </div>
             <div class="form-group">
-                <label for="gender">Giới tính:</label>
+                <label for="gender">Giới tính<span class="required">*</span>:</label>
                 <select id="gender" name="gender" required>
                     @if (ViewBag.Gender == "Nữ")
                     {
@@ -41,7 +44,7 @@
 
         <div class="form-row">
             <div class="form-group">
-                <label for="weight">Cân nặng (kg):</label>
+                <label for="weight">Cân nặng<span class="required">*</span> (kg):</label>
                 <input type="number" id="weight" name="weight" placeholder="Nhập cân nặng (kg)" step="0.1" required value="@ViewBag.Weight" />
                 @if (!string.IsNullOrEmpty(ViewBag.WeightError))
                 {
@@ -49,7 +52,7 @@
                 }
             </div>
             <div class="form-group">
-                <label for="height">Chiều cao (cm):</label>
+                <label for="height">Chiều cao<span class="required">*</span> (cm):</label>
                 <input type="number" id="height" name="height" placeholder="Nhập chiều cao (cm)" step="0.1" required value="@ViewBag.Height" />
                 @if (!string.IsNullOrEmpty(ViewBag.HeightError))
                 {
@@ -482,5 +485,9 @@
         font-size: 14px;
         margin-top: 5px;
         display: block;
+    }
+
+    .required {
+        color: red;
     }
 </style>

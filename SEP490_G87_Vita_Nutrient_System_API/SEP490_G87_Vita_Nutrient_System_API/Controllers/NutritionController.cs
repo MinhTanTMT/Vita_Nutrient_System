@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SEP490_G87_Vita_Nutrient_System_API.Dtos;
 using SEP490_G87_Vita_Nutrient_System_API.Models;
+using SEP490_G87_Vita_Nutrient_System_API.PageResult;
 using SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations;
 
 namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
@@ -62,9 +63,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
         [HttpGet("get-food-list")]
-        public async Task<ActionResult<List<GetFoodListDTO>>> GetFoodLists([FromQuery] string? search)
+        public async Task<ActionResult<PagedResult<GetFoodListDTO>>> GetFoodLists([FromQuery] GetLikeFoodDTO model)
         {
-            var result = await _nutritionRepo.GetFoodLists(search);
+            var result = await _nutritionRepo.GetFoodLists(model);
             return Ok(result);
         }
 
@@ -101,9 +102,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("list-disease")]
-        public async Task<ActionResult<IEnumerable<ListOfDisease>>> GetDiseases([FromQuery] string? search)
+        public async Task<ActionResult<PagedResult<ListOfDisease>>> GetDiseases([FromQuery] GetLikeFoodDTO model)
         {
-            return await _nutritionRepo.GetDiseases(search);
+            return await _nutritionRepo.GetDiseases(model);
         }
 
         // GET: api/ListOfDisease/{id}
@@ -169,11 +170,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("get-all-food-and-disease")]
-        public async Task<IActionResult> GetAllFoodAndDiseases()
+        public async Task<IActionResult> GetAllFoodAndDiseases([FromQuery] GetLikeFoodDTO model)
         {
-            var result = await _nutritionRepo.GetFoodAndDiseases();
+            var result = await _nutritionRepo.GetFoodAndDiseases(model);
 
-            if (result == null || result.Count == 0)
+            if (result == null || result.Items.Count == 0)
             {
                 return NotFound("No food and disease combinations found.");
             }

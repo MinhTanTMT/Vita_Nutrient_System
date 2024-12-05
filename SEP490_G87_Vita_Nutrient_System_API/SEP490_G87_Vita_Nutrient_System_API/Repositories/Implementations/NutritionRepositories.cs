@@ -116,14 +116,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         // Sửa hàm này
         public async Task SaveNutritionTargetsAsync(NutritionTargetsDaily nutritionTargets)
         {
-        //    bool exerciseIntensityExists = await _context.ExerciseIntensities
-        //.AnyAsync(e => e.Id == nutritionTargets.ExerciseIntensityId);
-        //    if (!exerciseIntensityExists)
-        //    {
-        //        throw new Exception("Invalid ExerciseIntensityId. Please ensure that the Exercise Intensity exists.");
-        //    }
-        //    _context.Add(nutritionTargets);
-        //    await _context.SaveChangesAsync();
+            //    bool exerciseIntensityExists = await _context.ExerciseIntensities
+            //.AnyAsync(e => e.Id == nutritionTargets.ExerciseIntensityId);
+            //    if (!exerciseIntensityExists)
+            //    {
+            //        throw new Exception("Invalid ExerciseIntensityId. Please ensure that the Exercise Intensity exists.");
+            //    }
+            //    _context.Add(nutritionTargets);
+            //    await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<UserDTO>> GetUsers(int userId, string? search, int page = 1, int pageSize = 10)
@@ -260,10 +260,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        public async Task<List<GetFoodListDTO>> GetFoodLists(string search)
+        public async Task<PagedResult<GetFoodListDTO>> GetFoodLists(GetLikeFoodDTO model)
         {
-            return await _context.FoodLists.Include(ft => ft.FoodType).Include(kn => kn.KeyNote).Include(cd => cd.CookingDifficulty)
-            .Where(f => (string.IsNullOrEmpty(search) || f.Name.Contains(search))).Select(fl => new GetFoodListDTO
+            var query = _context.FoodLists.Include(ft => ft.FoodType).Include(kn => kn.KeyNote).Include(cd => cd.CookingDifficulty)
+            .Where(f => (string.IsNullOrEmpty(model.Search) || f.Name.Contains(model.Search))).Select(fl => new GetFoodListDTO
             {
                 FoodListId = fl.FoodListId,
                 Name = fl.Name,
@@ -280,8 +280,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 PreparationTime = fl.PreparationTime,
                 CookingTime = fl.CookingTime,
                 CookingDifficultyName = fl.CookingDifficulty.Name
-            })
-            .ToListAsync();
+            });
+
+            int totalRecords = query.Count();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)model.PageSize);
+
+            var paginatedFoods = await query
+                .Skip((model.Page - 1) * model.PageSize)
+                .Take(model.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<GetFoodListDTO>
+            {
+                Items = paginatedFoods,
+                TotalPages = totalPages,
+                CurrentPage = model.Page
+            };
         }
 
         public async Task<GetFoodListDTO> GetFoodList(int id)
@@ -374,11 +388,25 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return foodList.FoodListId;
         }
 
-        public async Task<List<ListOfDisease>> GetDiseases(string search)
+        public async Task<PagedResult<ListOfDisease>> GetDiseases(GetLikeFoodDTO model)
         {
-            return await _context.ListOfDiseases
-            .Where(d => string.IsNullOrEmpty(search) || d.Name.Contains(search))
-            .ToListAsync();
+            var query = _context.ListOfDiseases
+            .Where(d => string.IsNullOrEmpty(model.Search) || d.Name.Contains(model.Search));
+
+            int totalRecords = query.Count();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)model.PageSize);
+
+            var paginatedFoods = await query
+                .Skip((model.Page - 1) * model.PageSize)
+                .Take(model.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<ListOfDisease>
+            {
+                Items = paginatedFoods,
+                TotalPages = totalPages,
+                CurrentPage = model.Page
+            };
         }
 
         public async Task<ListOfDisease> GetDiseases(int id)
@@ -443,9 +471,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return foodAndDisease;
         }
 
-        public async Task<List<ListFoodAndDiseaseDTO>> GetFoodAndDiseases()
+        public async Task<PagedResult<ListFoodAndDiseaseDTO>> GetFoodAndDiseases(GetLikeFoodDTO model)
         {
-            return await _context.FoodAndDiseases.Include(f => f.FoodList).Include(d => d.ListOfDiseases).Select(fd => new ListFoodAndDiseaseDTO
+            var query = _context.FoodAndDiseases.Include(f => f.FoodList).Include(d => d.ListOfDiseases).Select(fd => new ListFoodAndDiseaseDTO
             {
                 FoodListId = fd.FoodListId,
                 ListOfDiseasesId = fd.ListOfDiseasesId,
@@ -455,7 +483,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 FoodDescribe = fd.FoodList.Describe,
                 Describe = fd.Describe,
                 IsGoodOrBad = fd.IsGoodOrBad
-            }).Where(t => _context.FoodLists.FirstOrDefault(b => b.IsActive == true && b.FoodListId == t.FoodListId) != null).ToListAsync();
+            }).Where(t => _context.FoodLists.FirstOrDefault(b => b.IsActive == true && b.FoodListId == t.FoodListId) != null);
+
+            int totalRecords = query.Count();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)model.PageSize);
+
+            var paginatedFoods = await query
+                .Skip((model.Page - 1) * model.PageSize)
+                .Take(model.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<ListFoodAndDiseaseDTO>
+            {
+                Items = paginatedFoods,
+                TotalPages = totalPages,
+                CurrentPage = model.Page
+            };
         }
 
         public async Task<FoodAndDisease> SaveFoodAndDiseases(SaveFoodAndDiseaseDTO model)
