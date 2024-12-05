@@ -11,7 +11,7 @@
         </div>
     </form>
     <div class="text-start mb-3">
-        <a asp-action="Create" class="btn btn-primary btn-lg">Tạo bài viết mới</a>
+        <a asp-action="Create" class="btn btn-primary btn-lg">Thêm mới</a>
     </div>
 
     <table class="table custom-table">
@@ -84,8 +84,8 @@
                         }
                     </td>
                     <td style="text-align: center;">
-                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@article.Id"><i class="fas fa-edit"></i> Chỉnh sửa</a>
-                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@article.Id"><i class="fas fa-trash"></i> Xóa</a>
+                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@article.Id"><i class="fas fa-edit"></i> </a>
+                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@article.Id"><i class="fas fa-trash"></i></a>
                     </td>
                 </tr>
             }
