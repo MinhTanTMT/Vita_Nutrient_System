@@ -12,4 +12,11 @@
         public int FoodId { get; set; }
         public short RecurId { get; set; }
     }
+
+    public class UserActionRate
+    {
+        public int UserId { get; set; }
+        public int FoodId { get; set; }
+        public short Rate { get; set; }
+    }
 }
