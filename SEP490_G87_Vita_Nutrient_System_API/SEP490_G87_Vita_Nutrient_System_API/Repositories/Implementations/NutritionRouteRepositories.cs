@@ -449,7 +449,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 }).ToListAsync();
         }
 
-        public async Task<IEnumerable<UserListManagementDTO>> GetDetailsAllPremiumUserByUserAsync(int userId)
+        public async Task<IEnumerable<UserListManagementDTO>> GetNutritionistsOfUserAsync(int userId)
         {
             return await _context.UserListManagements
                 .Where(ul => ul.UserId == userId) // Lọc theo userId

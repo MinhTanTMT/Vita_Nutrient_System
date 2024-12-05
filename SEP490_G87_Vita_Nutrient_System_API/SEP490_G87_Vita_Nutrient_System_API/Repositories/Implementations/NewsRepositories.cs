@@ -84,6 +84,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             try
             {
+                // Kiểm tra trùng tiêu đề
+                var existingArticle = await _context.ArticlesNews
+                    .FirstOrDefaultAsync(a => a.Title == articleDto.Title);
+
+                if (existingArticle != null)
+                {
+                    throw new Exception("Tiêu đề đã tồn tại.");
+                }
+
                 var article = new ArticlesNews
                 {
                     UserId = articleDto.UserId,
@@ -116,6 +125,19 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (article == null)
             {
                 throw new KeyNotFoundException("Không tìm thấy bài viết.");
+            }
+
+            // Kiểm tra xem tiêu đề có thay đổi không
+            if (article.Title != articleDto.Title)
+            {
+                // Kiểm tra trùng tiêu đề khi thay đổi
+                var existingArticle = await _context.ArticlesNews
+                    .FirstOrDefaultAsync(a => a.Title == articleDto.Title);
+
+                if (existingArticle != null)
+                {
+                    throw new Exception("Tiêu đề đã tồn tại.");
+                }
             }
 
             // Cập nhật các thuộc tính

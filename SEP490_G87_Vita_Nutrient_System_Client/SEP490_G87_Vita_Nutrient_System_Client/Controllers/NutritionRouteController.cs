@@ -680,7 +680,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet, Authorize(Roles = "User,UserPremium")]
-        public async Task<IActionResult> GetDetailsAllPremiumUserByUser(int userId, string search, int pageNumber = 1, int pageSize = 5)
+        public async Task<IActionResult> GetNutritionistsOfUser(int userId, string search, int pageNumber = 1, int pageSize = 5)
         {
             try
             {

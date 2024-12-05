@@ -207,9 +207,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         }
 
         [HttpGet("user/{userId}/details-premium")]
-        public async Task<ActionResult<IEnumerable<UserListManagementDTO>>> GetDetailsAllPremiumUserByUser(int userId)
+        public async Task<ActionResult<IEnumerable<UserListManagementDTO>>> GetNutritionistsOfUser(int userId)
         {
-            var details = await _nutritionRouteRepositories.GetDetailsAllPremiumUserByUserAsync(userId);
+            var details = await _nutritionRouteRepositories.GetNutritionistsOfUserAsync(userId);
             if (details == null || !details.Any())
             {
                 return Ok(new List<UserListManagementDTO>()); // Trả về danh sách rỗng nếu không có gói nào

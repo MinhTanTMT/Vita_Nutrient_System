@@ -20,7 +20,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         Task<bool> UpdateIsDoneAsync(int createById, int userId);
         Task<bool> RateNutritionistAsync(int userId, int nutritionistId, int userListManagementId, short rate);
         Task<IEnumerable<UserListManagementDTO>> GetRatingsByNutritionistIdAsync(int nutritionistId);
-        Task<IEnumerable<UserListManagementDTO>> GetDetailsAllPremiumUserByUserAsync(int userId);
+        Task<IEnumerable<UserListManagementDTO>> GetNutritionistsOfUserAsync(int userId);
 
 
     }
