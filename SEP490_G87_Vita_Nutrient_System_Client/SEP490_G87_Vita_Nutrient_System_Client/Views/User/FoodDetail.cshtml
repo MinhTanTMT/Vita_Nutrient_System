@@ -27,7 +27,7 @@
     }
 
     .star {
-        font-size: 24px;
+        font-size: 32px;
         line-height: 25px;
         padding-bottom: 5px;
         color: #ddd; /* Default (dimmed) color for stars */
@@ -35,6 +35,13 @@
 
         .star.filled {
             color: gold; /* Color for filled stars */
+        }
+
+        .star.half-filled {
+            background: linear-gradient(to right, gold 52%, #ccc 48%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; 
         }
 
     [type="radio"]:checked,
@@ -120,7 +127,7 @@
 
                                 <!-- Stars Rating -->
                                 <div class="">
-                                    <div class="stars" id="starsContainer"></div>
+                                    <div class="stars" id="starsContainer" style="justify-content: space-between"></div>
 
                                     <div style="font-size: small; color: gray;">
                                         (Đánh giá @(Math.Floor((double)food.Rate) / 10)/10 từ @food.NumberRate thành viên)
@@ -318,8 +325,8 @@
         const starsContainer = document.getElementById("starsContainer");
         starsContainer.innerHTML = ""; // Clear previous stars
 
-        const fullStars = Math.floor(x / 10); // Determine the number of filled stars
-        for (let i = 1; i <= 10; i++) {
+        const fullStars = Math.floor(x / 20); // Determine the number of filled stars
+        for (let i = 1; i <= 5; i++) {
             const star = document.createElement("span");
             star.classList.add("star");
             star.textContent = "★";
@@ -328,8 +335,46 @@
         }
     }
 
+    function displayRating1(x) {
+        // Display stars based on the rating
+        const starsContainer = document.getElementById("starsContainer");
+        starsContainer.innerHTML = ""; // Clear previous stars
+
+        // Convert x into a number of full stars (out of 5)
+        const fullStars = Math.floor(x / 20); // Each full star represents 20 points
+        const halfStars = (x % 20) >= 10 ? 1 : 0; // Check if there's a half star
+        const emptyStars = 5 - fullStars - halfStars; // Remaining empty stars
+
+        console.log(fullStars + " - " + halfStars + " - " + emptyStars);
+
+        // Create full stars
+        for (let i = 0; i < fullStars; i++) {
+            const star = document.createElement("span");
+            star.classList.add("star", "filled");
+            star.textContent = "★";
+            starsContainer.appendChild(star);
+        }
+
+        // Create half star (if applicable)
+        if (halfStars > 0) {
+            const halfStar = document.createElement("span");
+            halfStar.classList.add("star", "half-filled");
+            halfStar.textContent = "★";
+            starsContainer.appendChild(halfStar);
+        }
+
+        // Create empty stars
+        for (let i = 0; i < emptyStars; i++) {
+            const emptyStar = document.createElement("span");
+            emptyStar.classList.add("star");
+            emptyStar.textContent = "★";
+            starsContainer.appendChild(emptyStar);
+        }
+    }
+
+
     // Set the rating value here
-    displayRating(@food.Rate); // Example rating of 75
+    displayRating1(@food.Rate);
 </script>
 <script src="~/js/ratingCircle.js"></script>
 <script src="~/js/userActionForFood.js"></script>
