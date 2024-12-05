@@ -52,21 +52,34 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
         [HttpGet("APITest")]
-        public async Task<ActionResult<UserLoginRegister>> APITest( )
+        public async Task<IActionResult> APITest( )
         {
+
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+
+            List<FoodListDTO> dataCollection = new List<FoodListDTO>();
+            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish( await generateMealRepositories.TakeAllTheIngredientsOfTheDish(2)));
+
+
+
+
+
 
             //return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
 
-            UsersRepositories usersRepositories = new UsersRepositories();
+            //UsersRepositories usersRepositories = new UsersRepositories();
 
-            UserLoginRegister abc = new UserLoginRegister()
-            {
-                Account = "Nutri_3",
-                Password = "Nutri_3",
-                Role = 2
-            };
+            //UserLoginRegister abc = new UserLoginRegister()
+            //{
+            //    Account = "Nutri_3",
+            //    Password = "Nutri_3",
+            //    Role = 2
+            //};
 
-            return Ok(await usersRepositories.GetUserRegister(abc));
+
+
+
+            return Ok();
 
 
         }
