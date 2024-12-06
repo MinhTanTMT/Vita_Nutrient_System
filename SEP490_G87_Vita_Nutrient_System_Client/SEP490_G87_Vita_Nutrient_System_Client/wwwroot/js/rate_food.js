@@ -39,9 +39,9 @@ async function handleRating(userId, foodId, rating) {
         if (!response.ok) {
             showToast("Unexpected error occurred!");
         } else {
-            stars.forEach((s, i) => {
-                s.classList.toggle('active2', i < rating);
-            });
+            window.location.href = window.location.href;
+            history.go(0);
+            location.reload();
         }
     } catch (error) {
         console.error("Error:", error);

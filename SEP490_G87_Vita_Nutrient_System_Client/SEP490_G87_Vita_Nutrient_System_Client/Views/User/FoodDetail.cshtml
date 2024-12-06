@@ -124,14 +124,14 @@
 
                             <div class="rating-display" style="padding-bottom: 16px;">
                                 <!-- Circle Rating -->
-                                <div class="rating">@(Math.Floor((double)food.Rate) / 10)</div>
+                                <div class="rating">@food.Rate</div>
 
                                 <!-- Stars Rating -->
                                 <div class="">
                                     <div class="stars" id="starsContainer" style="justify-content: space-between"></div>
 
                                     <div style="font-size: small; color: gray;">
-                                        (Đánh giá @(Math.Floor((double)food.Rate) / 10)/10 từ @food.NumberRate thành viên)
+                                        (Đánh giá @food.Rate/5 từ @food.NumberRate thành viên)
                                     </div>
                                 </div>
                             </div>
@@ -360,7 +360,9 @@
         }
     }
 
-    function displayRating1(x) {
+    function displayRating1(ratingScore) {
+        var x = parseFloat(ratingScore.replace(",", "."));
+        x *= 20;
         // Display stars based on the rating
         const starsContainer = document.getElementById("starsContainer");
         starsContainer.innerHTML = ""; // Clear previous stars
@@ -399,7 +401,7 @@
 
 
     // Set the rating value here
-    displayRating1(@food.Rate);
+    displayRating1('@food.Rate');
 </script>
 <script src="~/js/ratingCircle.js"></script>
 <script src="~/js/userActionForFood.js"></script>

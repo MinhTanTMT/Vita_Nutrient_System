@@ -9,7 +9,7 @@ ratings.forEach((rating) => {
 
     // Define if the score is good, meh or bad according to its value
     const scoreClass =
-        ratingScore < 4 ? "bad" : ratingScore < 6 ? "meh" : "good";
+        ratingScore < 2 ? "bad" : ratingScore < 3 ? "meh" : "good";
 
     // Add score class to the rating
     rating.classList.add(scoreClass);
@@ -18,7 +18,7 @@ ratings.forEach((rating) => {
     const ratingColor = window.getComputedStyle(rating).backgroundColor;
 
     // Define the background gradient according to the score and color
-    const gradient = `background: conic-gradient(${ratingColor} ${ratingScore*10}%, transparent 0 100%)`;
+    const gradient = `background: conic-gradient(${ratingColor} ${ratingScore*20}%, transparent 0 100%)`;
 
     // Set the gradient as the rating background
     rating.setAttribute("style", gradient);

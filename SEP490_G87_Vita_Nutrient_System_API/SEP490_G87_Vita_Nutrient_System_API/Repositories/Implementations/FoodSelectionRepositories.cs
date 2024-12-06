@@ -120,7 +120,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public void UserRateFood(int UserId, int FoodId, short rate)
         {
-            if (!IsExist(UserId, FoodId))
+            bool a = IsExist(UserId, FoodId);
+            //add food selection if not existed
+            if (!a)
             {
                 AddNew(UserId, FoodId);
             }
@@ -128,6 +130,23 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             FoodSelection fs = _context.FoodSelections
                 .SingleOrDefault(f => f.UserId == UserId && f.FoodListId == FoodId);
 
+            //update food rate and number rate
+            FoodList f = _context.FoodLists.Find(FoodId);
+
+            if (!a)
+            {
+                f.Rate = (f.Rate * f.NumberRate + rate) / (f.NumberRate + 1);
+                f.NumberRate += 1;
+            }
+            else
+            {
+                f.Rate = (f.Rate * f.NumberRate - fs.Rate + rate) / (f.NumberRate);
+            }
+
+            _context.Entry<FoodList>(f).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.SaveChanges();
+
+            //set rate
             fs.Rate = rate;
 
             _context.Entry<FoodSelection>(fs).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
