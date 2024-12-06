@@ -40,6 +40,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
         }
 
+
+        [HttpGet("APIGoogleAccountVerificationCode")]
+        public async Task<ActionResult> APIGoogleAccountVerificationCode(string emailGoogle, string verificationCode)
+        {
+            //public async Task<bool> SendMail(string emailAccount, string subject, string contentSend)
+
+            return Ok(await repositories.SendMail(emailGoogle, "Mã xác nhận", verificationCode));
+        }
+
+
         [HttpGet("Login")]
         public async Task<ActionResult<UserLoginRegister>> APIGetUserLogin(string account, string password)
         {

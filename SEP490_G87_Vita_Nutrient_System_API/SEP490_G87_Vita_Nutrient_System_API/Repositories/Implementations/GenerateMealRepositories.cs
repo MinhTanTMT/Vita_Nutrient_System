@@ -1185,7 +1185,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        public async Task<IEnumerable<DataFoodListMealOfTheDay>> ListMealOfTheDay(DateTime myDay, int idUser)
+        public async Task<IEnumerable<DataFoodListMealOfTheDay>> ListMealOfTheDay(DateTime myDay, int idUser) // exe
         {
 
             NutritionRoute activeNutritionRouteCheck = await _context.NutritionRoutes.FirstOrDefaultAsync(nr => nr.StartDate <= myDay && nr.EndDate >= myDay && nr.UserId == idUser && nr.IsDone == false);

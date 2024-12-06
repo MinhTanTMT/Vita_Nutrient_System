@@ -23,8 +23,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ///
 
         private readonly HttpClient client = null;
+        private readonly AdminSevices adminSevices;
         public HomeController()
         {
+            adminSevices = new AdminSevices();
             Uri URIBase = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<Uri>("myUri");
             client = new HttpClient();
             client.BaseAddress = URIBase;
@@ -218,8 +220,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm)
+        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm, string accountGoogle, string googleAccAuthentication)
         {
+            
+
             string pattern = @"^(?!.*@.*\.(com|net|org|edu|gov|info|co|io)$)(?!.*[^\x00-\x7F]).+$";
             try
             {
@@ -240,16 +244,27 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
                 else
                 {
+                    //string googleAccVerificationCode = adminSevices.GeneratePassword(12);
+
+                    //HttpResponseMessage resVerificationCode = await client.GetAsync(client.BaseAddress + "/Users/APIGoogleAccountVerificationCode?emailGoogle=" + accountGoogle + "&verificationCode=" + googleAccVerificationCode);
+
+                    //if (resVerificationCode.StatusCode == System.Net.HttpStatusCode.OK)
+                    //{
+
+                    //}
+
                     short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
                     UserLoginRegister user = new UserLoginRegister()
                     {
                         FirstName = firstName,
                         LastName = lastName,
                         Account = account,
+                        AccountGoogle = accountGoogle,
                         Password = password,
                         Role = roleUser,
-                        IsActive = true
+                        IsActive = true,
                     };
+
 
                     HttpResponseMessage res = await client.PostAsJsonAsync(client.BaseAddress + "/Users/Register", user);
                     if (res.StatusCode == System.Net.HttpStatusCode.OK)

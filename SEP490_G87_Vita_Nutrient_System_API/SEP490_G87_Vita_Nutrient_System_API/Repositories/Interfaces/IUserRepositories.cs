@@ -14,7 +14,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         ///
         ///
 
-        Task<string> DecryptPassword(string encryptedPassword); // se bo som
+        //Task<string> DecryptPassword(string encryptedPassword); // se bo som
+
+        Task<bool> SendMail(string emailAccount, string subject, string contentSend);
 
         Task<bool> CheckAccountUserNull(string account, string accGoogle);
         Task<bool> ForgotPassword(string emailGoogle);
