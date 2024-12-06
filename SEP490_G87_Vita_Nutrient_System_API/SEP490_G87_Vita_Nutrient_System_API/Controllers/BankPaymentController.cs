@@ -88,15 +88,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APICheckQRPaySuccessful")]
         public async Task<ActionResult<dynamic>> APICheckQRPaySuccessful(string accountNumber, int limit, string content, decimal amountIn)
         {
-            //if (await repositories.CheckQRPaySuccessfulByContent(accountNumber, limit, content, amountIn))
-            //{
-            //    return Ok("Successful");
-            //}
-            //else
-            //{
+            if (await repositories.CheckQRPaySuccessfulByContent(accountNumber, limit, content, amountIn))
+            {
+                return Ok("Successful");
+            }
+            else
+            {
 
-            //    return BadRequest("Error");
-            //}
+                return BadRequest("Error");
+            }
 
             return Ok("Successful");
         }
