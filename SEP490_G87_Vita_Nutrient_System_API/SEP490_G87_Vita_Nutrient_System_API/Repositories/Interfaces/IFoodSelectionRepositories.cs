@@ -11,5 +11,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
         void UserLikeOrUnlikeFood(int UserId, int FoodId);
         void UserSaveOrUnsaveFood(int UserId, int FoodId);
         void UserRecurFood(int UserId, int FoodId, short recurId);
+        void UserRateFood(int UserId, int FoodId, short rate);
     }
 }

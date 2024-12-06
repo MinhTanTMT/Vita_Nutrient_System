@@ -118,3 +118,44 @@ nav > ul {
         transform: translateX(0);
         opacity: 1;
     }
+
+
+
+.food-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.food-card {
+    background-color: #FBFAFA;
+    width: calc(20% - 20px); /* 5 items per row with gap */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    margin: 15px 10px;
+    padding-bottom: 8px;
+    text-decoration: none;
+}
+
+    .food-card:hover {
+        transform: scale(1.05);
+    }
+
+.food-content {
+    padding: 10px;
+}
+
+.food-name {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.food-diff,
+.food-ct {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}

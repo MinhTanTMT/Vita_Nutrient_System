@@ -268,8 +268,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
 
             //kiem tra password cu~
-            string decryptedCurrentPass = await repositories.DecryptPassword(u.Password);
-            if (!decryptedCurrentPass.Equals(request.OldPassword))
+            bool verifyPw = await repositories.VerifyPassword(request.OldPassword, u.Password);
+            if (!verifyPw)
             {
                 return BadRequest("Old password wrong!");
             }

@@ -546,6 +546,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         },
                         IsActive = userData.isActive,
                         Account = userData.account,
+                        AccountGoogle = userData.accountGoogle
                     };
 
                     ViewBag.user = user;
@@ -591,6 +592,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         Address = userData.address,
                         Phone = userData.phone,
                         Account = userData.account,
+                        AccountGoogle = userData.accountGoogle
                     };
 
                     ViewBag.admin = user;
@@ -639,6 +641,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                             ExpertPackagesId = nutritionistData.detailsInformation.expertPackagesId,
                         },
                         Account = nutritionistData.account,
+                        AccountGoogle = nutritionistData.accountGoogle,
                     };
 
                     ViewBag.user = user;
@@ -675,7 +678,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateUserInfo(string page ,int uid, string uacc, string ufn, string uln, int user_gender, DateTime udob, string uadd, string uphone)
+        public async Task<IActionResult> UpdateUserInfo(string page ,int uid, string uacc, string uaccgg, string ufn, string uln, int user_gender, DateTime udob, string uadd, string uphone)
         {
             try
             {

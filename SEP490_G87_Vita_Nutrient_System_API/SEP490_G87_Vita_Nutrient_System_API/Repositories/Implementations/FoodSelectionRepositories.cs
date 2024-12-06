@@ -117,5 +117,21 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             return _context.FoodSelections.SingleOrDefault(fs => fs.UserId == UserId && fs.FoodListId == FoodId);
         }
+
+        public void UserRateFood(int UserId, int FoodId, short rate)
+        {
+            if (!IsExist(UserId, FoodId))
+            {
+                AddNew(UserId, FoodId);
+            }
+
+            FoodSelection fs = _context.FoodSelections
+                .SingleOrDefault(f => f.UserId == UserId && f.FoodListId == FoodId);
+
+            fs.Rate = rate;
+
+            _context.Entry<FoodSelection>(fs).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.SaveChanges();
+        }
     }
 }
