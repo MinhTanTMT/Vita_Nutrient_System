@@ -225,6 +225,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 {
                     string newPass = await GeneratePassword(12);
                     inforAccount.Password = await EncryptPassword(newPass);
+                    await _context.SaveChangesAsync();
                     string? Passwork = $"Mật khẩu hiện tại của bạn: {newPass}";
                     await SendMail(emailGoogle, "Mật khẩu của bạn", Passwork);
                     return true;
