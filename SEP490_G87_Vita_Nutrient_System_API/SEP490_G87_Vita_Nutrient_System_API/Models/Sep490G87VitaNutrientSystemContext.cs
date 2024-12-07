@@ -89,9 +89,6 @@ public partial class Sep490G87VitaNutrientSystemContext : DbContext
             optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
         }
     }
-
-
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ArticlesNews>(entity =>

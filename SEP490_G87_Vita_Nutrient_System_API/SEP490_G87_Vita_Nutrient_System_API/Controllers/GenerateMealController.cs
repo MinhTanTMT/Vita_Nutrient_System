@@ -130,7 +130,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
         [HttpPost("APICompleteTheDish")]
-        public async Task<ActionResult<IEnumerable<DataFoodListMealOfTheDay>>> APICompleteTheDish([FromBody] FoodStatusUpdateModel model)
+        public async Task<ActionResult<bool>> APICompleteTheDish([FromBody] FoodStatusUpdateModel model)
         {
 
             if (!ModelState.IsValid)

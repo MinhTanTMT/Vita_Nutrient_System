@@ -40,6 +40,16 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
         }
 
+
+        [HttpGet("APIGoogleAccountVerificationCode")]
+        public async Task<ActionResult> APIGoogleAccountVerificationCode(string emailGoogle, string verificationCode)
+        {
+            //public async Task<bool> SendMail(string emailAccount, string subject, string contentSend)
+
+            return Ok(await repositories.SendMail(emailGoogle, "Mã xác nhận", verificationCode));
+        }
+
+
         [HttpGet("Login")]
         public async Task<ActionResult<UserLoginRegister>> APIGetUserLogin(string account, string password)
         {
@@ -145,6 +155,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+
+
         [HttpGet("GetOnlyUserDetail/{userId}")]
         public async Task<IActionResult> GetOnlyUserDetail(int userId)
         {
@@ -157,6 +169,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(userDetail);
         }
+
+
+
         [HttpGet("GetUserPhysicalStatisticsDTOByUserIdAsync/{userId}")]
         public async Task<IActionResult> GetUserPhysicalStatisticsDTOByUserIdAsync(int userId)
         {
@@ -169,6 +184,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(userDetail);
         }
+
+
+
         [HttpGet("GetNutritionistDetail/{id}")]
         public async Task<ActionResult<dynamic>> GetNutritionistDetail(int id)
         {
@@ -193,6 +211,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+
+
+
         [HttpPost("UpdateUserPhysicalStatistics")]
         public async Task<IActionResult> UpdateUserPhysicalStatistics([FromBody] UserPhysicalStatisticsDTO userDetails)
         {
@@ -204,6 +225,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _repositories.SaveUserDetails(userDetails);
             return Ok(new { message = "User details updated successfully." });
         }
+
+
+
         [HttpPost("UpdateUserWeightGoal")]
         public async Task<IActionResult> UpdateUserWeightGoal([FromBody] UserPhysicalStatisticsDTO userDetails)
         {
@@ -215,6 +239,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _repositories.SaveUserWeightGoal(userDetails);
             return Ok(new { message = "User details updated successfully." });
         }
+
+
+
         [HttpPost("UpdateUserStatus")]
         public async Task<ActionResult<string>> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
         {
