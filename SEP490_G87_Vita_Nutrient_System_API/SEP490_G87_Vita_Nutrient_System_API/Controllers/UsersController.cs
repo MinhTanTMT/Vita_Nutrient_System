@@ -275,6 +275,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
 
             //kiem tra confirm password va new password
+            if(request.NewPassword.Length < 6 || request.NewPassword.Length > 50)
+            {
+                return BadRequest("New password must contain 6-50 characters!");
+            }
+
             if (!request.NewPassword.Equals(request.ConfirmPassword))
             {
                 return BadRequest("Confirm password not match!");
