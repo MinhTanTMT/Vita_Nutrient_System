@@ -1019,8 +1019,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     ViewBag.nutritionists = nutritionists1;
                     ViewBag.CurrentPage = page;
                     ViewBag.TotalPages = (int)Math.Ceiling(totalPackages / (double)pageSize);
-
-
                 }
                 else
                 {
@@ -1072,7 +1070,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
 
-            return await ListPackages();
+            return Redirect("/admin/expertpackagemanagement/listpackages");
         }
 
         [HttpPost]
@@ -1110,7 +1108,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
 
-            return await ListPackages();
+            return Redirect("/admin/expertpackagemanagement/listpackages");
         }
 
         [HttpGet("admin/expertpackagemanagement/deletepackage/{Id}")]
@@ -1142,7 +1140,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
 
-            return await ListPackages();
+            return Redirect("/admin/expertpackagemanagement/listpackages");
         }
 
         [HttpGet("admin/foodmanagement/foodingredient/{foodId}")]

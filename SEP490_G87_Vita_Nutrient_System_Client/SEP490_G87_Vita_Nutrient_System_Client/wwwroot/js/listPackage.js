@@ -134,10 +134,11 @@ function EditPackage() {
     var form = document.getElementById("updatePackageForm");
 
     var name = form.elements['p_name'].value.trim();
+    var desc = form.elements['p_desc'].value.trim();
     var price = form.elements['p_price'].value;
     var duration = form.elements['p_duration'].value;
 
-    if (name === "") {
+    if (name === "" || desc === "") {
         showErrorToast("Vui lòng điền đầy đủ thông tin vào các ô.");
     } else if (price < 0) {
         showErrorToast("Price phải lớn hơn hoặc bằng 0.");
@@ -171,51 +172,20 @@ function AddNutri() {
     })
         .then(response => {
             if (response.ok) {
-                hideOption(nid);
-                const nutriTable = document.getElementById("nutriTable");
-                const nutritionistDiv = document.createElement("div");
-                nutritionistDiv.className = "nutritionist";
-                nutritionistDiv.setAttribute("id", `rec_${nid}`);
-                const n1Div = document.createElement("div");
-                n1Div.className = "n1";
-
-                const nameSpan = document.createElement("span");
-                nameSpan.className = "nname";
-                nameSpan.textContent = parts[0];
-
-                const accountSpan = document.createElement("span");
-                accountSpan.className = "nacc";
-                accountSpan.textContent = parts[1];
-
-                n1Div.appendChild(nameSpan);
-                n1Div.appendChild(accountSpan);
-
-                const n2Div = document.createElement("div");
-                n2Div.className = "n2";
-                n2Div.setAttribute("onclick", `deleteNutritionist(${nid});`);
-
-                const deleteIcon = document.createElement("i");
-                deleteIcon.className = "mdi mdi-delete";
-
-                n2Div.appendChild(deleteIcon);
-
-                nutritionistDiv.appendChild(n1Div);
-                nutritionistDiv.appendChild(n2Div);
-
-                nutriTable.appendChild(nutritionistDiv);
-                selectVisibleOption();
-                document.getElementById("no-nutri-msg").style.display = "none";
+                closeModal();
                 showSuccessToast("Add nutritionist to package successful!");
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
             } else {
                 showErrorToast("Add nutritionist to package failed!");
             }
         })
         .catch(error => {
             console.error("Error:", error);
-            showErrorToast(error);
+            showErrorToast("Add nutritionist to package failed!");
         });
 }
-
 
 function deleteNutritionist(Id) {
     fetch(`https://localhost:7045/api/ExpertPackage/RemoveNutritionistFromPackage/${Id}`, {
@@ -228,17 +198,11 @@ function deleteNutritionist(Id) {
                     elementToRemove.remove();
                     showOption(Id);
                 }
+                closeModal();
                 showSuccessToast("Remove successful!");
-
-                if (document.getElementsByClassName("nutritionist").length == 0) {
-                    const nutriTable = document.getElementById("nutriTable");
-
-                    const emptyMessage = document.createElement("span");
-                    emptyMessage.setAttribute("id", "no-nutri-msg");
-                    emptyMessage.textContent = "There is no nutritionist!";
-
-                    nutriTable.appendChild(emptyMessage);
-                }
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
             } else {
                 showErrorToast("Remove failed!");
             }
