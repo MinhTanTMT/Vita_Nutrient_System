@@ -19,3 +19,16 @@ window.onclick = function (event) {
         closeModal();
     }
 }
+
+function AddIngredient() {
+    var form = document.getElementById("ingredientForm");
+
+    var name = form.elements['in_name'].value.trim();
+    var desc = form.elements['in_desc'].value.trim();
+
+    if (name === "" || desc === "") {
+        showErrorToast("Vui lòng điền đầy đủ thông tin vào các ô.");
+    } else {
+        form.submit();
+    }
+}
