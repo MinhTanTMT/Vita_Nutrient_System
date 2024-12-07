@@ -38,11 +38,6 @@
                 </div>
 
                 <div class="action col-4">
-                    <a type="button" class="btn btn-gradient-info btn-fw" href="/">
-                        <i class="mdi mdi-border-color"></i>
-                        Edit
-                    </a>
-
                     </br></br>
                     <form asp-controller="Admin" asp-action="UpdateUserStatus" method="post">
                         <input type="hidden" name="userId" value="@user.UserId" />
