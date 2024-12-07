@@ -6,6 +6,7 @@
     ExpertPackage package = ViewBag.package;
 }
 <link rel="stylesheet" href="~/css/nutritionistDetail.css">
+<link rel="stylesheet" href="~/css/toast.css" />
 
 <div class="row">
     <div class="col-12 grid-margin">
@@ -138,6 +139,21 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Role</label>
+                            <div class="col-sm-6">
+                                <select class="form-select ms-auto" name="urole" id="urole">
+                                    <option value="1">Admin</option>
+                                    <option value="2" selected>Nutritionist</option>
+                                    <option value="3">User Premium</option>
+                                    <option value="4">User</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <button id="btnSaveRole" onclick="SaveRole(@nutritionist.UserId, 'nutri')">Save Role</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -179,3 +195,6 @@
     </div>
 </div>
 
+<div id="toast"></div>
+<script src="~/js/toast.js"></script>
+<script src="~/js/saveUserRole.js"></script>

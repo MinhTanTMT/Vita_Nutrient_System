@@ -5,6 +5,7 @@
     User user = ViewBag.user;
 }
 <link rel="stylesheet" href="~/css/listUser.css">
+<link rel="stylesheet" href="~/css/toast.css" />
 
 <div class="row">
     <div class="col-12 grid-margin">
@@ -137,6 +138,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Role</label>
+                        <div class="col-sm-7">
+                            <select class="form-select ms-auto" name="urole" id="urole">
+                                <option value="1">Admin</option>
+                                <option value="2" >Nutritionist</option>
+                                @if (user.UserRole.RoleId == 3)
+                                {
+                                    <option value="3" selected>User Premium</option>
+                                    <option value="4">User</option>
+                                }
+                                else if (user.UserRole.RoleId == 4)
+                                {
+                                    <option value="3">User Premium</option>
+                                    <option value="4" selected>User</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button id="btnSaveRole" onclick="SaveRole(@user.UserId, 'user')">Save Role</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="detail-info">
@@ -146,3 +170,6 @@
         </div>
     </div>
 </div>
+<div id="toast"></div>
+<script src="~/js/toast.js"></script>
+<script src="~/js/saveUserRole.js"></script>

@@ -252,6 +252,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Update user status successfully!");
         }
 
+        [HttpGet("UpdateUserRole/{userId}/{userRole}")]
+        public async Task<ActionResult<string>> UpdateUserRole(int userId, short userRole)
+        {
+            User u = repositories.GetUserById(userId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.Role = userRole;
+            repositories.UpdateUser(u);
+
+            return Ok("Update user role successfully!");
+        }
+
         [HttpPut("ChangePassword")]
         public async Task<ActionResult<string>> ChangePassword([FromBody] ChangePasswordRequest request)
         {
