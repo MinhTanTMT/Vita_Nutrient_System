@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Net.Http;
@@ -795,6 +797,61 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
             }
             return await NutritionistProfile();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadAvatar(int userId, IFormFile uava, string page)
+        {
+            try
+            {
+                if (uava != null && uava.Length > 0)
+                {
+                    var fileName = Path.GetFileName(uava.FileName);
+                    var filePath = Path.Combine("wwwroot/images/user_avatar", fileName);
+
+                    if (!Directory.Exists("wwwroot/images/user_avatar"))
+                    {
+                        Directory.CreateDirectory("wwwroot/images/user_avatar");
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await uava.CopyToAsync(stream);
+                    }
+                }
+
+                var data = new
+                {
+                    userId = userId,
+                    imageURL = "/images/user_avatar/" + Path.GetFileName(uava.FileName)
+            };
+
+                string jsonData = JsonConvert.SerializeObject(data);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response =
+                    await client.PostAsync(client.BaseAddress + "/Users/UpdateUserAvatar", content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.AlertMessage = "Update user avatar failed! Please try again!";
+                }
+                else
+                {
+                    ViewBag.SuccessMessage = "Update user avatar successfully!";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+            }
+            return page switch
+            {
+                "user" => await UserProfileSon(),
+                "admin" => await AdminProfile(),
+                "nutritionist" => await NutritionistProfile()
+            };
         }
 
         [HttpPost]

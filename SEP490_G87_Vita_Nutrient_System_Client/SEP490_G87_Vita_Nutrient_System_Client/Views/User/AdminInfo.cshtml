@@ -52,6 +52,13 @@ else
                         </div>
 
                         <div class="description">
+                            <form id="upAvaForm" asp-controller="User" asp-action="UploadAvatar" method="post">
+                                <input type="hidden" name="page" value="admin" />
+                                <input type="hidden" name="userId" value="@u.UserId" />
+                                <label for="fileInput" class="upload-button">Upload Avatar</label>
+                                <input type="file" name="uava" id="fileInput" accept="image/jpeg, image/png, image/jpg" onchange="submitAvaForm()">
+                            </form>
+
                             <button type="submit" class="btn btn-gradient-primary me-2" onclick="openChangePassModal();">
                                 Change password
                             </button>

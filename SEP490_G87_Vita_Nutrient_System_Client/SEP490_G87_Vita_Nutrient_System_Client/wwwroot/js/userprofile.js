@@ -26,3 +26,8 @@ window.onclick = function (event) {
         closeModal();
     }
 }
+
+function submitAvaForm() {
+    var form = document.getElementById("upAvaForm");
+    form.submit();
+}

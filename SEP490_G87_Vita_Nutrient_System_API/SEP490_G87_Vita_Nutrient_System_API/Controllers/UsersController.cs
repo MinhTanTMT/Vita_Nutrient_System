@@ -268,6 +268,22 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Update user role successfully!");
         }
 
+        [HttpPost("UpdateUserAvatar")]
+        public async Task<ActionResult<string>> UpdateUserAvatar([FromBody]UploadAvatarRequest request)
+        {
+            User u = repositories.GetUserById(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.Urlimage = request.ImageURL;
+            repositories.UpdateUser(u);
+
+            return Ok("Update user avatar successfully!");
+        }
+
         [HttpPut("ChangePassword")]
         public async Task<ActionResult<string>> ChangePassword([FromBody] ChangePasswordRequest request)
         {
