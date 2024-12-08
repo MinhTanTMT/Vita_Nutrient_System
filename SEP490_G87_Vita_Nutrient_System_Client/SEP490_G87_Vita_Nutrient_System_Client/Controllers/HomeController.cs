@@ -311,13 +311,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         }
                         else
                         {
-                            ViewBag.AlertMessage = "Invalid login attempt. 3";
+                            ViewBag.AlertMessage = "Invalid login attempt.";
                             return View();
                         }
                     }
                     else
                     {
-                        ViewBag.AlertMessage = "Invalid login attempt. 2";
+                        ViewBag.AlertMessage = "Invalid login attempt.";
                         return View();
                     }
                 }
