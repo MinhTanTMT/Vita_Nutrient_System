@@ -1,111 +1,118 @@
-﻿    <link rel="stylesheet" href="/css/EditNutritionTargetsDaily.css" />
-    @model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionTargetOfMeal
+﻿<link rel="stylesheet" href="/css/EditNutritionTargetsDaily.css" />
+@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionTargetOfMeal
 
-    <div class="container">
-        <h2>Mục tiêu dinh dưỡng</h2>
+<div class="container page-content">
+    <div class="modal-header">
+        <h2 class="modal-title">Mục tiêu dinh dưỡng</h2>
+    </div>
+    <form asp-action="EditNutritionTargetsDaily" method="post">
+        <input asp-for="ExerciseIntensityId" type="hidden" />
+        <input asp-for="NutritionTargetsDailyId" type="hidden" />
+        <input type="hidden" name="userId" value="@ViewBag.UserId" />
+        <!-- Title -->
+        <div class="form-group">
+            <label asp-for="Title">Title</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
 
-        <form asp-action="EditNutritionTargetsDaily" method="post">
-            <input asp-for="ExerciseIntensityId" type="hidden" />
-            <input asp-for="NutritionTargetsDailyId" type="hidden" />
-            <input type="hidden" name="userId" value="@ViewBag.UserId" />
-            <!-- Title -->
-            <div class="form-group">
-                <label asp-for="Title">Title</label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+        <!-- Calories -->
+        <div class="form-group calories-comparison">
+            <label>Calories</label>
+            <div class="calories-display">
+                <!-- Ô nhập cho Calo của MealSettingsDetail -->
+                <input asp-for="Calories" class="form-control d-inline-block calories-input" style="width: 80px;"
+                    id="caloriesInput" value="@Model.Calories" min="2" />
+
+                <!-- Biểu tượng cảnh báo nếu có sự chênh lệch giữa Model.Calories và ViewBag.Calories -->
+                @if (Model.Calories != ViewBag.Calories)
+                {
+                    <span class="warning-icon" title="Calories không khớp!">⚠️</span>
+                }
+
+                <!-- Calo của NutritionTargetsDaily hiển thị dưới dạng văn bản -->
+                <span class="calories-value">/ @ViewBag.Calories</span>
             </div>
-
-            <!-- Calories -->
-            <div class="form-group calories-comparison">
-                <label>Calories</label>
-                <div class="calories-display">
-                    <!-- Ô nhập cho Calo của MealSettingsDetail -->
-                    <input asp-for="Calories" class="form-control d-inline-block calories-input" style="width: 80px;" id="caloriesInput" value="@Model.Calories" min="2" />
-
-                    <!-- Biểu tượng cảnh báo nếu có sự chênh lệch giữa Model.Calories và ViewBag.Calories -->
-                    @if (Model.Calories != ViewBag.Calories)
-                    {
-                        <span class="warning-icon" title="Calories không khớp!">⚠️</span>
-                    }
-
-                    <!-- Calo của NutritionTargetsDaily hiển thị dưới dạng văn bản -->
-                    <span class="calories-value">/ @ViewBag.Calories</span>
-                </div>
-                <span class="text-danger"></span>
-            </div>
+            <span class="text-danger"></span>
+        </div>
 
 
 
-            <!-- Target Macros -->
-            <h4>Mục tiêu Macro</h4>
-            <div class="form-group">
-                <label>Tính toán macro</label>
-            </div>
-
-            <!-- Carbs -->
-            <div class="form-group">
+        <!-- Target Macros -->
+        <h4 class="fontcs-weight-bold mb-3">Mục tiêu Macro</h4>
+        <div class="title mb-2 ml-2 font-15 fontcs-weight-600">Tính toán marco</div>
+        <div class="form-line-group ml-2">
+            <!-- Carbs-->
+            <div class="form-group style-row">
                 <label>
-                    <span style="color: #f1c40f; font-size: 16px;">•</span> Carbs (g)
+                    <span style="color: #f1c40f; font-size: 16px;">•</span> Carbs (g):
                 </label>
                 <div class="carbs-values">
                     <!-- Ô nhập cho giá trị Min và Max của Carbs -->
-                    <input type="number" class="carbs-input-min" min="0" max="@ViewBag.CarbsMax" value="@Model.CarbsMin" name="CarbsMin" placeholder="Min" />
-                <span class="to-text">Đến</span>
-                    <input type="number" class="carbs-input-max" min="0" max="@ViewBag.CarbsMax" value="@Model.CarbsMax" name="CarbsMax" placeholder="Max" />
+                    <input type="number" class="number-input carbs-input-min" min="0" max="@ViewBag.CarbsMax"
+                        value="@Model.CarbsMin" name="CarbsMin" placeholder="Min" />
+                    <span class="to-text">Đến</span>
+                    <input type="number" class="number-input carbs-input-max" min="0" max="@ViewBag.CarbsMax"
+                        value="@Model.CarbsMax" name="CarbsMax" placeholder="Max" />
                     <span class="carbs-max-viewbag">(0 - @ViewBag.CarbsMax)</span>
                 </div>
             </div>
 
             <!-- Fats -->
-            <div class="form-group">
+            <div class="form-group style-row">
                 <label>
-                    <span style="color: #00b3b3; font-size: 16px;">•</span> Fats (g)
+                    <span style="color: #00b3b3; font-size: 16px;">•</span> Fats (g):
                 </label>
                 <div class="fats-values">
                     <!-- Ô nhập cho giá trị Min và Max của Fats -->
-                    <input type="number" class="fats-input-min" min="0" max="@ViewBag.FatsMax" value="@Model.FatsMin" name="FatsMin" placeholder="Min" />
-                <span class="to-text">Đến</span>
-                    <input type="number" class="fats-input-max" min="0" max="@ViewBag.FatsMax" value="@Model.FatsMax" name="FatsMax" placeholder="Max" />
+                    <input type="number" class="number-input fats-input-min" min="0" max="@ViewBag.FatsMax"
+                        value="@Model.FatsMin" name="FatsMin" placeholder="Min" />
+                    <span class="to-text">Đến</span>
+                    <input type="number" class="number-input fats-input-max" min="0" max="@ViewBag.FatsMax"
+                        value="@Model.FatsMax" name="FatsMax" placeholder="Max" />
                     <span class="fats-max-viewbag">(0 - @ViewBag.FatsMax)</span>
                 </div>
             </div>
 
             <!-- Protein -->
-            <div class="form-group">
+            <div class="form-group style-row">
                 <label>
-                    <span style="color: #800080; font-size: 16px;">•</span> Protein (g)
+                    <span style="color: #800080; font-size: 16px;">•</span> Protein (g):
                 </label>
                 <div class="protein-values">
                     <!-- Ô nhập cho giá trị Min và Max của Protein -->
-                    <input type="number" class="protein-input-min" min="0" max="@ViewBag.ProteinMax" value="@Model.ProteinMin" name="ProteinMin" placeholder="Min" />
+                    <input type="number" class="number-input protein-input-min" min="0" max="@ViewBag.ProteinMax"
+                        value="@Model.ProteinMin" name="ProteinMin" placeholder="Min" />
                     <span class="to-text">Đến</span>
-                    <input type="number" class="protein-input-max" min="0" max="@ViewBag.ProteinMax" value="@Model.ProteinMax" name="ProteinMax" placeholder="Max" />
+                    <input type="number" class="number-input protein-input-max" min="0" max="@ViewBag.ProteinMax"
+                        value="@Model.ProteinMax" name="ProteinMax" placeholder="Max" />
                     <span class="protein-max-viewbag">(0 - @ViewBag.ProteinMax)</span>
                 </div>
             </div>
+        </div>
 
-            <!-- Micronutrients -->
-            <h4>Vi chất dinh dưỡng</h4>
+        <!-- Micronutrients -->
+        <h4 class="fontcs-weight-bold mb-3">Vi chất dinh dưỡng</h4>
+        <div class="title mb-2 ml-2 font-15 fontcs-weight-600">Chất xơ tối thiểu (g)</div>
+        <div class="form-group ml-2">
+            <!-- Đổi span thành input để cho phép cập nhật qua JavaScript -->
+            <input asp-for="MinimumFiber" type="number" class="form-control fiber-min-input" />
+            <span asp-validation-for="MinimumFiber" class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="MinimumFiber">Chất xơ tối thiểu (g)</label>
-                <!-- Đổi span thành input để cho phép cập nhật qua JavaScript -->
-                <input asp-for="MinimumFiber" type="number" class="form-control fiber-min-input" />
-                <span asp-validation-for="MinimumFiber" class="text-danger"></span>
-            </div>
-
-        <h4>Loại trừ thực phẩm</h4>
-        <div class="form-group">
-            <label for="ingredient-selector">Chọn thực phẩm muốn loại trừ</label>
-            <div class="ingredient-selector-container">
+        <h4 class="fontcs-weight-bold mb-3">Loại trừ thực phẩm</h4>
+        <div class="title mb-2 ml-2 font-15 fontcs-weight-600">Chọn thực phẩm muốn loại trừ</div>
+        <div class="form-group ml-2">
+            <div class="ingredient-selector-container mb-0">
                 <!-- Trigger dropdown -->
-                <div id="ingredient-selector" class="dropdown-toggle form-control" tabindex="0">
+                <div id="ingredient-selector" class="dropdown-toggle dropdown-toggle-style-1 form-control" tabindex="0">
                     Chọn thực phẩm
                 </div>
                 <!-- Dropdown danh sách -->
                 <div id="ingredient-dropdown" class="dropdown-menu" style="display: none;">
                     <!-- Ô tìm kiếm -->
-                    <input type="text" id="ingredient-search" class="form-control" placeholder="Tìm kiếm nguyên liệu" style="margin-bottom: 8px;">
+                    <input type="text" id="ingredient-search" class="form-control" placeholder="Tìm kiếm nguyên liệu"
+                        style="margin-bottom: 8px;">
                     <!-- Danh sách thực phẩm -->
                     <ul id="ingredient-list" class="list-group">
                         @if (ViewBag.Ingredients != null)
@@ -121,7 +128,7 @@
 
 
             <!-- Danh sách thực phẩm đã loại trừ -->
-            <div id="excluded-ingredients-list" class="excluded-list mt-3">
+            <div id="excluded-ingredients-list" class="excluded-list m-0">
                 @if (ViewBag.SelectedIngredients != null)
                 {
                     foreach (var ingredient in ViewBag.SelectedIngredients)
@@ -140,46 +147,48 @@
 
 
 
-            <!-- Limit Daily Sodium -->
-            <div class="checkbox-group">
-                <label for="limitDailySodium">Hạn chế lượng natri hàng ngày</label>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="limitDailySodium" name="LimitDailySodium" class="toggle-input"
-                           value="true" @(Model.LimitDailySodium ? "checked" : "") />
-                    <label for="limitDailySodium" class="toggle-label"></label>
-                </div>
+        <!-- Limit Daily Sodium -->
+        <div class="form-group style-row">
+            <label for="limitDailySodium">Hạn chế lượng natri hàng ngày</label>
+            <div class="toggle-switch ml-2">
+                <input type="checkbox" id="limitDailySodium" name="LimitDailySodium" class="toggle-input" value="true"
+                @(Model.LimitDailySodium ? "checked" : "") />
+                <label for="limitDailySodium" class="toggle-label"></label>
             </div>
+        </div>
 
-            <!-- Limit Daily Cholesterol -->
-            <div class="checkbox-group">
-                <label for="limitDailyCholesterol">Hạn chế Cholesterol hàng ngày</label>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="limitDailyCholesterol" name="LimitDailyCholesterol" class="toggle-input"
-                           value="true" @(Model.LimitDailyCholesterol ? "checked" : "") />
-                    <label for="limitDailyCholesterol" class="toggle-label"></label>
-                </div>
+        <!-- Limit Daily Cholesterol -->
+        <div class="form-group style-row">
+            <label for="limitDailyCholesterol">Hạn chế Cholesterol hàng ngày</label>
+            <div class="toggle-switch ml-2">
+                <input type="checkbox" id="limitDailyCholesterol" name="LimitDailyCholesterol" class="toggle-input"
+                    value="true" @(Model.LimitDailyCholesterol ? "checked" : "") />
+                <label for="limitDailyCholesterol" class="toggle-label"></label>
             </div>
+        </div>
 
 
 
-            <div class="form-group">
-                <label for="DietTypeIdWant">Chế độ ăn uống chính</label>
-                <select asp-for="FoodTypeIdWant" class="form-control" asp-items="@(new SelectList(ViewBag.DietTypes, "DietTypeId", "Name", Model.FoodTypeIdWant))">
-                </select>
-            </div>
-            
-            <input asp-for="ViewBagCarbsMax" type="hidden" value="@ViewBag.CarbsMax" />
-            <input asp-for="ViewBagFatsMax" type="hidden" value="@ViewBag.FatsMax" />
-            <input asp-for="ViewBagProteinMax" type="hidden" value="@ViewBag.ProteinMax" />
-            <!-- Save Button -->
-            <div class="form-group mt-4">
-                <button type="submit" class="btn btn-primary">Lưu</button>
-            <a href="@Url.Action("MealSettingsDetailToList", "Meal",new { userId = @ViewBag.UserId })" class="btn btn-secondary">Hủy</a>
-            </div>
-        </form>
-    </div>
+        <div class="form-group">
+            <label for="DietTypeIdWant">Chế độ ăn uống chính</label>
+            <select asp-for="FoodTypeIdWant" class="form-control"
+                asp-items="@(new SelectList(ViewBag.DietTypes, "DietTypeId", "Name", Model.FoodTypeIdWant))">
+            </select>
+        </div>
 
-    <script>
+        <input asp-for="ViewBagCarbsMax" type="hidden" value="@ViewBag.CarbsMax" />
+        <input asp-for="ViewBagFatsMax" type="hidden" value="@ViewBag.FatsMax" />
+        <input asp-for="ViewBagProteinMax" type="hidden" value="@ViewBag.ProteinMax" />
+        <!-- Save Button -->
+        <div class="action-group d-flex justify-content-end mt-4">
+            <a href="@Url.Action("MealSettingsDetailToList", "Meal",new { userId = @ViewBag.UserId })"
+                class="btn btn-secondary btn-danger">Hủy</a>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+    </form>
+</div>
+
+<script>
     document.addEventListener("DOMContentLoaded", function () {
         const caloriesInput = document.querySelector('.calories-input');
         const carbsMinInput = document.querySelector('.carbs-input-min');
@@ -303,9 +312,9 @@
         });
     });
 
-    </script>
+</script>
 
-    <script>
+<script>
 
     document.addEventListener("DOMContentLoaded", function () {
         const ingredientSelector = document.getElementById('ingredient-selector');
@@ -384,7 +393,7 @@
 
 
 
-    </script>
+</script>
 
 
 

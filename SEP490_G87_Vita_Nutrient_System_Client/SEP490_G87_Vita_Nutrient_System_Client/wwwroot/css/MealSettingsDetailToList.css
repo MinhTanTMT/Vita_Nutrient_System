@@ -111,11 +111,10 @@
     font-family: 'Arial', sans-serif; /* Chọn font chữ dễ đọc */
     font-size: 32px; /* Đặt kích thước chữ to hơn */
     font-weight: bold; /* Làm cho chữ đậm */
-    color: #007bff; /* Màu chữ (Xanh lam) để làm nổi bật */
+    color: var(--global-color); /* Màu chữ (Xanh lam) để làm nổi bật */
     text-transform: uppercase; /* Viết hoa toàn bộ chữ để tiêu đề rõ ràng */
     letter-spacing: 2px; /* Khoảng cách giữa các chữ */
     line-height: 1.4; /* Tăng chiều cao dòng để chữ không bị sát nhau */
-    margin-bottom: 15px; /* Thêm khoảng cách dưới tiêu đề */
     text-align: center; /* Căn giữa tiêu đề */
 }
 /* Thêm màu sắc cho các biểu tượng */
