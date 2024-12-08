@@ -77,7 +77,7 @@ else
                         <div>
                             <div id="tab1" class="tab-content active">
                                 <div class="basic-info">
-                                    <form asp-controller="User" asp-action="UpdateUserInfo" method="post">
+                                    <form asp-controller="User" asp-action="UpdateUserInfo" method="post" id="updateUserInfoForm">
                                         <input type="hidden" name="uid" value="@u.UserId">
                                         <input type="hidden" name="page" value="user" required />
 
@@ -209,7 +209,7 @@ else
                                         }
                                         <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
                                             Save
-                                            </button>
+                                        </button>
                                     </form>
                                 </div>
                             </div>

@@ -1,9 +1,12 @@
 ﻿<link rel="stylesheet" href="/css/UserWeightGoal.css" />
 @model SEP490_G87_Vita_Nutrient_System_Client.Models.UserPhysicalStatistics
 
-<div class="container">
-    <h4 class="title">Mục tiêu cân nặng</h4>
-
+<div class="container page-content">
+    <div class="modal-header">
+        <div class="modal-title">
+            Mục tiêu cân nặng
+        </div>
+    </div>
     <form asp-action="UserWeightGoal" method="post" class="personal-info-form" id="userInfoForm">
         @Html.AntiForgeryToken()
 
@@ -43,7 +46,7 @@
         <!-- Nút để tính toán mục tiêu dinh dưỡng -->
         <div class="form-group row">
             <div class="col-label"></div>
-            <div class="col-input">
+            <div class="col-input d-flex justify-content-end">
                 <button type="button" class="btn btn-primary" onclick="showNutritionalGoals()">Cập nhật mục tiêu dinh dưỡng</button>
             </div>
         </div>

@@ -1,18 +1,18 @@
 ﻿@model SEP490_G87_Vita_Nutrient_System_Client.Models.NutritionalGoals
 
-<div class="nutritional-goals-container">
-    <h3>Mục tiêu dinh dưỡng trong ngày của tôi</h3>
+<div class="nutritional-goals-container d-flex flex-column align-items-center justify-content-center w-100">
+    <h2 class="fontcs-weight-bold">Mục tiêu dinh dưỡng trong ngày của tôi</h2>
     <p class="calories">@Model.Calo Calo / Ngày</p>
     <ul class="nutritional-list">
-        <li>
+        <li class="font-18">
             <span class="dot yellow"></span>
             ~ @Model.Carbs g (40%) Carbs
         </li>
-        <li>
+        <li class="font-18">
             <span class="dot blue"></span>
             ~ @Model.Fats g (30%) Chất béo
         </li>
-        <li>
+        <li class="font-18">
             <span class="dot purple"></span>
             ~ @Model.Proteins g (30%) Protein
         </li>

@@ -1,0 +1,463 @@
+:root {
+    --global-color: #002f6c;
+    --second-color: #388E3C;
+    --hover-text-color: var(--global-color);
+    --btn-bg-color: var(--second-color);
+    --btn-bg-primary-color: var(--global-color);
+    --btn-text-color: black;
+    --border-radius-1: 20px;
+    --btn-bg-danger: red;
+    --btn-bg-gray: #aaaaaa;
+}
+
+body {
+    font-size: 1rem;
+    font-family: 'Arial', sans-serif;
+    font-weight: initial;
+    line-height: normal;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-family: 'Arial', sans-serif !important;
+}
+
+.content-wrapper {
+    padding: 15px;
+}
+
+.page-header {
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0px;
+    height: 100%;
+    background-color: #f7f7f7;
+
+    >.page-content {
+        padding: 20px;
+        height: 100%;
+    }
+}
+
+//login
+.auth .auth-form-light {
+    border-radius: var(--border-radius-1);
+}
+
+//sidebar
+.sidebar .nav {
+    .nav-item {
+
+        &.active,
+        &:hover {
+            >.nav-link {
+
+                .menu-title,
+                i {
+                    color: var(--hover-text-color);
+                    font-weight: bold;
+                }
+            }
+        }
+
+        .menu-icon {
+            display: none;
+        }
+    }
+}
+
+//btn
+.auth-form-btn.btn {
+    &.btn-google {
+        border-radius: 40px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        line-height: 40px;
+
+        i {
+            margin: 0;
+        }
+    }
+}
+
+.btn {
+    &.btn-bg-primary {
+        border-color: var(--btn-bg-primary-color);
+        background-color: var(--btn-bg-primary-color);
+    }
+
+    &.btn-border-text-primary {
+        border-color: var(--btn-bg-primary-color);
+        color: var(--btn-bg-primary-color);
+
+        &:hover {
+            background-color: transparent;
+            color: var(--btn-bg-primary-color);
+        }
+    }
+
+    &.btn-primary {
+        padding: 10px 20px;
+        border-radius: 20px;
+        border-color: var(--btn-bg-primary-color);
+        background-color: var(--btn-bg-primary-color);
+    }
+
+    &.btn-secondary {
+        padding: 10px 20px;
+        border-radius: 20px;
+        border-color: var(--btn-bg-primary-color);
+        background-color: var(--btn-bg-primary-color);
+    }
+
+    &.btn-danger {
+        border-color: var(--btn-bg-danger);
+        background-color: var(--btn-bg-danger);
+    }
+
+    &.btn-gray {
+        border-color: var(--btn-bg-gray);
+        background-color: var(--btn-bg-gray);
+    }
+
+    +.btn {
+        margin-left: 10px;
+    }
+
+    &.circle {
+        border-radius: 100%;
+    }
+}
+
+.btn-circle {
+    border-radius: 100% !important;
+}
+
+//end btn
+
+//form
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+
+    label {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    select {
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .form-control {
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .checkbox-block {
+        .form-check-input {
+            margin-top: 0px;
+            margin-left: 10px;
+        }
+    }
+
+    .text-danger {
+        position: absolute;
+        bottom: -21px;
+        right: 0;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    &.style-row {
+        flex-direction: row;
+        align-items: center;
+
+        >label {
+            min-width: 120px;
+            margin-bottom: 0;
+        }
+
+        >div {
+            margin-top: 0px;
+        }
+    }
+}
+
+//layout
+body {
+    .modal-header {
+        padding: 0;
+        border-bottom: none;
+        display: block;
+
+        .modal-title {
+            color: var(--global-color);
+            margin-bottom: 20px;
+            font-size: 30px;
+            font-weight: 600;
+        }
+
+        h2.modal-title {
+            font-size: 26px;
+        }
+
+        .modal-sub-title {
+            font-size: 18px;
+            font-family: 600;
+        }
+    }
+
+    .modal-body {
+        padding: 0;
+    }
+}
+
+//page
+// - SaveUserAndCreateMeals
+.page-body-wrapper {
+    &.hide-sidebar {
+        #sidebar {
+            display: none;
+        }
+
+        .main-panel {
+            width: 100%;
+        }
+    }
+}
+
+//MealSettingsDetailToList
+.meal-list {
+    .meal-item {
+        margin-bottom: 20px;
+    }
+
+    .meal-status {
+        span {
+            font-size: 14px;
+        }
+    }
+}
+
+.diet-type-list-page {
+    #dietTypeForm {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .card {
+        width: 50%;
+        border-radius: 20px;
+    }
+
+    .card-body {
+        .form-check {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+
+            .form-check-label {
+                margin-left: 0px;
+                text-align: center;
+
+                strong {
+                    font-size: 20px;
+                    color: var(--global-color);
+                }
+
+                p {
+                    font-size: 18px;
+                }
+            }
+
+            .form-check-input {
+                margin-right: 0px;
+                margin-left: 0px;
+                margin-top: 30px;
+            }
+        }
+    }
+}
+
+//food list
+.foodlist-page {
+    padding: 20px;
+
+    .search-block {
+        width: 100%;
+        padding: 0px;
+        margin-right: 15px;
+    }
+
+    .type-filter {
+        min-width: 150px;
+
+        .dropdown {
+            width: 100%;
+
+            button {
+                width: 100%;
+                height: 47px;
+            }
+        }
+    }
+
+    .card {
+        background-color: transparent;
+    }
+
+    .card-body {
+        padding: 0px;
+    }
+
+    .food-container {
+        gap: 20px;
+    }
+
+    .food-card {
+        margin: 0;
+
+        &:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-name {
+            color: var(--global-color);
+        }
+    }
+
+    .page-item {
+        &.active .page-link {
+            background-color: var(--global-color);
+            border-color: var(--global-color);
+            ;
+        }
+    }
+}
+
+//footer detail page
+.footer-detail-page {
+    .grid-margin {
+        margin-bottom: 0px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-body-top {
+        border: 1px solid #eee;
+        border-radius: 20px;
+    }
+
+    .rating-container {
+        margin-left: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .stars-container {
+        position: static;
+    }
+
+    .remind {
+        .list-item {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .item {
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 10px 5px;
+            text-align: center;
+            transition: all 0.3s ease;
+            &:hover {
+                background: var(--second-color);
+                color: #fff;
+                cursor: pointer;
+                transform: scale(1.05);
+                label{
+                    color: #fff;
+                }
+            }
+            [type="radio"]:checked + label:after, [type="radio"]:not(:checked) + label:after{
+                background-color: var(--second-color);
+                top: 3px;
+                left: 3px;
+            }
+        }
+    }
+}
+
+.dropdown {
+    .dropdown-menu {
+        padding: 10px 0px;
+        border-radius: 12px;
+
+        li {
+            padding: 6px 10px;
+            font-weight: 500;
+        }
+    }
+}
+
+//input
+.number-input {
+    border-radius: 6px;
+    border: 0.5px solid;
+    padding: 5px;
+}
+
+//boostrap
+.fontcs-weight-bold {
+    font-weight: bold;
+}
+
+.fontcs-weight-600 {
+    font-weight: 600;
+}
+
+.fontcs-weight-500 {
+    font-weight: 500;
+}
+
+.ml-2 {
+    margin-left: 12px;
+}
+
+.font-15 {
+    font-size: 15px;
+}
+
+.font-18 {
+    font-size: 18px !important;
+}
+
+.border-none {
+    border: none;
+}

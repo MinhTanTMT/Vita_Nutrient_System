@@ -6,8 +6,10 @@
 
 @model SEP490_G87_Vita_Nutrient_System_Client.Models.CreateMealSettingsDetail
 
-<div class="container">
-    <h2>Chỉnh sửa Bữa ăn</h2>
+<div class="container page-content">
+    <div class="modal-header">
+        <h2 class="modal-title">Bố cục bữa ăn</h2>
+    </div>
     <form asp-action="EditMealSettingsDetailActive" asp-route-id="@Model.Id" method="post">
         <input type="hidden" asp-for="MealSettingsId" />
 
@@ -32,12 +34,12 @@
         </div> *@
         <input type="hidden" asp-for="DayOfTheWeekId" />
         <div class="form-group">
-            <label for="SkipCreationProcess">
-                Bỏ qua quá trình tạo
-                <div class="form-check">
-                    <input type="checkbox" asp-for="SkipCreationProcess" class="form-check-input" />
-                </div>
-            </label>
+            <div class="checkbox-block">
+                <label for="SkipCreationProcess">
+                    Bỏ qua quá trình tạo
+                </label>
+                <input type="checkbox" asp-for="SkipCreationProcess" class="form-check-input" />
+            </div>
         </div>
 
         <div class="form-group">
@@ -50,12 +52,12 @@
         </div>
 
         <div class="form-group">
-            <label for="NutritionFocus">
-                Tập trung dinh dưỡng
-                <div class="form-check">
-                    <input type="checkbox" asp-for="NutritionFocus" class="form-check-input" />
-                </div>
-            </label>
+            <div class="checkbox-block">
+                <label for="NutritionFocus">
+                    Tập trung dinh dưỡng</label>
+                <input type="checkbox" asp-for="NutritionFocus" class="form-check-input" />
+
+            </div>
         </div>
 
         <div class="form-group">
@@ -95,8 +97,10 @@
             <select asp-for="CookingDifficultyId" class="form-control" asp-items="ViewBag.CookingDifficulties"></select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-        <a href="@Url.Action("MealSettingsDetailToList", "Meal")" class="btn btn-secondary">Hủy</a>
+        <div class="action-group d-flex justify-content-end">
+            <a href="@Url.Action("MealSettingsDetailToList", "Meal")" class="btn btn-secondary btn-danger">Hủy</a>
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        </div>
 
     </form>
 </div>
