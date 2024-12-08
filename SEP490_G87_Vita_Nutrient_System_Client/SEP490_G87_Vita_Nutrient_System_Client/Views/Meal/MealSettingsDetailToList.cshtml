@@ -14,9 +14,9 @@
     var userId = ViewBag.UserId;
 }
 
-<div class="container">
+<div class="container page-content">
     <div class="modal-header">
-        <h1 class="modal-title" style="font-weight: bold; color: #002f6c; text-align: center; font-family: 'Roboto', sans-serif;">Bố cục bữa ăn</h1>
+        <h1 class="modal-title">Bố cục bữa ăn</h1>
     </div>
 
     <div class="modal-body">
@@ -91,13 +91,13 @@
                                     <i class="fa fa-eye" style="color: #28a745;"></i> <!-- Mắt màu xanh lá cây -->
                                 </button>
 
-                                <button class="btn btn-light btn-sm" onclick="changeOrderNumber(@meal.Id, 'up')"
+                                <button class="btn btn-circle" onclick="changeOrderNumber(@meal.Id, 'up')"
                                 @(meal.OrderNumber == minOrderNumber ? "disabled" : "")
                                         style="background-color: #ffc107; color: white;">
                                     <i class="fa fa-arrow-up"></i>
                                 </button>
 
-                                <button class="btn btn-light btn-sm ml-1" onclick="changeOrderNumber(@meal.Id, 'down')"
+                                <button class="btn btn-circle" onclick="changeOrderNumber(@meal.Id, 'down')"
                                 @(meal.OrderNumber == maxOrderNumber ? "disabled" : "")
                                         style="background-color: #ffc107; color: white;">
                                     <i class="fa fa-arrow-down"></i>
@@ -105,7 +105,7 @@
                                 <form asp-action="RemoveMealToList" asp-controller="Meal" method="post" style="display: inline;">
                                     <input type="hidden" name="mealId" value="@meal.Id" />
                                     <input type="hidden" name="userId" value="@ViewBag.UserId" />
-                                    <button type="button" class="btn btn-light delete-meal-btn ml-1" onclick="removeMeal(@meal.Id, @ViewBag.UserId)">
+                                    <button type="button" class="btn btn delete-meal-btn ml-1" onclick="removeMeal(@meal.Id, @ViewBag.UserId)">
                                         <i class="fa fa-times" style="color: red;"></i>
                                     </button>
                                 </form>
@@ -115,7 +115,7 @@
                 }
 
 
-                <div class="text-right mb-3">
+                <div class="mb-3 d-flex justify-content-end">
                     <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = 8, userId = ViewBag.UserId  })"
                        class="btn btn-secondary"
                        style="font-weight: bold; text-align: center; font-family: 'Roboto', sans-serif;">
