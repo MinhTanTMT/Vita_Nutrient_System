@@ -18,10 +18,9 @@
             <div class="card-body">
                 <input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
                 <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
-                <form asp-action="doupdateingredient" asp-controller="admin" method="post">
+                <form asp-action="doupdateingredient" asp-controller="admin" method="post" enctype="multipart/form-data">
                     <h4 class="card-title" style="font-size: 1.5rem;">Edit ingredient</h4>
                     <input type="hidden" asp-for="Id" value="@Model.Id" />
-                    <input type="hidden" asp-for="Urlimage" value="@Model.Urlimage" />
                     <div class="row">
                         <div class="col-3 ingre-img">
                             @if (Model.Urlimage == null || Model.Urlimage.Length == 0)
@@ -30,7 +29,7 @@
                             }
                             else
                             {
-                                <img src="~/images/@Model.Urlimage" alt="@Model.Name"
+                                <img src="@Model.Urlimage" alt="@Model.Name"
                                      onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="border-radius: 5px; width: 100%;" />
                             }
                         </div>
@@ -47,6 +46,13 @@
                                 <label for="inputIngreDesc" class="col-sm-2 col-form-label">Description</label>
                                 <div class="col-sm-10">
                                     <input asp-for="Describe" type="text" class="form-control" id="inputIngreDesc" placeholder="Description" value="@Model.Describe">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputIngreImg" class="col-sm-2 col-form-label">Image</label>
+                                <div class="col-sm-10">
+                                    <input asp-for="Urlimage" type="file" name="urlimg" accept="image/jpeg, image/png, image/jpg" class="form-control" id="inputIngreImg" placeholder="Ingredient Image" value="@(System.IO.Path.GetFileName(Model.Urlimage))">
                                 </div>
                             </div>
 
