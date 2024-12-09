@@ -192,6 +192,93 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         // POST: Create a new article
+        //[HttpPost]
+        //public async Task<IActionResult> Create(ArticlesNews article, IFormFile HeaderImage)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(article);
+        //    }
+
+        //    try
+        //    {
+        //        int userId = int.Parse(User.FindFirst("UserId")?.Value); // Giả sử UserId là 1
+
+        //        // Kiểm tra và xử lý tệp hình ảnh
+        //        if (HeaderImage != null && HeaderImage.Length > 0)
+        //        {
+        //            // Kiểm tra định dạng file (chỉ chấp nhận .jpg, .jpeg, .png, .gif)
+        //            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+        //            var fileExtension = Path.GetExtension(HeaderImage.FileName).ToLower();
+
+        //            if (!allowedExtensions.Contains(fileExtension))
+        //            {
+        //                ModelState.AddModelError("HeaderImage", "Chỉ chấp nhận các định dạng hình ảnh: .jpg, .jpeg, .png, .gif.");
+        //                return View(article); // Trả về trang tạo bài viết với thông báo lỗi
+        //            }
+
+        //            // Kiểm tra kích thước file (giới hạn 5MB)
+        //            if (HeaderImage.Length > 5 * 1024 * 1024) // 5MB
+        //            {
+        //                ModelState.AddModelError("HeaderImage", "Kích thước ảnh không được vượt quá 5MB.");
+        //                return View(article); // Trả về trang tạo bài viết với thông báo lỗi
+        //            }
+
+        //            var fileName = Path.GetFileName(HeaderImage.FileName);
+        //            var filePath = Path.Combine("wwwroot/images/news", fileName);
+
+        //            // Tạo thư mục "images/news" nếu chưa tồn tại
+        //            if (!Directory.Exists("wwwroot/images/news"))
+        //            {
+        //                Directory.CreateDirectory("wwwroot/images/news");
+        //            }
+
+        //            // Lưu tệp ảnh vào thư mục
+        //            using (var stream = new FileStream(filePath, FileMode.Create))
+        //            {
+        //                await HeaderImage.CopyToAsync(stream);
+        //            }
+
+        //            // Lưu đường dẫn ảnh tương đối vào thuộc tính HeaderImage của article
+        //            article.HeaderImage = "/images/news/" + fileName;
+        //        }
+
+        //        // Tạo dữ liệu DTO để gửi qua API mà không có ID tự tăng
+        //        var createData = new ArticlesNews()
+        //        {
+        //            UserId = userId,
+        //            NameCreater = article.NameCreater,
+        //            Title = article.Title,
+        //            Content = article.Content,
+        //            IsActive = article.IsActive ?? true,
+        //            DateCreated = DateTime.Today,
+        //            HeaderImage = article.HeaderImage
+        //        };
+
+        //        // Gửi yêu cầu POST đến API và xử lý phản hồi
+        //        HttpResponseMessage response = await client.PostAsJsonAsync("api/news", createData);
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            TempData["SuccessMessage"] = "Bài viết đã được tạo thành công!";
+        //            return RedirectToAction("Index");
+        //        }
+        //        else
+        //        {
+        //            TempData["ErrorMessage"] = "Đã có lỗi xảy ra khi tạo bài viết. Vui lòng thử lại!";
+        //            return View(article);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["ErrorMessage"] = "Có lỗi khi xử lý yêu cầu. Vui lòng thử lại sau.";
+        //        return View(article);
+        //    }
+        //}
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> Create(ArticlesNews article, IFormFile HeaderImage)
         {
@@ -207,23 +294,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 // Kiểm tra và xử lý tệp hình ảnh
                 if (HeaderImage != null && HeaderImage.Length > 0)
                 {
-                    // Kiểm tra định dạng file (chỉ chấp nhận .jpg, .jpeg, .png, .gif)
-                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-                    var fileExtension = Path.GetExtension(HeaderImage.FileName).ToLower();
-
-                    if (!allowedExtensions.Contains(fileExtension))
-                    {
-                        ModelState.AddModelError("HeaderImage", "Chỉ chấp nhận các định dạng hình ảnh: .jpg, .jpeg, .png, .gif.");
-                        return View(article); // Trả về trang tạo bài viết với thông báo lỗi
-                    }
-
-                    // Kiểm tra kích thước file (giới hạn 5MB)
-                    if (HeaderImage.Length > 5 * 1024 * 1024) // 5MB
-                    {
-                        ModelState.AddModelError("HeaderImage", "Kích thước ảnh không được vượt quá 5MB.");
-                        return View(article); // Trả về trang tạo bài viết với thông báo lỗi
-                    }
-
                     var fileName = Path.GetFileName(HeaderImage.FileName);
                     var filePath = Path.Combine("wwwroot/images/news", fileName);
 
@@ -251,7 +321,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     Title = article.Title,
                     Content = article.Content,
                     IsActive = article.IsActive ?? true,
-                    DateCreated = DateTime.Today,
+                    DateCreated = article.DateCreated ?? DateTime.Now,
                     HeaderImage = article.HeaderImage
                 };
 
@@ -260,21 +330,31 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["SuccessMessage"] = "Bài viết đã được tạo thành công!";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index"); // Chuyển hướng về trang Index khi thành công
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Đã có lỗi xảy ra khi tạo bài viết. Vui lòng thử lại!";
-                    return View(article);
+                    // Ghi lại thông tin lỗi từ API
+                    string errorDetails = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, "Lỗi từ API: " + errorDetails);
                 }
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Có lỗi khi xử lý yêu cầu. Vui lòng thử lại sau.";
-                return View(article);
+                // Xử lý lỗi bất ngờ
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
+
+            return View(article); // Trả về view cùng dữ liệu khi có lỗi
         }
+
+
+
+
+
+
+
+
 
 
         // GET: Edit an article by id
