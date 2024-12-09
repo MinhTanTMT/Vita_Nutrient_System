@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography.Xml;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
+using System.Reflection;
+using Microsoft.Extensions.FileProviders;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -740,16 +742,32 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddIngredient(string in_name, string in_desc, string in_imgurl, int keynoteId, short typeOfCalculationId)
+        public async Task<IActionResult> AddIngredient(string in_name, string in_desc, IFormFile urlimg, int keynoteId, short typeOfCalculationId)
         {
             try
             {
+                if (urlimg != null && urlimg.Length > 0)
+                {
+                    var fileName = Path.GetFileName(urlimg.FileName);
+                    var filePath = Path.Combine("wwwroot/images/ingredients", fileName);
+
+                    if (!Directory.Exists("wwwroot/images/ingredients"))
+                    {
+                        Directory.CreateDirectory("wwwroot/images/ingredients");
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await urlimg.CopyToAsync(stream);
+                    }
+                }
+
                 var data = new
                 {
                     keyNoteId = keynoteId,
                     name = in_name,
                     describe = in_desc,
-                    urlimage = in_imgurl,
+                    urlimage = "/images/ingredients/" + Path.GetFileName(urlimg.FileName),
                     typeOfCalculationId = typeOfCalculationId
                 };
 
@@ -825,17 +843,33 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpPost("admin/ingredientmanagement/updateingredient")]
-        public async Task<IActionResult> DoUpdateIngredient(IngredientDetails100g model)
+        public async Task<IActionResult> DoUpdateIngredient(IngredientDetails100g model, IFormFile urlimg)
         {
             try
             {
+                if (urlimg != null && urlimg.Length > 0)
+                {
+                    var fileName = Path.GetFileName(urlimg.FileName);
+                    var filePath = Path.Combine("wwwroot/images/ingredients", fileName);
+
+                    if (!Directory.Exists("wwwroot/images/ingredients"))
+                    {
+                        Directory.CreateDirectory("wwwroot/images/ingredients");
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await urlimg.CopyToAsync(stream);
+                    }
+                }
+
                 var data = new
                 {
                     id = model.Id,
                     keyNoteId = model.KeyNoteId,
                     name = model.Name,
                     describe = model.Describe,
-                    urlimage = model.Urlimage,
+                    urlimage = "/images/ingredients/" + Path.GetFileName(urlimg.FileName),
                     typeOfCalculationId = model.TypeOfCalculationId,
                     energy = model.Energy,
                     water = model.Water,

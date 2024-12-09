@@ -219,6 +219,7 @@ ul {
     border: none;
     background: #2196F3;
     opacity: 0.8;
+    z-index: 9999;
 }
 
     .fab:hover {
