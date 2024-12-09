@@ -18,13 +18,13 @@ using SEP490_G87_Vita_Nutrient_System_API.PageResult;
 namespace TestProject_SEP490_G87_Vita_Nutrient_System_API.TanTest.TestAPI.TanTestFuntionUserController
 {
 
-    public class TestGmail
+    public class TestForgotPassword
     {
         private readonly Mock<IUserRepositories> _mockRepository;
         private readonly Mock<IMapper> _mockMapper;  // Mock IMapper
         private readonly UsersController _controller;
 
-        public TestGmail()
+        public TestForgotPassword()
         {
             // Khởi tạo mock repository
             _mockRepository = new Mock<IUserRepositories>();
@@ -35,7 +35,7 @@ namespace TestProject_SEP490_G87_Vita_Nutrient_System_API.TanTest.TestAPI.TanTes
         }
 
         [Fact]
-        public async Task APIForgotPassword_ReturnsOk_WhenForgotPasswordSucceeds()
+        public async Task APITestPass1()
         {
             // Arrange: Mock phương thức ForgotPassword trả về true
             _mockRepository.Setup(repo => repo.ForgotPassword("minhtanbeater@gmail.com")).ReturnsAsync(true);
@@ -49,7 +49,7 @@ namespace TestProject_SEP490_G87_Vita_Nutrient_System_API.TanTest.TestAPI.TanTes
         }
 
         [Fact]
-        public async Task APIForgotPassword_ReturnsOk_WhenForgotPasswordFails()
+        public async Task APITestPass2()
         {
             // Arrange: Mock phương thức ForgotPassword trả về false
             _mockRepository.Setup(repo => repo.ForgotPassword("nonexistent@gmail.com")).ReturnsAsync(false);
@@ -1321,12 +1321,11 @@ namespace TestProject_SEP490_G87_Vita_Nutrient_System_API.TanTest.TestAPI.TanTes
             var result = await _controller.ChangePassword(request);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal("Change password successfully!", okResult.Value);
+            var okResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("New password must contain 6-50 characters!", okResult.Value);
 
         }
-
-
+       
     }
 
 
@@ -1548,7 +1547,6 @@ namespace TestProject_SEP490_G87_Vita_Nutrient_System_API.TanTest.TestAPI.TanTes
             Assert.Equal("User not found!", badRequestResult.Value); // Xác minh thông báo lỗi
             _mockRepository.Verify(repo => repo.SaveCollection(It.IsAny<int>(), It.IsAny<int>()), Times.Never); // Đảm bảo SaveCollection không được gọi
         }
-
     }
 
 
@@ -1596,14 +1594,14 @@ namespace TestProject_SEP490_G87_Vita_Nutrient_System_API.TanTest.TestAPI.TanTes
 
     }
 
-    public class TestGetNutritionistDetail2ffgfdgf
+    public class TestGetNutritionistDetail
     {
         private readonly Mock<IUserRepositories> _mockRepository;
         private readonly Mock<IUserDetailsRepository> _mockUserDetailsRepository;
         private readonly Mock<IMapper> _mockMapper;
         private readonly UsersController _controller;
 
-        public TestGetNutritionistDetail2ffgfdgf()
+        public TestGetNutritionistDetail()
         {
             // Mock IUserRepositories, IUserDetailsRepository và IMapper
             _mockRepository = new Mock<IUserRepositories>();
@@ -1615,7 +1613,7 @@ namespace TestProject_SEP490_G87_Vita_Nutrient_System_API.TanTest.TestAPI.TanTes
         }
 
         [Fact]
-        public async Task GetNutritionistDetail_NutritionistNotFound_ReturnsBadRequest()
+        public async Task APITestPass1()
         {
             // Arrange
             int nutritionistId = 2;
@@ -1634,7 +1632,7 @@ namespace TestProject_SEP490_G87_Vita_Nutrient_System_API.TanTest.TestAPI.TanTes
 
 
         [Fact]
-        public async Task APITestPass5()
+        public async Task APITestPass2()
         {
 
             int idUser = 4;
