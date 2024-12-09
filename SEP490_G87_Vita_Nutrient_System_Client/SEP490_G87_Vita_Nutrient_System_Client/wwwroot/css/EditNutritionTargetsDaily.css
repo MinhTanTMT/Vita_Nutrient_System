@@ -11,14 +11,18 @@
     margin-bottom: 1rem;
 }
 
-.carbs-values, .fats-values, .protein-values {
+.carbs-values,
+.fats-values,
+.protein-values {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-top: 5px;
 }
 
-.carbs-input, .fats-input, .protein-input {
+.carbs-input,
+.fats-input,
+.protein-input {
     width: 60px;
     text-align: center;
     font-size: 16px;
@@ -43,32 +47,34 @@
     margin-top: 10px;
 }
 
-#carbsSlider, #fatsSlider, #proteinSlider {
+#carbsSlider,
+#fatsSlider,
+#proteinSlider {
     background: linear-gradient(to right, #d3d3d3 0%, #d3d3d3 100%);
 }
 
-    #carbsSlider::-webkit-slider-thumb,
-    #fatsSlider::-webkit-slider-thumb,
-    #proteinSlider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        cursor: pointer;
-    }
+#carbsSlider::-webkit-slider-thumb,
+#fatsSlider::-webkit-slider-thumb,
+#proteinSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+}
 
-    #carbsSlider::-webkit-slider-thumb {
-        background: #f1c40f;
-    }
+#carbsSlider::-webkit-slider-thumb {
+    background: #f1c40f;
+}
 
-    #fatsSlider::-webkit-slider-thumb {
-        background: #00b3b3;
-    }
+#fatsSlider::-webkit-slider-thumb {
+    background: #00b3b3;
+}
 
-    #proteinSlider::-webkit-slider-thumb {
-        background: #800080;
-    }
+#proteinSlider::-webkit-slider-thumb {
+    background: #800080;
+}
 
 /* Toggle switch styling */
 .toggle-switch {
@@ -94,38 +100,43 @@
     height: 100%;
     transition: background-color 0.3s;
     border: 1px solid #d3d3d3;
-    top: 0; /* Align toggle switch */
+    top: 0;
+    /* Align toggle switch */
 }
 
-    .toggle-label::before {
-        content: "";
-        position: absolute;
-        left: 2px;
-        top: 2px; /* Align thumb */
-        width: 16px;
-        height: 16px;
-        background-color: #bfcbd9;
-        border-radius: 50%;
-        transition: transform 0.3s;
-    }
+.toggle-label::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    /* Align thumb */
+    width: 16px;
+    height: 16px;
+    background-color: #bfcbd9;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
 
-.toggle-input:checked + .toggle-label {
+.toggle-input:checked+.toggle-label {
     background-color: #4CAF50;
     border-color: #4CAF50;
 }
 
-    .toggle-input:checked + .toggle-label::before {
-        transform: translateX(20px);
-        background-color: white;
-    }
+.toggle-input:checked+.toggle-label::before {
+    transform: translateX(20px);
+    background-color: white;
+}
+
 .calories-input {
-    width: 120px; /* Điều chỉnh kích thước theo nhu cầu */
+    width: 120px;
+    /* Điều chỉnh kích thước theo nhu cầu */
     font-size: 16px;
     padding: 5px;
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 .slider-container {
     position: relative;
     width: 100%;
@@ -141,14 +152,14 @@
     margin-top: 10px;
 }
 
-    .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        cursor: pointer;
-    }
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+}
 
 
 .ingredient-selector-container {
@@ -183,16 +194,18 @@
 }
 
 /* Dropdown selector */
-.dropdown-toggle {
+.dropdown-toggle-style-1.dropdown-toggle {
     border: 1px solid #ccc;
     padding: 10px;
     background: #fff;
     cursor: pointer;
-    width: 100%; /* Đảm bảo dropdown mở rộng hết chiều ngang */
-    border-radius: 4px;
+    width: 100%;
+    /* Đảm bảo dropdown mở rộng hết chiều ngang */
+    border-radius: 10px;
     font-size: 16px;
     text-align: left;
-    box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng đến kích thước */
+    box-sizing: border-box;
+    /* Đảm bảo padding không ảnh hưởng đến kích thước */
 }
 
 /* Dropdown container */
@@ -204,43 +217,58 @@
     border-radius: 4px;
     width: 100%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-height: none; /* Loại bỏ giới hạn chiều cao */
-    overflow: visible; /* Không cho phép bất kỳ thanh cuộn nào ở đây */
+    max-height: none;
+    /* Loại bỏ giới hạn chiều cao */
+    overflow: visible;
+    /* Không cho phép bất kỳ thanh cuộn nào ở đây */
     margin-top: 5px;
-    padding: 0; /* Xóa khoảng trống */
+    padding: 0;
+    /* Xóa khoảng trống */
 }
 
-    .dropdown-menu::-webkit-scrollbar {
-        width: 8px; /* Độ rộng của thanh cuộn */
-    }
+.dropdown-menu::-webkit-scrollbar {
+    width: 8px;
+    /* Độ rộng của thanh cuộn */
+}
 
-    .dropdown-menu::-webkit-scrollbar-thumb {
-        background-color: #ccc; /* Màu thanh cuộn */
-        border-radius: 4px; /* Bo tròn thanh cuộn */
-    }
+.dropdown-menu::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    /* Màu thanh cuộn */
+    border-radius: 4px;
+    /* Bo tròn thanh cuộn */
+}
+
 /* Danh sách thực phẩm bên trong */
 #ingredient-list {
-    max-height: 240px; /* Giới hạn chiều cao danh sách */
-    overflow-y: auto; /* Thanh cuộn dọc */
-    overflow-x: hidden; /* Ngăn cuộn ngang */
+    max-height: 240px;
+    /* Giới hạn chiều cao danh sách */
+    overflow-y: auto;
+    /* Thanh cuộn dọc */
+    overflow-x: hidden;
+    /* Ngăn cuộn ngang */
     margin: 0;
     padding: 0;
-    list-style: none; /* Xóa style mặc định */
+    list-style: none;
+    /* Xóa style mặc định */
 }
 
-    /* Tùy chỉnh thanh cuộn */
-    #ingredient-list::-webkit-scrollbar {
-        width: 8px; /* Độ rộng thanh cuộn */
-    }
+/* Tùy chỉnh thanh cuộn */
+#ingredient-list::-webkit-scrollbar {
+    width: 8px;
+    /* Độ rộng thanh cuộn */
+}
 
-    #ingredient-list::-webkit-scrollbar-thumb {
-        background-color: #ccc; /* Màu của thanh cuộn */
-        border-radius: 4px; /* Bo tròn */
-    }
+#ingredient-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    /* Màu của thanh cuộn */
+    border-radius: 4px;
+    /* Bo tròn */
+}
 
-        #ingredient-list::-webkit-scrollbar-thumb:hover {
-            background-color: #999; /* Màu đậm hơn khi hover */
-        }
+#ingredient-list::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+    /* Màu đậm hơn khi hover */
+}
 
 .list-group-item {
     padding: 12px 15px;
@@ -249,20 +277,22 @@
     font-size: 14px;
 }
 
-    .list-group-item:hover {
-        background: #f0f0f0;
-    }
+.list-group-item:hover {
+    background: #f0f0f0;
+}
 
 
 /* Tìm kiếm */
 #ingredient-search {
-    width: calc(100% - 20px); /* Trừ padding và margin */
+    width: calc(100% - 20px);
+    /* Trừ padding và margin */
     margin: 10px;
     padding: 8px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Đảm bảo kích thước không bị lệch */
+    box-sizing: border-box;
+    /* Đảm bảo kích thước không bị lệch */
 }
 
 /* Danh sách thực phẩm */
@@ -280,27 +310,33 @@
     transition: background 0.2s ease-in-out;
 }
 
-    .list-group-item:hover {
-        background: #f0f0f0;
-    }
+.list-group-item:hover {
+    background: #f0f0f0;
+}
 
 /* Nút "Thêm vào" */
 #add-ingredient-button {
-    background-color: #800080; /* Màu tím */
-    color: #fff; /* Chữ trắng */
+    background-color: #800080;
+    /* Màu tím */
+    color: #fff;
+    /* Chữ trắng */
     border: none;
     padding: 10px 16px;
     font-size: 14px;
     border-radius: 4px;
     cursor: pointer;
-    align-self: flex-start; /* Đảm bảo nút căn trái */
-    transition: background-color 0.2s ease-in-out; /* Hiệu ứng màu khi hover */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng nhẹ */
+    align-self: flex-start;
+    /* Đảm bảo nút căn trái */
+    transition: background-color 0.2s ease-in-out;
+    /* Hiệu ứng màu khi hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Hiệu ứng đổ bóng nhẹ */
 }
 
-    #add-ingredient-button:hover {
-        background-color: #993399; /* Tím đậm hơn khi hover */
-    }
+#add-ingredient-button:hover {
+    background-color: #993399;
+    /* Tím đậm hơn khi hover */
+}
 
 /* Danh sách thực phẩm loại trừ */
 .excluded-list {
@@ -318,7 +354,8 @@
     border-radius: 5px;
     padding: 5px 10px;
     font-size: 14px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Hiệu ứng đổ bóng */
 }
 
 /* Nút xóa */
@@ -333,8 +370,6 @@
     transition: color 0.2s ease-in-out;
 }
 
-    .remove-ingredient-button:hover {
-        color: darkred;
-    }
-
-
+.remove-ingredient-button:hover {
+    color: darkred;
+}

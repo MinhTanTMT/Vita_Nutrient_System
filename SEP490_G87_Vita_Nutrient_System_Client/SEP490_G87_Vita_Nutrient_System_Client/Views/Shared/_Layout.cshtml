@@ -1,8 +1,9 @@
-﻿    <!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-        <!-- Required meta tags -->
+    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Vita Nutrient System</title>
@@ -16,11 +17,13 @@
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/custom.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="~/images/favicon.ico" />
 
 
 </head>
+
 <body>
     <div class="container-scroller">
         @* <div class="row p-0 m-0 proBanner" id="proBanner">
@@ -40,7 +43,7 @@
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
 
 
-@*                 <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/logo.svg" alt="logo" /></a>
+                @*                 <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/logo.svg" alt="logo" /></a>
                 <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img src="~/images/logo-mini.svg" alt="logo" /></a> *@
                 @if (ViewData["HideSidebar"] == "true")
                 {
@@ -50,14 +53,16 @@
                         }
                     </style>
                 }
-@*                 <div class="navbar">
+                @*                 <div class="navbar">
                 <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/logo-vitanuti.svg" alt="logo" /></a>
                 <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img src="~/images/LogoVitaNutri.jpg" alt="logo" /></a>
                 </div> *@
 
                 <div class="navbar">
-                    <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img src="~/images/LogoNameVitaNutriIcon.jpg" alt="logo" /></a>
-                    <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img src="~/images/LogoVitaNutri.jpg" alt="logo" /></a>
+                    <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")"><img
+                            src="~/images/LogoNameVitaNutriIcon.jpg" alt="logo" /></a>
+                    <a class="navbar-brand brand-logo-mini" href="@Url.Action("Index", "Home")"><img
+                            src="~/images/LogoVitaNutri.jpg" alt="logo" /></a>
                 </div>
 
             </div>
@@ -71,7 +76,8 @@
                             <div class="input-group-prepend bg-transparent">
                                 <i class="input-group-text border-0 mdi mdi-magnify"></i>
                             </div>
-                            <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
+                            <input type="text" class="form-control bg-transparent border-0"
+                                placeholder="Search projects">
                         </div>
                     </form>
                 </div>
@@ -88,11 +94,16 @@
                         {
 
                             <li class="nav-item nav-profile dropdown">
-                                <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
                                     <div class="nav-profile-img">
                                         @if (Context.Session.GetString("imageUrl") != null)
                                         {
                                             <img src="@Context.Session.GetString("imageUrl")" alt="Image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="@Url.Content("~/icons/no-image.svg")" alt="No image" />
                                         }
                                         <span class="availability-status online"></span>
                                     </div>
@@ -108,10 +119,12 @@
                                         <i class="mdi mdi-cached me-2 text-success"></i> Activity Log
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                    <a class="dropdown-item" href="#"
+                                        onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
                                         <i class="mdi mdi-logout me-2 text-primary"></i> Signout
                                     </a>
-                                    <form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" style="display:none;">
+                                    <form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm"
+                                        style="display:none;">
                                         <button type="submit">Logout</button>
                                     </form>
                                 </div>
@@ -125,19 +138,23 @@
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-email-outline"></i>
                             <span class="count-symbol bg-warning"></span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                            aria-labelledby="messageDropdown">
                             <h6 class="p-3 mb-0">Messages</h6>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
                                     <img src="~/images/faces/face4.jpg" alt="image" class="profile-pic">
                                 </div>
-                                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Mark send you a message</h6>
+                                <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Mark send you a message
+                                    </h6>
                                     <p class="text-gray mb-0"> 1 Minutes ago </p>
                                 </div>
                             </a>
@@ -146,8 +163,10 @@
                                 <div class="preview-thumbnail">
                                     <img src="~/images/faces/face2.jpg" alt="image" class="profile-pic">
                                 </div>
-                                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Cregh send you a message</h6>
+                                <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Cregh send you a
+                                        message</h6>
                                     <p class="text-gray mb-0"> 15 Minutes ago </p>
                                 </div>
                             </a>
@@ -156,8 +175,10 @@
                                 <div class="preview-thumbnail">
                                     <img src="~/images/faces/face3.jpg" alt="image" class="profile-pic">
                                 </div>
-                                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Profile picture updated</h6>
+                                <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Profile picture updated
+                                    </h6>
                                     <p class="text-gray mb-0"> 18 Minutes ago </p>
                                 </div>
                             </a>
@@ -166,11 +187,13 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
+                            data-bs-toggle="dropdown">
                             <i class="mdi mdi-bell-outline"></i>
                             <span class="count-symbol bg-danger"></span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                            aria-labelledby="notificationDropdown">
                             <h6 class="p-3 mb-0">Notifications</h6>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item preview-item">
@@ -179,9 +202,11 @@
                                         <i class="mdi mdi-calendar"></i>
                                     </div>
                                 </div>
-                                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
                                     <h6 class="preview-subject font-weight-normal mb-1">Event today</h6>
-                                    <p class="text-gray ellipsis mb-0"> Just a reminder that you have an event today </p>
+                                    <p class="text-gray ellipsis mb-0"> Just a reminder that you have an event today
+                                    </p>
                                 </div>
                             </a>
                             <div class="dropdown-divider"></div>
@@ -191,7 +216,8 @@
                                         <i class="mdi mdi-settings"></i>
                                     </div>
                                 </div>
-                                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
                                     <h6 class="preview-subject font-weight-normal mb-1">Settings</h6>
                                     <p class="text-gray ellipsis mb-0"> Update dashboard </p>
                                 </div>
@@ -203,7 +229,8 @@
                                         <i class="mdi mdi-link-variant"></i>
                                     </div>
                                 </div>
-                                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
                                     <h6 class="preview-subject font-weight-normal mb-1">Launch Admin</h6>
                                     <p class="text-gray ellipsis mb-0"> New admin wow! </p>
                                 </div>
@@ -223,22 +250,16 @@
                         </a>
                     </li>
                 </ul>
-                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+                    data-toggle="offcanvas">
                     <span class="mdi mdi-menu"></span>
                 </button>
             </div>
         </nav>
         <!-- partial -->
-        <div class="container-fluid page-body-wrapper" style="flex-wrap: wrap;">
-            <!-- Điều kiện ẩn sidebar -->
-            @if (ViewData["HideSidebar"] == "true")
-            {
-                <style>
-                    .sidebar {
-                        display: none;
-                    }
-                </style>
-            }
+        <!-- Điều kiện ẩn sidebar -->
+        <div class="container-fluid page-body-wrapper @(ViewData["HideSidebar"] == "true" ? "hide-sidebar" : "" )"
+            style="flex-wrap: wrap;">
             <!-- partial:partials/_sidebar.html -->
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
@@ -259,10 +280,16 @@
 
                                         @if (Context.Session.GetString("imageUrl") != null)
                                         {
-                                            <img src="@Context.Session.GetString("imageUrl")" alt="profile" onclick="event.preventDefault(); document.getElementById('goProfilePage').submit();">
+                                            <img src="@Context.Session.GetString("imageUrl")" alt="profile"
+                                                onclick="event.preventDefault(); document.getElementById('goProfilePage').submit();">
+                                        }
+                                        else
+                                        {
+                                            <img src="@Url.Content("~/icons/no-image.svg")" alt="No image" />
                                         }
 
-                                        <form asp-controller="User" asp-action="ProfileUser" method="get" id="logoutForm" style="display:none;">
+                                        <form asp-controller="User" asp-action="ProfileUser" method="get" id="logoutForm"
+                                            style="display:none;">
                                             <button type="submit">Logout</button>
                                         </form>
 
@@ -319,7 +346,7 @@
                                         <span class="menu-title">Quản lý tin tức</span>
                                         <i class="mdi mdi-newspaper menu-icon"></i>
                                     </a>
-                                </li> 
+                                </li>
                             }
                             else if (role.Equals("Nutritionist"))
                             {
@@ -368,7 +395,7 @@
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
                                 </li>
-                                
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("PlanUser", "User")">
                                         <span class="menu-title">Kế hoạch bữa ăn</span>
@@ -467,7 +494,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                                <a class="nav-link" href="@Url.Action("ListLikedFoods", "User")">
+                                    <a class="nav-link" href="@Url.Action("ListLikedFoods", "User")">
                                         <span class="menu-title">Danh Sách Món Ăn Đã Thích</span>
                                         <i class="mdi mdi-food-variant menu-icon"></i>
                                     </a>
@@ -505,18 +532,24 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+                                <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false"
+                                    aria-controls="general-pages">
                                     <span class="menu-title">Sample Pages</span>
                                     <i class="menu-arrow"></i>
                                     <i class="mdi mdi-medical-bag menu-icon"></i>
                                 </a>
                                 <div class="collapse" id="general-pages">
                                     <ul class="nav flex-column sub-menu">
-                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
-                                        <li class="nav-item"> <a class="nav-link" href="@Url.Action("Login", "Home")"> Login </a></li>
-                                        <li class="nav-item"> <a class="nav-link" href="@Url.Action("Register", "Home")"> Register </a></li>
-                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
+                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank
+                                                Page </a></li>
+                                        <li class="nav-item"> <a class="nav-link" href="@Url.Action("Login", "Home")"> Login
+                                            </a></li>
+                                        <li class="nav-item"> <a class="nav-link" href="@Url.Action("Register", "Home")">
+                                                Register </a></li>
+                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a>
+                                        </li>
+                                        <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
@@ -536,20 +569,39 @@
                 </div>
                 <!-- content-wrapper ends -->
                 <!-- partial:partials/_footer.html -->
-                <footer class="footer fixed-footer" style="background-color: #ffffff; padding: 20px 0; border-top: 1px solid #e0e0e0; font-family: Roboto, sans-serif;">
+                <footer class="footer fixed-footer"
+                    style="background-color: #ffffff; padding: 20px 0; border-top: 1px solid #e0e0e0; font-family: Roboto, sans-serif;">
                     <div class="footer-container text-center">
                         <div class="row">
                             <div class="col-md-6">
-                                <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
-                                    <li><a href="@Url.Action("HowItWorks", "Home")" style="text-decoration: none; color: #002f6c; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Cách thức hoạt động</a></li>
-                                    <li><a href="@Url.Action("AboutUs", "Home" )" style="text-decoration: none; color: #002f6c; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Giới thiệu về chúng tôi</a></li>
+                                <ul
+                                    style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
+                                    <li><a href="@Url.Action("HowItWorks", "Home")"
+                                            style="text-decoration: none; color: #002f6c; font-size: 16px;"
+                                            onmouseover="this.style.textDecoration='underline'"
+                                            onmouseout="this.style.textDecoration='none'">Cách thức hoạt động</a></li>
+                                    <li><a href="@Url.Action("AboutUs", "Home" )"
+                                            style="text-decoration: none; color: #002f6c; font-size: 16px;"
+                                            onmouseover="this.style.textDecoration='underline'"
+                                            onmouseout="this.style.textDecoration='none'">Giới thiệu về chúng tôi</a>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="col-md-6">
-                                <ul style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
-                                    <li><a href="@Url.Action("PrivacyPolicy", "Home" )" style="text-decoration: none; color: #002f6c; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Chính sách bảo mật</a></li>
-                                    <li><a href="@Url.Action("TermsOfService", "Home" )" style="text-decoration: none; color: #002f6c; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Điều khoản dịch vụ</a></li>
-                                    <li><a href="@Url.Action("ContactUs", "Home" )" style="text-decoration: none; color: #002f6c; font-size: 16px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Liên hệ với chúng tôi</a></li>
+                                <ul
+                                    style="list-style: none; padding: 0; margin: 0; line-height: 2; text-align: center;">
+                                    <li><a href="@Url.Action("PrivacyPolicy", "Home" )"
+                                            style="text-decoration: none; color: #002f6c; font-size: 16px;"
+                                            onmouseover="this.style.textDecoration='underline'"
+                                            onmouseout="this.style.textDecoration='none'">Chính sách bảo mật</a></li>
+                                    <li><a href="@Url.Action("TermsOfService", "Home" )"
+                                            style="text-decoration: none; color: #002f6c; font-size: 16px;"
+                                            onmouseover="this.style.textDecoration='underline'"
+                                            onmouseout="this.style.textDecoration='none'">Điều khoản dịch vụ</a></li>
+                                    <li><a href="@Url.Action("ContactUs", "Home" )"
+                                            style="text-decoration: none; color: #002f6c; font-size: 16px;"
+                                            onmouseover="this.style.textDecoration='underline'"
+                                            onmouseout="this.style.textDecoration='none'">Liên hệ với chúng tôi</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -565,7 +617,9 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <p style="font-size: 14px; color: #002f6c; line-height: 1.6;">
-                                    Các thông tin trên website chỉ mang tính chất tham khảo, không thay thế cho việc chẩn đoán hoặc điều trị y khoa. Vita Nutrient System không chịu trách nhiệm về những trường hợp tự ý áp dụng mà không có chỉ định của bác sĩ.
+                                    Các thông tin trên website chỉ mang tính chất tham khảo, không thay thế cho việc
+                                    chẩn đoán hoặc điều trị y khoa. Vita Nutrient System không chịu trách nhiệm về những
+                                    trường hợp tự ý áp dụng mà không có chỉ định của bác sĩ.
                                 </p>
                             </div>
                         </div>
@@ -595,4 +649,5 @@
         <!-- End custom js for this page -->
         @RenderSection("Scripts", required: false)
 </body>
+
 </html>

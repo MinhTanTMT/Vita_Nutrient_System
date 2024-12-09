@@ -1,0 +1,361 @@
+:root {
+  --global-color: #002f6c;
+  --second-color: #388E3C;
+  --hover-text-color: var(--global-color);
+  --btn-bg-color: var(--second-color);
+  --btn-bg-primary-color: var(--global-color);
+  --btn-text-color: black;
+  --border-radius-1: 20px;
+  --btn-bg-danger: red;
+  --btn-bg-gray: #aaaaaa;
+}
+
+body {
+  font-size: 1rem;
+  font-family: "Arial", sans-serif;
+  font-weight: initial;
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: "Arial", sans-serif !important;
+}
+
+.content-wrapper {
+  padding: 15px;
+}
+
+.page-header {
+  border-radius: 25px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0px;
+  height: 100%;
+  background-color: #f7f7f7;
+}
+.page-header > .page-content {
+  padding: 20px;
+  height: 100%;
+}
+
+.auth .auth-form-light {
+  border-radius: var(--border-radius-1);
+}
+
+.sidebar .nav .nav-item.active > .nav-link .menu-title,
+.sidebar .nav .nav-item.active > .nav-link i, .sidebar .nav .nav-item:hover > .nav-link .menu-title,
+.sidebar .nav .nav-item:hover > .nav-link i {
+  color: var(--hover-text-color);
+  font-weight: bold;
+}
+.sidebar .nav .nav-item .menu-icon {
+  display: none;
+}
+
+.auth-form-btn.btn.btn-google {
+  border-radius: 40px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  line-height: 40px;
+}
+.auth-form-btn.btn.btn-google i {
+  margin: 0;
+}
+
+.btn.btn-bg-primary {
+  border-color: var(--btn-bg-primary-color);
+  background-color: var(--btn-bg-primary-color);
+}
+.btn.btn-border-text-primary {
+  border-color: var(--btn-bg-primary-color);
+  color: var(--btn-bg-primary-color);
+}
+.btn.btn-border-text-primary:hover {
+  background-color: transparent;
+  color: var(--btn-bg-primary-color);
+}
+.btn.btn-primary {
+  padding: 10px 20px;
+  border-radius: 20px;
+  border-color: var(--btn-bg-primary-color);
+  background-color: var(--btn-bg-primary-color);
+}
+.btn.btn-secondary {
+  padding: 10px 20px;
+  border-radius: 20px;
+  border-color: var(--btn-bg-primary-color);
+  background-color: var(--btn-bg-primary-color);
+}
+.btn.btn-danger {
+  border-color: var(--btn-bg-danger);
+  background-color: var(--btn-bg-danger);
+}
+.btn.btn-gray {
+  border-color: var(--btn-bg-gray);
+  background-color: var(--btn-bg-gray);
+}
+.btn + .btn {
+  margin-left: 10px;
+}
+.btn.circle {
+  border-radius: 100%;
+}
+
+.btn-circle {
+  border-radius: 100% !important;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+.form-group label {
+  font-size: 16px;
+  font-weight: 600;
+}
+.form-group select {
+  padding: 10px;
+  border-radius: 10px;
+}
+.form-group .form-control {
+  padding: 10px;
+  border-radius: 10px;
+}
+.form-group .checkbox-block .form-check-input {
+  margin-top: 0px;
+  margin-left: 10px;
+}
+.form-group .text-danger {
+  position: absolute;
+  bottom: -21px;
+  right: 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+.form-group.style-row {
+  flex-direction: row;
+  align-items: center;
+}
+.form-group.style-row > label {
+  min-width: 120px;
+  margin-bottom: 0;
+}
+.form-group.style-row > div {
+  margin-top: 0px;
+}
+
+body .modal-header {
+  padding: 0;
+  border-bottom: none;
+  display: block;
+}
+body .modal-header .modal-title {
+  color: var(--global-color);
+  margin-bottom: 20px;
+  font-size: 30px;
+  font-weight: 600;
+}
+body .modal-header h2.modal-title {
+  font-size: 26px;
+}
+body .modal-header .modal-sub-title {
+  font-size: 18px;
+  font-family: 600;
+}
+body .modal-body {
+  padding: 0;
+}
+
+.page-body-wrapper.hide-sidebar #sidebar {
+  display: none;
+}
+.page-body-wrapper.hide-sidebar .main-panel {
+  width: 100%;
+}
+
+.meal-list .meal-item {
+  margin-bottom: 20px;
+}
+.meal-list .meal-status span {
+  font-size: 14px;
+}
+
+.diet-type-list-page #dietTypeForm {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.diet-type-list-page .card {
+  width: 50%;
+  border-radius: 20px;
+}
+.diet-type-list-page .card-body .form-check {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.diet-type-list-page .card-body .form-check .form-check-label {
+  margin-left: 0px;
+  text-align: center;
+}
+.diet-type-list-page .card-body .form-check .form-check-label strong {
+  font-size: 20px;
+  color: var(--global-color);
+}
+.diet-type-list-page .card-body .form-check .form-check-label p {
+  font-size: 18px;
+}
+.diet-type-list-page .card-body .form-check .form-check-input {
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 30px;
+}
+
+.foodlist-page {
+  padding: 20px;
+}
+.foodlist-page .search-block {
+  width: 100%;
+  padding: 0px;
+  margin-right: 15px;
+}
+.foodlist-page .type-filter {
+  min-width: 150px;
+}
+.foodlist-page .type-filter .dropdown {
+  width: 100%;
+}
+.foodlist-page .type-filter .dropdown button {
+  width: 100%;
+  height: 47px;
+}
+.foodlist-page .card {
+  background-color: transparent;
+}
+.foodlist-page .card-body {
+  padding: 0px;
+}
+.foodlist-page .food-container {
+  gap: 20px;
+}
+.foodlist-page .food-card {
+  margin: 0;
+}
+.foodlist-page .food-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.foodlist-page .food-card .food-name {
+  color: var(--global-color);
+}
+.foodlist-page .page-item.active .page-link {
+  background-color: var(--global-color);
+  border-color: var(--global-color);
+}
+
+.footer-detail-page .grid-margin {
+  margin-bottom: 0px;
+}
+.footer-detail-page .card-body {
+  padding: 20px;
+}
+.footer-detail-page .card-body-top {
+  border: 1px solid #eee;
+  border-radius: 20px;
+}
+.footer-detail-page .rating-container {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+}
+.footer-detail-page .stars-container {
+  position: static;
+}
+.footer-detail-page .remind .list-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.footer-detail-page .remind .item {
+  background: #e9ecef;
+  border-radius: 8px;
+  padding: 10px 5px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.footer-detail-page .remind .item:hover {
+  background: var(--second-color);
+  color: #fff;
+  cursor: pointer;
+  transform: scale(1.05);
+}
+.footer-detail-page .remind .item:hover label {
+  color: #fff;
+}
+.footer-detail-page .remind .item [type=radio]:checked + label:after, .footer-detail-page .remind .item [type=radio]:not(:checked) + label:after {
+  background-color: var(--second-color);
+  top: 3px;
+  left: 3px;
+}
+
+.dropdown .dropdown-menu {
+  padding: 10px 0px;
+  border-radius: 12px;
+}
+.dropdown .dropdown-menu li {
+  padding: 6px 10px;
+  font-weight: 500;
+}
+
+.number-input {
+  border-radius: 6px;
+  border: 0.5px solid;
+  padding: 5px;
+}
+
+.fontcs-weight-bold {
+  font-weight: bold;
+}
+
+.fontcs-weight-600 {
+  font-weight: 600;
+}
+
+.fontcs-weight-500 {
+  font-weight: 500;
+}
+
+.ml-2 {
+  margin-left: 12px;
+}
+
+.font-15 {
+  font-size: 15px;
+}
+
+.font-18 {
+  font-size: 18px !important;
+}
+
+.border-none {
+  border: none;
+}
