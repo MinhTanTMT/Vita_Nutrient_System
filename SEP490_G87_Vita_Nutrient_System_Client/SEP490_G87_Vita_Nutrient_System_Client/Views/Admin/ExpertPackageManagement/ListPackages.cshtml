@@ -21,16 +21,16 @@
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">List Packages</h4>
+                <h4 class="card-title">Danh sách gói dịch vụ</h4>
 
                 <!-- Search form -->
                 <form method="get" action="@Url.Action("ListPackages", "Admin")" style="padding: 8px 10px;">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
+                        <input type="text" class="form-control" name="searchQuery" placeholder="Tìm theo tên" value="@searchQuery" />
                         <div class="input-group-append">
                             <button class="btn btn-success btn-fw" type="submit">
                                 <i class="mdi mdi-magnify"></i>
-                                Search
+                                Tìm kiếm
                             </button>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
 
                 @if (listPackages == null || listPackages.Count == 0)
                 {
-                    <h1>There is no packages.</h1>
+                    <h1>Hiện không thấy gói dịch vụ.</h1>
                 }
                 else
                 {
@@ -47,10 +47,10 @@
                             <thead>
                                 <tr>
                                     <th> # </th>
-                                    <th> Name </th>
-                                    <th> Description </th>
-                                    <th> Price </th>
-                                    <th> Duration </th>
+                                    <th> Tên </th>
+                                    <th> Mô tả </th>
+                                    <th> Giá </th>
+                                    <th> Thời hạn </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -120,27 +120,27 @@
     <!-- Modal -->
     <div class="modal1">
         <div class="modal1-header">
-            <span>Add Expert Packages</span>
+            <span>Thêm gói</span>
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
         <div class="modal1-body">
             <form id="addPackageForm" asp-controller="Admin" asp-action="AddPackage" method="post">
-                <label>Name:</label>
+                <label>Tên:</label>
                 <input class="ms-auto" type="text" name="p_name" required />
 
-                <label>Description:</label>
+                <label>Mô tả:</label>
                 <input class="ms-auto" type="text" name="p_desc" required />
 
-                <label>Price:</label>
+                <label>Giá:</label>
                 <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
 
-                <label>Duration:</label>
+                <label>Thời hạn:</label>
                 <input class="ms-auto" type="number" value="0" min="0" name="p_duration" required />
             </form>
         </div>
         <div class="modal1-footer">
-            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-            <button class="btn-save" onclick="AddPackage()">Save</button>
+            <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+            <button class="btn-save" onclick="AddPackage()">Lưu</button>
         </div>
     </div>
 </div>
@@ -149,30 +149,30 @@
     <!-- Modal -->
     <div class="modal1">
         <div class="modal1-header">
-            <span>Update Expert Packages</span>
+            <span>Chỉnh sửa gói</span>
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
 
         <!-- Tab Navigation -->
         <div class="tab-navigation">
-            <button class="tab-button active" onclick="openTab(event, 'tab1')">Basic Info</button>
-            <button class="tab-button" onclick="openTab(event, 'tab2')">Nutritionists</button>
+            <button class="tab-button active" onclick="openTab(event, 'tab1')">Thông tin gói</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">Chuyên gia phụ trách</button>
         </div>
 
         <div class="modal1-body">
             <div id="tab1" class="tab-content active">
                 <form id="updatePackageForm" asp-controller="Admin" asp-action="UpdatePackage" method="post">
                     <input type="hidden" name="p_id" value="" />
-                    <label>Name:</label>
+                    <label>Tên:</label>
                     <input class="ms-auto" type="text" name="p_name" required />
 
-                    <label>Description:</label>
+                    <label>Mô tả:</label>
                     <input class="ms-auto" type="text" name="p_desc" required />
 
-                    <label>Price:</label>
+                    <label>Giá:</label>
                     <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
 
-                    <label>Duration:</label>
+                    <label>Thời hạn:</label>
                     <input class="ms-auto" type="number" value="0" min="0" name="p_duration" required />
                 </form>
 
@@ -200,14 +200,14 @@
                             </option>
                         }
                     </select>
-                    <button class="btn-save myBtn" onclick="AddNutri();">Add</button>
+                    <button class="btn-save myBtn" onclick="AddNutri();">Thêm</button>
                 </div>
 
             </div>
 
             <div class="modal1-footer">
-                <button class="btn-cancel" onclick="closeModal();">Cancel</button>
-                <button class="btn-save" onclick="EditPackage();">Save</button>
+                <button class="btn-cancel" onclick="closeModal();">Hủy</button>
+                <button class="btn-save" onclick="EditPackage();">Lưu</button>
             </div>
         </div>
         

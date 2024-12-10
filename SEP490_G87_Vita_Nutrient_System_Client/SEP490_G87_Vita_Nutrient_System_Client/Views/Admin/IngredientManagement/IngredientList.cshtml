@@ -17,17 +17,17 @@
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title" style="font-size: 1.5rem;">List Ingredients</h4>
+                <h4 class="card-title" style="font-size: 1.5rem;">Danh sách nguyên liệu</h4>
                 <input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
                 <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
                 <!-- Search form -->
                 <form method="get" action="@Url.Action("IngredientsList", "Admin")" style="padding: 8px 10px;">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
+                        <input type="text" class="form-control" name="searchQuery" placeholder="Tìm kiếm theo tên" value="@searchQuery" />
                         <div class="input-group-append">
                             <button class="btn btn-success btn-fw" type="submit">
                                 <i class="mdi mdi-magnify"></i>
-                                Search
+                                Tìm kiếm
                             </button>
                         </div>
                     </div>
@@ -35,15 +35,15 @@
 
                 @if (listIngredients == null || listIngredients.Count == 0)
                 {
-                    <h1>There is no ingredient.</h1>
+                    <h1>Hiện không có nguyên liệu.</h1>
                 }
                 else
                 {
                     <div class="row" style="background: #d1e7dd;margin: 0; font-weight: bold; padding: 1rem 1.25rem; border: 1px solid rgba(0, 0, 0, 0.125);">
                         <div class="col-1">#</div>
-                        <div class="col-2 text-center">Image</div>
-                        <div class="col-2">Name</div>
-                        <div class="col-6">Description</div>
+                        <div class="col-2 text-center">Ảnh</div>
+                        <div class="col-2">Tên</div>
+                        <div class="col-6">Mô tả</div>
                         <div class="col-1"></div>
                     </div>
                     @for (int i = 0; i < listIngredients.Count; i++)
