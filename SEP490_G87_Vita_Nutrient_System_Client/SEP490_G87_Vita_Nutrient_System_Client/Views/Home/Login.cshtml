@@ -4,6 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -21,9 +22,11 @@
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/custom.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="~/images/favicon.ico" />
 </head>
+
 <body>
     <div class="container-scroller">
         <div class="container-fluid page-body-wrapper full-page-wrapper">
@@ -32,35 +35,42 @@
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left p-5">
                             <div class="brand-logo">
-                                <img src="~/images/logo.svg">
+                                <img src="~/images/LogoVitaNutri.jpg">
                             </div>
                             <h4 style="font-family: 'Roboto', sans-serif;">Xin chào! Chúng ta hãy bắt đầu nhé</h4>
-                            <h6 style="font-family: 'Roboto', sans-serif;" class="font-weight-light">Đăng nhập để tiếp tục.</h6>
+                            <h6 style="font-family: 'Roboto', sans-serif;" class="font-weight-light">Đăng nhập để tiếp
+                                tục.</h6>
                             <form class="pt-3" asp-action="Login" method="post">
                                 <div class="form-group">
-                                    <input style="font-family: 'Roboto', sans-serif;" type="text" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Tài khoản" name="Account" required minlength="1" maxlength="20">
+                                    <input style="font-family: 'Roboto', sans-serif;" type="text"
+                                        class="form-control form-control-lg" id="exampleInputEmail1"
+                                        placeholder="Tài khoản" name="Account" required minlength="1" maxlength="50">
                                 </div>
                                 <div class="form-group">
-                                    <input style="font-family: 'Roboto', sans-serif;" type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Mật khẩu" name="Password" required minlength="1" maxlength="20">
-                                </div>
-                                <div class="mt-3">
-                                    <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn">ĐĂNG NHẬP</button>
+                                    <input style="font-family: 'Roboto', sans-serif;" type="password"
+                                        class="form-control form-control-lg" id="exampleInputPassword1"
+                                        placeholder="Mật khẩu" name="Password" required minlength="1" maxlength="50">
                                 </div>
                                 <div class="my-2 d-flex justify-content-between align-items-center">
-                                     <div class="form-check">
-                                        <label class="form-check-label text-muted">
-                                            @* <input type="checkbox" class="form-check-input"> Keep me signed in *@
-                                        </label>
-                                    </div> 
-                                    <a href="@Url.Action("ForgotPassword", "Home")" class="auth-link text-black" style="font-family: 'Roboto', sans-serif;">Quên mật khẩu?</a>
+                                    <div></div>
+                                    <a href="@Url.Action("ForgotPassword", "Home")" class="auth-link text-black"
+                                        style="font-family: 'Roboto', sans-serif;">Quên mật khẩu?</a>
                                 </div>
-                                <div class="mb-2">
-                                    <a href="@Url.Action("LoginGoogeAccount", "Home")" class="btn btn-block btn-google auth-form-btn">
-                                        <i class="mdi mdi-google me-2"></i>Kết nối bằng Google
+                                <button type="submit"
+                                        class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn mt-2 mb-2 w-100">ĐĂNG
+                                        NHẬP</button>
+                                <div class="mb-2 text-center">
+                                    <div class="text-center my-2">Hoặc đăng nhập bằng</div>
+                                    <a href="@Url.Action("LoginGoogeAccount", "Home")"
+                                        class="btn btn-google auth-form-btn">
+                                        <i class="mdi mdi-google"></i>
                                     </a>
                                 </div>
-                                <div class="text-center mt-4 font-weight-light" style="font-family: 'Roboto', sans-serif;">
-                                    Bạn chưa có tài khoản? <a href="@Url.Action("Register", "Home")" class="text-primary" style="font-family: 'Roboto', sans-serif;">Tạo tài khoản</a>
+                                <div class="text-center mt-4 font-weight-light"
+                                    style="font-family: 'Roboto', sans-serif;">
+                                    Bạn chưa có tài khoản? <a href="@Url.Action("Register", "Home")"
+                                        class="text-primary" style="font-family: 'Roboto', sans-serif;">Tạo tài
+                                        khoản</a>
                                 </div>
                             </form>
                         </div>
@@ -83,11 +93,12 @@
     <script src="~/js/misc.js"></script>
     <!-- endinject -->
 </body>
+
 </html>
 
 @if (ViewBag.AlertMessage != null)
 {
     <script>
-        alert("@System.Web.HttpUtility.JavaScriptStringEncode(ViewBag.AlertMessage)");
-    </script>
+    alert("@System.Web.HttpUtility.JavaScriptStringEncode(ViewBag.AlertMessage)");
+</script>
 }

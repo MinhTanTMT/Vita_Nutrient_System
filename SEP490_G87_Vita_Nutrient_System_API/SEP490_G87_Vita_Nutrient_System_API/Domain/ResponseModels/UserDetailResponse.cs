@@ -21,6 +21,7 @@
         public bool? IsActive { get; set; }
 
         public string Account { get; set; } = null!;
+        public string? AccountGoogle { get; set; }
         public UserRole Role { get; set; }
         public UserDetail DetailsInformation { get; set; }
         public class UserDetail

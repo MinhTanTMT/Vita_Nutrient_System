@@ -1,29 +1,30 @@
 ﻿@model List<DietType>
 <link rel="stylesheet" href="/css/dietTypeList.css" />
 
-<div class="container mt-4">
-    <h3>Chế độ ăn uống chính</h3>
-    <p>Chúng tôi sẽ căn cứ các bữa ăn của bạn vào loại chế độ ăn chính này. Chọn "Bất kỳ thứ gì" để tùy chỉnh chế độ ăn uống độc đáo của riêng bạn từ đầu và thiết lập các loại trừ cụ thể khỏi Màn hình menu "Loại trừ".</p>
-
+<div class="container page-content diet-type-list-page mt-4">
+<div class="modal-header mb-5">
+    <div class="modal-title mb-0">
+        Chế độ ăn uống chính
+    </div>
+    <div class="modal-sub-title">Chúng tôi sẽ căn cứ các bữa ăn của bạn vào loại chế độ ăn chính này. Chọn "Bất kỳ thứ gì" để tùy chỉnh chế độ ăn uống độc đáo của riêng bạn từ đầu và thiết lập các loại trừ cụ thể khỏi Màn hình menu "Loại trừ".</div>
+</div>
     <form id="dietTypeForm">
         @foreach (var diet in Model)
         {
             <div class="card mb-3">
-                <div class="card-body d-flex align-items-center">
-                    <div>
-                        <div class="form-check">
+                <div class="card-body d-flex align-items-center ">
+                   <div class="form-check">
+                            <label class="form-check-label" for="dietType_@diet.DietTypeId">
+                                <strong>@diet.Name</strong>
+                                <p class="text-muted">@diet.Describe</p>
+                            </label>
                             <input class="form-check-input diet-radio"
                                    type="radio"
                                    name="dietType"
                                    value="@diet.DietTypeId"
                                    id="dietType_@diet.DietTypeId"
                             @(ViewBag.CurrentDietTypeId == diet.DietTypeId ? "checked" : "") />
-                            <label class="form-check-label" for="dietType_@diet.DietTypeId">
-                                <strong>@diet.Name</strong>
-                                <p class="text-muted">@diet.Describe</p>
-                            </label>
                         </div>
-                    </div>
                 </div>
             </div>
         }
@@ -35,7 +36,6 @@
     document.querySelectorAll('.diet-radio').forEach(radio => {
         radio.addEventListener('change', function () {
             const selectedDietTypeId = this.value;
-
             // Gửi yêu cầu cập nhật chế độ ăn khi thay đổi
             fetch('@Url.Action("UpdateDietType", "Meal")', {
                 method: 'POST',

@@ -1,0 +1,42 @@
+﻿.rating-container {
+    position: relative;
+}
+
+.rating-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.stars-container {
+    display: flex;
+    position: absolute;
+    left: 36%;
+    top: 0;
+    margin-left: 10px;
+}
+
+.star1 {
+    font-size: 25px;
+    margin: 0px 2px;
+    color: gray;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+    .star1:hover,
+    .star1.active {
+        color: gold !important;
+    }
+
+    .star1.inactive {
+        color: gray !important;
+    }
+
+.star2.active2 {
+    color: gold;
+}

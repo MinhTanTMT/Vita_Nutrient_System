@@ -18,6 +18,6 @@
 
         public int? NumberRate { get; set; }
 
-        public short ExpertPackagesId { get; set; }
+        public short? ExpertPackagesId { get; set; }
     }
 }

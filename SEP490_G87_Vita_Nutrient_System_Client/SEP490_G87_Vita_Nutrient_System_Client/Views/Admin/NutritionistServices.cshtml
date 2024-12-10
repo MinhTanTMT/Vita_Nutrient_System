@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AllNutritionistServices>
+﻿@* @model IEnumerable<AllNutritionistServices>
 
 <div class="container mx-auto px-6 py-10">
     <!-- Header -->
@@ -29,11 +29,11 @@
                             @foreach (var nutritionist in service.NutritionistDetails)
                             {
                                 <li class="bg-gray-100 p-4 rounded-lg shadow-md">
-                                    <h4 class="text-lg font-semibold text-gray-800">Chuyên gia ID: @nutritionist.NutritionistId</h4>
+                                    <h4 class="text-lg font-semibold text-gray-800" type="hidden">Chuyên gia ID: @nutritionist.NutritionistId</h4>
                                     <p class="text-gray-600"><strong>Giới thiệu:</strong> @nutritionist.DescribeYourself</p>
-                                    <p class="text-gray-600"><strong>Chiều cao:</strong> @nutritionist.Height cm</p>
-                                    <p class="text-gray-600"><strong>Cân nặng:</strong> @nutritionist.Weight kg</p>
-                                    <p class="text-gray-600"><strong>Tuổi:</strong> @nutritionist.Age</p>
+                                    <p class="text-gray-600"><strong>Chiều cao:  type="hidden"</strong> @nutritionist.Height cm</p>
+                                    <p class="text-gray-600"><strong>Cân nặng:  type="hidden"</strong> @nutritionist.Weight kg</p>
+                                    <p class="text-gray-600"><strong>Tuổi:  type="hidden"</strong> @nutritionist.Age</p>
                                     <p class="text-gray-600"><strong>Đánh giá:</strong> @nutritionist.Rate ⭐️ (dựa trên @nutritionist.NumberRate đánh giá)</p>
                                     <form asp-controller="Admin" asp-action="PaymentForPaidServices" method="post" class="mt-4">
                                         <input type="hidden" name="NutritionistId" value="@nutritionist.NutritionistId" />
@@ -71,3 +71,223 @@
 
     .shadow-lg {
         box-shadow
+ *@
+
+
+
+ @model IEnumerable<AllNutritionistServices>
+
+<div class="container-fluid p-0 m-0">
+    <!-- Header -->
+    <div class="text-center bg-green-600 text-white py-10 rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold">Nâng cấp lên Premium ngay hôm nay!</h1>
+        <p class="text-lg mt-4">Khám phá thêm dịch vụ dinh dưỡng chuyên sâu từ các chuyên gia hàng đầu.</p>
+    </div>
+
+    <!-- Danh sách gói dịch vụ -->
+    <div class="row">
+        <div class="mt-12 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        @if (Model != null)
+        {
+            @foreach (var service in Model)
+            {
+                <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col hover:shadow-2xl transition-shadow duration-300 mt-3">
+                    <!-- Thông tin gói dịch vụ -->
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-800 hover:text-green-600 transition-colors duration-300">@service.Name</h2>
+                        <p class="text-gray-600 mt-2 italic">"@service.Describe"</p>
+                        <p class="text-gray-600 mt-2"><strong>Giá:</strong> @service.Price VNĐ</p>
+                        <p class="text-gray-600"><strong>Thời lượng:</strong> @service.Duration ngày</p>
+                    </div>
+
+                    <!-- Danh sách chuyên gia -->
+                    <div class="mt-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Danh sách chuyên gia:</h3>
+                        <ul class="space-y-6 p-0" style="list-style: none;">
+                            @foreach (var nutritionist in service.NutritionistDetails)
+                            {
+                                <li class="bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                                   @*  <h4 class="text-lg font-semibold text-gray-800" type="hidden">Chuyên gia ID: @nutritionist.NutritionistId</h4> *@
+                                    <p class="text-gray-600"><strong>Giới thiệu:</strong> @nutritionist.DescribeYourself</p>
+                                    <p class="text-gray-600"><strong>Đánh giá:</strong> @nutritionist.Rate ⭐️ (dựa trên @nutritionist.NumberRate đánh giá)</p>
+                                    <form asp-controller="Admin" asp-action="PaymentForPaidServices" method="post" class="mt-4">
+                                        <input type="hidden" name="NutritionistId" value="@nutritionist.NutritionistId" />
+                                        <input type="hidden" name="Describe" value="@service.Describe" />
+                                        <input type="hidden" name="Price" value="@service.Price" />
+                                        <input type="hidden" name="Duration" value="@service.Duration" />
+                                        <input type="hidden" name="TypeInsert" value="1" />
+                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium w-full transition-colors duration-300 border-none">
+                                            Đăng ký ngay
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 1200px;
+    }
+
+    .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    }
+
+    .shadow-md {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .shadow-lg {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .hover\:shadow-lg:hover {
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .hover\:shadow-2xl:hover {
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    h1, h2, h3 {
+        font-family: 'Arial', sans-serif;
+    }
+
+    h1 {
+        font-size: 3rem;
+        line-height: 1.2;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+        color: #2d3748;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-green-600 {
+        color: #38a169;
+    }
+
+    .bg-green-600 {
+        background-color: #38a169;
+    }
+
+    .bg-white {
+        background-color: #fff;
+    }
+
+    .bg-gray-100 {
+        background-color: #f7fafc;
+    }
+
+    .p-6 {
+        padding: 1.5rem;
+    }
+
+    .p-4 {
+        padding: 1rem;
+    }
+
+    .rounded-lg {
+        border-radius: 0.5rem;
+    }
+
+    .rounded-md {
+        border-radius: 0.375rem;
+    }
+
+    .font-semibold {
+        font-weight: 600;
+    }
+
+    .font-bold {
+        font-weight: 700;
+    }
+
+    .font-medium {
+        font-weight: 500;
+    }
+
+    .text-gray-800 {
+        color: #2d3748;
+    }
+
+    .text-gray-600 {
+        color: #718096;
+    }
+
+    .italic {
+        font-style: italic;
+    }
+
+    .mt-4 {
+        margin-top: 1rem;
+    }
+
+    .mt-6 {
+        margin-top: 1.5rem;
+    }
+
+    .space-y-6 > * + * {
+        margin-top: 1.5rem;
+    }
+
+    .hover\:text-green-600:hover {
+        color: #38a169;
+    }
+
+    .transition-colors {
+        transition: color 0.3s ease, background-color 0.3s ease;
+    }
+
+    .transition-shadow {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .w-full {
+        width: 100%;
+    }
+
+    .text-white {
+        color: white;
+    }
+
+    .px-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .py-2 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .py-10 {
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+    }
+
+    .bg-green-700 {
+        background-color: #2f855a;
+    }
+
+    .hover\:bg-green-700:hover {
+        background-color: #2f855a;
+    }
+</style>

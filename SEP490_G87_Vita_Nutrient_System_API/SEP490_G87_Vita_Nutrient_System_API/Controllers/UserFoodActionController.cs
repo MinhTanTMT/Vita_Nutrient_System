@@ -68,5 +68,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok("Operation successful!");
         }
+
+        [HttpPost("UserRateFood")]
+        public async Task<ActionResult> UserRateFood([FromBody] UserActionRate userAction)
+        {
+            repositories.UserRateFood(userAction.UserId, userAction.FoodId, userAction.Rate);
+
+            return Ok("Operation successful!");
+        }
     }
 }

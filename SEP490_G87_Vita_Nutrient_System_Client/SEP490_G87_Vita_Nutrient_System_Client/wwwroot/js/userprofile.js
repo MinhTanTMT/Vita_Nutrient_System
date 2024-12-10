@@ -26,3 +26,22 @@ window.onclick = function (event) {
         closeModal();
     }
 }
+
+function submitAvaForm() {
+    var form = document.getElementById("upAvaForm");
+    form.submit();
+}
+
+function isValidPhoneNumber(phone) {
+    var phonePattern = /^0\d{9}$/;
+return phonePattern.test(phone);
+}
+
+document.getElementById("updateUserInfoForm").onsubmit = function(event) {
+    var phone = document.getElementById("user-phone-input").value;
+
+    if (!isValidPhoneNumber(phone)) {
+        showErrorToast("Phone number must contain 10 number and start with 0!");
+        event.preventDefault();
+    }
+};

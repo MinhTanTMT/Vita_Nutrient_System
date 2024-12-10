@@ -11,4 +11,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Domain.RequestModels
         string? Address,
         string? Phone
         );
+
+    public record UploadAvatarRequest(int UserId, string ImageURL);
 }

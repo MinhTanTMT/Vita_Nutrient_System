@@ -19,7 +19,7 @@
                 <input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
                 <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
                 <form asp-action="doupdateingredient" asp-controller="admin" method="post">
-                    <h4 class="card-title" style="font-size: 1.5rem;">Edit ingredient</h4>
+                    <h4 class="card-title" style="font-size: 1.5rem;">Chỉnh sửa nguyên liệu</h4>
                     <input type="hidden" asp-for="Id" value="@Model.Id" />
                     <input type="hidden" asp-for="Urlimage" value="@Model.Urlimage" />
                     <div class="row">
@@ -37,16 +37,16 @@
 
                         <div class="col-9 basic-info">
                             <div class="form-group row">
-                                <label for="inputIngreName" class="col-sm-2 col-form-label">Name</label>
+                                <label for="inputIngreName" class="col-sm-2 col-form-label">Tên</label>
                                 <div class="col-sm-10">
-                                    <input asp-for="Name" type="text" class="form-control" id="inputIngreName" placeholder="Ingredient Name" value="@Model.Name">
+                                    <input asp-for="Name" type="text" class="form-control" id="inputIngreName" placeholder="Tên nguyên liệu" value="@Model.Name">
                                 </div>
                             </div>
 
                             <div class="form-group row">
-                                <label for="inputIngreDesc" class="col-sm-2 col-form-label">Description</label>
+                                <label for="inputIngreDesc" class="col-sm-2 col-form-label">Mô tả</label>
                                 <div class="col-sm-10">
-                                    <input asp-for="Describe" type="text" class="form-control" id="inputIngreDesc" placeholder="Description" value="@Model.Describe">
+                                    <input asp-for="Describe" type="text" class="form-control" id="inputIngreDesc" placeholder="Mô tả nguyên liệu" value="@Model.Describe">
                                 </div>
                             </div>
 
@@ -92,7 +92,7 @@
                     </div>
 
                     <div class="hr">
-                        <div class="hr-content">Detail nutrition</div>
+                        <div class="hr-content">Chi tiết dinh dưỡng</div>
                     </div>
 
                     <div class="detail-nutrition">

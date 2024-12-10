@@ -3,56 +3,57 @@
 <div class="container my-5">
     <div class="mb-5">
 
-        <!-- Tiêu đề và nút Create ở phía trên -->
+        <!-- Tiêu đề và nút Tạo mới ở phía trên -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Food List</h3>
+            <h3>Danh sách món ăn</h3>
             <div class="input-group" style="max-width: 300px;">
                 <form method="get" action="@Url.Action("FoodList", "Admin")" class="d-flex">
-                    <input type="text" name="search" class="form-control" placeholder="Search food..." value="@Context.Request.Query["search"]">
+                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm món ăn..." value="@Context.Request.Query["search"]">
                     <button class="btn btn-outline-secondary" type="submit">
-                        <p>Search</p>
+                        <p>Tìm kiếm</p>
                     </button>
                 </form>
             </div>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createFoodModal">
-                Create New Food
+                Tạo món ăn mới
             </button>
+            <p class="text-alert">@ViewBag.CreateFoodAlert</p>
         </div>
 
-        <!-- Create Food Modal -->
+        <!-- Modal Tạo món ăn -->
         <div class="modal fade" id="createFoodModal" tabindex="-1" aria-labelledby="createFoodModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createFoodModalLabel">Create New Food</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="createFoodModalLabel">Tạo món ăn mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
-                    <form asp-action="SaveFood" method="post">
+                    <form id="saveFoodForm" asp-action="SaveFood" method="post" enctype="multipart/form-data">
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Name:</label>
+                                    <label class="form-label">Tên:</label>
                                     <input type="text" class="form-control" name="Name" required />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Description:</label>
+                                    <label class="form-label">Mô tả:</label>
                                     <input type="text" class="form-control" name="Describe" required />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Rate:</label>
+                                    <label class="form-label">Đánh giá:</label>
                                     <input type="text" class="form-control" name="Rate" required />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Number of Ratings:</label>
+                                    <label class="form-label">Số lượng đánh giá:</label>
                                     <input type="number" class="form-control" name="NumberRate" required />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label" for="foodTypeId">Food Type:</label>
-                                    <select id="foodTypeId" name="foodTypeId" class="form-select">
+                                    <label class="form-label" for="foodTypeId">Loại món ăn:</label>
+                                    <select id="foodTypeId" name="FoodTypeId" class="form-select" required>
                                         @foreach (var type in Model.FoodTypes)
                                         {
                                             <option value="@type.FoodTypeId">@type.Name</option>
@@ -60,8 +61,8 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label" for="keyNoteId">Key Note:</label>
-                                    <select id="keyNoteId" name="keyNoteId" class="form-select">
+                                    <label class="form-label" for="keyNoteId">Ghi chú:</label>
+                                    <select id="keyNoteId" name="KeyNoteId" class="form-select" required>
                                         @foreach (var type in Model.KeyNotes)
                                         {
                                             <option value="@type.Id">@type.KeyList</option>
@@ -72,18 +73,18 @@
                             <input type="checkbox" hidden checked class="form-check-input" name="IsActive" id="isActiveCheckbox">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Preparation Time:</label>
+                                    <label class="form-label">Thời gian chuẩn bị:</label>
                                     <input type="number" class="form-control" name="PreparationTime" required />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Cooking Time:</label>
+                                    <label class="form-label">Thời gian nấu:</label>
                                     <input type="number" class="form-control" name="CookingTime" required />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label" for="cookingDifficultyId">Cooking Difficulty:</label>
-                                    <select id="cookingDifficultyId" name="cookingDifficultyId" class="form-select">
+                                    <label class="form-label" for="cookingDifficultyId">Độ khó nấu:</label>
+                                    <select id="cookingDifficultyId" name="CookingDifficultyId" class="form-select" required>
                                         @foreach (var type in Model.CookingDifficulties)
                                         {
                                             <option value="@type.Id">@type.Name</option>
@@ -91,37 +92,37 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label" for="urlimage">Url Image:</label>
-                                    <input type="url" class="form-control" name="urlimage" required />
+                                    <label class="form-label" for="imageFile">Tải lên hình ảnh:</label>
+                                    <input type="file" class="form-control" name="ImageFile" accept=".jpg,.jpeg,.png,.gif" required />
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Create Food</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Tạo món ăn</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Food List Table -->
+        <!-- Bảng danh sách món ăn -->
         <div class="table-responsive">
             <table class="table table-bordered table-striped mt-3">
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Rate</th>
-                        <th>Number of Ratings</th>
-                        <th>Food Type</th>
-                        <th>Key Note</th>
-                        <th>Preparation Time</th>
-                        <th>Cooking Time</th>
-                        <th>Difficulty</th>
-                        <th>Actions</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên</th>
+                        <th>Mô tả</th>
+                        <th>Đánh giá</th>
+                        <th>Số lượng đánh giá</th>
+                        <th>Loại món ăn</th>
+                        <th>Ghi chú</th>
+                        <th>Thời gian chuẩn bị</th>
+                        <th>Thời gian nấu</th>
+                        <th>Độ khó</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,7 +130,11 @@
                     {
                         <tr>
                             <td>@food.FoodListId</td>
-                            <td><img src="@food.UrlImage" alt="Food Image" style="width: 100px; height: auto;"></td>
+                            <td>
+                                <a href="javascript:void(0);" onclick="window.location.href = '/foodDetails/@food.FoodListId';">
+                                    <img src="@food.UrlImage" alt="Hình ảnh món ăn" style="width: 100px; height: auto;">
+                                </a>
+                            </td>
                             <td>@food.Name</td>
                             <td>@food.Describe</td>
                             <td>@food.Rate</td>
@@ -149,52 +154,50 @@
                             <td>@food.CookingDifficultyName</td>
                             <td>
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateFoodModal_@food.FoodListId">
-                                    Update
+                                    Cập nhật
                                 </button>
                                 @if (food.IsActive == true)
                                 {
                                     <button type="button" class="btn btn-danger btn-sm" onclick="deleteFood(@food.FoodListId)">
-                                        Deactivate
+                                        Vô hiệu hóa
                                     </button>
                                 }
                                 else
                                 {
                                     <button type="button" class="btn btn-danger btn-sm" onclick="deleteFood(@food.FoodListId)">
-                                        Activate
+                                        Kích hoạt
                                     </button>
                                 }
 
-
-
-                                <!-- Update Food Modal -->
+                                <!-- Modal Cập nhật món ăn -->
                                 <div class="modal fade" id="updateFoodModal_@food.FoodListId" tabindex="-1" aria-labelledby="updateFoodModalLabel_@food.FoodListId" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="updateFoodModalLabel@food.FoodListId">Update Food</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <h5 class="modal-title" id="updateFoodModalLabel@food.FoodListId">Cập nhật món ăn</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                                             </div>
                                             <form asp-action="SaveFood" method="post">
                                                 <div class="modal-body">
                                                     <input type="hidden" name="FoodListId" value="@food.FoodListId" />
                                                     <div class="mb-3">
-                                                        <label class="form-label">Name:</label>
+                                                        <label class="form-label">Tên:</label>
                                                         <input type="text" class="form-control" name="Name" value="@food.Name" required />
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">Description:</label>
+                                                        <label class="form-label">Mô tả:</label>
                                                         <input type="text" class="form-control" name="Describe" value="@food.Describe" required />
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">Rate:</label>
+                                                        <label class="form-label">Đánh giá:</label>
                                                         <input type="text" class="form-control" name="Rate" value="@food.Rate" required />
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">Number of Ratings:</label>
+                                                        <label class="form-label">Số lượng đánh giá:</label>
                                                         <input type="number" class="form-control" name="NumberRate" value="@food.NumberRate" required />
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="foodTypeId">Food Type:</label>
+                                                        <label class="form-label" for="foodTypeId">Loại món ăn:</label>
                                                         <select id="foodTypeId" name="foodTypeId" class="form-control">
                                                             @foreach (var type in Model.FoodTypes)
                                                             {
@@ -210,7 +213,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="keyNoteId">Key Note:</label>
+                                                        <label class="form-label" for="keyNoteId">Ghi chú:</label>
                                                         <select id="keyNoteId" name="keyNoteId" class="form-control">
                                                             @foreach (var type in Model.KeyNotes)
                                                             {
@@ -226,20 +229,20 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">Url Image</label>
+                                                        <label class="form-label">Url Hình ảnh</label>
                                                         <input type="text" class="form-control" name="UrlImage" value="@food.UrlImage" required />
                                                     </div>
                                                     <input type="checkbox" hidden checked class="form-check-input" name="IsActive" id="isActiveCheckbox">
                                                     <div class="mb-3">
-                                                        <label class="form-label">Preparation Time:</label>
+                                                        <label class="form-label">Thời gian chuẩn bị:</label>
                                                         <input type="number" class="form-control" name="PreparationTime" value="@food.PreparationTime" required />
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">Cooking Time:</label>
+                                                        <label class="form-label">Thời gian nấu:</label>
                                                         <input type="number" class="form-control" name="CookingTime" value="@food.CookingTime" required />
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="cookingDifficultyId">Cooking Difficulty:</label>
+                                                        <label class="form-label" for="cookingDifficultyId">Độ khó nấu:</label>
                                                         <select id="cookingDifficultyId" name="cookingDifficultyId" class="form-control">
                                                             @foreach (var type in Model.CookingDifficulties)
                                                             {
@@ -256,8 +259,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -265,16 +268,16 @@
                                 </div>
 
                                 <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#recipeModal_@food.FoodListId">
-                                    Recipe
+                                    Công thức
                                 </button>
 
-                                <!-- Recipe Modal -->
+                                <!-- Modal Công thức -->
                                 <div class="modal fade" id="recipeModal_@food.FoodListId" tabindex="-1" aria-labelledby="recipeModalLabel_@food.FoodListId" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="recipeModalLabel_@food.FoodListId">Recipes for @food.Name</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <h5 class="modal-title" id="recipeModalLabel_@food.FoodListId">Công thức cho @food.Name</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div>
@@ -288,14 +291,14 @@
                                                                 <div class="card mb-2">
                                                                     <div class="card-body d-flex justify-content-between align-items-center">
                                                                         <div>
-                                                                            <strong>Numerical Order:</strong> @recipe.NumericalOrder<br>
-                                                                            <strong>Description:</strong> @recipe.Describe
+                                                                            <strong>Thứ tự:</strong> @recipe.NumericalOrder<br>
+                                                                            <strong>Mô tả:</strong> @recipe.Describe
                                                                         </div>
                                                                         <div>
-                                                                            <img src="@recipe.Urlimage" alt="Recipe Image" style="width: 100px; height: 100px; object-fit: cover;">
+                                                                            <img src="@recipe.Urlimage" alt="Hình ảnh công thức" style="width: 100px; height: 100px; object-fit: cover;">
                                                                         </div>
                                                                         <button class="btn btn-warning btn-sm" onclick="showEditRecipeModal(@food.FoodListId, @recipe.RecipeId, '@recipe.Describe', '@recipe.Urlimage')">
-                                                                            Edit
+                                                                            Chỉnh sửa
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -303,20 +306,20 @@
                                                         }
                                                         else
                                                         {
-                                                            <p>No recipes found for this food.</p>
+                                                            <p>Không tìm thấy công thức cho món ăn này.</p>
                                                         }
                                                     }
                                                 </div>
-                                                <button class="btn btn-success mt-3" onclick="showCreateRecipeModal(@food.FoodListId)">Create Recipe</button>
+                                                <button class="btn btn-success mt-3" onclick="showCreateRecipeModal(@food.FoodListId)">Tạo công thức</button>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-primary btn-sm" onclick="window.location.href='/admin/foodmanagement/foodingredient/@food.FoodListId'">
-                                    Scale amount
+                                    Tính toán lượng
                                 </button>
                             </td>
                         </tr>
@@ -324,37 +327,61 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Điều khiển phân trang -->
+        <nav aria-label="Điều hướng trang">
+            <ul class="pagination justify-content-center">
+                @if (ViewBag.FoodCurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("FoodList", new { search = ViewBag.FoodSearch, foodPage = ViewBag.FoodCurrentPage - 1 })">Trước</a>
+                    </li>
+                }
+                @for (int i = 1; i <= ViewBag.FoodTotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.FoodCurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("FoodList", new { search = ViewBag.FoodSearch, foodPage = i })">@i</a>
+                    </li>
+                }
+                @if (ViewBag.FoodCurrentPage < ViewBag.FoodTotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("FoodList", new { search = ViewBag.FoodSearch, foodPage = ViewBag.FoodCurrentPage + 1 })">Tiếp theo</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
     <div>
-        <h3>Disease List</h3>
+        <h3>Danh sách bệnh</h3>
 
         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createDiseaseModal">
-            Create Disease
+            Tạo bệnh
         </button>
 
-        <!-- Create Disease Modal -->
+        <!-- Modal Tạo bệnh -->
         <div class="modal fade" id="createDiseaseModal" tabindex="-1" aria-labelledby="createDiseaseModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createDiseaseModalLabel">Create New Disease</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="createDiseaseModalLabel">Tạo bệnh mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
                     <form asp-action="SaveDisease" method="post">
                         <div class="modal-body">
-                            <input type="hidden" name="Id" value="0" /> <!-- Set Id to 0 for new creation -->
+                            <input type="hidden" name="Id" value="0" /> <!-- Đặt Id là 0 để tạo mới -->
                             <div class="mb-3">
-                                <label class="form-label">Name:</label>
+                                <label class="form-label">Tên:</label>
                                 <input type="text" class="form-control" name="Name" required />
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Description:</label>
+                                <label class="form-label">Mô tả:</label>
                                 <input type="text" class="form-control" name="Describe" required />
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Create Disease</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Tạo bệnh</button>
                         </div>
                     </form>
                 </div>
@@ -363,22 +390,22 @@
 
         <div class="input-group mb-3" style="max-width: 300px;">
             <form method="get" action="@Url.Action("FoodList", "Admin")" class="d-flex">
-                <input type="text" name="diseaseSearch" class="form-control" placeholder="Search disease..." value="@Context.Request.Query["diseaseSearch"]">
+                <input type="text" name="diseaseSearch" class="form-control" placeholder="Tìm kiếm bệnh..." value="@Context.Request.Query["diseaseSearch"]">
                 <button class="btn btn-outline-secondary" type="submit">
-                    <p>Search</p>
+                    <p>Tìm kiếm</p>
                 </button>
             </form>
         </div>
 
-        <!-- Disease List Table with Aligned Columns -->
+        <!-- Bảng danh sách bệnh với các cột căn chỉnh -->
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <!-- Empty columns to align with Food List table -->
+                    <th>Tên</th>
+                    <th>Mô tả</th>
+                    <!-- Các cột trống để căn chỉnh với bảng danh sách món ăn -->
                     <th colspan="8"></th>
-                    <th>Actions</th>
+                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -387,35 +414,35 @@
                     <tr>
                         <td>@disease.Name</td>
                         <td>@disease.Describe</td>
-                        <!-- Empty cells to align with Food List table -->
+                        <!-- Các ô trống để căn chỉnh với bảng danh sách món ăn -->
                         <td colspan="8"></td>
                         <td>
                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateDiseaseModal_@disease.Id">
-                                Update
+                                Cập nhật
                             </button>
-                            <!-- Update Disease Modal -->
+                            <!-- Modal Cập nhật bệnh -->
                             <div class="modal fade" id="updateDiseaseModal_@disease.Id" tabindex="-1" aria-labelledby="updateDiseaseModalLabel_@disease.Id" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateDiseaseModalLabel@disease.Id">Update Disease</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <h5 class="modal-title" id="updateDiseaseModalLabel@disease.Id">Cập nhật bệnh</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                                         </div>
                                         <form asp-action="SaveDisease" method="post">
                                             <div class="modal-body">
                                                 <input type="hidden" name="Id" value="@disease.Id" />
                                                 <div class="mb-3">
-                                                    <label class="form-label">Name:</label>
+                                                    <label class="form-label">Tên:</label>
                                                     <input type="text" class="form-control" name="Name" value="@disease.Name" required />
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Description:</label>
+                                                    <label class="form-label">Mô tả:</label>
                                                     <input type="text" class="form-control" name="Describe" value="@disease.Describe" required />
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                             </div>
                                         </form>
                                     </div>
@@ -427,28 +454,50 @@
             </tbody>
         </table>
     </div>
+    <nav aria-label="Điều hướng trang bệnh">
+        <ul class="pagination justify-content-center">
+            @if (ViewBag.DiseaseCurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("FoodList", new { search = ViewBag.DiseaseSearch, diseasePage = ViewBag.DiseaseCurrentPage - 1 })">Trước</a>
+                </li>
+            }
+            @for (int i = 1; i <= ViewBag.DiseaseTotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.DiseaseCurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("FoodList", new { search = ViewBag.DiseaseSearch, diseasePage = i })">@i</a>
+                </li>
+            }
+            @if (ViewBag.DiseaseCurrentPage < ViewBag.DiseaseTotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("FoodList", new { search = ViewBag.DiseaseSearch, diseasePage = ViewBag.DiseaseCurrentPage + 1 })">Tiếp theo</a>
+                </li>
+            }
+        </ul>
+    </nav>
     <div>
-        <h3 class="mt-5">Food and Disease</h3>
+        <h3 class="mt-5">Món ăn và bệnh</h3>
 
-        <!-- Button to open Create Food and Disease Modal -->
+        <!-- Nút mở Modal Tạo món ăn và bệnh -->
         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createFoodAndDiseaseModal">
-            Create Food and Disease
+            Tạo món ăn và bệnh
         </button>
 
-        <!-- Create Food and Disease Modal -->
+        <!-- Modal Tạo món ăn và bệnh -->
         <div class="modal fade" id="createFoodAndDiseaseModal" tabindex="-1" aria-labelledby="createFoodAndDiseaseModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createFoodAndDiseaseModalLabel">Create New Food and Disease</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="createFoodAndDiseaseModalLabel">Tạo món ăn và bệnh mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
                     <form asp-action="SaveFoodAndDisease" method="post">
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label class="form-label">Disease:</label>
+                                <label class="form-label">Bệnh:</label>
                                 <select class="form-control" name="ListOfDiseasesId" required>
-                                    <!-- Populate options from Disease list -->
+                                    <!-- Điền các tùy chọn từ danh sách bệnh -->
                                     @foreach (var disease in Model.ListOfDiseases)
                                     {
                                         <option value="@disease.Id">@disease.Name</option>
@@ -456,9 +505,9 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Food:</label>
+                                <label class="form-label">Món ăn:</label>
                                 <select class="form-control" name="FoodListId" required>
-                                    <!-- Populate options from Food list -->
+                                    <!-- Điền các tùy chọn từ danh sách món ăn -->
                                     @foreach (var food in Model.Foods)
                                     {
                                         <option value="@food.FoodListId">@food.Name</option>
@@ -466,34 +515,34 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Description:</label>
+                                <label class="form-label">Mô tả:</label>
                                 <input type="text" class="form-control" name="Describe" required />
                             </div>
                             <div class="mb-3 form-check">
                                 <input class="form-check-input" type="checkbox" name="IsGoodOrBad" value="true" id="isGoodOrBad">
-                                <label class="form-check-label" for="isGoodOrBad">Good for Disease</label>
+                                <label class="form-check-label" for="isGoodOrBad">Tốt cho bệnh</label>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Tạo</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Food and Disease Table -->
+        <!-- Bảng Món ăn và bệnh -->
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>Disease Name</th>
-                    <th>Disease Description</th>
-                    <th>Food Name</th>
-                    <th>Food Description</th>
-                    <th>Description</th>
-                    <th>Good or Bad</th>
-                    <th>Actions</th>
+                    <th>Tên bệnh</th>
+                    <th>Mô tả bệnh</th>
+                    <th>Tên món ăn</th>
+                    <th>Mô tả món ăn</th>
+                    <th>Mô tả</th>
+                    <th>Tốt hay xấu</th>
+                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -508,30 +557,30 @@
                         <td>
                             @if (item.IsGoodOrBad)
                             {
-                                <span class="badge bg-success">Good</span>
+                                <span class="badge bg-success">Tốt</span>
                             }
                             else
                             {
-                                <span class="badge bg-danger">Bad</span>
+                                <span class="badge bg-danger">Xấu</span>
                             }
                         </td>
                         <td>
                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateFoodAndDiseaseModal_@item.FoodListId-@item.ListOfDiseasesId">
-                                Update
+                                Cập nhật
                             </button>
                             <div class="modal fade" id="updateFoodAndDiseaseModal_@item.FoodListId-@item.ListOfDiseasesId" tabindex="-1" aria-labelledby="updateFoodAndDiseaseModalLabel_@item.FoodListId-@item.ListOfDiseasesId" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateDiseaseModalLabel@disease.Id">Update Disease</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <h5 class="modal-title" id="updateDiseaseModalLabel@disease.Id">Cập nhật bệnh</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                                         </div>
                                         <form asp-action="SaveFoodAndDisease" method="post">
                                             <div class="modal-body">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Disease:</label>
+                                                    <label class="form-label">Bệnh:</label>
                                                     <select class="form-control" name="ListOfDiseasesId" required>
-                                                        <!-- Populate options from Disease list -->
+                                                        <!-- Điền các tùy chọn từ danh sách bệnh -->
                                                         @foreach (var disease in Model.ListOfDiseases)
                                                         {
                                                             if (disease.Id == item.ListOfDiseasesId)
@@ -546,9 +595,9 @@
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Food:</label>
+                                                    <label class="form-label">Món ăn:</label>
                                                     <select class="form-control" name="FoodListId" required>
-                                                        <!-- Populate options from Food list -->
+                                                        <!-- Điền các tùy chọn từ danh sách món ăn -->
                                                         @foreach (var food in Model.Foods)
                                                         {
                                                             if (food.FoodListId == item.FoodListId)
@@ -563,17 +612,17 @@
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Description:</label>
+                                                    <label class="form-label">Mô tả:</label>
                                                     <input type="text" value="@item.Describe" class="form-control" name="Describe" required />
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" name="IsGoodOrBad" value="true" id="isGoodOrBad" @(item.IsGoodOrBad ? "checked" : "")>
-                                                    <label class="form-check-label" for="isGoodOrBad">Good for Disease</label>
+                                                    <label class="form-check-label" for="isGoodOrBad">Tốt cho bệnh</label>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                <button type="submit" class="btn btn-primary">Cập nhật</button>
                                             </div>
                                         </form>
                                     </div>
@@ -584,6 +633,30 @@
                 }
             </tbody>
         </table>
+
+        <!-- Điều khiển phân trang cho Món ăn và bệnh -->
+        <nav aria-label="Điều hướng trang Món ăn và bệnh">
+            <ul class="pagination justify-content-center">
+                @if (ViewBag.FandDCurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("FoodList", new {fAndDPage = ViewBag.FandDCurrentPage - 1 })">Trước</a>
+                    </li>
+                }
+                @for (int i = 1; i <= ViewBag.FandDTotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.FandDCurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("FoodList", new {fAndDPage = i })">@i</a>
+                    </li>
+                }
+                @if (ViewBag.FandDCurrentPage < ViewBag.FandDTotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("FoodList", new {fAndDPage = ViewBag.FandDCurrentPage + 1 })">Tiếp theo</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 
 </div>
@@ -601,12 +674,12 @@
                 alert("Đổi trạng thái thành công!");
                 location.reload();
             } else {
-                alert("Có lỗi xảy ra khi đổi trạng thái food.");
-                console.error("Switch failed:", await response.text());
+                alert("Có lỗi xảy ra khi đổi trạng thái món ăn.");
+                console.error("Đổi trạng thái thất bại:", await response.text());
             }
         } catch (error) {
-            console.error("Error switch food:", error);
-            alert("Có lỗi xảy ra khi đổi trạng thái food.");
+            console.error("Lỗi khi đổi trạng thái món ăn:", error);
+            alert("Có lỗi xảy ra khi đổi trạng thái món ăn.");
         }
     }
 
@@ -618,56 +691,56 @@
             const recipes = await response.json();
             const recipeListContainer = document.getElementById(`recipeList_${foodId}`);
             recipeListContainer.innerHTML = recipes.map(recipe => `
-                                    <div class="card mb-2">
-                                        <div class="card-body d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <strong>Numerical Order:</strong> ${recipe.numericalOrder}<br>
-                                                <strong>Description:</strong> ${recipe.describe}
+                                        <div class="card mb-2">
+                                            <div class="card-body d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>Thứ tự:</strong> ${recipe.numericalOrder}<br>
+                                                    <strong>Mô tả:</strong> ${recipe.describe}
+                                                </div>
+                                                <div>
+                                                    <img src="${recipe.urlimage}" alt="Hình ảnh công thức" style="width: 100px; height: 100px; object-fit: cover;">
+                                                </div>
+                                                <button class="btn btn-warning btn-sm" onclick="showEditRecipeModal(${foodId}, ${recipe.recipeId}, '${recipe.describe}', '${recipe.urlimage}', ${recipe.numericalOrder})">
+                                                    Chỉnh sửa
+                                                </button>
                                             </div>
-                                            <div>
-                                                <img src="${recipe.urlimage}" alt="Recipe Image" style="width: 100px; height: 100px; object-fit: cover;">
-                                            </div>
-                                            <button class="btn btn-warning btn-sm" onclick="showEditRecipeModal(${foodId}, ${recipe.recipeId}, '${recipe.describe}', '${recipe.urlimage}', ${recipe.numericalOrder})">
-                                                Edit
-                                            </button>
                                         </div>
-                                    </div>
-                                `).join('');
+                                    `).join('');
         } else {
-            alert('Failed to load recipes.');
+            alert('Không tải được công thức.');
         }
     }
 
     async function showCreateRecipeModal(foodId) {
         const modalHtml = `
-                                    <div class="modal fade" id="createRecipeModal" tabindex="-1" aria-labelledby="createRecipeModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form id="createRecipeForm" onsubmit="createRecipe(event, ${foodId})">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Create Recipe</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <input type="hidden" name="numericalOrder" id="createNumericalOrder">
-                                                        <div class="mb-3">
-                                                            <label>Description:</label>
-                                                            <input type="text" class="form-control" name="describe" required>
+                                        <div class="modal fade" id="createRecipeModal" tabindex="-1" aria-labelledby="createRecipeModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form id="createRecipeForm" onsubmit="createRecipe(event, ${foodId})">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Tạo công thức</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                                                         </div>
-                                                        <div class="mb-3">
-                                                            <label>Image URL:</label>
-                                                            <input type="url" class="form-control" name="urlimage" required>
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="numericalOrder" id="createNumericalOrder">
+                                                            <div class="mb-3">
+                                                                <label>Mô tả:</label>
+                                                                <input type="text" class="form-control" name="describe" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label>URL Hình ảnh:</label>
+                                                                <input type="url" class="form-control" name="urlimage" required>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Save Recipe</button>
-                                                    </div>
-                                                </form>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                            <button type="submit" class="btn btn-primary">Lưu công thức</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                `;
+                                    `;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         $('#createRecipeModal').modal('show');
     }
@@ -684,7 +757,7 @@
         const payload = {
             foodId: foodId,
             recipes: [{
-                recipeId: 0, // New recipe
+                recipeId: 0, // Công thức mới
                 foodListId: foodId,
                 numericalOrder: maxOrder + 1,
                 describe: description,
@@ -694,46 +767,46 @@
 
         const response = await saveRecipe(payload);
         if (response.ok) {
-            alert('Recipe created successfully!');
+            alert('Tạo công thức thành công!');
             location.reload(); // Làm mới trang
         } else {
-            alert('Failed to create recipe.');
+            alert('Không tạo được công thức.');
         }
     }
 
     async function showEditRecipeModal(foodId, recipeId, description, urlImage, numericalOrder) {
         const modalHtml = `
-                                <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form id="editRecipeForm" onsubmit="editRecipe(event, ${foodId}, ${recipeId})">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Edit Recipe</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label>Numerical Order:</label>
-                                                        <input type="number" class="form-control" name="numericalOrder" value="${numericalOrder}" required>
+                                    <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="editRecipeForm" onsubmit="editRecipe(event, ${foodId}, ${recipeId})">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Chỉnh sửa công thức</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                                                     </div>
-                                                    <div class="mb-3">
-                                                        <label>Description:</label>
-                                                        <input type="text" class="form-control" name="describe" value="${description}" required>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label>Thứ tự:</label>
+                                                            <input type="number" class="form-control" name="numericalOrder" value="${numericalOrder}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label>Mô tả:</label>
+                                                            <input type="text" class="form-control" name="describe" value="${description}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label>URL Hình ảnh:</label>
+                                                            <input type="url" class="form-control" name="urlimage" value="${urlImage}" required>
+                                                        </div>
                                                     </div>
-                                                    <div class="mb-3">
-                                                        <label>Image URL:</label>
-                                                        <input type="url" class="form-control" name="urlimage" value="${urlImage}" required>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                                     </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                </div>
-                                            </form>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         $('#editRecipeModal').modal('show');
     }
@@ -747,37 +820,37 @@
 
         // Tạo modal mới với dữ liệu cần chỉnh sửa
         const modalHtml = `
-                                <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form id="editRecipeForm" onsubmit="editRecipe(event, ${foodId}, ${recipeId})">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Edit Recipe</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label>Numerical Order:</label>
-                                                        <input type="number" class="form-control" name="numericalOrder" value="${numericalOrder}" required>
+                                    <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="editRecipeForm" onsubmit="editRecipe(event, ${foodId}, ${recipeId})">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Chỉnh sửa công thức</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                                                     </div>
-                                                    <div class="mb-3">
-                                                        <label>Description:</label>
-                                                        <input type="text" class="form-control" name="describe" value="${description}" required>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label>Thứ tự:</label>
+                                                            <input type="number" class="form-control" name="numericalOrder" value="${numericalOrder}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label>Mô tả:</label>
+                                                            <input type="text" class="form-control" name="describe" value="${description}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label>URL Hình ảnh:</label>
+                                                            <input type="url" class="form-control" name="urlimage" value="${urlImage}" required>
+                                                        </div>
                                                     </div>
-                                                    <div class="mb-3">
-                                                        <label>Image URL:</label>
-                                                        <input type="url" class="form-control" name="urlimage" value="${urlImage}" required>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                                     </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                </div>
-                                            </form>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
 
         // Thêm modal vào DOM
         document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -832,3 +905,12 @@
         font-size: 1rem; /* Đảm bảo nhãn có kích thước phù hợp */
     }
 </style>
+
+@if (!string.IsNullOrEmpty(ViewBag.CreateFoodAlert))
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            alert('@ViewBag.CreateFoodAlert');
+        });
+    </script>
+}

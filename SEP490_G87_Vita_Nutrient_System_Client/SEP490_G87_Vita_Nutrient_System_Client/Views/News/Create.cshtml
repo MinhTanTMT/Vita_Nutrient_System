@@ -14,17 +14,16 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="NameCreater" class="control-label">Tác giả</label>
+            <label asp-for="NameCreater" class="control-label">Người tạo</label>
             <input asp-for="NameCreater" class="form-control" />
             <span asp-validation-for="NameCreater" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="DateCreated" class="control-label">Ngày tạo</label>
-            <input asp-for="DateCreated" class="form-control" type="text" value="@DateTime.Today.ToString("dd-MM-yyyy")"  readonly/>
+            <input asp-for="DateCreated" class="form-control" type="date" />
             <span asp-validation-for="DateCreated" class="text-danger"></span>
         </div>
-
 
         <div class="form-group">
             <label asp-for="IsActive" class="control-label">Trạng thái</label>

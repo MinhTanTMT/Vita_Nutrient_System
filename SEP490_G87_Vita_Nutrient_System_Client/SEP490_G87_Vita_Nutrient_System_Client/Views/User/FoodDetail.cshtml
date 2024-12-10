@@ -13,6 +13,7 @@
 
 <link rel="stylesheet" href="~/css/fooddetails.css">
 <link rel="stylesheet" href="~/css/ratingCircle.css">
+<link rel="stylesheet" href="~/css/rate_food.css">
 
 <style>
     .rating-display{
@@ -27,7 +28,7 @@
     }
 
     .star {
-        font-size: 24px;
+        font-size: 32px;
         line-height: 25px;
         padding-bottom: 5px;
         color: #ddd; /* Default (dimmed) color for stars */
@@ -35,6 +36,13 @@
 
         .star.filled {
             color: gold; /* Color for filled stars */
+        }
+
+        .star.half-filled {
+            background: linear-gradient(to right, gold 52%, #ccc 48%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; 
         }
 
     [type="radio"]:checked,
@@ -93,11 +101,11 @@
             }
 </style>
 
-<div class="row" style="width: 100%;">
-    <div class="col-12 grid-margin">
+<div class="footer-detail-page">
+    <div class="grid-margin">
         <div class="card">
             <div class="card-body">
-                <div style="background:#f9fbfd;">
+                <div class="card-body-top">
                     <div class="card-title" style="padding: 16px 0 0 16px;">
                         @food.Name
                     </div>
@@ -116,72 +124,42 @@
 
                             <div class="rating-display" style="padding-bottom: 16px;">
                                 <!-- Circle Rating -->
-                                <div class="rating">@(Math.Floor((double)food.Rate) / 10)</div>
+                                <div class="rating">@food.Rate</div>
 
                                 <!-- Stars Rating -->
                                 <div class="">
-                                    <div class="stars" id="starsContainer"></div>
+                                    <div class="stars" id="starsContainer" style="justify-content: space-between"></div>
 
                                     <div style="font-size: small; color: gray;">
-                                        (Đánh giá @(Math.Floor((double)food.Rate) / 10)/10 từ @food.NumberRate thành viên)
+                                        (Đánh giá @food.Rate/5 từ @food.NumberRate thành viên)
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-between">
+                            <div class="remind">
+                                <div>Remind me:</div>
                                 <div class="mt-2 d-flex">
-                                    <span>Remind me:</span>
-                                    <div style="margin-left: 5px;">
-                                        <p>
+                                    <div class="list-item">
+                                        <div class="item @(fs.RecurringId is null ? "checked" : "")">
                                             <input type="radio" id="enum_none" name="recur" value="-1"
-                                                @(fs.RecurringId is null ? "checked" : "")
-                                                   onchange="handleRecurChange(@fs.UserId, @fs.FoodListId, -1)">
+                                            @(fs.RecurringId is null ? "checked" : "")
+                                                    onchange="handleRecurChange(@fs.UserId, @fs.FoodListId, -1)">
                                             <label for="enum_none">No</label>
-                                        </p>
+                                        </div>
                                         @foreach (var setting in recurSettings)
                                         {
-                                            <p>
+                                            <div class="item @(fs.RecurringId is not null && fs.RecurringId == Convert.ToInt32(setting) ? "checked" : "")">
                                                 <input type="radio" id="enum_@setting" name="recur" value="@(Convert.ToInt32(setting))"
                                                 @(fs.RecurringId is not null && fs.RecurringId == Convert.ToInt32(setting) ? "checked" : "")
-                                                       onchange="handleRecurChange(@fs.UserId, @fs.FoodListId, @(Convert.ToInt32(setting)))">
+                                                        onchange="handleRecurChange(@fs.UserId, @fs.FoodListId, @(Convert.ToInt32(setting)))">
                                                 <label for="enum_@setting">@setting</label>
-                                            </p>
+                                            </div>
                                         }
-                                    </div>
-                                </div>
-
-                                <div class="d-flex user-action-container">
-                                    <div class="user-action" style="color: blue;" onclick="toggleLike(@fs.UserId, @fs.FoodListId)">
-                                        @if (fs.IsLike == true)
-                                        {
-                                            <i id="like-icon" class="mdi mdi-thumb-up"></i>
-                                        }
-                                        else
-                                        {
-                                            <i id="like-icon" class="mdi mdi-thumb-up-outline"></i>
-                                        }
-                                    </div>
-                                    <div class="user-action" onclick="toggleSave(@fs.UserId, @fs.FoodListId)">
-                                        @if (fs.IsCollection == true)
-                                        {
-                                            <i id="save-icon" class="mdi mdi-bookmark"></i>
-                                        }
-                                        else
-                                        {
-                                            <i id="save-icon" class="mdi mdi-bookmark-outline"></i>
-                                        }
-                                    </div>
-                                    <div class="user-action" style="color: red;" onclick="blockFood(@fs.UserId, @fs.FoodListId)">
-                                        <i class="mdi mdi-block-helper"></i>
                                     </div>
                                 </div>
                             </div>
-
-                            
-                            
                         </div>
-                        <div class="col-1"></div>
-                        <div class="food-info col-6">
+                        <div class="food-info col-8">
                             <div>
                                 <label>Mô tả: </label>
                                 <p>@food.Describe</p>
@@ -252,6 +230,61 @@
                                     }
                                 </div>
                             </div>
+
+                            <div class="d-flex justify-content-start mt-3">
+                                  <div class="d-flex user-action-container">
+                                    <div class="user-action" style="color: blue;" onclick="toggleLike(@fs.UserId, @fs.FoodListId)">
+                                        @if (fs.IsLike == true)
+                                        {
+                                            <i id="like-icon" class="mdi mdi-thumb-up"></i>
+                                        }
+                                        else
+                                        {
+                                            <i id="like-icon" class="mdi mdi-thumb-up-outline"></i>
+                                        }
+                                    </div>
+                                    <div class="user-action" onclick="toggleSave(@fs.UserId, @fs.FoodListId)">
+                                        @if (fs.IsCollection == true)
+                                        {
+                                            <i id="save-icon" class="mdi mdi-bookmark"></i>
+                                        }
+                                        else
+                                        {
+                                            <i id="save-icon" class="mdi mdi-bookmark-outline"></i>
+                                        }
+                                    </div>
+                                    <div class="user-action" style="color: red;" onclick="blockFood(@fs.UserId, @fs.FoodListId)">
+                                        <i class="mdi mdi-block-helper"></i>
+                                    </div>
+                                </div>
+                                <div class="rating-container">
+                                <button class="rating-button">Đánh giá</button>
+                                <div class="stars-container">
+                                    @if(fs.Rate is null || fs.Rate == 0)
+                                    {
+                                        <span class="star1 star2" data-star="1" onclick="handleRating(@fs.UserId, @fs.FoodListId, 1)">&#9733;</span>
+                                        <span class="star1 star2" data-star="2" onclick="handleRating(@fs.UserId, @fs.FoodListId, 2)">&#9733;</span>
+                                        <span class="star1 star2" data-star="3" onclick="handleRating(@fs.UserId, @fs.FoodListId, 3)">&#9733;</span>
+                                        <span class="star1 star2" data-star="4" onclick="handleRating(@fs.UserId, @fs.FoodListId, 4)">&#9733;</span>
+                                        <span class="star1 star2" data-star="5" onclick="handleRating(@fs.UserId, @fs.FoodListId, 5)">&#9733;</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="star1 star2 @(fs.Rate >= 1? "active2" : "")"
+                                            data-star="1" onclick="handleRating(@fs.UserId, @fs.FoodListId, 1)"> &#9733; </span>
+                                        <span class="star1 star2 @(fs.Rate >= 2? "active2" : "")"
+                                              data-star="2" onclick="handleRating(@fs.UserId, @fs.FoodListId, 2)">&#9733;</span>
+                                        <span class="star1 star2 @(fs.Rate >= 3? "active2" : "")"
+                                              data-star="3" onclick="handleRating(@fs.UserId, @fs.FoodListId, 3)">&#9733;</span>
+                                        <span class="star1 star2 @(fs.Rate >= 4? "active2" : "")"
+                                              data-star="4" onclick="handleRating(@fs.UserId, @fs.FoodListId, 4)">&#9733;</span>
+                                        <span class="star1 star2 @(fs.Rate >= 5? "active2" : "")"
+                                              data-star="5" onclick="handleRating(@fs.UserId, @fs.FoodListId, 5)">&#9733;</span>
+                                    }
+                                </div>
+                            </div>
+                    
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -318,8 +351,8 @@
         const starsContainer = document.getElementById("starsContainer");
         starsContainer.innerHTML = ""; // Clear previous stars
 
-        const fullStars = Math.floor(x / 10); // Determine the number of filled stars
-        for (let i = 1; i <= 10; i++) {
+        const fullStars = Math.floor(x / 20); // Determine the number of filled stars
+        for (let i = 1; i <= 5; i++) {
             const star = document.createElement("span");
             star.classList.add("star");
             star.textContent = "★";
@@ -328,8 +361,47 @@
         }
     }
 
+    function displayRating1(ratingScore) {
+        var x = parseFloat(ratingScore.replace(",", "."));
+        x *= 20;
+        // Display stars based on the rating
+        const starsContainer = document.getElementById("starsContainer");
+        starsContainer.innerHTML = ""; // Clear previous stars
+
+        // Convert x into a number of full stars (out of 5)
+        const fullStars = Math.floor(x / 20); // Each full star represents 20 points
+        const halfStars = (x % 20) >= 10 ? 1 : 0; // Check if there's a half star
+        const emptyStars = 5 - fullStars - halfStars; // Remaining empty stars
+
+        console.log(fullStars + " - " + halfStars + " - " + emptyStars);
+
+        // Create full stars
+        for (let i = 0; i < fullStars; i++) {
+            const star = document.createElement("span");
+            star.classList.add("star", "filled");
+            star.textContent = "★";
+            starsContainer.appendChild(star);
+        }
+
+        // Create half star (if applicable)
+        if (halfStars > 0) {
+            const halfStar = document.createElement("span");
+            halfStar.classList.add("star", "half-filled");
+            halfStar.textContent = "★";
+            starsContainer.appendChild(halfStar);
+        }
+
+        // Create empty stars
+        for (let i = 0; i < emptyStars; i++) {
+            const emptyStar = document.createElement("span");
+            emptyStar.classList.add("star");
+            emptyStar.textContent = "★";
+            starsContainer.appendChild(emptyStar);
+        }
+    }
     // Set the rating value here
-    displayRating(@food.Rate); // Example rating of 75
+    displayRating1('@food.Rate');
 </script>
 <script src="~/js/ratingCircle.js"></script>
 <script src="~/js/userActionForFood.js"></script>
+<script src="~/js/rate_food.js"></script>

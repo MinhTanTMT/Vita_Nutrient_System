@@ -1,4 +1,4 @@
-﻿<div class="container mx-auto px-6 py-10">
+﻿ @* <div class="container mx-auto px-6 py-10">
     <!-- Header -->
     <div class="text-center bg-green-600 text-white py-4 rounded-lg shadow-lg">
         <h1 class="text-3xl font-bold">QR Pay - Thanh toán nhanh</h1>
@@ -160,4 +160,249 @@
                 display: block; 
             }
 
+    </style> *@
+
+
+
+
+<div class="container mx-auto px-6 py-10">
+    <!-- Header -->
+    <div class="text-center bg-green-600 text-white py-4 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold">QR Pay - Thanh toán nhanh</h1>
+        <p class="text-lg mt-2">Quét mã QR để hoàn tất thanh toán</p>
+    </div>
+
+    <!-- Nội dung -->
+    <div class="mt-8 grid gap-4 grid-cols-1 md:grid-cols-2">
+        <!-- Mã QR -->
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 class="text-xl font-semibold mb-4">Mã QR Của Bạn</h2>
+            @if (ViewBag.LinkQRImage != null)
+            {
+                <img src="@ViewBag.LinkQRImage" class="rounded-lg mx-auto mb-4 w-full max-w-sm" alt="QR Code">
+            }
+            <p class="text-gray-600">Quét mã QR bằng ứng dụng ngân hàng để hoàn tất thanh toán.</p>
+        </div>
+
+        <!-- Thông báo -->
+        <div class="bg-overlay" id="bgOverlay"></div>
+        <div id="successPopup">
+            <div class="text-green-500 text-5xl mb-4">
+                <i class="mdi mdi-check-circle-outline"></i>
+            </div>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Thanh toán thành công!</h2>
+            <p class="text-gray-600 mb-6">Cảm ơn bạn đã thanh toán. Bạn sẽ được chuyển về trang chủ trong giây lát.</p>
+            <button id="closePopup" class="bg-green-600 text-white px-6 py-2 rounded-full font-medium hover:bg-green-700">
+                Đóng
+            </button>
+        </div>
+
+    </div>
+
+    <form id="updateRoleForm" asp-controller="Home" asp-action="UpdateUserRole" method="post" style="display: none;">
+        <input type="hidden" name="role" value="UserPremium" />
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript">
+        const apiURLcheckQRPaySuccess = "@ViewBag.CheckQRPaySuccess".replace(/&amp;/g, '&');
+        const apiURLinsertPaidPersonData = "@ViewBag.InsertPaidPersonData".replace(/&amp;/g, '&');
+
+        const userListManagement = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["UserListManagement"]));
+
+        $(document).ready(function () {
+            // Hàm gọi API để kiểm tra thanh toán
+            var intervalId = setInterval(function () {
+                getAPICheckQRPaySuccessful();
+            }, 1000); // Gọi API mỗi giây
+
+            // Xử lý khi trang web bị đóng hoặc làm mới, xóa interval khi điều này xảy ra
+            $(window).on('beforeunload', function () {
+                clearInterval(intervalId); // Dừng gọi API khi trang bị đóng hoặc làm mới
+            });
+
+            // Hàm xử lý kiểm tra thanh toán
+            function getAPICheckQRPaySuccessful() {
+                $.ajax({
+                    url: apiURLcheckQRPaySuccess,
+                    method: 'GET',
+                    success: function (response) {
+                        // Dừng lệnh gọi liên tục
+                        clearInterval(intervalId);
+
+                        // Gọi API thứ hai để tạo UserListManagement
+                        const data = {
+                            NutritionistId: userListManagement.NutritionistId ?? 1,
+                            UserId: userListManagement.UserId,
+                            Describe: userListManagement.Describe,
+                            StartDate: new Date(userListManagement.StartDate).toISOString(),
+                            EndDate: new Date(userListManagement.EndDate).toISOString(),
+                            IsDone: userListManagement.IsDone
+                        };
+
+                        console.log('Data Send: ' + JSON.stringify(data));
+
+                        $.ajax({
+                            url: apiURLinsertPaidPersonData,
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(data),
+                            success: function (result) {
+                                console.log('Data Nhan Ve: ' + JSON.stringify(result));
+
+                                setTimeout(function () {
+                                }, 5000);
+
+                                // Hiển thị popup thông báo thành công
+                                $('#successPopup').addClass('show');
+
+                                // Chuyển về trang chủ sau 5 giây
+                                setTimeout(function () {
+                                    document.getElementById("updateRoleForm").submit();
+                                }, 5000);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error when calling secondary API:', error);
+                            }
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        if (xhr.status === 400) {
+                            console.log('Bad Request: ', xhr.responseText);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        function showPopup() {
+            $('#successPopup').addClass('show');
+            $('#bgOverlay').addClass('show');
+        }
+
+        $('#closePopup').on('click', function () {
+            $('#successPopup').removeClass('show');
+            $('#bgOverlay').removeClass('show');
+        });
+    </script>
+
+    <style>
+        .container {
+            max-width: 1200px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .bg-green-600 {
+            background-color: #16a34a;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            display: none;
+        }
+
+            .bg-overlay.show {
+                display: block;
+            }
+
+        #successPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 1);
+            z-index: 1000;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+            #successPopup.show {
+                display: block;
+            }
+
+        .text-green-500 {
+            color: #22c55e;
+        }
+
+        .text-5xl {
+            font-size: 3rem;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .text-gray-600 {
+            color: #4b5563;
+        }
+
+        .text-gray-800 {
+            color: #1f2937;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .rounded-full {
+            border-radius: 9999px;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .hover\:bg-green-700:hover {
+            background-color: #15803d;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .max-w-sm {
+            max-width: 24rem;
+        }
+
+        .space-y-6 > * + * {
+            margin-top: 1.5rem;
+        }
     </style>
+ 

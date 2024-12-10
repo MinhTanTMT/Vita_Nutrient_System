@@ -17,11 +17,11 @@
 <body class="bg-gray-100 font-sans">
     <div class="container mx-auto p-4 px-8 pb-24">
         <!-- Nút ngày chỉnh sửa  -->
-        <div class="mx-2 flex justify-end">
+@*         <div class="mx-2 flex justify-end">
             <button class="edit_date_btn text-white font-bold py-2 px-4 rounded-md border">
                 Ngày chỉnh sửa
             </button>
-        </div>
+        </div> *@
         <!-- Header -->
         <div class="flex justify-start items-center mb-6 mt-2 gap-8">
             <div class="flex border border-gray-300 rounded-lg p-1">
@@ -75,7 +75,7 @@
 
 
             </div>
-            <h1 class="text-xl font-bold">Hôm nay</h1>
+            <h1 class="text-xl font-bold mb-0">Hôm nay</h1>
         </div>
 
 
@@ -94,7 +94,7 @@
             <div id="progress-bar" class="progress-bar"></div>
         </div>
 
-        <p>Calories Eaten: @caloriesEaten / @totaAllCalories Cal</p>
+        <p class="mt-2 fontcs-weight-500">Calo đã nạp: @caloriesEaten / @totaAllCalories Cal</p>
 
         <!-- CSS cho thanh tiến trình -->
         <style>
@@ -144,13 +144,13 @@
             <div class="flex-1 space-y-6">
                 <!-- Header Left -->
                 <div class="flex justify-between">
-                    <div class="flex gap-32">
-                        <h2 class="text-lg font-bold">Bữa Ăn</h2>
-                        <div class="flex gap-1">
+                    <div class="flex align-items-center gap-32">
+                        <h2 class="text-lg font-bold mb-0">Bữa Ăn</h2>
+                        <div class="flex gap-1 align-items-center">
                             <img src="~/icons/chart-pie.svg"
                                  alt="Pie chart"
                                  width="20px" />
-                            <h6>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Energy, 2) Calo</h6>
+                            <h6 class="mb-0 ml-2">@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Energy, 2) Calo</h6>
                         </div>
                     </div>
                     <div class="flex gap-8">
@@ -212,9 +212,9 @@
                         <div class="flex flex-row mb-2 justify-between items-center">
                             <div>
                                 <h2 class="text-lg font-bold">@item.NameSlotOfTheDay</h2>
-                                <div class="flex gap-2">
+                                <div class="flex align-items-center gap-2">
                                     <img src="~/icons/chart-pie.svg" alt="Pie chart" width="20px" />
-                                    <p class="text-blue-500 font-semibold">@item.TotalCaloriesPerMeal calo</p>
+                                    <p class="text-blue-500 font-semibold mb-0">@item.TotalCaloriesPerMeal calo</p>
                                 </div>
                             </div>
 
@@ -576,7 +576,7 @@
                     </div>
                 </div>
 
-                <button onclick="showModal()" class="mt-4 w-full bg-green-500 text-white py-2 rounded-2xl border border-black">
+                <button onclick="showModal()" class="mt-4 w-full bg-green-500 text-white py-2 rounded-2xl border-none">
                     Thông tin dinh dưỡng chi tiết
                 </button>
             </div>
@@ -600,7 +600,7 @@
 
             <!-- Modal Header -->
             <h2 class="text-2xl font-bold mb-4">Detailed Nutrition</h2>
-            <a href="#" class="text-blue-400 mb-6 inline-block">My Nutrition Targets ✏️</a>
+            @* <a href="#" class="text-blue-400 mb-6 inline-block">My Nutrition Targets ✏️</a> *@
 
             <!-- Nutrition Info Table -->
             <div class="grid grid-cols-3 gap-4 text-left">
@@ -972,7 +972,7 @@
 
 
                 <!-- Add more rows as needed -->
-            </div>
+@*             </div>
 
             <!-- Vitamins and Minerals Section -->
             <h3 class="text-lg font-bold mt-6 mb-2">Vitamins and Minerals</h3>
@@ -991,7 +991,7 @@
                 <div>149%</div>
 
                 <!-- Add more rows as needed -->
-            </div>
+            </div> *@
         </div>
     </div>
 

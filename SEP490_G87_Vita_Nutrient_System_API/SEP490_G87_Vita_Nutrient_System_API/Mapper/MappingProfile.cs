@@ -47,6 +47,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
             .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
             .ForMember(dest => dest.Account, opt => opt.MapFrom(src => src.Account))
+            .ForMember(dest => dest.AccountGoogle, opt => opt.MapFrom(src => src.AccountGoogle))
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => new UserRole
             {
                 RoleId = src.Role,
@@ -90,6 +91,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Mapper
             .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
             .ForMember(dest => dest.Account, opt => opt.MapFrom(src => src.Account))
+            .ForMember(dest => dest.AccountGoogle, opt => opt.MapFrom(src => src.AccountGoogle))
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => new UserRole
             {
                 RoleId = src.Role,

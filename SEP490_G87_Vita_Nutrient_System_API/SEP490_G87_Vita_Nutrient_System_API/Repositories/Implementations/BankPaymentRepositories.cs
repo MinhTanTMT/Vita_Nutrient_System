@@ -406,12 +406,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
 
         }
-        
-        
+
+
         public async Task<string> GetQRPayImage(int? idBankInformation, decimal amount, string content)
         {
-
-
             try
             {
                 if (idBankInformation != null)

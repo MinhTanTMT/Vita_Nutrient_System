@@ -36,9 +36,33 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
             else
             {
-                return Ok();
+                return NotFound();
             }
         }
+
+
+        [HttpGet("APIGoogleAccountVerificationCode")]
+        public async Task<ActionResult> APIGoogleAccountVerificationCode(string emailGoogle, string verificationCode)
+        {
+            // Kiểm tra tính hợp lệ của email
+            if (string.IsNullOrEmpty(emailGoogle) || !emailGoogle.Contains("@"))
+            {
+                return BadRequest("Địa chỉ email không hợp lệ.");
+            }
+
+            // Gửi mã xác nhận qua email
+            bool result = await repositories.SendMail(emailGoogle, "Mã xác nhận", $"Mã xác nhận của bạn là: {verificationCode}");
+
+            if (result)
+            {
+                return Ok(new { success = true });
+            }
+            else
+            {
+                return StatusCode(500, "Lỗi khi gửi mã xác nhận.");
+            }
+        }
+
 
         [HttpGet("Login")]
         public async Task<ActionResult<UserLoginRegister>> APIGetUserLogin(string account, string password)
@@ -145,6 +169,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+
+
         [HttpGet("GetOnlyUserDetail/{userId}")]
         public async Task<IActionResult> GetOnlyUserDetail(int userId)
         {
@@ -157,6 +183,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(userDetail);
         }
+
+
+
         [HttpGet("GetUserPhysicalStatisticsDTOByUserIdAsync/{userId}")]
         public async Task<IActionResult> GetUserPhysicalStatisticsDTOByUserIdAsync(int userId)
         {
@@ -169,6 +198,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(userDetail);
         }
+
+
+
         [HttpGet("GetNutritionistDetail/{id}")]
         public async Task<ActionResult<dynamic>> GetNutritionistDetail(int id)
         {
@@ -193,6 +225,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             return Ok(result);
         }
+
+
+
         [HttpPost("UpdateUserPhysicalStatistics")]
         public async Task<IActionResult> UpdateUserPhysicalStatistics([FromBody] UserPhysicalStatisticsDTO userDetails)
         {
@@ -204,6 +239,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _repositories.SaveUserDetails(userDetails);
             return Ok(new { message = "User details updated successfully." });
         }
+
+
+
         [HttpPost("UpdateUserWeightGoal")]
         public async Task<IActionResult> UpdateUserWeightGoal([FromBody] UserPhysicalStatisticsDTO userDetails)
         {
@@ -215,6 +253,9 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             await _repositories.SaveUserWeightGoal(userDetails);
             return Ok(new { message = "User details updated successfully." });
         }
+
+
+
         [HttpPost("UpdateUserStatus")]
         public async Task<ActionResult<string>> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
         {
@@ -252,6 +293,40 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             return Ok("Update user status successfully!");
         }
 
+        // mới chưa test
+        [HttpGet("UpdateUserRole/{userId}/{userRole}")]
+        public async Task<ActionResult<string>> UpdateUserRole(int userId, short userRole)
+        {
+            User u = repositories.GetUserById(userId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.Role = userRole;
+            repositories.UpdateUser(u);
+
+            return Ok("Update user role successfully!");
+        }
+
+        // mới chưa test
+        [HttpPost("UpdateUserAvatar")]
+        public async Task<ActionResult<string>> UpdateUserAvatar([FromBody]UploadAvatarRequest request)
+        {
+            User u = repositories.GetUserById(request.UserId);
+            //kiem tra xem user ton tai hay ko
+            if (u == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            u.Urlimage = request.ImageURL;
+            repositories.UpdateUser(u);
+
+            return Ok("Update user avatar successfully!");
+        }
+
         [HttpPut("ChangePassword")]
         public async Task<ActionResult<string>> ChangePassword([FromBody] ChangePasswordRequest request)
         {
@@ -268,13 +343,18 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             }
 
             //kiem tra password cu~
-            string decryptedCurrentPass = await repositories.DecryptPassword(u.Password);
-            if (!decryptedCurrentPass.Equals(request.OldPassword))
+            bool verifyPw = await repositories.VerifyPassword(request.OldPassword, u.Password);
+            if (!verifyPw)
             {
                 return BadRequest("Old password wrong!");
             }
 
             //kiem tra confirm password va new password
+            if(request.NewPassword.Length < 6 || request.NewPassword.Length > 50)
+            {
+                return BadRequest("New password must contain 6-50 characters!");
+            }
+
             if (!request.NewPassword.Equals(request.ConfirmPassword))
             {
                 return BadRequest("Confirm password not match!");

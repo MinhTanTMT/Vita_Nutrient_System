@@ -57,69 +57,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         }
 
 
-        //public async Task<string> EncryptPassword(string password)
-        //{
-        //if (string.IsNullOrEmpty(password))
-        //    throw new ArgumentException("Password cannot be null or empty", nameof(password));
-
-        //using (Aes aes = Aes.Create())
-        //{
-        //    aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
-
-        //    // Tạo IV động
-        //    aes.GenerateIV();
-        //    byte[] iv = aes.IV;
-
-        //    using (var encryptor = aes.CreateEncryptor(aes.Key, iv))
-        //    using (var ms = new MemoryStream())
-        //    {
-        //        // Lưu IV vào đầu dữ liệu
-        //        ms.Write(iv, 0, iv.Length);
-
-        //        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-        //        using (var writer = new StreamWriter(cs))
-        //        {
-        //            writer.Write(password);
-        //        }
-
-        //        return Convert.ToBase64String(ms.ToArray());
-        //    }
-        //}
-
-        //    return password;
-        //}
-
-        /// <summary>
-        /// Giải mã mật khẩu.
-        /// </summary>
-        public async Task<string> DecryptPassword(string encryptedPassword)
-        {
-            //if (string.IsNullOrEmpty(encryptedPassword))
-            //    throw new ArgumentException("Encrypted password cannot be null or empty", nameof(encryptedPassword));
-
-            //byte[] cipherBytes = Convert.FromBase64String(encryptedPassword);
-
-            //using (Aes aes = Aes.Create())
-            //{
-            //    aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
-
-            //    // Đọc IV từ đầu dữ liệu mã hóa
-            //    byte[] iv = new byte[16];
-            //    Array.Copy(cipherBytes, 0, iv, 0, iv.Length);
-            //    aes.IV = iv;
-
-            //    using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
-            //    using (var ms = new MemoryStream(cipherBytes, iv.Length, cipherBytes.Length - iv.Length))
-            //    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-            //    using (var reader = new StreamReader(cs))
-            //    {
-            //        return reader.ReadToEnd();
-            //    }
-            //}
-
-            return encryptedPassword; // luc lam moi database them sau
-        }
-
 
         public async Task<bool> SendMail(string emailAccount, string subject, string contentSend)
         {
@@ -225,6 +162,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                 {
                     string newPass = await GeneratePassword(12);
                     inforAccount.Password = await EncryptPassword(newPass);
+                    await _context.SaveChangesAsync();
                     string? Passwork = $"Mật khẩu hiện tại của bạn: {newPass}";
                     await SendMail(emailGoogle, "Mật khẩu của bạn", Passwork);
                     return true;
@@ -272,6 +210,34 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             return null;
 
         }
+
+
+        public async Task<bool> FunctionA(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> FunctionB(string account, string accGoogle)
+        {
+            User user = new User()
+            {
+                Account = account,
+                AccountGoogle = accGoogle
+            };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<User> FunctionC(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
 
         public async Task<bool> CheckAccountUserNull(string account, string accGoogle)
         {

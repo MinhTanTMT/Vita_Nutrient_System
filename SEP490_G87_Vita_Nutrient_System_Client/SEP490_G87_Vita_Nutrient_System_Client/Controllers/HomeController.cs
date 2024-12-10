@@ -23,8 +23,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ///
 
         private readonly HttpClient client = null;
+        private readonly AdminSevices adminSevices;
         public HomeController()
         {
+            adminSevices = new AdminSevices();
             Uri URIBase = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<Uri>("myUri");
             client = new HttpClient();
             client.BaseAddress = URIBase;
@@ -82,8 +84,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 ViewBag.AlertMessage = "This email does not exist.";
                 return View();
             }
-
-
         }
 
 
@@ -210,47 +210,66 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
+
         [HttpGet]
         public IActionResult Register()
         {
+
+            ViewBag.APIBaseAddress = client.BaseAddress;
             return View();
         }
 
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm)
+        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm, string accountGoogle)
         {
+            
+
             string pattern = @"^(?!.*@.*\.(com|net|org|edu|gov|info|co|io)$)(?!.*[^\x00-\x7F]).+$";
             try
             {
                 if (!Regex.IsMatch(account, pattern) || !Regex.IsMatch(account, pattern))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Please enter continuous characters without accents and not gmail.";
                     return View();
                 }
                 if (!password.Equals(confirm))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Password mismatch";
                     return View();
                 }
-                if (await checkExsitAsync(account))
+                if (await checkExsitAsync(account, accountGoogle))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Account already exists.";
                     return View();
                 }
                 else
                 {
+                    //string googleAccVerificationCode = adminSevices.GeneratePassword(12);
+
+                    //HttpResponseMessage resVerificationCode = await client.GetAsync(client.BaseAddress + "/Users/APIGoogleAccountVerificationCode?emailGoogle=" + accountGoogle + "&verificationCode=" + googleAccVerificationCode);
+
+                    //if (resVerificationCode.StatusCode == System.Net.HttpStatusCode.OK)
+                    //{
+
+                    //}
+
                     short roleUser = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<short>("roleUser");
                     UserLoginRegister user = new UserLoginRegister()
                     {
                         FirstName = firstName,
                         LastName = lastName,
                         Account = account,
+                        AccountGoogle = accountGoogle,
                         Password = password,
                         Role = roleUser,
-                        IsActive = true
+                        IsActive = true,
                     };
+
 
                     HttpResponseMessage res = await client.PostAsJsonAsync(client.BaseAddress + "/Users/Register", user);
                     if (res.StatusCode == System.Net.HttpStatusCode.OK)
@@ -297,19 +316,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         }
                         else
                         {
-                            ViewBag.AlertMessage = "Invalid login attempt. 3";
+                            ViewBag.APIBaseAddress = client.BaseAddress;
+                            ViewBag.AlertMessage = "Invalid login attempt.";
                             return View();
                         }
                     }
                     else
                     {
-                        ViewBag.AlertMessage = "Invalid login attempt. 2";
+                        ViewBag.APIBaseAddress = client.BaseAddress;
+                        ViewBag.AlertMessage = "Invalid login attempt.";
                         return View();
                     }
                 }
             }
             catch (Exception ex)
             {
+                ViewBag.APIBaseAddress = client.BaseAddress;
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
                 return View();
             }
@@ -357,6 +379,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     string data = await content.ReadAsStringAsync();
                     UserLoginRegister u = JsonConvert.DeserializeObject<UserLoginRegister>(data);
 
+                    importStringToSession("takeFullName", u.FullName, "string");
+                    importStringToSession("imageUrl", u.Urlimage, "URL");
+
                     var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name,(string) u.Account),
@@ -399,9 +424,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [Authorize]
-        public async Task<bool> checkExsitAsync(string account)
+        public async Task<bool> checkExsitAsync(string account, string accGoogle)
         {
-            HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + "/Users/checkExit?account=" + account);
+            HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + $"/Users/checkExit?account={account}&accGoogle={accGoogle}");
             if (respone.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return true;
@@ -417,18 +442,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost, Authorize]
         public async Task<IActionResult> Logout()
         {
-
-            funtionabc();
+            HttpContext.Session.Remove("takeFullName");
+            HttpContext.Session.Remove("imageUrl");
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Home");
         }
 
 
-        public bool funtionabc()
-        {
-
-            return true;
-        }
 
         public async Task<IActionResult> ToCopyTryCatch()
         {
@@ -561,7 +581,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     Gender = gender
                 };
 
-                ViewBag.BirthDate = birthDate.ToString("yyyy-MM-dd");
+                ViewBag.BirthDate = birthDate.ToString("dd/MM/yyyy");
                 ViewBag.Weight = weight;
                 ViewBag.Height = height;
                 ViewBag.Gender = gender;

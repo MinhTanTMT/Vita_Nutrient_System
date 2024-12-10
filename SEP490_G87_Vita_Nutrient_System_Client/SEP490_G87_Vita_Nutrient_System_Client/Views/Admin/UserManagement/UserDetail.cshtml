@@ -5,6 +5,7 @@
     User user = ViewBag.user;
 }
 <link rel="stylesheet" href="~/css/listUser.css">
+<link rel="stylesheet" href="~/css/toast.css" />
 
 <div class="row">
     <div class="col-12 grid-margin">
@@ -29,7 +30,7 @@
                     || user.UserDetail.DescribeYourself is null 
                     || user.UserDetail.DescribeYourself.Length == 0)
                     {
-                        <p>No description</p>
+                        <p>Không có mô tả</p>
                     }
                     else
                     {
@@ -38,11 +39,6 @@
                 </div>
 
                 <div class="action col-4">
-                    <a type="button" class="btn btn-gradient-info btn-fw" href="/">
-                        <i class="mdi mdi-border-color"></i>
-                        Edit
-                    </a>
-
                     </br></br>
                     <form asp-controller="Admin" asp-action="UpdateUserStatus" method="post">
                         <input type="hidden" name="userId" value="@user.UserId" />
@@ -70,65 +66,65 @@
             <div class="profile-body">
                 <div class="basic-info">
                     <div class="form-group row">
-                        <label for="user-account-input" class="col-sm-3 col-form-label">Account</label>
+                        <label for="user-account-input" class="col-sm-3 col-form-label">Tên tài khoản</label>
                         <div class="col-sm-9">
-                            <input type="text" disabled class="form-control user-info-input" id="user-account-input" placeholder="User Account" value="@user.Account">
+                            <input type="text" disabled class="form-control user-info-input" id="user-account-input" placeholder="Tên tài khoản người dùng" value="@user.Account">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="user-firstname-input" class="col-sm-3 col-form-label">First name</label>
+                        <label for="user-firstname-input" class="col-sm-3 col-form-label">Tên</label>
                         <div class="col-sm-9">
-                            <input type="text" disabled class="form-control" id="user-firstname-input" placeholder="User Firstname" value="@user.FirstName">
+                            <input type="text" disabled class="form-control" id="user-firstname-input" placeholder="Tên người dùng" value="@user.FirstName">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="user-lastname-input" class="col-sm-3 col-form-label">Last name</label>
+                        <label for="user-lastname-input" class="col-sm-3 col-form-label">Họ</label>
                         <div class="col-sm-9">
-                            <input type="text" disabled class="form-control" id="user-lastname-input" placeholder="User Lastname" value="@user.LastName">
+                            <input type="text" disabled class="form-control" id="user-lastname-input" placeholder="Họ người dùng" value="@user.LastName">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Gender</label>
+                        <label class="col-sm-3 col-form-label">Giới tính</label>
                         <div class="form-group gender">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(user.Gender is null ? "checked" : (bool)user.Gender ? "checked" : "")> Male <i class="input-helper"></i>
+                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(user.Gender is null ? "checked" : (bool)user.Gender ? "checked" : "")> Nam <i class="input-helper"></i>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(user.Gender is null ? "" : (bool)user.Gender ? "" : "checked")> Female<i class="input-helper"></i>
+                                    <input type="radio" disabled class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(user.Gender is null ? "" : (bool)user.Gender ? "" : "checked")> Nữ<i class="input-helper"></i>
                                 </label>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="user-lastname-input" class="col-sm-3 col-form-label">Date of birth</label>
+                        <label for="user-lastname-input" class="col-sm-3 col-form-label">Ngày sinh</label>
                         <div class="col-sm-9">
-                            <input type="text" disabled class="form-control" id="user-lastname-input" placeholder="User Date of birth" value="@user.Dob">
+                            <input type="text" disabled class="form-control" id="user-lastname-input" placeholder="Ngày sinh người dùng" value="@user.Dob">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="user-address-input" class="col-sm-3 col-form-label">Address</label>
+                        <label for="user-address-input" class="col-sm-3 col-form-label">Địa chỉ</label>
                         <div class="col-sm-9">
-                            <input type="text" disabled class="form-control" id="user-address-input" placeholder="User Address" value="@user.Address">
+                            <input type="text" disabled class="form-control" id="user-address-input" placeholder="Địa chỉ người dùng value="@user.Address">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="user-phone-input" class="col-sm-3 col-form-label">Phone number</label>
+                        <label for="user-phone-input" class="col-sm-3 col-form-label">Số điện thoại</label>
                         <div class="col-sm-9">
-                            <input type="text" disabled class="form-control" id="user-phone-input" placeholder="User Phone number" value="@user.Phone">
+                            <input type="text" disabled class="form-control" id="user-phone-input" placeholder="Số điện thoại người dùng" value="@user.Phone">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Status</label>
+                        <label class="col-sm-3 col-form-label">Trạng thái</label>
                         <div class="form-group status">
                             <div class="form-check">
                                 <label class="form-check-label">
@@ -142,6 +138,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Vai trò người dùng</label>
+                        <div class="col-sm-7">
+                            <select class="form-select ms-auto" name="urole" id="urole">
+                                <option value="1">Admin</option>
+                                <option value="2" >Nutritionist</option>
+                                @if (user.UserRole.RoleId == 3)
+                                {
+                                    <option value="3" selected>User Premium</option>
+                                    <option value="4">User</option>
+                                }
+                                else if (user.UserRole.RoleId == 4)
+                                {
+                                    <option value="3">User Premium</option>
+                                    <option value="4" selected>User</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button id="btnSaveRole" onclick="SaveRole(@user.UserId, 'user')">Lưu vai trò</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="detail-info">
@@ -151,3 +170,6 @@
         </div>
     </div>
 </div>
+<div id="toast"></div>
+<script src="~/js/toast.js"></script>
+<script src="~/js/saveUserRole.js"></script>
