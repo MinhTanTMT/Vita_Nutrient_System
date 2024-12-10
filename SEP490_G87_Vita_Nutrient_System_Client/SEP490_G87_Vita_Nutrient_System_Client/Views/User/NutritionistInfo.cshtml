@@ -14,7 +14,7 @@
 <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
 @if (u is null)
 {
-    <div>Cannot get nutritionist profile! Try again later!</div>
+    <div>Không thể tìm thấy thông tin. Vui lòng thử lại sau!</div>
 }
 else
 {
@@ -44,7 +44,7 @@ else
                            || u.UserDetail.DescribeYourself is null
                            || u.UserDetail.DescribeYourself.Length == 0)
                             {
-                                <p>No description</p>
+                                <p>Không có mô tả</p>
                             }
                             else
                             {
@@ -56,12 +56,12 @@ else
                             <form id="upAvaForm" asp-controller="User" asp-action="UploadAvatar" method="post">
                                 <input type="hidden" name="page" value="nutritionist" />
                                 <input type="hidden" name="userId" value="@u.UserId" />
-                                <label for="fileInput" class="upload-button">Upload Avatar</label>
+                                <label for="fileInput" class="upload-button">Tải ảnh lên</label>
                                 <input type="file" name="uava" id="fileInput" accept="image/jpeg, image/png, image/jpg" onchange="submitAvaForm()">
                             </form>
 
                             <button type="submit" class="btn btn-gradient-primary me-2" onclick="openChangePassModal();">
-                                Change password
+                                Đổi mật khẩu
                             </button>
                         </div>
                     </div>
@@ -69,8 +69,8 @@ else
                     <div class="profile-right col-8">
 
                         <div class="tab-navigation">
-                            <button class="tab-button active" onclick="openTab(event, 'tab1')">Basic Info</button>
-                            <button class="tab-button" onclick="openTab(event, 'tab2')">Details Info</button>
+                            <button class="tab-button active" onclick="openTab(event, 'tab1')">Thông tin cơ bản</button>
+                            <button class="tab-button" onclick="openTab(event, 'tab2')">Thông tin sức khỏe</button>
                         </div>
                         <div>
                             <div id="tab1" class="tab-content active">
@@ -79,7 +79,7 @@ else
                                         <input type="hidden" name="uid" value="@u.UserId">
                                         <input type="hidden" name="page" value="nutritionist" required />
                                         <div class="form-group row">
-                                            <label for="user-account-input" class="col-sm-3 col-form-label">Account</label>
+                                            <label for="user-account-input" class="col-sm-3 col-form-label">Tên tài khoản</label>
                                             <div class="col-sm-9">
                                                 <input type="text" name="uacc" disabled class="form-control user-info-input" id="user-account-input" placeholder="User Account" value="@u.Account">
                                             </div>
@@ -93,57 +93,57 @@ else
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-firstname-input" class="col-sm-3 col-form-label">First name</label>
+                                            <label for="user-firstname-input" class="col-sm-3 col-form-label">Tên</label>
                                             <div class="col-sm-9">
-                                                <input type="text" name="ufn" class="form-control" id="user-firstname-input" required placeholder="Enter your firstname" value="@u.FirstName">
+                                                <input type="text" name="ufn" class="form-control" id="user-firstname-input" required placeholder="Nhập vào tên" value="@u.FirstName">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Last name</label>
+                                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Nhập vào họ</label>
                                             <div class="col-sm-9">
-                                                <input type="text" name="uln" class="form-control" id="user-lastname-input" required placeholder="Enter your lastname" value="@u.LastName">
+                                                <input type="text" name="uln" class="form-control" id="user-lastname-input" required placeholder="Nhập vào họ" value="@u.LastName">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label class="col-sm-3 col-form-label">Gender</label>
+                                            <label class="col-sm-3 col-form-label">Giới tính</label>
                                             <div class="form-group gender">
                                                 <div class="form-check">
                                                     <label class="form-check-label">
-                                                        <input type="radio" class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(u.Gender is null ? "checked" : (bool)u.Gender ? "checked" : "")> Male <i class="input-helper"></i>
+                                                        <input type="radio" class="form-check-input" name="user_gender" id="user_gender_male" value="1" @(u.Gender is null ? "checked" : (bool)u.Gender ? "checked" : "")> Nam <i class="input-helper"></i>
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
                                                     <label class="form-check-label">
-                                                        <input type="radio" class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(u.Gender is null ? "" : (bool)u.Gender ? "" : "checked")> Female <i class="input-helper"></i>
+                                                        <input type="radio" class="form-check-input" name="user_gender" id="user_gender_female" value="0" @(u.Gender is null ? "" : (bool)u.Gender ? "" : "checked")> Nữ <i class="input-helper"></i>
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Date of birth</label>
+                                            <label for="user-lastname-input" class="col-sm-3 col-form-label">Ngày sinh</label>
                                             <div class="col-sm-9">
-                                                <input type="date" name="udob" class="form-control" id="user-lastname-input" placeholder="Enter your Date of birth" required value="@(u.Dob is null? "" : u.Dob.Value.ToString("yyyy-MM-dd"))">
+                                                <input type="date" name="udob" class="form-control" id="user-lastname-input" placeholder="Nhập vào ngày tháng năm sinh" required value="@(u.Dob is null? "" : u.Dob.Value.ToString("yyyy-MM-dd"))">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-address-input" class="col-sm-3 col-form-label">Address</label>
+                                            <label for="user-address-input" class="col-sm-3 col-form-label">Địa chỉ</label>
                                             <div class="col-sm-9">
-                                                <input type="text" name="uadd" class="form-control" id="user-address-input" placeholder="Enter your address" value="@u.Address">
+                                                <input type="text" name="uadd" class="form-control" id="user-address-input" placeholder="Nhập vào địa chỉ" value="@u.Address">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-phone-input" class="col-sm-3 col-form-label">Phone number</label>
+                                            <label for="user-phone-input" class="col-sm-3 col-form-label">Số điện thoại</label>
                                             <div class="col-sm-9">
-                                                <input type="text" name="uphone" class="form-control" id="user-phone-input" placeholder="Enter your Phone number" value="@u.Phone">
+                                                <input type="text" name="uphone" class="form-control" id="user-phone-input" placeholder="Nhập vào số điện thoại" value="@u.Phone">
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
-                                            Save
+                                            Lưu
                                         </button>
                                     </form>
                                 </div>
@@ -154,35 +154,35 @@ else
                                         <input type="hidden" name="uid" value="@u.UserId">
 
                                         <div class="form-group row">
-                                            <label for="user-desc" class="col-sm-3 col-form-label">Your description</label>
+                                            <label for="user-desc" class="col-sm-3 col-form-label">Mô tả bản thân</label>
                                             <div class="col-sm-9">
-                                                <input type="text" name="udesc" class="form-control user-info-input" id="user-desc" placeholder="Description" value="@u.NutritionistDetail?.DescribeYourself">
+                                                <input type="text" name="udesc" class="form-control user-info-input" id="user-desc" placeholder="Nhập vào mô tả" value="@u.NutritionistDetail?.DescribeYourself">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-height" class="col-sm-3 col-form-label">Height</label>
+                                            <label for="user-height" class="col-sm-3 col-form-label">Chiều cao</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Your height" value="@u.NutritionistDetail?.Height">
+                                                <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Nhập vào chiều cao" value="@u.NutritionistDetail?.Height">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-weight" class="col-sm-3 col-form-label">Weight</label>
+                                            <label for="user-weight" class="col-sm-3 col-form-label">Cân nặng</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Your weight" value="@u.NutritionistDetail?.Weight">
+                                                <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Nhập vào cân nặng" value="@u.NutritionistDetail?.Weight">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-age" class="col-sm-3 col-form-label">Age</label>
+                                            <label for="user-age" class="col-sm-3 col-form-label">Tuổi</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Your age" value="@u.NutritionistDetail?.Age">
+                                                <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Nhập vào tuổi" value="@u.NutritionistDetail?.Age">
                                             </div>
                                         </div>
 
                                         <button type="submit" class="btn btn-gradient-primary me-2" style="float: inline-end; margin-right: 40px !important;">
-                                            Save
+                                            Lưu
                                         </button>
                                     </form>
                                 </div>
@@ -194,22 +194,22 @@ else
                 <div class="hr"></div>
 
                 <div class="packages-container">
-                    <h2 class="title">Your expert packages</h2>
+                    <h2 class="title">Gói phụ trách</h2>
 
                     <div class="packages-body">
                         @if (package is null)
                         {
-                            <h3>There is no packages!</h3>
+                            <h3>Hiện không phụ trách gói nào!</h3>
                         }
                         else
                         {
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th> Name </th>
-                                        <th> Description </th>
-                                        <th> Price </th>
-                                        <th> Duration </th>
+                                        <th> Tên </th>
+                                        <th> Mô tả </th>
+                                        <th> Giá </th>
+                                        <th> Thời hạn </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -233,7 +233,7 @@ else
     <!-- Modal -->
     <div class="modal1">
         <div class="modal1-header">
-            <span>Change password</span>
+            <span>Đổi mật khẩu</span>
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
         <div class="modal1-body">
@@ -241,17 +241,17 @@ else
                 <input type="hidden" name="uid" value="@u.UserId" required />
                 <input type="hidden" name="page" value="nutritionist" required />
 
-                <label>Old Password:</label>
+                <label>Mật khẩu cũ:</label>
                 <input class="ms-auto" type="password" name="uopw" required />
 
-                <label>New Password:</label>
+                <label>Mật khẩu mới:</label>
                 <input class="ms-auto" type="password" name="unpw" required />
 
-                <label>Confirm Password:</label>
+                <label>Nhập lại mật khẩu mới:</label>
                 <input class="ms-auto" type="password" name="ucpw" required />
                 <div class="modal1-footer">
-                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-                    <button class="btn-save" type="submit" onclick="ChangePass()">Save</button>
+                    <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+                    <button class="btn-save" type="submit" onclick="ChangePass()">Lưu</button>
                 </div>
             </form>
         </div>
