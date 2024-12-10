@@ -44,9 +44,23 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         [HttpGet("APIGoogleAccountVerificationCode")]
         public async Task<ActionResult> APIGoogleAccountVerificationCode(string emailGoogle, string verificationCode)
         {
-            //public async Task<bool> SendMail(string emailAccount, string subject, string contentSend)
+            // Kiểm tra tính hợp lệ của email
+            if (string.IsNullOrEmpty(emailGoogle) || !emailGoogle.Contains("@"))
+            {
+                return BadRequest("Địa chỉ email không hợp lệ.");
+            }
 
-            return Ok(await repositories.SendMail(emailGoogle, "Mã xác nhận", verificationCode));
+            // Gửi mã xác nhận qua email
+            bool result = await repositories.SendMail(emailGoogle, "Mã xác nhận", $"Mã xác nhận của bạn là: {verificationCode}");
+
+            if (result)
+            {
+                return Ok(new { success = true });
+            }
+            else
+            {
+                return StatusCode(500, "Lỗi khi gửi mã xác nhận.");
+            }
         }
 
 

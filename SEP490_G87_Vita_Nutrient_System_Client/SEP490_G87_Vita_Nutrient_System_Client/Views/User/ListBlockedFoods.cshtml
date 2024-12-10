@@ -3,57 +3,55 @@
     ViewData["Title"] = "Thực phẩm bị chặn";
 }
 
-<div class="container page-content mt-5">
+<div class="container mt-5 page-content">
     <h2 class="text-center">Bộ sưu tập thực phẩm bị chặn</h2>
 
     <!-- Thanh tìm kiếm -->
-    <div class="row mb-4">
-        <div class="col-md-6 offset-md-3">
-            <form method="get" class="input-group">
-                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Tìm kiếm thực phẩm..." />
-                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-            </form>
-        </div>
+    <div class="d-flex justify-content-center mb-4">
+        <form method="get" class="input-group">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Tìm kiếm thực phẩm..." />
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-success btn-bg-primary btn-fw">
+                    <i class="mdi mdi-magnify"></i> Tìm kiếm
+                </button>
+            </div>
+        </form>
     </div>
 
-    <!-- Bảng thực phẩm bị chặn -->
-    <div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Hình ảnh</th>
-                <th>Tên</th>
-                <th>Mô tả</th>
-                <th>Đánh giá</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var food in Model)
-            {
-                <tr>
-                    <td>
-                        <img src="@food.UrlImage" alt="Hình ảnh" class="rounded" width="50" height="50" />
-                    </td>
-                    <td>@food.Name</td>
-                    <td>@food.Describe</td>
-                    <td>@food.Rate</td>
-                    <td>
-                        <button type="button" class="btn btn-warning btn-sm" onclick="unblockFood(@food.FoodListId)">Bỏ chặn</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <!-- Hiển thị danh sách thực phẩm bị chặn -->
+    <div class="food-container row">
+        @foreach (var food in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <!-- Đã giảm kích thước của cột -->
+                <div class="food-card card">
+                    <a href="@Url.Action("FoodDetails", "User", new { foodId = food.FoodListId })">
+                        <div class="food-img card-img-top">
+                            <img src="~/images/@food.UrlImage" alt="@food.Name" class="card-img-top rounded" onerror="this.src='/images/foods/default_food.png';" />
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fs-6">@food.Name</h5> <!-- Giảm kích thước font tiêu đề -->
+                            <p class="card-text fs-6">@food.Describe</p> <!-- Giảm kích thước font mô tả -->
+                            <span class="badge badge-warning fs-6">Đánh giá: @food.Rate</span> <!-- Giảm kích thước badge -->
+                        </div>
+                    </a>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-warning btn-sm w-100" onclick="unblockFood(@food.FoodListId)">
+                            Bỏ chặn
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     <!-- Phân trang -->
-    <nav aria-label="Điều hướng trang" class="d-flex justify-content-center">
+    <nav aria-label="Điều hướng trang" class="d-flex justify-content-center mt-4">
         <ul class="pagination">
             @for (int i = 1; i <= ViewBag.TotalPages; i++)
             {
                 <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="10" asp-route-search="@ViewBag.Search">@i</a>
+                    <a class="page-link" href="@Url.Action("Index", "User", new { page = i, search = ViewBag.Search })">@i</a>
                 </li>
             }
         </ul>
@@ -63,8 +61,6 @@
 <script>
     async function unblockFood(foodId) {
         try {
-            // Gọi đến hàm Unblock trong controller thông qua URL được tạo bởi Razor
-            console.log(foodId);
             const response = await fetch(`@Url.Action("Unblock", "User")?foodId=${foodId}`, {
                 method: 'POST',
                 headers: {
@@ -86,4 +82,3 @@
         }
     }
 </script>
-
