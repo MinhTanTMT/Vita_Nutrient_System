@@ -3,6 +3,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    Uri URIBase = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<Uri>("myUri");
     FoodList food = ViewBag.food;
     List<FoodRecipe> recipes = ViewBag.recipes;
     string foodSlots = ViewBag.foodSlots;
@@ -100,8 +101,7 @@
                 transform: scale(1);
             }
 </style>
-
-<div class="footer-detail-page">
+<div class="footer-detail-page" style="width: 100%;">
     <div class="grid-margin">
         <div class="card">
             <div class="card-body">
@@ -124,19 +124,19 @@
 
                             <div class="rating-display" style="padding-bottom: 16px;">
                                 <!-- Circle Rating -->
-                                <div class="rating">@food.Rate</div>
+                                <div class="rating">@(food.Rate)</div>
 
                                 <!-- Stars Rating -->
                                 <div class="">
                                     <div class="stars" id="starsContainer" style="justify-content: space-between"></div>
 
                                     <div style="font-size: small; color: gray;">
-                                        (Đánh giá @food.Rate/5 từ @food.NumberRate thành viên)
+                                        Đánh giá: @(Math.Round(food.Rate / 20, 1))/5 ★ (Dựa trên @food.NumberRate đánh giá)
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="remind">
+                            @* <div class="remind">
                                 <div>Remind me:</div>
                                 <div class="mt-2 d-flex">
                                     <div class="list-item">
@@ -157,7 +157,7 @@
                                         }
                                     </div>
                                 </div>
-                            </div>
+                            </div> *@
                         </div>
                         <div class="food-info col-8">
                             <div>
@@ -233,7 +233,7 @@
 
                             <div class="d-flex justify-content-start mt-3">
                                   <div class="d-flex user-action-container">
-                                    <div class="user-action" style="color: blue;" onclick="toggleLike(@fs.UserId, @fs.FoodListId)">
+                                    <div class="user-action" style="color: blue;" onclick="toggleLike(@fs.UserId, @fs.FoodListId, '@URIBase.ToString()')">
                                         @if (fs.IsLike == true)
                                         {
                                             <i id="like-icon" class="mdi mdi-thumb-up"></i>
@@ -243,7 +243,7 @@
                                             <i id="like-icon" class="mdi mdi-thumb-up-outline"></i>
                                         }
                                     </div>
-                                    <div class="user-action" onclick="toggleSave(@fs.UserId, @fs.FoodListId)">
+                                    <div class="user-action" onclick="toggleSave(@fs.UserId, @fs.FoodListId, '@URIBase.ToString()')">
                                         @if (fs.IsCollection == true)
                                         {
                                             <i id="save-icon" class="mdi mdi-bookmark"></i>
@@ -253,7 +253,7 @@
                                             <i id="save-icon" class="mdi mdi-bookmark-outline"></i>
                                         }
                                     </div>
-                                    <div class="user-action" style="color: red;" onclick="blockFood(@fs.UserId, @fs.FoodListId)">
+                                    <div class="user-action" style="color: red;" onclick="blockFood(@fs.UserId, @fs.FoodListId, '@URIBase.ToString()')">
                                         <i class="mdi mdi-block-helper"></i>
                                     </div>
                                 </div>
@@ -262,24 +262,24 @@
                                 <div class="stars-container">
                                     @if(fs.Rate is null || fs.Rate == 0)
                                     {
-                                        <span class="star1 star2" data-star="1" onclick="handleRating(@fs.UserId, @fs.FoodListId, 1)">&#9733;</span>
-                                        <span class="star1 star2" data-star="2" onclick="handleRating(@fs.UserId, @fs.FoodListId, 2)">&#9733;</span>
-                                        <span class="star1 star2" data-star="3" onclick="handleRating(@fs.UserId, @fs.FoodListId, 3)">&#9733;</span>
-                                        <span class="star1 star2" data-star="4" onclick="handleRating(@fs.UserId, @fs.FoodListId, 4)">&#9733;</span>
-                                        <span class="star1 star2" data-star="5" onclick="handleRating(@fs.UserId, @fs.FoodListId, 5)">&#9733;</span>
+                                        <span class="star1 star2" data-star="1" onclick="handleRating(@fs.UserId, @fs.FoodListId, 1, '@URIBase.ToString()')">&#9733;</span>
+                                        <span class="star1 star2" data-star="2" onclick="handleRating(@fs.UserId, @fs.FoodListId, 2, '@URIBase.ToString()')">&#9733;</span>
+                                        <span class="star1 star2" data-star="3" onclick="handleRating(@fs.UserId, @fs.FoodListId, 3, '@URIBase.ToString()')">&#9733;</span>
+                                        <span class="star1 star2" data-star="4" onclick="handleRating(@fs.UserId, @fs.FoodListId, 4, '@URIBase.ToString()')">&#9733;</span>
+                                        <span class="star1 star2" data-star="5" onclick="handleRating(@fs.UserId, @fs.FoodListId, 5, '@URIBase.ToString()')">&#9733;</span>
                                     }
                                     else
                                     {
                                         <span class="star1 star2 @(fs.Rate >= 1? "active2" : "")"
-                                            data-star="1" onclick="handleRating(@fs.UserId, @fs.FoodListId, 1)"> &#9733; </span>
+                                                  data-star="1" onclick="handleRating(@fs.UserId, @fs.FoodListId, 1, '@URIBase.ToString()')"> &#9733; </span>
                                         <span class="star1 star2 @(fs.Rate >= 2? "active2" : "")"
-                                              data-star="2" onclick="handleRating(@fs.UserId, @fs.FoodListId, 2)">&#9733;</span>
+                                                  data-star="2" onclick="handleRating(@fs.UserId, @fs.FoodListId, 2, '@URIBase.ToString()')">&#9733;</span>
                                         <span class="star1 star2 @(fs.Rate >= 3? "active2" : "")"
-                                              data-star="3" onclick="handleRating(@fs.UserId, @fs.FoodListId, 3)">&#9733;</span>
+                                                  data-star="3" onclick="handleRating(@fs.UserId, @fs.FoodListId, 3, '@URIBase.ToString()')">&#9733;</span>
                                         <span class="star1 star2 @(fs.Rate >= 4? "active2" : "")"
-                                              data-star="4" onclick="handleRating(@fs.UserId, @fs.FoodListId, 4)">&#9733;</span>
+                                                  data-star="4" onclick="handleRating(@fs.UserId, @fs.FoodListId, 4, '@URIBase.ToString()')">&#9733;</span>
                                         <span class="star1 star2 @(fs.Rate >= 5? "active2" : "")"
-                                              data-star="5" onclick="handleRating(@fs.UserId, @fs.FoodListId, 5)">&#9733;</span>
+                                                  data-star="5" onclick="handleRating(@fs.UserId, @fs.FoodListId, 5, '@URIBase.ToString()')">&#9733;</span>
                                     }
                                 </div>
                             </div>
@@ -400,7 +400,7 @@
         }
     }
     // Set the rating value here
-    displayRating1('@food.Rate');
+    displayRating1('@(food.Rate / 20)');
 </script>
 <script src="~/js/ratingCircle.js"></script>
 <script src="~/js/userActionForFood.js"></script>
