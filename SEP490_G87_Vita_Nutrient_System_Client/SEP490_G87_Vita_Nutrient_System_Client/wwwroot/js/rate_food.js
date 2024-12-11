@@ -26,9 +26,9 @@ stars.forEach(star => {
     });
 });
 
-async function handleRating(userId, foodId, rating) {
+async function handleRating(userId, foodId, rating, baseAPIAddress) {
     try {
-        const response = await fetch("https://localhost:7045/api/UserFoodAction/UserRateFood", {
+        const response = await fetch(baseAPIAddress + "/UserFoodAction/UserRateFood", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

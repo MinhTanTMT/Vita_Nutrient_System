@@ -135,12 +135,12 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (!a)
             {
-                f.Rate = (f.Rate * f.NumberRate + rate) / (f.NumberRate + 1);
+                f.Rate = ((f.Rate / 20 * f.NumberRate) + rate) / (f.NumberRate + 1) * 20;
                 f.NumberRate += 1;
             }
             else
             {
-                f.Rate = (f.Rate * f.NumberRate - fs.Rate + rate) / (f.NumberRate);
+                f.Rate = ((f.Rate / 20 * f.NumberRate) - fs.Rate + rate) / f.NumberRate * 20;
             }
 
             _context.Entry<FoodList>(f).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
