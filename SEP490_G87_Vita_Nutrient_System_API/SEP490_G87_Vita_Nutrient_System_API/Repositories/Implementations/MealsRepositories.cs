@@ -473,6 +473,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public async Task AddMealSettingsDetailAsync(MealSettingsDetail mealSettingsDetail)
         {
+            var existingMeal = await _context.MealSettingsDetails
+       .FirstOrDefaultAsync(m => m.Name.ToLower() == mealSettingsDetail.Name.ToLower() &&
+                                 m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId &&
+                                 m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId);
+
+            if (existingMeal != null)
+            {
+                throw new InvalidOperationException("Tên bữa ăn đã tồn tại");
+            }
             await _context.MealSettingsDetails.AddAsync(mealSettingsDetail);
             await _context.SaveChangesAsync();
         }
@@ -509,6 +518,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         {
             var mealSettingsDetail = await FindMealSettingsDetailByIdAsync(id);
             if (mealSettingsDetail == null) return null;
+            var existingMeal = await _context.MealSettingsDetails
+       .FirstOrDefaultAsync(m => m.Name.ToLower() == model.Name.ToLower() &&
+                                 m.SlotOfTheDayId == model.SlotOfTheDayId &&
+                                 m.DayOfTheWeekId == model.DayOfTheWeekId);
+
+            if (existingMeal != null)
+            {
+                throw new InvalidOperationException("Tên bữa ăn đã tồn tại");
+            }
             //// Cap nhat lai ordernumber
             if (model.OrderNumber != null)
             {

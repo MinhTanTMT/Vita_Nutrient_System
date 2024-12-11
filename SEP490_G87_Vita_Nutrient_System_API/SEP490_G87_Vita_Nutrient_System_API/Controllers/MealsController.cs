@@ -42,9 +42,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 OrderNumber = dto.OrderNumber,
 
             };
-
-            await repositories.AddMealSettingsDetailAsync(mealSettingsDetail);
-
+            try
+            {
+                await repositories.AddMealSettingsDetailAsync(mealSettingsDetail);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            
             return CreatedAtAction(nameof(CreateMealSettingsDetail), mealSettingsDetail);
         }
 
@@ -63,10 +69,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
                 return Ok(new { message = "Bữa ăn đã được thêm vào danh sách và sắp xếp thứ tự thành công." });
             }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(new { message = ex.Message });
-            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = $"Lỗi trong quá trình xử lý: {ex.Message}" });
@@ -78,19 +80,17 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         {
             try
             {
-                // Gọi repository để xử lý cập nhật
                 var updatedMeal = await repositories.EditMealSettingsDetailAsync(id, model);
 
                 if (updatedMeal == null)
                 {
                     return NotFound(new { message = "MealSettingsDetail không tìm thấy." });
-                }
-
+                } 
                 return Ok(new { message = "Cập nhật thành công", updatedMeal });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = $"Lỗi trong quá trình cập nhật: {ex.Message}" });
+                return BadRequest(new { message = ex.Message });
             }
         }
         [HttpPut("UpdateCalo/{id}")]

@@ -86,13 +86,15 @@
     </div>
 
     <div class="modal-footer">
-        <a href="@Url.Action("MealSettingsDetailToList", "Meal", new { userId = userId })"
-            class="btn btn-secondary btn-gray">Trở
-            Lại</a>
         <a href="@Url.Action("CreateMealSettingsDetail", "Meal", new { dayOfTheWeekId = ViewBag.DayOfTheWeekId,userId = userId})"
-            class="btn btn-primary">
+           class="btn btn-primary" style="font-weight: bold; text-align: center; font-family: 'Roboto', sans-serif;background-color: #28a745;">
             <i class="fa fa-plus"></i> Tạo bữa ăn mới
         </a>
+        <a href="@Url.Action("MealSettingsDetailToList", "Meal", new { userId = userId })"
+           class="btn btn-secondary btn-gray" style="font-weight: bold; text-align: center; font-family: 'Roboto', sans-serif;">
+            Trở
+            Lại</a>
+        
     </div>
 </div>
 <script>
