@@ -12,16 +12,16 @@
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">List Nutritionists</h4>
+                <h4 class="card-title">Danh sách chuyên gia</h4>
 
                 <!-- Search form -->
                 <form method="get" action="@Url.Action("ListNutritionist", "Admin")" style="padding: 8px 10px;">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="searchQuery" placeholder="Search by name" value="@searchQuery" />
+                        <input type="text" class="form-control" name="searchQuery" placeholder="Tìm kiếm theo tên" value="@searchQuery" />
                         <div class="input-group-append">
                             <button class="btn btn-success btn-fw" type="submit">
                                 <i class="mdi mdi-magnify"></i>
-                                Search
+                                Tìm kiếm
                             </button>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
 
                 @if (listNutritionists == null || listNutritionists.Count == 0)
                 {
-                    <h1>There is no nutritionist.</h1>
+                    <h1>Hiện không có chuyên gia.</h1>
                 }
                 else
                 {
@@ -38,11 +38,11 @@
                             <thead>
                                 <tr>
                                     <th> # </th>
-                                    <th> Account </th>
-                                    <th> Full name </th>
-                                    <th> Address </th>
-                                    <th> Phone </th>
-                                    <th> Status </th>
+                                    <th> Tên tài khoản </th>
+                                    <th> Họ và tên </th>
+                                    <th> Địa chỉ </th>
+                                    <th> Số điện thoại </th>
+                                    <th> Trạng thái </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,7 +66,7 @@
                                             }
                                         </td>
                                         <td>
-                                            <a class="btn-link" asp-controller="Admin" asp-action="NutritionistDetail" asp-route-nutritionistId="@u.UserId">View</a>
+                                            <a class="btn-link" asp-controller="Admin" asp-action="NutritionistDetail" asp-route-nutritionistId="@u.UserId">Xem</a>
                                         </td>
                                     </tr>
                                 }

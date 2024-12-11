@@ -16,7 +16,7 @@
 
 <div class="foodlist-page">
     <div class="modal-header">
-        <div class="modal-title">List Foods</div>
+        <div class="modal-title">Danh sách món ăn</div>
     </div>
      <div class="grid-margin">
             <div class="card">
@@ -26,12 +26,12 @@
                         <form class="search-block" method="get" action="@Url.Action("FoodList", "User")">
                             <div class="input-group">
                                 <input type="hidden" name="foodTypeId" value="@typeId" />
-                                <input type="text" class="form-control" name="searchQuery" placeholder="Search by name"
+                                <input type="text" class="form-control" name="searchQuery" placeholder="Tìm kiếm theo tên"
                                     value="@searchQuery" />
                                 <div class="input-group-append">
                                     <button class="btn btn-success btn-bg-primary btn-fw" type="submit">
                                         <i class="mdi mdi-magnify"></i>
-                                        Search
+                                        Tìm
                                     </button>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@
                                 <button id="typeFilterButton"
                                     class="btn btn-border-text-primary">@foodType.Name</button>
                                 <ul class="dropdown-menu dropdown-center">
-                                    <li id="0" onclick="updateFoodType(0, 'All types')">All types</li>
+                                    <li id="0" onclick="updateFoodType(0, 'All types')">Tất cả các loại</li>
                                     @foreach (FoodType ft in foodTypes)
                                     {
                                         <li id="@ft.FoodTypeId" onclick="updateFoodType(@ft.FoodTypeId, '@ft.Name')">
@@ -124,3 +124,4 @@
 </div>
 
 <script src="~/js/foodlist.js"></script>
+

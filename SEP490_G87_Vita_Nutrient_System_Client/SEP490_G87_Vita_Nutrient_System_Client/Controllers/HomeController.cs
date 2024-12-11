@@ -214,13 +214,15 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+
+            ViewBag.APIBaseAddress = client.BaseAddress;
             return View();
         }
 
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm, string accountGoogle, string googleAccAuthentication)
+        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm, string accountGoogle)
         {
             
 
@@ -229,16 +231,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 if (!Regex.IsMatch(account, pattern) || !Regex.IsMatch(account, pattern))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Please enter continuous characters without accents and not gmail.";
                     return View();
                 }
                 if (!password.Equals(confirm))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Password mismatch";
                     return View();
                 }
-                if (await checkExsitAsync(account))
+                if (await checkExsitAsync(account, accountGoogle))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Account already exists.";
                     return View();
                 }
@@ -311,12 +316,14 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         }
                         else
                         {
+                            ViewBag.APIBaseAddress = client.BaseAddress;
                             ViewBag.AlertMessage = "Invalid login attempt.";
                             return View();
                         }
                     }
                     else
                     {
+                        ViewBag.APIBaseAddress = client.BaseAddress;
                         ViewBag.AlertMessage = "Invalid login attempt.";
                         return View();
                     }
@@ -324,6 +331,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             catch (Exception ex)
             {
+                ViewBag.APIBaseAddress = client.BaseAddress;
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
                 return View();
             }
@@ -416,9 +424,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [Authorize]
-        public async Task<bool> checkExsitAsync(string account)
+        public async Task<bool> checkExsitAsync(string account, string accGoogle)
         {
-            HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + "/Users/checkExit?account=" + account);
+            HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + $"/Users/checkExit?account={account}&accGoogle={accGoogle}");
             if (respone.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return true;

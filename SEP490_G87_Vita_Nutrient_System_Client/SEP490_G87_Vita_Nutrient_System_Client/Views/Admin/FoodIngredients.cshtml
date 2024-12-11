@@ -45,7 +45,7 @@
                             @if(food.Describe is null || food.Describe.Length == 0)
                             {
                                 <div class="food-name">
-                                    No description
+                                    Không có mô tả
                                 </div>
                             }
                             else
@@ -58,15 +58,15 @@
                     </div>
 
                     <div class="hr">
-                        <div class="hr-content">Ingredients</div>
+                        <div class="hr-content">Nguyên liệu</div>
                     </div>
 
                     <div class="food-ingredients-section">
                         <div class="row" style="background: #d1e7dd;margin: 0; font-weight: bold; padding: 1rem 1.25rem; border: 1px solid rgba(0, 0, 0, 0.125);">
                             <div class="col-1">#</div>
-                            <div class="col-2 text-center">Image</div>
-                            <div class="col-2">Name</div>
-                            <div class="col-6">Description</div>
+                            <div class="col-2 text-center">Ảnh</div>
+                            <div class="col-2">Tên</div>
+                            <div class="col-6">Mô tả</div>
                             <div class="col-1"></div>
                         </div>
                         @for (int i = 0; i < foodIngre.Count; i++)
@@ -105,7 +105,7 @@
                     </div>
 
                     <div class="hr">
-                        <div class="hr-content">Add Ingredient</div>
+                        <div class="hr-content">Thêm nguyên liệu</div>
                     </div>
 
                     <div class="add-ingre-section">
@@ -117,7 +117,7 @@
                                 <div class="col-6">
                                     <div class="selectBox">
                                         <input type="text" class="search-box"
-                                               placeholder="Select ingredient to add" name="ingreName">
+                                               placeholder="Chọn nguyên liệu để thêm" name="ingreName">
                                         <ul class="options1">
                                             <ul class="options">
                                                 @foreach(var i in allIngre)
@@ -131,12 +131,12 @@
 
                                 <div class="col-3">
                                     <div class="form-group">
-                                        <input type="number" name="amount" min="0" value="" placeholder="Ingredients amount" required />
+                                        <input type="number" name="amount" min="0" value="" placeholder="Số lượng nguyên liệu" required />
                                     </div>
                                 </div>
 
                                 <div class="col-1">
-                                    <button type="submit" class="btn btn-gradient-primary me-2">Add</button>
+                                    <button type="submit" class="btn btn-gradient-primary me-2">Thêm</button>
                                 </div>
                             </div>
                         </form>

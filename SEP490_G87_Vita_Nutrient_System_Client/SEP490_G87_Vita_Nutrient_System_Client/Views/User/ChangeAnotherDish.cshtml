@@ -21,14 +21,14 @@
         <div class="flex items-center mb-6">
             <h1 class="text-2xl font-bold text-gray-800">@Model.NameSlotOfTheDay</h1>
             <div class="ml-4 flex items-center space-x-2 text-gray-500">
-                <span class="text-sm">Normal</span>
-                <span>|</span>
+                <span class="text-sm">Danh sách món theo bữa</span>
+@*                 <span>|</span>
                 <span class="text-sm">Simple</span>
                 <span>|</span>
-                <span class="text-sm">Breakfast</span>
-                <a href="#" class="text-blue-500 underline ml-2">Edit</a>
+                <span class="text-sm">Breakfast</span> 
+                <a href="#" class="text-blue-500 underline ml-2">Edit</a> *@
             </div>
-            <div class="ml-auto text-orange-500 font-bold text-lg">458 Calories</div>
+            <div class="ml-auto text-orange-500 font-bold text-lg">458 Calo</div>
         </div>
 
 
@@ -63,7 +63,7 @@
             <button id="btnEntireMeal" class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg"
                     onclick="highlightButton('btnEntireMeal'); changeAllTheDishesCurrentMeal(@jsonListFoodId, @Model.SettingDetail)">
                 <i class="fas fa-expand-arrows-alt cursor-pointer mr-4"></i>
-                <span class="flex-grow text-left">Entire meal</span>
+                <span class="flex-grow text-left">Toàn bộ bữa ăn</span>
             </button>
 
             <!-- Các nút món ăn -->
@@ -90,10 +90,10 @@
 
         <!-- Tabs Section -->
         <div class="flex space-x-4 mb-4">
-            <button id="btn1" class="text-orange-500 font-semibold" onclick="loadFoodType(0, 'btn1')">Suggestions</button>
-            <button id="btn2" class="text-gray-500" onclick="loadFoodType(1, 'btn2')">Like</button>
-            <button id="btn3" class="text-gray-500" onclick="loadFoodType(2, 'btn3')">Collections</button>
-            <button id="btn4" class="text-gray-500" onclick="loadFoodType(3, 'btn4')">Recent</button>
+            <button id="btn1" class="text-orange-500 font-semibold" onclick="loadFoodType(0, 'btn1')">Đề xuất</button>
+            <button id="btn2" class="text-gray-500" onclick="loadFoodType(1, 'btn2')">Thích</button>
+            <button id="btn3" class="text-gray-500" onclick="loadFoodType(2, 'btn3')">Bộ sưu tập</button>
+@*             <button id="btn4" class="text-gray-500" onclick="loadFoodType(3, 'btn4')">Recent</button> *@
         </div>
 
         <!-- Suggestions Section -->
@@ -103,11 +103,11 @@
 
 
         <!-- Show More Button -->
-        <div class="flex justify-center mt-6">
+@*         <div class="flex justify-center mt-6">
             <button class="text-gray-500 text-sm flex items-center">
                 <i class="fas fa-angle-down mr-1"></i> Show More
             </button>
-        </div>
+        </div> *@
     </div>
 
 
@@ -203,7 +203,7 @@
                             trayDiv.append(`
                     <div class="flex items-center justify-between w-full mt-2">
                         <span class="text-orange-400 text-sm">${totalCalories} Calories</span>
-                        <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="getThisListOfDishes(${index})">Pick</button>
+                        <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="getThisListOfDishes(${index})">Chọn</button>
                     </div>
                 `);
                             ListFoodDiv.append(trayDiv);
@@ -266,8 +266,8 @@
                             <h3 class="text-white font-semibold">${item2.foodData.name}</h3>
                             <p class="text-sm text-gray-300">${item2.foodData.describe}</p>
                             <div class="flex items-center justify-between w-full mt-2">
-                                <span class="text-orange-400 text-sm">${parseFloat(item2.foodData.ingredientDetails100gDTO.energy).toFixed(2)} Calories</span>
-                                <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="SelectReplaceCurrentFood(@Model.SlotOfTheDay, @Model.SettingDetail, ${foodListId}, '-', @ViewBag.userId, '@ViewBag.myDay', ${positionFood}, @Model.OrderSettingDetail, ${item2.foodData.foodListId})">Pick</button>
+                                <span class="text-orange-400 text-sm">${parseFloat(item2.foodData.ingredientDetails100gDTO.energy).toFixed(2)} Calo</span>
+                                <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="SelectReplaceCurrentFood(@Model.SlotOfTheDay, @Model.SettingDetail, ${foodListId}, '-', @ViewBag.userId, '@ViewBag.myDay', ${positionFood}, @Model.OrderSettingDetail, ${item2.foodData.foodListId})">Chọn</button>
                             </div>
                         </div>
                     `;
