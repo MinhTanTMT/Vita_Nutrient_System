@@ -8,11 +8,19 @@
 
 <div class="container page-content">
     <div class="modal-header">
-        <h2 class="modal-title">Bố cục bữa ăn</h2>
+        <h1 class="modal-title" style="color: var(--second-color);">
+            Danh sách bữa ăn
+        </h1>
     </div>
+
     <form asp-action="EditMealSettingsDetail" asp-route-id="@Model.Id" method="post">
         <input type="hidden" asp-for="MealSettingsId" />
-
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.ErrorMessage
+            </div>
+        }
         <div class="form-group">
             <label for="Name">Tên bữa ăn</label>
             <input asp-for="Name" class="form-control" maxlength="51" />
@@ -98,9 +106,10 @@
         </div>
 
         <div class="action-group d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary" style="font-weight: bold; text-align: center; font-family: 'Roboto', sans-serif;background-color: #28a745;">Lưu thay đổi</button>
         <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = Model.DayOfTheWeekId , userId =@ViewBag.UserId})"
             class="btn btn-secondary btn-danger">Hủy</a>
-            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            
         </div>
 
     </form>

@@ -93,10 +93,9 @@
 
         <!-- Micronutrients -->
         <h4 class="fontcs-weight-bold mb-3">Vi chất dinh dưỡng</h4>
-        <div class="title mb-2 ml-2 font-15 fontcs-weight-600">Chất xơ tối thiểu (g)</div>
+        <div class="title mb-2 ml-2 font-15 fontcs-weight-600">Chất xơ tối thiểu (g) </div>
         <div class="form-group ml-2">
-            <!-- Đổi span thành input để cho phép cập nhật qua JavaScript -->
-            <input asp-for="MinimumFiber" type="number" class="form-control fiber-min-input" />
+            <input asp-for="MinimumFiber" type="number" class="form-control fiber-min-input" id="MinimumFiber" />
             <span asp-validation-for="MinimumFiber" class="text-danger"></span>
         </div>
 
@@ -181,9 +180,10 @@
         <input asp-for="ViewBagProteinMax" type="hidden" value="@ViewBag.ProteinMax" />
         <!-- Save Button -->
         <div class="action-group d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-primary">Lưu</button>
             <a href="@Url.Action("MealSettingsDetailToList", "Meal",new { userId = @ViewBag.UserId })"
                 class="btn btn-secondary btn-danger">Hủy</a>
-            <button type="submit" class="btn btn-primary">Lưu</button>
+            
         </div>
     </form>
 </div>
@@ -214,8 +214,12 @@
         caloriesInput.addEventListener('blur', function () {
             const calories = parseInt(caloriesInput.value);
 
-            if (isNaN(calories) || calories < 2) {
-                alert("Calories phải lớn hơn hoặc bằng 2.");
+            if (isNaN(calories) || calories < 2 ) {
+                alert("Calories phải lớn hơn hoặc bằng 2.");    
+                caloriesInput.value = initialCalories;
+                return;
+            } else if (calories > 9000){
+                alert("Calories không được vượt quá 9000.");
                 caloriesInput.value = initialCalories;
                 return;
             }
@@ -513,6 +517,22 @@
         initializeRemoveButtons();
     });
 
+    document.getElementById('MinimumFiber').addEventListener('input', function () {
+        const caloriesInput = document.getElementById('caloriesInput');
+        const calories = parseInt(caloriesInput.value);
+
+        var value = parseFloat(this.value);
+        var minValue = 0; // Giá trị tối thiểu
+        var maxValue = Math.round((calories / 1000) * 25); // Công thức tính giá trị tối đa
+
+        if (this.value === "") {
+            this.setCustomValidity("Giá trị chất xơ không được để trống.");
+        } else if (value < minValue || value > maxValue) {
+            this.setCustomValidity("Giá trị chất xơ phải trong khoảng từ " + minValue + " đến " + maxValue + " g.");
+        } else {
+            this.setCustomValidity("");
+        }
+    });
 
 
 </script>
