@@ -30,7 +30,8 @@
                         <h4 class="font-weight-normal mb-3">
                         Tiền vào tháng này <i class="mdi mdi-chart-line mdi-24px float-right"></i>
                         </h4>
-                    <h2 class="mb-5">@ViewBag.MoneyInThisMonth</h2>
+                    @* <h2 class="mb-5">@ViewBag.MoneyInThisMonth</h2> *@
+                    <h2 class="mb-5">@ViewBag.MoneyInThisMonth.ToString("#,##0.##")</h2>
                         @* <h6 class="card-text">Increased by 60%</h6> *@
                     </div>
                 </div>
@@ -42,7 +43,8 @@
                         <h4 class="font-weight-normal mb-3">
                         Tiền ra tháng này <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                         </h4>
-                    <h2 class="mb-5">@ViewBag.MoneyOutThisMonth</h2>
+                    <h2 class="mb-5">@ViewBag.MoneyOutThisMonth.ToString("#,##0.##")</h2>
+
                         @* <h6 class="card-text">Decreased by 10%</h6> *@
                     </div>
                 </div>
@@ -53,8 +55,11 @@
                         <img src="~/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
                         <h4 class="font-weight-normal mb-3">
                         Tài khoản tháng này <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                        Tài khoản tháng này <i class="mdi mdi-diamond mdi-24px float-right"></i>
                         </h4>
-                    <h2 class="mb-5">@ViewBag.BalanceThisMonth</h2>
+                    @* <h2 class="mb-5">@ViewBag.BalanceThisMonth</h2> *@
+                    <h2 class="mb-5">@ViewBag.BalanceThisMonth.ToString("#,##0.##")</h2>
+
                         @* <h6 class="card-text">Increased by 5%</h6> *@
                     </div>
                 </div>
@@ -95,7 +100,7 @@
                                     <th> Tiền vào </th>
                                     <th> Trạng thái </th>
                                     <th> Ngày giao dịch </th>
-                                    <th> Nội dung giao dịch </th>
+                                    <th> Tài khoản nhận giao dịch </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -114,7 +119,7 @@
                                         <td>
                                             @(transaction.TransactionDate != null ? transaction.TransactionDate : "Trong Tiến Trình")
                                         </td>
-                                        <td> @(transaction.TransactionContent != null ? transaction.TransactionContent : "Trong Tiến Trình") </td>
+                                        <td> @(transaction.AccountNumber != null ? transaction.AccountNumber : "Trong Tiến Trình") </td>
                                     </tr>
                                     }
                                 </tbody>
@@ -759,7 +764,7 @@
 
       var trafficChartData = {
         datasets: [{
-          data: [30, 30, 40],
+                        data: [@ViewBag.MoneyOutThisMonth, @ViewBag.BalanceThisMonth, @ViewBag.MoneyInThisMonth], // cho nay @ViewBag.MoneyInThisMonth @ViewBag.MoneyOutThisMonth @ViewBag.BalanceThisMonth
           backgroundColor: [
             gradientStrokeBlue,
             gradientStrokeGreen,
@@ -806,7 +811,7 @@
               if (trafficChartData.labels[i]) { 
                   text.push(trafficChartData.labels[i]); 
               }
-              text.push('<span class="float-right">'+trafficChartData.datasets[0].data[i]+"%"+'</span>')
+              text.push('<span class="float-right">'+trafficChartData.datasets[0].data[i]+" VND"+'</span>')
               text.push('</li>'); 
           } 
           text.push('</ul>'); 

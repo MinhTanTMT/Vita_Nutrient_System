@@ -136,7 +136,7 @@
                                 </a>
                             </td>
                             <td>@food.Name</td>
-                            <td>@food.Describe</td>
+                            <td style="max-width: 200px; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis;">@food.Describe</td>
                             <td>@food.Rate</td>
                             <td>@food.NumberRate</td>
                             <td>@food.FoodTypeName</td>
@@ -537,9 +537,9 @@
             <thead class="table-dark">
                 <tr>
                     <th>Tên bệnh</th>
-                    <th>Mô tả bệnh</th>
+                    @* <th>Mô tả bệnh</th> *@
                     <th>Tên món ăn</th>
-                    <th>Mô tả món ăn</th>
+@*                     <th>Mô tả món ăn</th> *@
                     <th>Mô tả</th>
                     <th>Tốt hay xấu</th>
                     <th>Hành động</th>
@@ -550,9 +550,9 @@
                 {
                     <tr>
                         <td>@item.DiseaseName</td>
-                        <td>@item.DiseaseDescribe</td>
+                        @* <td>@item.DiseaseDescribe</td> *@
                         <td>@item.FoodName</td>
-                        <td>@item.FoodDescribe</td>
+@*                         <td>@item.FoodDescribe</td> *@
                         <td>@item.Describe</td>
                         <td>
                             @if (item.IsGoodOrBad)
