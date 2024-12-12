@@ -62,7 +62,7 @@
                                         }
                                         else
                                         {
-                                            <img src="~/images/@ingre.Urlimage" alt="@ingre.Name"
+                                            <img src="@ingre.Urlimage" alt="@ingre.Name"
                                                     onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 100%; height: auto; border-radius: 5px;" />
                                         }
                                     </div>
@@ -154,7 +154,7 @@
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
         <div class="modal1-body">
-            <form id="ingredientForm" asp-controller="Admin" asp-action="AddIngredient" method="post">
+            <form id="ingredientForm" asp-controller="Admin" asp-action="AddIngredient" method="post" enctype="multipart/form-data">
                 <label>Name:</label>
                 <input class="ms-auto" type="text" name="in_name" required/>
 
@@ -162,7 +162,7 @@
                 <input class="ms-auto" type="text" name="in_desc" />
 
                 <label>Url image:</label>
-                <input class="ms-auto" type="text" name="in_imgurl" />
+                <input type="file" name="urlimg" accept="image/jpeg, image/png, image/jpg" class="form-control ms-auto" placeholder="Ingredient Image">
 
                 <label>Key note:</label>
                 <select class="form-select ms-auto" name="keynoteId">

@@ -1,6 +1,6 @@
-﻿async function toggleLike(userId, foodId) {
+﻿async function toggleLike(userId, foodId, baseAPIAddress) {
     try {
-        const response = await fetch("https://localhost:7045/api/UserFoodAction/UserLikeOrUnlikeFood", {
+        const response = await fetch(baseAPIAddress+ "/UserFoodAction/UserLikeOrUnlikeFood", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -26,9 +26,9 @@
     }
 }
 
-async function toggleSave(userId, foodId) {
+async function toggleSave(userId, foodId, baseAPIAddress) {
     try {
-        const response = await fetch("https://localhost:7045/api/UserFoodAction/UserSaveOrUnsaveFood", {
+        const response = await fetch(baseAPIAddress + "/UserFoodAction/UserSaveOrUnsaveFood", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -54,9 +54,9 @@ async function toggleSave(userId, foodId) {
     }
 }
 
-async function blockFood(userId, foodId) {
+async function blockFood(userId, foodId, baseAPIAddress) {
     try {
-        const response = await fetch("https://localhost:7045/api/UserFoodAction/UserBlockFood", {
+        const response = await fetch(baseAPIAddress + "/UserFoodAction/UserBlockFood", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -75,9 +75,9 @@ async function blockFood(userId, foodId) {
     }
 }
 
-async function handleRecurChange(userId, foodId, recurId) {
+async function handleRecurChange(userId, foodId, recurId, baseAPIAddress) {
     try {
-        const response = await fetch("https://localhost:7045/api/UserFoodAction/UserSetRecurFood", {
+        const response = await fetch(baseAPIAddress + "/UserFoodAction/UserSetRecurFood", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

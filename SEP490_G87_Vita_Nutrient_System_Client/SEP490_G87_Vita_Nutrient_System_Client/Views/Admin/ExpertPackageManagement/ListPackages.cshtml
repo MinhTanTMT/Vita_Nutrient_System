@@ -3,6 +3,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    Uri URIBase = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<Uri>("myUri");
     List<ExpertPackageResponse> listPackages = ViewBag.packages;
     List<ExpertPackageResponse.User> nutritionists = ViewBag.nutritionists;
     int currentPage = ViewBag.CurrentPage;
@@ -68,7 +69,7 @@
                                         <td> @u.Package.Duration </td>
                                         <td class="d-flex align-items-center justify-content-between">
                                             <div class="action-icon" id="edit-@u.Package.Id"
-                                                 onclick="openModalUpdate(@u.Package.Id, '@u.Package.Name', '@u.Package.Describe', '@u.Package.Price', '@u.Package.Duration', @userJson);">
+                                                 onclick="openModalUpdate(@u.Package.Id, '@u.Package.Name', '@u.Package.Describe', '@u.Package.Price', '@u.Package.Duration', @userJson, '@URIBase.ToString()');">
                                                 <i class="mdi mdi-pencil"></i>
                                             </div>
 
@@ -200,7 +201,7 @@
                             </option>
                         }
                     </select>
-                    <button class="btn-save myBtn" onclick="AddNutri();">Thêm</button>
+                    <button class="btn-save myBtn" onclick="AddNutri('@URIBase.ToString()');">Thêm</button>
                 </div>
 
             </div>

@@ -53,7 +53,8 @@ else
                         </div>
 
                         <div class="description">
-                            <form id="upAvaForm" asp-controller="User" asp-action="UploadAvatar" method="post">
+                            <form id="upAvaForm" asp-controller="User" asp-action="UploadAvatar" method="post"
+                                  enctype="multipart/form-data">
                                 <input type="hidden" name="page" value="nutritionist" />
                                 <input type="hidden" name="userId" value="@u.UserId" />
                                 <label for="fileInput" class="upload-button">Tải ảnh lên</label>

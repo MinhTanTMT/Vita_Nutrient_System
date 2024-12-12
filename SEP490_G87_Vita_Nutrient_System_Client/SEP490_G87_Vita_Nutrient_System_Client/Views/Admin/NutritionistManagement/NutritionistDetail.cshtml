@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    User nutritionist = ViewBag.nutritionist;
+    User nutritionist = ViewBag.nutritionist; Uri URIBase = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetValue<Uri>("myUri");
     ExpertPackage package = ViewBag.package;
 }
 <link rel="stylesheet" href="~/css/nutritionistDetail.css">
@@ -151,7 +151,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-3">
-                                <button id="btnSaveRole" onclick="SaveRole(@nutritionist.UserId, 'nutri')">Lưu vai trò</button>
+                                <button id="btnSaveRole" onclick="SaveRole(@nutritionist.UserId, 'nutri', '@URIBase.ToString()')">Lưu vai trò</button>
                             </div>
                         </div>
                     </div>
