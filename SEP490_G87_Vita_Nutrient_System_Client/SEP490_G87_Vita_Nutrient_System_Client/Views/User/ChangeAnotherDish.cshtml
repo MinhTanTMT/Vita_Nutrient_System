@@ -28,7 +28,7 @@
                 <span class="text-sm">Breakfast</span> 
                 <a href="#" class="text-blue-500 underline ml-2">Edit</a> *@
             </div>
-            <div class="ml-auto text-orange-500 font-bold text-lg">458 Calo</div>
+            <div class="ml-auto text-orange-500 font-bold text-lg">Thay đổi theo sở thích của bạn</div>
         </div>
 
 
@@ -75,9 +75,10 @@
                     <button id="btnFood@food.foodData.FoodListId_@index" class="flex items-center w-full bg-gray-700 text-white p-4 rounded-lg"
                             onclick="highlightButton('btnFood@food.foodData.FoodListId_@index'); changeOneDishCurrentMeal(@jsonListFoodId, @food.foodData.FoodListId, @food.positionFood, @Model.SettingDetail)">
                         <i class="fas fa-expand-arrows-alt cursor-pointer mr-4"></i>
-                        <img src="~/images/@food.foodData.Urlimage" alt="@food.foodData.Name" class="w-10 h-10 rounded mr-4">
+                        <img src="@food.foodData.Urlimage" alt="@food.foodData.Name" class="w-10 h-10 rounded mr-4">
                         <span class="flex-grow text-left">@food.foodData.Name</span>
-                        <span>@food.foodData.Describe</span>
+                        @* <span>@food.foodData.Describe</span> *@
+                        <span>@food.foodData.IngredientDetails100gDTO.Energy.ToString("F2") Calo</span>
                     </button>
                     index++;
                 }
@@ -188,10 +189,10 @@
                             $.each(item.foodIdData, function (index2, item2) {
                                 var foodItem = `
                         <div class="flex items-center mb-2">
-                            <img src="/images/${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-10 h-10 object-cover rounded mr-2">
+                            <img src="${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-10 h-10 object-cover rounded mr-2">
                             <div class="flex flex-col">
                                 <h3 class="text-blue-400 font-semibold">${item2.foodData.name}</h3>
-                                <p class="text-sm text-gray-300">1 serving</p>
+                                <p class="text-sm text-gray-300">1 món</p>
                             </div>
                         </div>
                     `;
@@ -202,7 +203,7 @@
 
                             trayDiv.append(`
                     <div class="flex items-center justify-between w-full mt-2">
-                        <span class="text-orange-400 text-sm">${totalCalories} Calories</span>
+                        <span class="text-orange-400 text-sm">${totalCalories} Calo</span>
                         <button class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm" onclick="getThisListOfDishes(${index})">Chọn</button>
                     </div>
                 `);
@@ -262,7 +263,7 @@
                                 if (!jsonListFoodId.includes(item2.foodData.foodListId)) {
                                     var rowContent = `
                         <div class="bg-gray-700 text-white p-4 rounded-lg flex flex-col items-start">
-                            <img src="/images/${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-full h-24 object-cover rounded mb-2">
+                            <img src="${item2.foodData.urlimage}" alt="${item2.foodData.name}" class="w-full h-24 object-cover rounded mb-2">
                             <h3 class="text-white font-semibold">${item2.foodData.name}</h3>
                             <p class="text-sm text-gray-300">${item2.foodData.describe}</p>
                             <div class="flex items-center justify-between w-full mt-2">

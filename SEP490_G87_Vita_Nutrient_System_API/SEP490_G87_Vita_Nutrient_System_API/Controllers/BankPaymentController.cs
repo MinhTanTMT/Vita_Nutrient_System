@@ -62,7 +62,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
             dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3)));
             dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4)));
 
-            //return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
+
+            return Ok(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(dataCollection));
 
             //UsersRepositories usersRepositories = new UsersRepositories();
 

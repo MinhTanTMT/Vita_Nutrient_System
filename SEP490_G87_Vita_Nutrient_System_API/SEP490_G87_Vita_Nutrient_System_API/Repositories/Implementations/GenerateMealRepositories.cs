@@ -73,7 +73,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
   
             List<short> allFoodTypeSelect = dataDietWithFoodType.Where(x => x.DietTypeId == nutritionTargetsDaily.FoodTypeIdWant).Select(x => x.FoodTypeId).ToList();
             IEnumerable<FoodSelection> foodSelectionOfUser = await _context.FoodSelections.Where(x => x.UserId == idUser).ToListAsync(); 
-            IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => allFoodTypeSelect.Contains(x.FoodTypeId)).ToListAsync();
+            IEnumerable<FoodList> idFoodListSystemFilterDishType = await _context.FoodLists.Where(x => allFoodTypeSelect.Contains(x.FoodTypeId) && x.IsActive == true).ToListAsync();  // đã bổ sung chỉ món active mới đc chọn
 
             List<int> idFoodListSystemCollection = new List<int>();
 

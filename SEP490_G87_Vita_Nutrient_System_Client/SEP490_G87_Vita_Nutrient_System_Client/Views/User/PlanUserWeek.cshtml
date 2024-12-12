@@ -113,7 +113,7 @@
                                     @foreach (var item3 in item2.foodDataOfSlot)
                                     {
                                         <div class="flex items-center justify-between mb-2">
-                                            <p class="text-sm text-gray-400">1 Meal</p>
+                                            <p class="text-sm text-gray-400">1 Khay</p>
                                             <button class="text-gray-400" onclick="ChanceFoodTheMeal(@item2.SlotOfTheDay, @item3.SettingDetail, @item3.OrderSettingDetail, '@item.DayOfWeek')">
                                                 <i class="fas fa-ellipsis-v"></i>
                                             </button>
@@ -122,10 +122,11 @@
                                         {
                                             <ul class="space-y-2">
                                                 <li class="flex items-start" onclick="getMealDetail(@item4.idFood)">
-                                                    <img src="@Url.Content("~/images/" + item4.foodData.Urlimage)" alt="Meal Image" class="w-12 h-12 rounded mr-3" style="margin-bottom: 3px">
+                                                    @* <img src="@Url.Content("~/images/" + item4.foodData.Urlimage)" alt="Meal Image" class="w-12 h-12 rounded mr-3" style="margin-bottom: 3px"> *@
+                                                    <img src="@Url.Content(item4.foodData.Urlimage)" alt="Meal Image" class="w-12 h-12 rounded mr-3" style="margin-bottom: 3px">
                                                     <div>
                                                         <p class="text-blue-400 font-semibold meal-item-title">@item4.foodData.Name</p>
-                                                        <p class="text-gray-400 meal-item-description">@item4.foodData.Describe</p>
+                                                        <p class="text-gray-400 meal-item-description">@item4.foodData.IngredientDetails100gDTO.Energy.ToString("F2") Calo</p>
                                                     </div>
                                                 </li>
                                             </ul>
