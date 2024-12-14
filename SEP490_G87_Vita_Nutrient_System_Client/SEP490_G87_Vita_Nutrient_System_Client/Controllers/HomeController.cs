@@ -34,25 +34,35 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<ArticlesNews> latestArticles = new List<ArticlesNews>();
 
-            // Gọi API để lấy 3 bài viết mới nhất
-            HttpResponseMessage response = await client.GetAsync("/api/news/latest");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var data = await response.Content.ReadAsStringAsync();
-                latestArticles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+                List<ArticlesNews> latestArticles = new List<ArticlesNews>();
+
+                // Gọi API để lấy 3 bài viết mới nhất
+                HttpResponseMessage response = await client.GetAsync("/api/news/latest");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    latestArticles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Error fetching latest articles from API.");
+                }
+
+                // Truyền dữ liệu bài viết mới nhất đến View
+                return View(latestArticles);
             }
-            else
+            catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Error fetching latest articles from API.");
+                return RedirectToAction("Error", "Home");
             }
 
-            // Truyền dữ liệu bài viết mới nhất đến View
-            return View(latestArticles);
         }
 
 
@@ -216,6 +226,13 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
 
             ViewBag.APIBaseAddress = client.BaseAddress;
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Error()
+        {
+
             return View();
         }
 

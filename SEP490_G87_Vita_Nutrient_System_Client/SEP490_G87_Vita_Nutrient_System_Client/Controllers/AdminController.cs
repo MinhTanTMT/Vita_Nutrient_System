@@ -114,17 +114,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                             return View();
                         }
                         ViewBag.AlertMessage = "Error";
-                        return Redirect("Error ABC");
+                        return RedirectToAction("Error", "Home"); ;
                     }
 
                 }
                 ViewBag.AlertMessage = "Error";
-                return Redirect($"Error CDE {accountNumber}== {limit}== {amountInPay}== {contentBankPay}== {amountWithoutDecimal}== {contentBankImg}==");
+                return RedirectToAction("Error", "Home"); ;
             }
             catch (Exception ex)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
-                return Redirect("Error EFG");
+                return RedirectToAction("Error", "Home"); ;
             }
         }
 

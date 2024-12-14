@@ -57,7 +57,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     rootObjectFoodListWeek = JsonConvert.DeserializeObject<List<DataFoodAllDayOfWeek>>(data);
                 }
-                else return RedirectToAction("Error2");
+                else return RedirectToAction("Error", "Home");
             }
             else
             {
@@ -71,9 +71,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 //        string data = await content.ReadAsStringAsync();
                 //        rootObjectFoodListWeek = JsonConvert.DeserializeObject<List<DataFoodAllDayOfWeek>>(data);
                 //    }
-                //    else return RedirectToAction("Error2");
+                //    else return RedirectToAction("Error", "Home");
                 //}
                 return RedirectToAction("NutritionistServices", "Admin");
+
+                
             }
 
 
@@ -109,7 +111,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                     rootObjectFoodList = JsonConvert.DeserializeObject<List<DataFoodListMealOfTheDay>>(data);
                 }
-                else return RedirectToAction("Error2");
+                else return RedirectToAction("Error", "Home");
             }
             else
             {
@@ -123,7 +125,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         string data = await content.ReadAsStringAsync();
                         rootObjectFoodList = JsonConvert.DeserializeObject<List<DataFoodListMealOfTheDay>>(data);
                     }
-                    else return RedirectToAction("Error2");
+                    else return RedirectToAction("Error", "Home");
                 }
                 else return RedirectToAction("NutritionistServices", "Admin");
 
@@ -193,7 +195,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else
             {
-                return Redirect("Loi me roi" + myDay);
+                return RedirectToAction("Error", "Home"); ;
             }
 
         }
@@ -220,7 +222,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else
             {
-                return Redirect("Loi me roi");
+                return RedirectToAction("Error", "Home");
             }
 
         }
@@ -246,7 +248,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             else
             {
-                return Redirect("Loi me roi");
+                return RedirectToAction("Error", "Home");
             }
 
         }
