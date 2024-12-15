@@ -1,8 +1,11 @@
-﻿namespace SEP490_G87_Vita_Nutrient_System_Client.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SEP490_G87_Vita_Nutrient_System_Client.Models
 {
     public class NutritionTargetOfMeal
     {
         public int? NutritionTargetsDailyId { get; set; }
+        [MaxLength(100, ErrorMessage = "Tiêu đề không được vượt quá 100 ký tự.")]
         public string? Title { get; set; }
         public short? Calories { get; set; }
         public short? CarbsMin { get; set; }
