@@ -767,7 +767,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     keyNoteId = keynoteId,
                     name = in_name,
                     describe = in_desc,
-                    urlimage = "/images/ingredients/" + Path.GetFileName(urlimg.FileName),
+                    urlimage = urlimg is null ? null : "/images/ingredients/" + Path.GetFileName(urlimg.FileName),
                     typeOfCalculationId = typeOfCalculationId
                 };
 
@@ -780,19 +780,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Add ingredient failed! Please try again!";
+                    TempData["AlertMessage"] = "Add ingredient failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Add ingredient successfully!";
+                    TempData["SuccessMessage"] = "Add ingredient successfully!";
                 }
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
 
-            return await IngredientsList();
+            return RedirectToAction("IngredientsList", "Admin");
         }
 
         [HttpGet("admin/ingredientmanagement/updateingredient/{Id}")]
