@@ -5,6 +5,7 @@ using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -319,7 +320,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     UserId = userId,
                     NameCreater = article.NameCreater,
                     Title = article.Title,
-                    Content = article.Content,
+                    Content = Regex.Replace(article.Content, @"<\/?p>", ""),
                     IsActive = article.IsActive ?? true,
                     DateCreated = article.DateCreated ?? DateTime.Now,
                     HeaderImage = article.HeaderImage
@@ -442,7 +443,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     UserId = userId,
                     NameCreater = article.NameCreater,
                     Title = article.Title,
-                    Content = article.Content,
+                    Content = Regex.Replace(article.Content, @"<\/?p>", ""),
                     IsActive = article.IsActive,
                     DateCreated = article.DateCreated,
                     HeaderImage = article.HeaderImage,

@@ -6,7 +6,7 @@
     <h1 class="page-title">Tin Tức Dinh Dưỡng</h1>
     <form asp-action="IndexForUsers" method="get" class="mb-3">
         <div class="input-group">
-            <input type="text" name="searchTitle" class="form-control" placeholder="Tìm kiếm theo tiêu đề..." value="@ViewData["searchTitle"]" />
+            <input type="text" name="searchTitle" class="form-control" placeholder="Tìm kiếm theo tiêu đề..." value="@ViewData["searchTitle"]" maxlength="200"/>
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
         </div>
     </form>

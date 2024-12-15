@@ -122,7 +122,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
             // Chuyển hướng về trang chủ sau khi thành công
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("UserPhysicalStatistics", "Home");
         }
 
 

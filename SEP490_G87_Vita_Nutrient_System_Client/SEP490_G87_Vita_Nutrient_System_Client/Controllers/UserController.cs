@@ -387,6 +387,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         [HttpGet("foodDetails/{foodId}")]
+         
         public async Task<IActionResult> FoodDetails(int foodId)
         {
             try
