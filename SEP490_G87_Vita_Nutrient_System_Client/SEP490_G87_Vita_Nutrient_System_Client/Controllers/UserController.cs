@@ -480,6 +480,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                if (User.FindFirst("UserId") is null)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
                 // Lấy thông tin người dùng
@@ -567,6 +572,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                if (User.FindFirst("UserId") is null)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
                 HttpResponseMessage response = await client.GetAsync(
@@ -607,6 +616,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                if (User.FindFirst("UserId") is null)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
                 HttpResponseMessage response = await client.GetAsync(
