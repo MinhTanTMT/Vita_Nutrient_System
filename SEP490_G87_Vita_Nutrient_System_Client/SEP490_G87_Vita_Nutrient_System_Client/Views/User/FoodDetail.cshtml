@@ -7,7 +7,7 @@
     string foodSlots = ViewBag.foodSlots;
     List<dynamic> ingredients = ViewBag.ingredients;
     FoodSelection fs = ViewBag.fs;
-    var recurSettings = Enum.GetValues(typeof(RecurSettings)).Cast<RecurSettings>();
+    // var recurSettings = Enum.GetValues(typeof(RecurSettings)).Cast<RecurSettings>();
 }
 
 <link rel="stylesheet" href="~/css/fooddetails.css">
@@ -116,7 +116,7 @@
                             }
                             else
                             {
-                                <img src="~/images/@food.Urlimage" alt="@food.Name"
+                                <img src="@food.Urlimage" alt="@food.Name"
                                      onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="border-radius: 5px; width: 100%;" />
                             }
 
@@ -163,7 +163,7 @@
 
                             <div style="padding-top: 10px; font-size:x-large;">
                                 <i class="mdi mdi-calendar-check"></i>
-                                Planned for @foodSlots
+                                Chuẩn bị cho @foodSlots
                             </div>
 
                             <div style="padding-left: 12px;">
@@ -190,7 +190,7 @@
                                                     }
                                                     else
                                                     {
-                                                        <img src="~/images/@x.urlimage" alt="@x.name"
+                                                        <img src="@x.urlimage" alt="@x.name"
                                                              onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 60px; height: auto; border-radius: 5px;" />
                                                     }
                                                 </div>

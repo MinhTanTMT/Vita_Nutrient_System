@@ -15,8 +15,8 @@
 <link rel="stylesheet" href="~/css/toast.css" />
 
 
-<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" onchange="showErrorToast(e.target.value);" />
-<input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+<input type="hidden" name="errMsg" value="@TempData["AlertMessage"]" onchange="showErrorToast(e.target.value);" />
+<input type="hidden" name="successMsg" value="@TempData["SuccessMessage"]" />
 
 <div class="row" style="width: 100%;">
     <div class="col-12 grid-margin">
@@ -44,7 +44,7 @@
                 else
                 {
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="lp">
                             <thead>
                                 <tr>
                                     <th> # </th>
@@ -64,7 +64,7 @@
                                         }
                                         <td>@(i + 1)</td>
                                         <td>@u.Package.Name</td>
-                                        <td>@u.Package.Describe</td>
+                                        <td class="desc-cell">@u.Package.Describe</td>
                                         <td> @u.Package.Price </td>
                                         <td> @u.Package.Duration </td>
                                         <td class="d-flex align-items-center justify-content-between">
@@ -130,7 +130,7 @@
                 <input class="ms-auto" type="text" name="p_name" required />
 
                 <label>Mô tả:</label>
-                <input class="ms-auto" type="text" name="p_desc" required />
+                <textarea class="form-control ms-auto" name="p_desc" rows="4" required></textarea>
 
                 <label>Giá:</label>
                 <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />
@@ -168,7 +168,7 @@
                     <input class="ms-auto" type="text" name="p_name" required />
 
                     <label>Mô tả:</label>
-                    <input class="ms-auto" type="text" name="p_desc" required />
+                    <textarea class="form-control ms-auto" name="p_desc" rows="4" required></textarea>
 
                     <label>Giá:</label>
                     <input class="ms-auto" type="number" value="0" min="0" name="p_price" required />

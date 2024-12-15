@@ -116,6 +116,11 @@ form#updatePackageForm input, form#updatePackageForm select {
     width: 96%;
 }
 
+form#updatePackageForm textarea, form#addPackageForm textarea {
+    width: 96%;
+    font-size: 15px;
+    line-height: 1.2em;
+}
 
 /* Style for modal */
 .modal-overlay {
@@ -212,3 +217,24 @@ form#updatePackageForm input, form#updatePackageForm select {
     .n2:hover{
         background: #f0f0f0;
     }
+
+.desc-cell {
+    width: 500px;
+    white-space: normal !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    box-sizing: border-box;
+    height: 3.6em;
+    text-overflow: ellipsis;
+    line-height: 1.3em !important;
+}
+
+#lp td{
+    border: none;
+}
+
+#lp tr {
+    border: 1px solid #ebedf2;
+}

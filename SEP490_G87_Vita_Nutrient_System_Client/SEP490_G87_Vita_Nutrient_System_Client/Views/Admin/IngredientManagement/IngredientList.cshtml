@@ -18,8 +18,8 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title" style="font-size: 1.5rem;">Danh sách nguyên liệu</h4>
-                <input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
-                <input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+                <input type="hidden" name="errMsg" value="@TempData["AlertMessage"]" />
+                <input type="hidden" name="successMsg" value="@TempData["SuccessMessage"]" />
                 <!-- Search form -->
                 <form method="get" action="@Url.Action("IngredientsList", "Admin")" style="padding: 8px 10px;">
                     <div class="input-group mb-3">
@@ -76,7 +76,7 @@
                             </div>
                             <div id="coll_@ingre.Id" class="accordion-collapse collapse">
                                 <div class="accordion-body">
-                                    <h4>Nutritional values:</h4>
+                                    <h4>Giá trị dinh dưỡng:</h4>
                                     @{
                                         var properties = typeof(SEP490_G87_Vita_Nutrient_System_Client.Models.IngredientDetails100g)
                                         .GetProperties()
@@ -114,7 +114,7 @@
                     }
 
                     <!-- Pagination controls -->
-                    <nav aria-label="Page navigation" style="padding: 50px 0 0 0;">
+                    <nav aria-label="Page navigation" style="padding: 50px 0 0 0;" id="my_nav">
                         <ul class="pagination justify-content-center">
                             @if (currentPage > 1)
                             {

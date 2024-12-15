@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="~/css/toast.css" />
 
 
-<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
-<input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+<input type="hidden" name="errMsg" value="@TempData["AlertMessage"]" />
+<input type="hidden" name="successMsg" value="@TempData["SuccessMessage"]" />
 @if (u is null)
 {
     <div>Cannot get admin profile! Try again later!</div>

@@ -481,6 +481,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                if (User.FindFirst("UserId") is null)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
                 // Lấy thông tin người dùng
@@ -568,6 +573,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                if (User.FindFirst("UserId") is null)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
                 HttpResponseMessage response = await client.GetAsync(
@@ -608,6 +617,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                if (User.FindFirst("UserId") is null)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
                 HttpResponseMessage response = await client.GetAsync(
@@ -700,22 +713,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Update user failed! Please try again!";
+                    TempData["AlertMessage"] = "Update user failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Update user successfully!";
+                    TempData["SuccessMessage"] = "Update user successfully!";
                 }
             }
             catch(Exception ex)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
             return page switch
             {
-                "user" => await UserProfileSon(),
-                "admin" => await AdminProfile(),
-                "nutritionist" => await NutritionistProfile()
+                "user" => RedirectToAction("UserProfileSon", "User"),
+                "admin" => RedirectToAction("AdminProfile", "User"),
+                "nutritionist" => RedirectToAction("NutritionistProfile", "User")
             };
         }
 
@@ -744,18 +757,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Update profile failed! Please try again!";
+                    TempData["AlertMessage"] = "Update profile failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Update profile successfully!";
+                    TempData["SuccessMessage"] = "Update profile successfully!";
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
-            return await UserProfileSon();
+            return RedirectToAction("UserProfileSon", "User");
         }
 
         [HttpPost]
@@ -781,18 +794,18 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Update profile failed! Please try again!";
+                    TempData["AlertMessage"] = "Update profile failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Update profile successfully!";
+                    TempData["SuccessMessage"] = "Update profile successfully!";
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
-            return await NutritionistProfile();
+            return RedirectToAction("NutritionistProfile", "User");
         }
 
         [HttpPost]
@@ -831,22 +844,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Update user avatar failed! Please try again!";
+                    TempData["AlertMessage"] = "Update user avatar failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Update user avatar successfully!";
+                    TempData["SuccessMessage"] = "Update user avatar successfully!";
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
             return page switch
             {
-                "user" => await UserProfileSon(),
-                "admin" => await AdminProfile(),
-                "nutritionist" => await NutritionistProfile()
+                "user" => RedirectToAction("UserProfileSon", "User"),
+                "admin" => RedirectToAction("AdminProfile", "User"),
+                "nutritionist" => RedirectToAction("NutritionistProfile", "User")
             };
         }
 
@@ -874,22 +887,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = message;
+                    TempData["AlertMessage"] = message;
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Change password successfully!";
+                    TempData["SuccessMessage"] = "Change password successfully!";
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
             return page switch
             {
-                "user" => await UserProfileSon(),
-                "admin" => await AdminProfile(),
-                "nutritionist" => await NutritionistProfile()
+                "user" => RedirectToAction("UserProfileSon", "User"),
+                "admin" => RedirectToAction("AdminProfile", "User"),
+                "nutritionist" => RedirectToAction("NutritionistProfile", "User")
             };
         }
 

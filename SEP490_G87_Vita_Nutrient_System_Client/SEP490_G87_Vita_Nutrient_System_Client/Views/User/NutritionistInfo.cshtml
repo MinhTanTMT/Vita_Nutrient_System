@@ -10,8 +10,8 @@
 <link rel="stylesheet" href="~/css/toast.css" />
 
 
-<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
-<input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+<input type="hidden" name="errMsg" value="@TempData["AlertMessage"]" />
+<input type="hidden" name="successMsg" value="@TempData["SuccessMessage"]" />
 @if (u is null)
 {
     <div>Không thể tìm thấy thông tin. Vui lòng thử lại sau!</div>
@@ -162,23 +162,23 @@ else
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-height" class="col-sm-3 col-form-label">Chiều cao</label>
+                                            <label for="user-height" class="col-sm-3 col-form-label">Chiều cao(cm)</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Nhập vào chiều cao" value="@u.NutritionistDetail?.Height">
+                                                <input type="number" name="uheight" min="0" max="300" required class="form-control user-info-input" id="user-height" placeholder="Nhập vào chiều cao" value="@u.NutritionistDetail?.Height">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="user-weight" class="col-sm-3 col-form-label">Cân nặng</label>
+                                            <label for="user-weight" class="col-sm-3 col-form-label">Cân nặng(kg)</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Nhập vào cân nặng" value="@u.NutritionistDetail?.Weight">
+                                                <input type="number" name="uweight" min="0" max="500" required class="form-control user-info-input" id="user-weight" placeholder="Nhập vào cân nặng" value="@u.NutritionistDetail?.Weight">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-age" class="col-sm-3 col-form-label">Tuổi</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Nhập vào tuổi" value="@u.NutritionistDetail?.Age">
+                                                <input type="number" name="uage" min="0" max="100" required class="form-control user-info-input" id="user-age" placeholder="Nhập vào tuổi" value="@u.NutritionistDetail?.Age">
                                             </div>
                                         </div>
 
