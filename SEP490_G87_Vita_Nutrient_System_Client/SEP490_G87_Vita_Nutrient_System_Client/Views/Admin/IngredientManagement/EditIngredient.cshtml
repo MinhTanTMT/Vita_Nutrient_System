@@ -50,14 +50,14 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="inputIngreImg" class="col-sm-2 col-form-label">Image</label>
+                                <label for="inputIngreImg" class="col-sm-2 col-form-label">Hình ảnh</label>
                                 <div class="col-sm-10">
                                     <input asp-for="Urlimage" type="file" name="urlimg" accept="image/jpeg, image/png, image/jpg" class="form-control" id="inputIngreImg" placeholder="Ingredient Image" value="@(System.IO.Path.GetFileName(Model.Urlimage))">
                                 </div>
                             </div>
 
                             <div class="form-group row">
-                                <label for="inputIngreKeyNote" class="col-sm-2 col-form-label">Key note</label>
+                                <label for="inputIngreKeyNote" class="col-sm-2 col-form-label">Ghi chú</label>
                                 <div class="col-sm-10">
                                     <select asp-for="KeyNoteId" class="form-select ms-auto" name="keynoteId" id="inputIngreKeyNote">
                                         @foreach (KeyNote keyNote in keyNotes)
@@ -76,7 +76,7 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="inputIngreTypeOfCalc" class="col-sm-2 col-form-label">Type of calculation</label>
+                                <label for="inputIngreTypeOfCalc" class="col-sm-2 col-form-label">TLoại tính toán</label>
 
                                 <div class="col-sm-10">
                                     <select asp-for="TypeOfCalculationId" class="form-select ms-auto" name="typeOfCalculationId" id="inputIngreTypeOfCalc">
@@ -133,7 +133,7 @@
 
                     <div class="d-flex" style="font-size: 20px;">
                         <button type="submit" class="ms-auto" style="padding: 0px 5px; color: white; background: green;">
-                            <i class="mdi mdi-content-save"></i> Save
+                            <i class="mdi mdi-content-save"></i> Lưu
                         </button>
                     </div>
                 </form>
