@@ -166,21 +166,21 @@ else
                                         <div class="form-group row">
                                             <label for="user-height" class="col-sm-3 col-form-label">Chiều cao</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Chiều cao của bạn" value="@u.UserDetail.Height">
+                                            <input type="number" readonly name="uheight" min="0" required class="form-control user-info-input" id="user-height" placeholder="Chiều cao của bạn" value="@u.UserDetail.Height">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-weight" class="col-sm-3 col-form-label">Cân nặng</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Cân nặng của bạn" value="@u.UserDetail.Weight">
+                                            <input type="number" readonly name="uweight" min="0" required class="form-control user-info-input" id="user-weight" placeholder="Cân nặng của bạn" value="@u.UserDetail.Weight">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="user-age" class="col-sm-3 col-form-label">Tuổi</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uage" min="0" max="100" required class="form-control user-info-input" id="user-age" placeholder="Nhập vào tuổi" value="@u.UserDetail.Age">
+                                                <input type="number" readonly name="uage" min="0" max="100" required class="form-control user-info-input" id="user-age" placeholder="Nhập vào tuổi" value="@u.UserDetail.Age">
                                             </div>
                                         </div>
 
