@@ -7,10 +7,15 @@
     <h2 class="page-title">Xóa bài viết</h2>
 
     <div class="article-details">
-        <h3 class="article-title">@Model.Title</h3>
+        <h3 class="article-title" style="word-wrap: break-word; word-break: break-word; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 10px; white-space: normal;">
+            @Html.Raw(Model.Title)
+        </h3>
         <p><strong>Người tạo:</strong> @Model.NameCreater</p>
         <p><strong>Ngày tạo:</strong> @(Model.DateCreated.HasValue ? Model.DateCreated.Value.ToString("dd-MM-yyyy") : "Chưa xác định")</p>
-        <p><strong>Nội dung:</strong> @Html.Raw(Model.Content)</p>
+        <p style="word-wrap: break-word; word-break: break-word; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 10px; white-space: normal;">
+            <strong>Nội dung:</strong>
+            @Html.Raw(Model.Content)
+        </p>
     </div>
 
     <div class="action-buttons">

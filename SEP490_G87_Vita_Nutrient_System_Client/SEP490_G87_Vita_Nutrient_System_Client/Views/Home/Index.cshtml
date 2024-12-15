@@ -332,8 +332,10 @@
                 {
                     <div class="news-item">
                         <img src="@article.HeaderImage" alt="News Image" />
-                        <h3>@article.Title</h3>
-                        <p>@Html.Raw(article.Content)</p>
+                        <h3 style="max-width: 100%; word-wrap: break-word;">@article.Title</h3>
+                        <p style="max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow-y: auto;">
+                            @Html.Raw(article.Content)
+                        </p>
                         <a href="@Url.Action("DetailsForUsers", "News", new { id = article.Id })" class="btn">Khám phá thêm</a>
                     </div>
                 }

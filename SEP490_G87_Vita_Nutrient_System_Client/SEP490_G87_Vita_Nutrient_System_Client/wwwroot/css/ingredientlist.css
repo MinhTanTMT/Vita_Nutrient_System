@@ -95,13 +95,12 @@
 } */
 
 /* list */
-ul {
+#my_nav ul {
     list-style-type: none;
-    list-style-type: disc; /* Default bullet points for ul */
     margin-left: 20px;
 }
 
-    ul li {
+    #my_nav ul li {
         margin-bottom: 5px;
     }
 
@@ -219,6 +218,7 @@ ul {
     border: none;
     background: #2196F3;
     opacity: 0.8;
+    z-index: 9999;
 }
 
     .fab:hover {

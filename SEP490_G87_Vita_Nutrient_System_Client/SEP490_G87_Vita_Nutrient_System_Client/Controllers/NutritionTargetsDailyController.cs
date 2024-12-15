@@ -105,6 +105,11 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpPost]
         public async Task<IActionResult> EditNutritionTargetsDaily(int id, NutritionTargetOfMeal model, int userId)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.UserId = userId;
+                return RedirectToAction("EditNutritionTargetsDaily", new { id = id, userId = userId });
+            }
             try
             {
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");

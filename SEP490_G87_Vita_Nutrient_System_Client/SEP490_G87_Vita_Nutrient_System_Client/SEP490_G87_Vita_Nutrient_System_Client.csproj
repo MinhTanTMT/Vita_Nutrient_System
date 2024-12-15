@@ -13,6 +13,9 @@
 
   <ItemGroup>
     <Folder Include="Views\Nutritionist\" />
+    <Folder Include="wwwroot\images\foods\" />
+    <Folder Include="wwwroot\images\ingredients\" />
+    <Folder Include="wwwroot\images\news\" />
   </ItemGroup>
 
   <ItemGroup>

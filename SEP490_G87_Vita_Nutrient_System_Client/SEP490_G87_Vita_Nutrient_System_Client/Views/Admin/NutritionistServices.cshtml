@@ -109,7 +109,11 @@
                                 <li class="bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                                    @*  <h4 class="text-lg font-semibold text-gray-800" type="hidden">Chuyên gia ID: @nutritionist.NutritionistId</h4> *@
                                     <p class="text-gray-600"><strong>Giới thiệu:</strong> @nutritionist.DescribeYourself</p>
-                                    <p class="text-gray-600"><strong>Đánh giá:</strong> @nutritionist.Rate ⭐️ (dựa trên @nutritionist.NumberRate đánh giá)</p>
+
+                                    @{ double rate = nutritionist.Rate ?? 0; 
+                                    int stars = (int)Math.Round(rate / 20);}
+
+                                    <p class="text-gray-600"><strong>Đánh giá:</strong> @stars ⭐️ (dựa trên @nutritionist.NumberRate đánh giá)</p>
                                     <form asp-controller="Admin" asp-action="PaymentForPaidServices" method="post" class="mt-4">
                                         <input type="hidden" name="NutritionistId" value="@nutritionist.NutritionistId" />
                                         <input type="hidden" name="Describe" value="@service.Describe" />

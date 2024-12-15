@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography.Xml;
 using SEP490_G87_Vita_Nutrient_System_Client.Domain.Attributes;
+using System.Reflection;
+using Microsoft.Extensions.FileProviders;
 
 namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 {
@@ -112,17 +114,17 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                             return View();
                         }
                         ViewBag.AlertMessage = "Error";
-                        return Redirect("Error ABC");
+                        return RedirectToAction("Error", "Home"); ;
                     }
 
                 }
                 ViewBag.AlertMessage = "Error";
-                return Redirect($"Error CDE {accountNumber}== {limit}== {amountInPay}== {contentBankPay}== {amountWithoutDecimal}== {contentBankImg}==");
+                return RedirectToAction("Error", "Home"); ;
             }
             catch (Exception ex)
             {
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
-                return Redirect("Error EFG");
+                return RedirectToAction("Error", "Home"); ;
             }
         }
 
@@ -619,8 +621,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                         ExpertPackage package = new ExpertPackage
                         {
-                            Id = packagesData.id,
-                            NutritionistDetailsId = packagesData.nutritionistDetailsId,
+                            //Id = packagesData.id,
+                            //NutritionistDetailsId = packagesData.nutritionistDetailsId,
                             Name = packagesData.name,
                             Describe = packagesData.describe,
                             Price = packagesData.price,
@@ -723,7 +725,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
                 else
                 {
-                    ViewBag.AlertMessage = "Cannot get list ingredients! Please try again!";
+                    TempData["AlertMessage"] = "Cannot get list ingredients! Please try again!";
                 }
 
                 ViewBag.SearchQuery = searchQuery;
@@ -734,22 +736,38 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
                 return View("~/Views/Admin/IngredientManagement/IngredientList.cshtml");
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddIngredient(string in_name, string in_desc, string in_imgurl, int keynoteId, short typeOfCalculationId)
+        public async Task<IActionResult> AddIngredient(string in_name, string in_desc, IFormFile urlimg, int keynoteId, short typeOfCalculationId)
         {
             try
             {
+                if (urlimg != null && urlimg.Length > 0)
+                {
+                    var fileName = Path.GetFileName(urlimg.FileName);
+                    var filePath = Path.Combine("wwwroot/images/ingredients", fileName);
+
+                    if (!Directory.Exists("wwwroot/images/ingredients"))
+                    {
+                        Directory.CreateDirectory("wwwroot/images/ingredients");
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await urlimg.CopyToAsync(stream);
+                    }
+                }
+
                 var data = new
                 {
                     keyNoteId = keynoteId,
                     name = in_name,
                     describe = in_desc,
-                    urlimage = in_imgurl,
+                    urlimage = urlimg is null ? null : "/images/ingredients/" + Path.GetFileName(urlimg.FileName),
                     typeOfCalculationId = typeOfCalculationId
                 };
 
@@ -762,19 +780,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Add ingredient failed! Please try again!";
+                    TempData["AlertMessage"] = "Add ingredient failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Add ingredient successfully!";
+                    TempData["SuccessMessage"] = "Add ingredient successfully!";
                 }
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
 
-            return await IngredientsList();
+            return RedirectToAction("IngredientsList", "Admin");
         }
 
         [HttpGet("admin/ingredientmanagement/updateingredient/{Id}")]
@@ -813,29 +831,45 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
                 else
                 {
-                    ViewBag.AlertMessage = "Cannot get ingredient! Please try again!";
+                    TempData["AlertMessage"] = "Cannot get ingredient! Please try again!";
                     return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml");
                 }
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
                 return View("~/Views/Admin/IngredientManagement/EditIngredient.cshtml");
             }
         }
 
         [HttpPost("admin/ingredientmanagement/updateingredient")]
-        public async Task<IActionResult> DoUpdateIngredient(IngredientDetails100g model)
+        public async Task<IActionResult> DoUpdateIngredient(IngredientDetails100g model, IFormFile urlimg)
         {
             try
             {
+                if (urlimg != null && urlimg.Length > 0)
+                {
+                    var fileName = Path.GetFileName(urlimg.FileName);
+                    var filePath = Path.Combine("wwwroot/images/ingredients", fileName);
+
+                    if (!Directory.Exists("wwwroot/images/ingredients"))
+                    {
+                        Directory.CreateDirectory("wwwroot/images/ingredients");
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await urlimg.CopyToAsync(stream);
+                    }
+                }
+
                 var data = new
                 {
                     id = model.Id,
                     keyNoteId = model.KeyNoteId,
                     name = model.Name,
                     describe = model.Describe,
-                    urlimage = model.Urlimage,
+                    urlimage = urlimg is null ? null : "/images/ingredients/" + Path.GetFileName(urlimg.FileName),
                     typeOfCalculationId = model.TypeOfCalculationId,
                     energy = model.Energy,
                     water = model.Water,
@@ -934,16 +968,16 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Update ingredient failed! Please try again!";
+                    TempData["AlertMessage"] = "Update ingredient failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Update ingredient successfully!";
+                    TempData["SuccessMessage"] = "Update ingredient successfully!";
                 }
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
             return await UpdateIngredient(model.Id);
         }
@@ -957,19 +991,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     await client.DeleteAsync(client.BaseAddress + "/Ingredient/RemoveIngredient/" + Id);
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Cannot delete ingredient! Please try again!";
+                    TempData["AlertMessage"] = "Cannot delete ingredient! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Delete ingredient successfully!";
+                    TempData["SuccessMessage"] = "Delete ingredient successfully!";
                 }
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
 
-            return await IngredientsList();
+            return RedirectToAction("IngredientsList", "Admin");
         }
 
         [HttpGet("admin/expertpackagemanagement/listpackages")]
@@ -1058,19 +1092,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Add package failed! Please try again!";
+                    TempData["AlertMessage"] = "Add package failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Add package successfully!";
+                    TempData["SuccessMessage"] = "Add package successfully!";
                 }
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
 
-            return Redirect("/admin/expertpackagemanagement/listpackages");
+            return RedirectToAction("ListPackages", "Admin");
         }
 
         [HttpPost]
@@ -1096,19 +1130,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.AlertMessage = "Update package failed! Please try again!";
+                    TempData["AlertMessage"] = "Update package failed! Please try again!";
                 }
                 else
                 {
-                    ViewBag.SuccessMessage = "Update package successfully!";
+                    TempData["SuccessMessage"] = "Update package successfully!";
                 }
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
 
-            return Redirect("/admin/expertpackagemanagement/listpackages");
+            return RedirectToAction("ListPackages", "Admin");
         }
 
         [HttpGet("admin/expertpackagemanagement/deletepackage/{Id}")]
@@ -1128,19 +1162,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    ViewBag.SuccessMessage = "Delete package successfully!";
+                    TempData["SuccessMessage"] = "Delete package successfully!";
                 }
                 else
                 {
-                    ViewBag.AlertMessage = "Cannot delete package! Please try again!";
+                    TempData["AlertMessage"] = "Cannot delete package! Please try again!";
                 }
             }
             catch (Exception e)
             {
-                ViewBag.AlertMessage = "An unexpected error occurred. Please try again!";
+                TempData["AlertMessage"] = "An unexpected error occurred. Please try again!";
             }
 
-            return Redirect("/admin/expertpackagemanagement/listpackages");
+            return RedirectToAction("ListPackages", "Admin");
         }
 
         [HttpGet("admin/foodmanagement/foodingredient/{foodId}")]

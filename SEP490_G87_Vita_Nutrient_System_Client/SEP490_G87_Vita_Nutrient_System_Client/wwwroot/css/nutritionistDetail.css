@@ -70,3 +70,25 @@
     background: #74c874;
     color: white;
 }
+
+.desc-cell {
+    text-align: left;
+    width: 500px;
+    white-space: normal !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    box-sizing: border-box;
+    height: 3.6em;
+    text-overflow: ellipsis;
+    line-height: 1.3em !important;
+}
+
+#lp td {
+    border: none;
+}
+
+#lp tr {
+    border: 1px solid #ebedf2;
+}

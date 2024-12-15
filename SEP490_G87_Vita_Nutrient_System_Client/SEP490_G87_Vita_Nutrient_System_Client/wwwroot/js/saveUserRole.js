@@ -1,7 +1,6 @@
-﻿function SaveRole(userId, page) {
+﻿function SaveRole(userId, page, baseAPIAddress) {
     const roleId = document.getElementById("urole").value;
-
-    const url = `https://localhost:7045/api/Users/UpdateUserRole/${userId}/${roleId}`;
+    const url = baseAPIAddress + `/Users/UpdateUserRole/${userId}/${roleId}`;
 
     fetch(url)
         .then(response => {

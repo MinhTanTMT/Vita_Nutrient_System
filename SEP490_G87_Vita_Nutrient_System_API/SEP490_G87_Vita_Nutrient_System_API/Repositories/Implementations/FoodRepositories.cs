@@ -19,7 +19,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         public FoodList? GetFood(int foodId)
         {
             return _context.FoodLists.Include(food => food.FoodType)
-                .FirstOrDefault(f=>f.FoodListId == foodId);
+                .FirstOrDefault(f => f.FoodListId == foodId);
         }
 
         public List<Recipe> GetFoodRecipe(int foodId)
@@ -75,6 +75,14 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
         public void UpdateIngredient(IngredientDetails100g ingredient)
         {
+            if (ingredient.Urlimage is null)
+            {
+                var x = _context.IngredientDetails100gs.Find(ingredient.Id);
+                
+                _context.Entry<IngredientDetails100g>(x).State = EntityState.Detached;
+
+                ingredient.Urlimage = x.Urlimage;
+            }
             _context.Entry<IngredientDetails100g>(ingredient).State = EntityState.Modified;
             _context.SaveChanges();
         }

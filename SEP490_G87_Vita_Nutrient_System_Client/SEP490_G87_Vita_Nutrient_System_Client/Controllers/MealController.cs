@@ -426,11 +426,12 @@ using System.Net.Http;
                 {
                     return RedirectToAction("MealList", "Meal", new { dayOfTheWeekId = model.DayOfTheWeekId, userId = userId });
                 }
-                else
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    ViewBag.UserId = userId;
-                    await LoadDropDownLists();
-                    return View(model);
+                    // Lấy thông báo lỗi từ API
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    dynamic errorData = JsonConvert.DeserializeObject(errorResponse);
+                    ViewBag.ErrorMessage = errorData?.message ?? "Đã xảy ra lỗi không xác định.";
                 }
             }
             catch (Exception ex)
@@ -440,7 +441,7 @@ using System.Net.Http;
 
             ViewBag.UserId = userId;
             await LoadDropDownLists();
-            return View(model);
+            return View("CreateMealSettingsDetail", model);
         }
 
 
@@ -568,15 +569,14 @@ using System.Net.Http;
                     if (updateCaloResponse.IsSuccessStatusCode)
                     {
                         return RedirectToAction("MealList", new { dayOfTheWeekId = model.DayOfTheWeekId , userId= userId });
-                    }
-                    else
-                    {
-                        ViewBag.ErrorMessage = "Lỗi khi cập nhật calo cho bữa ăn.";
-                    }
+                    }                   
                 }
-                else
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    ViewBag.ErrorMessage = $"Lỗi khi cập nhật thông tin bữa ăn";
+                    // Lấy thông báo lỗi từ API
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    dynamic errorData = JsonConvert.DeserializeObject(errorResponse);
+                    ViewBag.ErrorMessage = errorData?.message ?? "Đã xảy ra lỗi không xác định.";
                 }
             }
             catch (Exception ex)
@@ -688,9 +688,12 @@ using System.Net.Http;
 
                     return RedirectToAction("MealSettingsDetailToList", new { userId = userId });
                 }
-                else
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    ViewBag.ErrorMessage = $"Lỗi khi cập nhật thông tin bữa ăn";
+                    // Lấy thông báo lỗi từ API
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    dynamic errorData = JsonConvert.DeserializeObject(errorResponse);
+                    ViewBag.ErrorMessage = errorData?.message ?? "Đã xảy ra lỗi không xác định.";
                 }
             }
             catch (Exception ex)
@@ -835,7 +838,7 @@ using System.Net.Http;
                         }
                         else
                         {
-                            return RedirectToAction("SaveUserAndCreateMeals", "Meal");
+                            return RedirectToAction("Index", "Home");
                         }
                     }
                 }

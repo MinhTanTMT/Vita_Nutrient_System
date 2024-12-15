@@ -4,7 +4,11 @@
 
 <div class="container">
     <div class="header-section">
-        <h2 class="page-title">@Model.Title</h2>
+
+        <h2 class="page-title" style="max-width: 100%; word-wrap: break-word; font-size: 24px; line-height: 1.5;">
+            @Model.Title
+        </h2>
+
         <div class="row details-row">
             <div class="col-sm-6">
                 <strong>Tác giả:</strong> @Model.NameCreater
@@ -15,12 +19,15 @@
         </div>
     </div>
 
-    <div class="content-section">
-        <dd class="col-sm-12">
+    @* <img src="@Model.HeaderImage" alt="News Image" /> *@
+
+    <div class="content-section" style="max-width: 100%; overflow-wrap: break-word; padding: 15px;">
+        <dd class="col-sm-12" style="word-wrap: break-word; white-space: pre-wrap;">
             @Html.Raw(Model.Content)
         </dd>
     </div>
     <hr />
+
 
     <div class="rating-section">
         

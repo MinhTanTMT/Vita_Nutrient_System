@@ -34,25 +34,35 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<ArticlesNews> latestArticles = new List<ArticlesNews>();
 
-            // Gọi API để lấy 3 bài viết mới nhất
-            HttpResponseMessage response = await client.GetAsync("/api/news/latest");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var data = await response.Content.ReadAsStringAsync();
-                latestArticles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+                List<ArticlesNews> latestArticles = new List<ArticlesNews>();
+
+                // Gọi API để lấy 3 bài viết mới nhất
+                HttpResponseMessage response = await client.GetAsync("/api/news/latest");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    latestArticles = JsonConvert.DeserializeObject<List<ArticlesNews>>(data);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Error fetching latest articles from API.");
+                }
+
+                // Truyền dữ liệu bài viết mới nhất đến View
+                return View(latestArticles);
             }
-            else
+            catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Error fetching latest articles from API.");
+                return RedirectToAction("Error", "Home");
             }
 
-            // Truyền dữ liệu bài viết mới nhất đến View
-            return View(latestArticles);
         }
 
 
@@ -112,7 +122,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
             // Chuyển hướng về trang chủ sau khi thành công
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("UserPhysicalStatistics", "Home");
         }
 
 
@@ -214,13 +224,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+
+            ViewBag.APIBaseAddress = client.BaseAddress;
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Error()
+        {
+
             return View();
         }
 
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm, string accountGoogle, string googleAccAuthentication)
+        public async Task<IActionResult> Register(string firstName, string lastName, string account, string password, string confirm, string accountGoogle)
         {
             
 
@@ -229,16 +248,19 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             {
                 if (!Regex.IsMatch(account, pattern) || !Regex.IsMatch(account, pattern))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Please enter continuous characters without accents and not gmail.";
                     return View();
                 }
                 if (!password.Equals(confirm))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Password mismatch";
                     return View();
                 }
-                if (await checkExsitAsync(account))
+                if (await checkExsitAsync(account, accountGoogle))
                 {
+                    ViewBag.APIBaseAddress = client.BaseAddress;
                     ViewBag.AlertMessage = "Account already exists.";
                     return View();
                 }
@@ -311,19 +333,22 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         }
                         else
                         {
-                            ViewBag.AlertMessage = "Invalid login attempt. 3";
+                            ViewBag.APIBaseAddress = client.BaseAddress;
+                            ViewBag.AlertMessage = "Invalid login attempt.";
                             return View();
                         }
                     }
                     else
                     {
-                        ViewBag.AlertMessage = "Invalid login attempt. 2";
+                        ViewBag.APIBaseAddress = client.BaseAddress;
+                        ViewBag.AlertMessage = "Invalid login attempt.";
                         return View();
                     }
                 }
             }
             catch (Exception ex)
             {
+                ViewBag.APIBaseAddress = client.BaseAddress;
                 ViewBag.AlertMessage = "An unexpected error occurred. Please try again.";
                 return View();
             }
@@ -416,9 +441,9 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         [Authorize]
-        public async Task<bool> checkExsitAsync(string account)
+        public async Task<bool> checkExsitAsync(string account, string accGoogle)
         {
-            HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + "/Users/checkExit?account=" + account);
+            HttpResponseMessage respone = await client.GetAsync(client.BaseAddress + $"/Users/checkExit?account={account}&accGoogle={accGoogle}");
             if (respone.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return true;

@@ -6,7 +6,7 @@ function openModalAdd() {
     document.getElementById("modalOverlay").style.display = "flex";
 }
 
-function openModalUpdate(id, name, describe, price, duration, nutritionists) {
+function openModalUpdate(id, name, describe, price, duration, nutritionists, baseAPIAddress) {
     var form = document.getElementById("updatePackageForm");
     var form1 = document.getElementById("updatePackageNutriForm");
 
@@ -22,7 +22,7 @@ function openModalUpdate(id, name, describe, price, duration, nutritionists) {
     document.getElementById("modalOverlay1").style.display = "flex";
 }
 
-function updateNutriTable(input) {
+function updateNutriTable(input, baseAPIAddress) {
     const nutriTable = document.getElementById("nutriTable");
     const selectElement = document.getElementById("nutritionistsSelect");
 
@@ -75,7 +75,7 @@ function updateNutriTable(input) {
 
         const n2Div = document.createElement("div");
         n2Div.className = "n2";
-        n2Div.setAttribute("onclick", `deleteNutritionist(${item.Id});`);
+        n2Div.setAttribute("onclick", `deleteNutritionist(${item.Id}, '${baseAPIAddress}');`);
 
         const deleteIcon = document.createElement("i");
         deleteIcon.className = "mdi mdi-delete";
@@ -160,14 +160,14 @@ function openTab(event, tabId) {
     document.getElementById(tabId).classList.add("active");
 }
 
-function AddNutri() {
+function AddNutri(baseAPIAddress) {
     const selectElement = document.getElementById("nutritionistsSelect");
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const pid = document.getElementById("updatePackageForm").elements['p_id'].value;
     const nid = selectedOption.value;
     const parts = selectedOption.text.split(" - ");
 
-    fetch(`https://localhost:7045/api/ExpertPackage/AddNutritionistToPackage/${nid}/${pid}`, {
+    fetch(baseAPIAddress + `/ExpertPackage/AddNutritionistToPackage/${nid}/${pid}`, {
         method: 'GET'
     })
         .then(response => {
@@ -187,8 +187,8 @@ function AddNutri() {
         });
 }
 
-function deleteNutritionist(Id) {
-    fetch(`https://localhost:7045/api/ExpertPackage/RemoveNutritionistFromPackage/${Id}`, {
+function deleteNutritionist(Id, baseAPIAddress) {
+    fetch(baseAPIAddress + `/ExpertPackage/RemoveNutritionistFromPackage/${Id}`, {
         method: 'GET'
     })
         .then(response => {

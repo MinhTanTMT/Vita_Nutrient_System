@@ -339,7 +339,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     Urlimage = model.Urlimage,
                     FoodTypeId = model.FoodTypeId,
                     KeyNoteId = model.KeyNoteId,
-                    IsActive = true,
+                    IsActive = false,
                     PreparationTime = model.PreparationTime,
                     CookingTime = model.CookingTime,
                     CookingDifficultyId = model.CookingDifficultyId

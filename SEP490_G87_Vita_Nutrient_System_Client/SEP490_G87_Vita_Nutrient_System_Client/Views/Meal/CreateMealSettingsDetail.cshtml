@@ -7,11 +7,22 @@
 @model SEP490_G87_Vita_Nutrient_System_Client.Models.CreateMealSettingsDetail
 
 <div class="container">
-    <h2>Tạo Cài đặt Bữa ăn</h2>
+    <div class="modal-header">
+        <h1 class="modal-title" style="color: var(--second-color);">
+            Danh sách bữa ăn
+        </h1>
+    </div>
+    <h2 style="font-weight: bold; font-family: 'Roboto', sans-serif;color: #28a745;">Tạo Cài Đặt Bữa ăn</h2>
     <form asp-action="CreateMealSettingsDetail" method="post">
         <input type="hidden" asp-for="MealSettingsId" />
         <input type="hidden" asp-for="DayOfTheWeekId" />
         <input type="hidden" name="userId" value="@ViewBag.UserId" />
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.ErrorMessage
+            </div>
+        }
         <div class="form-group">
             <label for="Name">Tên bữa ăn</label>
             <input asp-for="Name" class="form-control" maxlength="51" />
@@ -21,14 +32,15 @@
             <label for="SlotOfTheDayId">Thứ tự ăn trong ngày</label>
             <select asp-for="SlotOfTheDayId" class="form-control" asp-items="ViewBag.SlotOfTheDays"></select>
         </div>
-        <div class="form-group">
-            <label for="SkipCreationProcess">
-                Bỏ qua quá trình tạo
-                <div class="form-check">
-                    <input type="checkbox" asp-for="SkipCreationProcess" class="form-check-input" />
-                </div>
-            </label>
+        <div class="form-group my-4">
+            <div class="checkbox-block">
+                <label for="SkipCreationProcess">
+                    Bỏ qua quá trình tạo
+                </label>
+                <input type="checkbox" asp-for="SkipCreationProcess" class="form-check-input" />
+            </div>
         </div>
+       
         <div class="form-group">
             <label for="Size">Kích cỡ bữa ăn</label>
             <select asp-for="Size" class="form-control"> 
@@ -37,13 +49,13 @@
                 <option value="Bữa lớn">Bữa lớn</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="NutritionFocus">
-                Tập trung dinh dưỡng
-                <div class="form-check">
-                    <input type="checkbox" asp-for="NutritionFocus" class="form-check-input" />
-                </div>
-            </label>
+        <div class="form-group my-4">
+            <div class="checkbox-block">
+                <label for="NutritionFocus">
+                    Tập trung dinh dưỡng
+                </label>
+                <input type="checkbox" asp-for="NutritionFocus" class="form-check-input" />
+            </div>
         </div>
 
         <div class="form-group">
@@ -84,15 +96,9 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Tạo Mới</button>
-        <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = Model.DayOfTheWeekId,userId = ViewBag.UserId })" class="btn btn-secondary">Hủy</a>
-    </form>
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <div class="alert alert-danger">
-            @ViewBag.ErrorMessage
-        </div>
-    }
+        <button type="submit" class="btn btn-primary" style="font-weight: bold; text-align: center; font-family: 'Roboto', sans-serif;background-color: #28a745;">Tạo Mới</button>
+        <a href="@Url.Action("MealList", "Meal", new { dayOfTheWeekId = Model.DayOfTheWeekId,userId = ViewBag.UserId })" class="btn btn-secondary btn-danger" style="font-weight: bold; text-align: center; font-family: 'Roboto', sans-serif;">Hủy</a>
+    </form> 
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
