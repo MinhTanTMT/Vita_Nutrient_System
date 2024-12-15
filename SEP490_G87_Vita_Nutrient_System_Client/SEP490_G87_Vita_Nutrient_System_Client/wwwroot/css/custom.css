@@ -48,8 +48,7 @@ h6,
   border-radius: 25px;
   position: relative;
   overflow: hidden;
-  margin-bottom: 0px;
-  height: 100%;
+  margin-bottom: 20px;
   background-color: #f7f7f7;
 }
 .page-header > .page-content {
