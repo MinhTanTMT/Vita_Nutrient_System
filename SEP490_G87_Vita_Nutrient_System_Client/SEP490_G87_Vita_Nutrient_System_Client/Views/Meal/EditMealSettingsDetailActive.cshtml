@@ -104,7 +104,7 @@
 
         <div class="action-group d-flex justify-content-end">
             <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-            <a href="@Url.Action("MealSettingsDetailToList", "Meal")" class="btn btn-secondary btn-danger">Hủy</a>        
+            <a href="@Url.Action("MealSettingsDetailToList", "Meal", new { userId = @ViewBag.UserId })" class="btn btn-secondary btn-danger">Hủy</a>
         </div>
 
     </form>
