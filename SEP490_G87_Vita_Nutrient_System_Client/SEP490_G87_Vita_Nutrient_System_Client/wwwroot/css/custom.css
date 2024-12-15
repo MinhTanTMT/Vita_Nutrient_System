@@ -1,13 +1,14 @@
 :root {
   --global-color: #002f6c;
   --second-color: #388E3C;
+  --info-color: #aaaaaa;
   --hover-text-color: var(--global-color);
   --btn-bg-color: var(--second-color);
   --btn-bg-primary-color: var(--global-color);
   --btn-text-color: black;
   --border-radius-1: 20px;
   --btn-bg-danger: red;
-  --btn-bg-gray: #aaaaaa;
+  --btn-bg-info: var(--info-color);
 }
 
 body {
@@ -47,8 +48,7 @@ h6,
   border-radius: 25px;
   position: relative;
   overflow: hidden;
-  margin-bottom: 0px;
-  height: 100%;
+  margin-bottom: 20px;
   background-color: #f7f7f7;
 }
 .page-header > .page-content {
@@ -109,9 +109,9 @@ h6,
   border-color: var(--btn-bg-danger);
   background-color: var(--btn-bg-danger);
 }
-.btn.btn-gray {
-  border-color: var(--btn-bg-gray);
-  background-color: var(--btn-bg-gray);
+.btn.btn-info-1 {
+  border-color: var(--btn-bg-info);
+  background-color: var(--btn-bg-info);
 }
 .btn + .btn {
   margin-left: 10px;
@@ -185,6 +185,10 @@ body .modal-body {
   padding: 0;
 }
 
+.btn-radius {
+  border-radius: 20px;
+}
+
 .page-body-wrapper.hide-sidebar #sidebar {
   display: none;
 }
@@ -201,11 +205,11 @@ body .modal-body {
 
 .diet-type-list-page #dietTypeForm {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
   gap: 15px;
 }
 .diet-type-list-page .card {
-  width: 50%;
+  width: 24%;
   border-radius: 20px;
 }
 .diet-type-list-page .card-body .form-check {
@@ -272,6 +276,12 @@ body .modal-body {
   border-color: var(--global-color);
 }
 
+.ticket-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .footer-detail-page .grid-margin {
   margin-bottom: 0px;
 }
@@ -311,7 +321,8 @@ body .modal-body {
 .footer-detail-page .remind .item:hover label {
   color: #fff;
 }
-.footer-detail-page .remind .item [type=radio]:checked + label:after, .footer-detail-page .remind .item [type=radio]:not(:checked) + label:after {
+.footer-detail-page .remind .item [type=radio]:checked + label:after,
+.footer-detail-page .remind .item [type=radio]:not(:checked) + label:after {
   background-color: var(--second-color);
   top: 3px;
   left: 3px;
@@ -358,4 +369,80 @@ body .modal-body {
 
 .border-none {
   border: none;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.ml-0 {
+  margin-left: 0px !important;
+}
+
+.mw-110 {
+  min-width: 110px;
+}
+
+.border-radius {
+  border-radius: var(--border-radius-1);
+}
+
+.w-auto {
+  width: auto !important;
+}
+
+.search input {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.search-block input {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+.search-block .btn-search {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  padding: 10px 15px;
+  min-width: 100px;
+}
+
+.popup-style .modal-dialog .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.popup-style .modal-dialog .modal-header .modal-title {
+  margin: 0px;
+}
+.popup-style .modal-dialog .modal-content {
+  border-radius: 20px;
+  padding: 20px;
+}
+.popup-style .modal-dialog .modal-content input.form-control {
+  border-radius: 20px;
+  padding: 12px;
+}
+.popup-style .modal-dialog .modal-content select.form-control, .popup-style .modal-dialog .modal-content .form-select {
+  border: 1px solid #ebedf2;
+  border-radius: 20px;
+  padding: 12px;
+  line-height: 1;
+}
+.popup-style .modal-dialog .modal-content input.form-control[type=file] {
+  background-color: #fff;
+}
+.popup-style .modal-dialog .modal-content .card-body {
+  padding: 20px;
+}
+.popup-style .modal-dialog .modal-content .form-check-input {
+  margin-left: 0px;
+}
+.popup-style .modal-dialog .modal-content .form-check-label {
+  margin-left: 10px;
+}
+.popup-style .modal-dialog .modal-footer {
+  padding: 0px;
+  margin-top: 15px;
 }
