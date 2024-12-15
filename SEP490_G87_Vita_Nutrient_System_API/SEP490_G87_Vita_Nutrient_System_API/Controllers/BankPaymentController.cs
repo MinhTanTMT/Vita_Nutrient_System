@@ -59,7 +59,8 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
             List<FoodListDTO> dataCollection = new List<FoodListDTO>();
             dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish( await generateMealRepositories.TakeAllTheIngredientsOfTheDish(2)));
-
+            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3)));
+            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4)));
 
             //return Ok(await repositories.GetTheLastTransactionsOfBankAccountNumber("0569000899", 20));
 
