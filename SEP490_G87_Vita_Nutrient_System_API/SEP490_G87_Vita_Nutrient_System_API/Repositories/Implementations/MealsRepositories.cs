@@ -523,7 +523,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                                  m.SlotOfTheDayId == model.SlotOfTheDayId &&
                                  m.DayOfTheWeekId == model.DayOfTheWeekId);
 
-            if (existingMeal != null)
+            if (existingMeal != null && existingMeal.Id != mealSettingsDetail.Id)
             {
                 throw new InvalidOperationException("Tên bữa ăn đã tồn tại");
             }

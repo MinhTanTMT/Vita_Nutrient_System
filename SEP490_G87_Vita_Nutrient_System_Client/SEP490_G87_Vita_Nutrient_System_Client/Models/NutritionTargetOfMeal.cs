@@ -5,7 +5,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Models
     public class NutritionTargetOfMeal
     {
         public int? NutritionTargetsDailyId { get; set; }
-        [RegularExpression(@"^[a-zA-Z0-9\s]*$", ErrorMessage = "Tiêu đề không được chứa ký tự đặc biệt.")]
         [MaxLength(100, ErrorMessage = "Tiêu đề không được vượt quá 100 ký tự.")]
         public string? Title { get; set; }
         public short? Calories { get; set; }

@@ -20,7 +20,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Models
         public bool? IsActive { get; set; }
         public short? OrderNumber { get; set; }
         [Required(ErrorMessage = "Tên bữa ăn không được để trống.")]
-        [RegularExpression(@"^[a-zA-Z0-9\s]*$", ErrorMessage = "Tên bữa ăn không được chứa ký tự đặc biệt.")]
         [MaxLength(50, ErrorMessage = "Tên bữa ăn không được vượt quá 50 ký tự.")]
         public string? Name { get; set; }
         public short? Calories { get; set; }
