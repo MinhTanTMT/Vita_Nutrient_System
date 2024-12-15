@@ -621,8 +621,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
                         ExpertPackage package = new ExpertPackage
                         {
-                            Id = packagesData.id,
-                            NutritionistDetailsId = packagesData.nutritionistDetailsId,
+                            //Id = packagesData.id,
+                            //NutritionistDetailsId = packagesData.nutritionistDetailsId,
                             Name = packagesData.name,
                             Describe = packagesData.describe,
                             Price = packagesData.price,
