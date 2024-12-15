@@ -15,8 +15,8 @@
 <link rel="stylesheet" href="~/css/toast.css" />
 
 
-<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" onchange="showErrorToast(e.target.value);" />
-<input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+<input type="hidden" name="errMsg" value="@TempData["AlertMessage"]" onchange="showErrorToast(e.target.value);" />
+<input type="hidden" name="successMsg" value="@TempData["SuccessMessage"]" />
 
 <div class="row" style="width: 100%;">
     <div class="col-12 grid-margin">

@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="~/css/toast.css" />
 
 
-<input type="hidden" name="errMsg" value="@ViewBag.AlertMessage" />
-<input type="hidden" name="successMsg" value="@ViewBag.SuccessMessage" />
+<input type="hidden" name="errMsg" value="@TempData["AlertMessage"]" />
+<input type="hidden" name="successMsg" value="@TempData["SuccessMessage"]" />
 @if(u is null)
 {
     <div>Không thể xem thông tin. Vui lòng thử lại sau!!</div>
@@ -180,7 +180,7 @@ else
                                         <div class="form-group row">
                                             <label for="user-age" class="col-sm-3 col-form-label">Tuổi</label>
                                             <div class="col-sm-9">
-                                            <input type="number" name="uage" min="0" required class="form-control user-info-input" id="user-age" placeholder="Nhập vào tuổi" value="@u.UserDetail.Age">
+                                            <input type="number" name="uage" min="0" max="100" required class="form-control user-info-input" id="user-age" placeholder="Nhập vào tuổi" value="@u.UserDetail.Age">
                                             </div>
                                         </div>
 
