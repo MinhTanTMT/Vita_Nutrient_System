@@ -409,6 +409,7 @@ using System.Net.Http;
         [HttpPost]
         public async Task<IActionResult> CreateMealSettingsDetailAsync(CreateMealSettingsDetail model, int userId)
         {
+
             if (!ModelState.IsValid)
             {
                 ViewBag.UserId = userId;
@@ -459,6 +460,7 @@ using System.Net.Http;
                 NutritionFocus = false,
                 DayOfTheWeekId = dayOfTheWeekId,
                 NutritionTargetsDailyId = null,
+                CookingDifficultyId = 3,
             };
             HttpResponseMessage response = await client.GetAsync($"{client.BaseAddress}/Meals/GetMealSettingByUserId/{userId}");
             if (response.IsSuccessStatusCode)
