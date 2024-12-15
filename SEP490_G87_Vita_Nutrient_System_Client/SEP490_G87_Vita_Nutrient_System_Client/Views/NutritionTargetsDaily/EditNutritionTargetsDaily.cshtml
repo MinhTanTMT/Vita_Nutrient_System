@@ -9,10 +9,11 @@
         <input asp-for="ExerciseIntensityId" type="hidden" />
         <input asp-for="NutritionTargetsDailyId" type="hidden" />
         <input type="hidden" name="userId" value="@ViewBag.UserId" />
+
         <!-- Title -->
         <div class="form-group">
-            <label asp-for="Title">Title</label>
-            <input asp-for="Title" class="form-control" />
+            <label asp-for="Title">Tiêu đề</label>
+            <input asp-for="Title" class="form-control" id="Title" oninput="validateTitle()" />
             <span asp-validation-for="Title" class="text-danger"></span>
         </div>
 
@@ -533,6 +534,26 @@
             this.setCustomValidity("");
         }
     });
+    // Hàm kiểm tra các ký tự đặc biệt trong input
+    function validateTitle() {
+        var titleInput = document.getElementById('Title');
+        var titleValue = titleInput.value;
+        var regex = /^[a-zA-Z0-9\s]*$/; // Chỉ cho phép chữ cái, số và khoảng trắng
 
+        // Nếu không hợp lệ (có ký tự đặc biệt), gán thông báo lỗi
+        if (!regex.test(titleValue)) {
+            titleInput.setCustomValidity('Tiêu đề không được chứa ký tự đặc biệt.');
+        } else {
+            titleInput.setCustomValidity(''); // Xóa lỗi nếu hợp lệ
+        }
+
+        // Kiểm tra lỗi trên input
+        if (titleInput.validationMessage !== "") {
+            // Nếu có lỗi, thêm một thông báo vào phần span
+            document.querySelector('.text-danger').textContent = titleInput.validationMessage;
+        } else {
+            document.querySelector('.text-danger').textContent = ''; // Xóa thông báo lỗi khi không có lỗi
+        }
+    }
 
 </script>
