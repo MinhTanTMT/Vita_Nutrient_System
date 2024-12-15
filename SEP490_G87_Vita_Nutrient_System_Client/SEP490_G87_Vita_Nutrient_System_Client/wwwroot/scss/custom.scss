@@ -1,13 +1,14 @@
 :root {
     --global-color: #002f6c;
     --second-color: #388E3C;
+    --info-color: #aaaaaa;
     --hover-text-color: var(--global-color);
     --btn-bg-color: var(--second-color);
     --btn-bg-primary-color: var(--global-color);
     --btn-text-color: black;
     --border-radius-1: 20px;
     --btn-bg-danger: red;
-    --btn-bg-gray: #aaaaaa;
+    --btn-bg-info: var(--info-color);
 }
 
 body {
@@ -50,7 +51,7 @@ h6,
     margin-bottom: 0px;
     height: 100%;
     background-color: #f7f7f7;
-
+    align-items: normal !important;
     >.page-content {
         padding: 20px;
         height: 100%;
@@ -134,9 +135,9 @@ h6,
         background-color: var(--btn-bg-danger);
     }
 
-    &.btn-gray {
-        border-color: var(--btn-bg-gray);
-        background-color: var(--btn-bg-gray);
+    &.btn-info-1 {
+        border-color: var(--btn-bg-info);
+        background-color: var(--btn-bg-info);
     }
 
     +.btn {
@@ -233,6 +234,10 @@ body {
     }
 }
 
+.btn-radius {
+    border-radius: 20px;
+}
+
 //page
 // - SaveUserAndCreateMeals
 .page-body-wrapper {
@@ -263,12 +268,12 @@ body {
 .diet-type-list-page {
     #dietTypeForm {
         display: flex;
-        justify-content: center;
+        flex-wrap: wrap;
         gap: 15px;
     }
 
     .card {
-        width: 50%;
+        width: 24%;
         border-radius: 20px;
     }
 
@@ -358,6 +363,13 @@ body {
     }
 }
 
+//NutritionistServices
+.ticket-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 //footer detail page
 .footer-detail-page {
     .grid-margin {
@@ -396,16 +408,20 @@ body {
             padding: 10px 5px;
             text-align: center;
             transition: all 0.3s ease;
+
             &:hover {
                 background: var(--second-color);
                 color: #fff;
                 cursor: pointer;
                 transform: scale(1.05);
-                label{
+
+                label {
                     color: #fff;
                 }
             }
-            [type="radio"]:checked + label:after, [type="radio"]:not(:checked) + label:after{
+
+            [type="radio"]:checked+label:after,
+            [type="radio"]:not(:checked)+label:after {
                 background-color: var(--second-color);
                 top: 3px;
                 left: 3px;
@@ -460,4 +476,97 @@ body {
 
 .border-none {
     border: none;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.ml-0 {
+    margin-left: 0px !important;
+}
+
+.mw-110 {
+    min-width: 110px;
+}
+
+.border-radius{
+    border-radius: var(--border-radius-1);
+}
+
+.w-auto{
+    width: auto !important;
+}
+
+//end boostrap
+
+.search {
+    input {
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+}
+
+.search-block {
+    input {
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+
+    .btn-search {
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        padding: 10px 15px;
+        min-width: 100px;
+    }
+}
+
+
+//popup
+.popup-style {
+    .modal-dialog {
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+
+            .modal-title {
+                margin: 0px;
+            }
+        }
+
+        .modal-content {
+            border-radius: 20px;
+            padding: 20px;
+            input.form-control {
+                border-radius: 20px;
+                padding: 12px;
+            }
+
+            select.form-control, .form-select {
+                border: 1px solid #ebedf2;
+                border-radius: 20px;
+                padding: 12px;
+                line-height: 1;
+            }
+            input.form-control[type='file']{
+                background-color: #fff;
+            }
+            .card-body {
+                padding: 20px;
+            }
+            .form-check-input{
+                margin-left: 0px;
+            }
+            .form-check-label{
+                margin-left: 10px;
+            }
+        }
+
+        .modal-footer {
+            padding: 0px;
+            margin-top: 15px;
+        }
+    }
 }
