@@ -65,7 +65,7 @@ async function blockFood(userId, foodId, baseAPIAddress) {
         });
 
         if (response.ok) {
-            window.location.href = "https://localhost:7069/foodsList";
+            window.location.href = "/foodsList";
         } else {
             showToast("Unexpected error occurred!");
         }
