@@ -40,7 +40,7 @@
                 <div class="food-card card">
                     <a href="@Url.Action("FoodDetails", "User", new { foodId = food.FoodListId })">
                         <div class="food-img card-img-top">
-                            <img src="~/images/@food.UrlImage" alt="@food.Name" class="card-img-top rounded" onerror="this.src='/images/foods/default_food.png';" />
+                            <img src="@food.UrlImage" alt="@food.Name" class="card-img-top rounded" onerror="this.src='/images/foods/default_food.png';" />
                         </div>
                         <div class="card-body">
                             <h5 class="card-title fs-6">@food.Name</h5>
