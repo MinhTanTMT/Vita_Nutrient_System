@@ -9,6 +9,28 @@
     string searchQuery = ViewBag.SearchQuery;
 }
 
+<style>
+    #my_nav ul {
+        list-style-type: none;
+        margin-left: 20px;
+    }
+
+        #my_nav ul li {
+            margin-bottom: 5px;
+        }
+
+    .page-item.disabled .page-link {
+        pointer-events: none;
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+    }
+
+    .page-link {
+        cursor: pointer;
+    }
+</style>
+
 <div class="row" style="width: 100%;">
     <div class="col-12 grid-margin">
         <div class="card">
@@ -76,7 +98,7 @@
                     </div>
 
                     <!-- Pagination controls -->
-                    <nav aria-label="Page navigation" style="padding: 50px 0 0 0;">
+                    <nav aria-label="Page navigation" style="padding: 50px 0 0 0;" id="my_nav">
                         <ul class="pagination justify-content-center">
                             @if (currentPage > 1)
                             {
@@ -84,12 +106,34 @@
                                     <a class="page-link" href="@Url.Action("ListUser", new { page = currentPage - 1 })">Trước</a>
                                 </li>
                             }
-                            @for (int i = 1; i <= totalPages; i++)
+
+                            @if (currentPage > 3)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListUser", new { page = 1 })">1</a>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
                             {
                                 <li class="page-item @(i == currentPage ? "active" : "")">
                                     <a class="page-link" href="@Url.Action("ListUser", new { page = i })">@i</a>
                                 </li>
                             }
+
+                            @if (currentPage < totalPages - 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListUser", new { page = totalPages })">@totalPages</a>
+                                </li>
+                            }
+
                             @if (currentPage < totalPages)
                             {
                                 <li class="page-item">

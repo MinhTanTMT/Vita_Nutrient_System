@@ -104,6 +104,17 @@
         margin-bottom: 5px;
     }
 
+.page-item.disabled .page-link {
+    pointer-events: none;
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+.page-link {
+    cursor: pointer;
+}
+
 .accordion-body ol {
     counter-reset: step-counter;
     list-style-type: none;
