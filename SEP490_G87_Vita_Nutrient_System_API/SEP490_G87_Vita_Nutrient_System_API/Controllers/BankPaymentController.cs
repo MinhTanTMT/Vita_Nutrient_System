@@ -51,34 +51,39 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
 
-        [HttpGet("APITest")]
-        public async Task<IActionResult> APITest(int idFood)
+        [HttpGet("APITestCheckCalo")]
+        public async Task<IActionResult> APITestCheckCalo(int idFood)
         {
 
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-
             List<FoodListDTO> dataCollection = new List<FoodListDTO>();
-            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish( await generateMealRepositories.TakeAllTheIngredientsOfTheDish(2)));
-            //dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3)));
-            //dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4)));
-
-
+            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish( await generateMealRepositories.TakeAllTheIngredientsOfTheDish(idFood)));
             return Ok(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(dataCollection));
-
-            //UsersRepositories usersRepositories = new UsersRepositories();
-
-            //UserLoginRegister abc = new UserLoginRegister()
-            //{
-            //    Account = "Nutri_3",
-            //    Password = "Nutri_3",
-            //    Role = 2
-            //};
+        }
 
 
-            return Ok();
+        [HttpGet("APITestGetTheListOfDishesByMealSettingsDetails")]
+        public async Task<IActionResult> APITestGetTheListOfDishesByMealSettingsDetails(int idFood, int idMealDetail)
+        {
 
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            List<int> dataCollection = new List<int>();
+            dataCollection.Add(idFood);
+            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(dataCollection, idMealDetail, 0));
 
         }
+
+        [HttpGet("APITestCheckMonThoaMan")]
+        public async Task<IActionResult> APITestCheckMonThoaMan(int idFood, int idMealDetail)
+        {
+
+            GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
+            List<FoodListDTO> dataCollection = new List<FoodListDTO>();
+            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(idFood)));
+            return Ok(await generateMealRepositories.CheckForUserMealSettingsDetailsIsSmallerThanNeeded(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(idFood)), idMealDetail));
+
+        }
+
 
 
         [HttpGet("APICheckQRPaySuccessful")]

@@ -319,7 +319,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (dataFood.ingredientDetails100gDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
             if (dataFood.ingredientDetails100gDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
             if (dataFood.ingredientDetails100gDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
-            if (dataFood.ingredientDetails100gDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Fiber < nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
 
             double targetSodiumEveryday = 2300;
             double targetCholesterolEveryday = 300;
@@ -431,7 +431,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (dataFood.ingredientDetails100gDTO.Carbohydrate < nutritionTargetsDaily.CarbsMin * (1 - carbTolerance) || dataFood.ingredientDetails100gDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
             if (dataFood.ingredientDetails100gDTO.Fat < nutritionTargetsDaily.FatsMin * (1 - fatTolerance) || dataFood.ingredientDetails100gDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
             if (dataFood.ingredientDetails100gDTO.Protein < nutritionTargetsDaily.ProteinMin * (1 - proteinTolerance) || dataFood.ingredientDetails100gDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
-            if (dataFood.ingredientDetails100gDTO.Fiber > nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
+            if (dataFood.ingredientDetails100gDTO.Fiber < nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
 
             double targetSodiumEveryday = 2300;
             double targetCholesterolEveryday = 300;
