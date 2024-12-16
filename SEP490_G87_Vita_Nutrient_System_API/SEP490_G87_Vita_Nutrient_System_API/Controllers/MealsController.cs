@@ -93,6 +93,24 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [HttpPut("EditMealSettingsDetailActive/{id}")]
+        public async Task<IActionResult> EditMealSettingsDetailActiveAsync(int id, [FromBody] MealSettingsDetailDTO model)
+        {
+            try
+            {
+                var updatedMeal = await repositories.EditMealSettingsDetailActiveAsync(id, model);
+
+                if (updatedMeal == null)
+                {
+                    return NotFound(new { message = "MealSettingsDetail không tìm thấy." });
+                }
+                return Ok(new { message = "Cập nhật thành công", updatedMeal });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
         [HttpPut("UpdateCalo/{id}")]
         public async Task<IActionResult> UpdateCalo(int id)
         {

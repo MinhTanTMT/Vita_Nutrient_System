@@ -683,7 +683,7 @@ using System.Net.Http;
             try
             {
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync($"{client.BaseAddress}/Meals/EditMealSettingsDetail/{id}", content);
+                HttpResponseMessage response = await client.PutAsync($"{client.BaseAddress}/Meals/EditMealSettingsDetailActive/{id}", content);
 
                 if (response.IsSuccessStatusCode)
                 {

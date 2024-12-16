@@ -504,6 +504,26 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             _context.MealSettingsDetails.Update(mealSettingsDetail);
             await _context.SaveChangesAsync();
         }
+        public async Task UpdateMealSettingDetailActiveAsync(MealSettingsDetail mealSettingsDetail, MealSettingsDetailDTO model)
+        {
+            mealSettingsDetail.MealSettingsId = model.MealSettingsId;
+            mealSettingsDetail.SlotOfTheDayId = model.SlotOfTheDayId;
+            mealSettingsDetail.NutritionTargetsDailyId = model.NutritionTargetsDailyId;
+            mealSettingsDetail.DayOfTheWeekId = model.DayOfTheWeekId;
+            mealSettingsDetail.SkipCreationProcess = model.SkipCreationProcess;
+            mealSettingsDetail.Size = model.Size;
+            mealSettingsDetail.NutritionFocus = model.NutritionFocus;
+            mealSettingsDetail.NumberOfDishes = model.NumberOfDishes;
+            mealSettingsDetail.TypeFavoriteFood = model.TypeFavoriteFood;
+            mealSettingsDetail.WantCookingId = model.WantCookingId;
+            mealSettingsDetail.TimeAvailable = model.TimeAvailable;
+            mealSettingsDetail.CookingDifficultyId = model.CookingDifficultyId;
+            mealSettingsDetail.IsActive = model.IsActive;
+            mealSettingsDetail.OrderNumber = model.OrderNumber;
+            mealSettingsDetail.Name = model.Name;
+            _context.MealSettingsDetails.Update(mealSettingsDetail);
+            await _context.SaveChangesAsync();
+        }
         ///// Update
         public async Task<MealSettingsDetail> EditMealSettingsDetailAsync(int id, MealSettingsDetailDTO model)
         {
@@ -541,7 +561,42 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             await _context.SaveChangesAsync();
             return mealSettingsDetail;
         }
+        public async Task<MealSettingsDetail> EditMealSettingsDetailActiveAsync(int id, MealSettingsDetailDTO model)
+        {
+            var mealSettingsDetail = await FindMealSettingsDetailByIdAsync(id);
+            if (mealSettingsDetail == null) return null;
+            //// Cap nhat lai ordernumber
+            if (model.OrderNumber != null)
+            {
+                if (model.SlotOfTheDayId != mealSettingsDetail.SlotOfTheDayId || model.DayOfTheWeekId != mealSettingsDetail.DayOfTheWeekId)
+                {
+                    var mealsInOldSlot = await _context.MealSettingsDetails
+                        .Where(m => m.MealSettingsId == mealSettingsDetail.MealSettingsId
+                                    && m.SlotOfTheDayId == mealSettingsDetail.SlotOfTheDayId
+                                    && m.DayOfTheWeekId == mealSettingsDetail.DayOfTheWeekId
+                                    && m.OrderNumber > mealSettingsDetail.OrderNumber)
+                        .OrderBy(m => m.OrderNumber)
+                        .ToListAsync();
 
+                    foreach (var meal in mealsInOldSlot)
+                    {
+                        meal.OrderNumber = (short?)(meal.OrderNumber - 1);
+                        _context.MealSettingsDetails.Update(meal);
+                    }
+                    var maxOrderNumberInNewSlot = await _context.MealSettingsDetails
+                        .Where(m => m.MealSettingsId == mealSettingsDetail.MealSettingsId
+                                    && m.SlotOfTheDayId == model.SlotOfTheDayId
+                                    && m.DayOfTheWeekId == model.DayOfTheWeekId)
+                        .MaxAsync(m => (int?)m.OrderNumber) ?? 0;
+
+                    model.OrderNumber = (short)(maxOrderNumberInNewSlot + 1);
+                }
+            }
+            await UpdateMealSettingDetailActiveAsync(mealSettingsDetail, model);
+
+            await _context.SaveChangesAsync();
+            return mealSettingsDetail;
+        }
         public async Task UpdateCalo(int id)
         {
             var mealSettingsDetail = await FindMealSettingsDetailByIdAsync(id);
@@ -1022,31 +1077,63 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             foreach (var slotId in slotMappings[number])
             {
-                var meal = new MealSettingsDetail
+                if(slotId == 2)
                 {
-                    MealSettingsId = mealSettings.Id,
-                    SlotOfTheDayId = (short)slotId,
-                    DayOfTheWeekId = 8,
-                    SkipCreationProcess = false,
-                    Size = "Bữa vừa",
-                    NutritionFocus = false,
-                    NumberOfDishes = 3,
-                    TypeFavoriteFood = userStats.FoodTypeIdWant.ToString(),
-                    WantCookingId = 1,
-                    TimeAvailable = 9999,
-                    CookingDifficultyId = 3,
-                    Name = slotId switch
+                    var meal = new MealSettingsDetail
                     {
-                        1 => "Bữa Sáng",
-                        2 => "Bữa Trưa",
-                        3 => "Bữa Chiều",
-                        4 => "Bữa Tối",
-                        5 => "Bữa Cả Ngày",
-                    },
-                };
+                        MealSettingsId = mealSettings.Id,
+                        SlotOfTheDayId = (short)slotId,
+                        DayOfTheWeekId = 8,
+                        SkipCreationProcess = false,
+                        Size = "Bữa vừa",
+                        NutritionFocus = false,
+                        NumberOfDishes = 2,
+                        TypeFavoriteFood = userStats.FoodTypeIdWant.ToString(),
+                        WantCookingId = 1,
+                        TimeAvailable = 9999,
+                        CookingDifficultyId = 3,
+                        Name = slotId switch
+                        {
+                            1 => "Bữa Sáng",
+                            2 => "Bữa Trưa",
+                            3 => "Bữa Chiều",
+                            4 => "Bữa Tối",
+                            5 => "Bữa Cả Ngày",
+                        },
+                    };
 
-                meals.Add(meal);
-                await _context.MealSettingsDetails.AddAsync(meal);
+                    meals.Add(meal);
+                    await _context.MealSettingsDetails.AddAsync(meal);
+                }
+                else
+                {
+                    var meal = new MealSettingsDetail
+                    {
+                        MealSettingsId = mealSettings.Id,
+                        SlotOfTheDayId = (short)slotId,
+                        DayOfTheWeekId = 8,
+                        SkipCreationProcess = false,
+                        Size = "Bữa vừa",
+                        NutritionFocus = false,
+                        NumberOfDishes = 1,
+                        TypeFavoriteFood = userStats.FoodTypeIdWant.ToString(),
+                        WantCookingId = 1,
+                        TimeAvailable = 9999,
+                        CookingDifficultyId = 3,
+                        Name = slotId switch
+                        {
+                            1 => "Bữa Sáng",
+                            2 => "Bữa Trưa",
+                            3 => "Bữa Chiều",
+                            4 => "Bữa Tối",
+                            5 => "Bữa Cả Ngày",
+                        },
+                    };
+
+                    meals.Add(meal);
+                    await _context.MealSettingsDetails.AddAsync(meal);
+                }
+                
             }
 
             await _context.SaveChangesAsync();
