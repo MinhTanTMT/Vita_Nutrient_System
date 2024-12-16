@@ -359,7 +359,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     int totalFoods = foods.Count();
                     var paginatedFoods = foods.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-                    ViewBag.foods = foods;
+                    ViewBag.foods = paginatedFoods;
                     ViewBag.CurrentPage = page;
                     ViewBag.TotalPages = (int)Math.Ceiling(totalFoods / (double)pageSize);
                 }
