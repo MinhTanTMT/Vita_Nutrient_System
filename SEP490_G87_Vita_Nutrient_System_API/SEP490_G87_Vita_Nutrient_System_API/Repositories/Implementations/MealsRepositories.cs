@@ -1022,31 +1022,63 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             foreach (var slotId in slotMappings[number])
             {
-                var meal = new MealSettingsDetail
+                if(slotId == 2)
                 {
-                    MealSettingsId = mealSettings.Id,
-                    SlotOfTheDayId = (short)slotId,
-                    DayOfTheWeekId = 8,
-                    SkipCreationProcess = false,
-                    Size = "Bữa vừa",
-                    NutritionFocus = false,
-                    NumberOfDishes = 3,
-                    TypeFavoriteFood = userStats.FoodTypeIdWant.ToString(),
-                    WantCookingId = 1,
-                    TimeAvailable = 9999,
-                    CookingDifficultyId = 3,
-                    Name = slotId switch
+                    var meal = new MealSettingsDetail
                     {
-                        1 => "Bữa Sáng",
-                        2 => "Bữa Trưa",
-                        3 => "Bữa Chiều",
-                        4 => "Bữa Tối",
-                        5 => "Bữa Cả Ngày",
-                    },
-                };
+                        MealSettingsId = mealSettings.Id,
+                        SlotOfTheDayId = (short)slotId,
+                        DayOfTheWeekId = 8,
+                        SkipCreationProcess = false,
+                        Size = "Bữa vừa",
+                        NutritionFocus = false,
+                        NumberOfDishes = 2,
+                        TypeFavoriteFood = userStats.FoodTypeIdWant.ToString(),
+                        WantCookingId = 1,
+                        TimeAvailable = 9999,
+                        CookingDifficultyId = 3,
+                        Name = slotId switch
+                        {
+                            1 => "Bữa Sáng",
+                            2 => "Bữa Trưa",
+                            3 => "Bữa Chiều",
+                            4 => "Bữa Tối",
+                            5 => "Bữa Cả Ngày",
+                        },
+                    };
 
-                meals.Add(meal);
-                await _context.MealSettingsDetails.AddAsync(meal);
+                    meals.Add(meal);
+                    await _context.MealSettingsDetails.AddAsync(meal);
+                }
+                else
+                {
+                    var meal = new MealSettingsDetail
+                    {
+                        MealSettingsId = mealSettings.Id,
+                        SlotOfTheDayId = (short)slotId,
+                        DayOfTheWeekId = 8,
+                        SkipCreationProcess = false,
+                        Size = "Bữa vừa",
+                        NutritionFocus = false,
+                        NumberOfDishes = 1,
+                        TypeFavoriteFood = userStats.FoodTypeIdWant.ToString(),
+                        WantCookingId = 1,
+                        TimeAvailable = 9999,
+                        CookingDifficultyId = 3,
+                        Name = slotId switch
+                        {
+                            1 => "Bữa Sáng",
+                            2 => "Bữa Trưa",
+                            3 => "Bữa Chiều",
+                            4 => "Bữa Tối",
+                            5 => "Bữa Cả Ngày",
+                        },
+                    };
+
+                    meals.Add(meal);
+                    await _context.MealSettingsDetails.AddAsync(meal);
+                }
+                
             }
 
             await _context.SaveChangesAsync();
