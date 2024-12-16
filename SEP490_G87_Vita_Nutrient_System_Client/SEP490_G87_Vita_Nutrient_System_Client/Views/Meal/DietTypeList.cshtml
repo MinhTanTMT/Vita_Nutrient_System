@@ -18,12 +18,12 @@
                                 <strong>@diet.Name</strong>
                                 <p class="text-muted">@diet.Describe</p>
                             </label>
-                            <input class="form-check-input diet-radio"
-                                   type="radio"
-                                   name="dietType"
-                                   value="@diet.DietTypeId"
-                                   id="dietType_@diet.DietTypeId"
-                            @(ViewBag.CurrentDietTypeId == diet.DietTypeId ? "checked" : "") />
+                        <input class="form-check-input diet-radio"
+                               type="radio"
+                               name="dietType"
+                               value="@diet.DietTypeId"
+                               id="dietType_@diet.DietTypeId"
+                        @(ViewBag.CurrentDietTypeId == diet.DietTypeId ? "checked" : "") />
                         </div>
                 </div>
             </div>
@@ -32,29 +32,33 @@
 </div>
 
 <script>
-    // Thêm sự kiện change vào các radio button
+    
+    
     document.querySelectorAll('.diet-radio').forEach(radio => {
         radio.addEventListener('change', function () {
-            const selectedDietTypeId = this.value;
-            // Gửi yêu cầu cập nhật chế độ ăn khi thay đổi
-            fetch('@Url.Action("UpdateDietType", "Meal")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            const foodTypeId = this.value;  // Giá trị của radio button
+            console.log("Selected Food Type ID:", foodTypeId);  // Kiểm tra giá trị
+
+            // Gửi yêu cầu AJAX
+            $.ajax({
+                url: '@Url.Action("UpdateDietType", "Meal")', // URL controller
+                type: 'POST',
+                data: {
+                    foodTypeIdWant: parseInt(foodTypeId),  
+                    userId: @User.FindFirst("UserId")?.Value  
                 },
-                body: JSON.stringify({ FoodTypeIdWant: selectedDietTypeId })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Không làm gì nếu thành công
-                    if (!data.success) {
-                        console.error("Có lỗi xảy ra:", data.message);
+                success: function (response) {
+                    if (response.success) {
+                        console.log("Cập nhật chế độ ăn uống mong muốn thành công");
+                    } else {
+                        console.log("Cập nhật thất bại: " + response.message);
                     }
-                })
-                .catch(error => {
-                    console.error("Có lỗi xảy ra:", error.message);
-                });
+                },
+                error: function (xhr, status, error) {
+                    console.log("Cập nhật chế độ ăn uống mong muốn thất bại:", error);
+                }
+            });
         });
     });
+
 </script>
