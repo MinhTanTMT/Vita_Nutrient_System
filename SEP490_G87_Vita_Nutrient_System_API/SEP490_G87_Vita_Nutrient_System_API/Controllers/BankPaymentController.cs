@@ -52,15 +52,15 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
 
 
         [HttpGet("APITest")]
-        public async Task<IActionResult> APITest( )
+        public async Task<IActionResult> APITest(int idFood)
         {
 
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
 
             List<FoodListDTO> dataCollection = new List<FoodListDTO>();
             dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish( await generateMealRepositories.TakeAllTheIngredientsOfTheDish(2)));
-            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3)));
-            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4)));
+            //dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3)));
+            //dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(4)));
 
 
             return Ok(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(dataCollection));
