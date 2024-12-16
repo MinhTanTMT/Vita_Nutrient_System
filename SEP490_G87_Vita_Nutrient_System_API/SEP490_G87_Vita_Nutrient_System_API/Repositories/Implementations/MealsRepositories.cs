@@ -1046,13 +1046,13 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                     SlotOfTheDayId = (short)slotId,
                     DayOfTheWeekId = 8,
                     SkipCreationProcess = false,
-                    Size = "Bữa lớn",
+                    Size = "Bữa vừa",
                     NutritionFocus = false,
                     NumberOfDishes = 3,
                     TypeFavoriteFood = userStats.FoodTypeIdWant.ToString(),
                     WantCookingId = 1,
                     TimeAvailable = 9999,
-                    CookingDifficultyId = 2,
+                    CookingDifficultyId = 3,
                     Name = slotId switch
                     {
                         1 => "Bữa Sáng",

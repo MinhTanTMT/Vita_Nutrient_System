@@ -717,6 +717,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
                 else
                 {
+                    HttpContext.Session.SetString("takeFullName", ufn + uln);
                     TempData["SuccessMessage"] = "Update user successfully!";
                 }
             }
@@ -848,6 +849,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 }
                 else
                 {
+                    HttpContext.Session.SetString("imageUrl", "/images/user_avatar/" + Path.GetFileName(uava.FileName));
                     TempData["SuccessMessage"] = "Update user avatar successfully!";
                 }
             }

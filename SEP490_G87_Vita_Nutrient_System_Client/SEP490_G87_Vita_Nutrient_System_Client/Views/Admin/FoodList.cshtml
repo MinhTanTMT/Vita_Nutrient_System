@@ -42,16 +42,6 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Đánh giá:</label>
-                                    <input type="text" class="form-control" name="Rate" required />
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Số lượng đánh giá:</label>
-                                    <input type="number" class="form-control" name="NumberRate" required />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
                                     <label class="form-label" for="foodTypeId">Loại món ăn:</label>
                                     <select id="foodTypeId" name="FoodTypeId" class="form-select" required>
                                         @foreach (var type in Model.FoodTypes)
@@ -137,7 +127,7 @@
                             </td>
                             <td>@food.Name</td>
                             <td style="max-width: 200px; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis;">@food.Describe</td>
-                            <td>@food.Rate</td>
+                            <td>@(Math.Round(food.Rate / 20, 1))</td>
                             <td>@food.NumberRate</td>
                             <td>@food.FoodTypeName</td>
                             <td>
@@ -378,18 +368,21 @@
                         <h5 class="modal-title" id="createDiseaseModalLabel">Tạo bệnh mới</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
-                    <form asp-action="SaveDisease" method="post">
+                    <form asp-action="SaveDisease" method="post" id="saveDiseaseForm">
                         <div class="modal-body">
-                            <input type="hidden" name="Id" value="0" /> <!-- Đặt Id là 0 để tạo mới -->
+                            <input type="hidden" name="Id" value="0" />
+
                             <div class="mb-3">
                                 <label class="form-label">Tên:</label>
                                 <input type="text" class="form-control" name="Name" placeholder="Nhập tên" required />
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Mô tả:</label>
                                 <input type="text" class="form-control" name="Describe" placeholder="Nhập mô tả" required />
                             </div>
                         </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-info-1" data-bs-dismiss="modal">Đóng</button>
                             <button type="submit" class="btn btn-primary">Tạo bệnh</button>
@@ -497,37 +490,41 @@
                         <h5 class="modal-title" id="createFoodAndDiseaseModalLabel">Tạo món ăn và bệnh mới</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
-                    <form asp-action="SaveFoodAndDisease" method="post">
+                    <form asp-action="SaveFoodAndDisease" method="post" id="saveFoodAndDiseaseForm">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label class="form-label">Bệnh:</label>
                                 <select class="form-control" name="ListOfDiseasesId" required>
-                                    <!-- Điền các tùy chọn từ danh sách bệnh -->
+                                    <option value="">Chọn bệnh</option> <!-- Thêm tùy chọn mặc định -->
                                     @foreach (var disease in Model.ListOfDiseases)
                                     {
                                         <option value="@disease.Id">@disease.Name</option>
                                     }
                                 </select>
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Món ăn:</label>
                                 <select class="form-control" name="FoodListId" required>
-                                    <!-- Điền các tùy chọn từ danh sách món ăn -->
+                                    <option value="">Chọn món ăn</option> <!-- Thêm tùy chọn mặc định -->
                                     @foreach (var food in Model.Foods)
                                     {
                                         <option value="@food.FoodListId">@food.Name</option>
                                     }
                                 </select>
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Mô tả:</label>
                                 <input type="text" class="form-control" name="Describe" required />
                             </div>
-                            <div class="mb-3 form-check ml-0">
+
+                            <div class="mb-3 form-check">
                                 <input class="form-check-input" type="checkbox" name="IsGoodOrBad" value="true" id="isGoodOrBad">
                                 <label class="form-check-label" for="isGoodOrBad">Tốt cho bệnh</label>
                             </div>
                         </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-info-1" data-bs-dismiss="modal">Đóng</button>
                             <button type="submit" class="btn btn-primary">Tạo</button>
@@ -666,6 +663,277 @@
 
 </div>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('saveFoodForm');
+
+        form.addEventListener('submit', function (event) {
+            // Ngăn form gửi nếu có lỗi
+            if (!validateForm()) {
+                event.preventDefault();
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+
+            // 1. Validate trường "Tên"
+            const name = document.querySelector('input[name="Name"]');
+            if (!name.value.trim()) {
+                showError(name, 'Vui lòng nhập tên món ăn.');
+                isValid = false;
+            } else if (!validateTextLength(name.value, 3, 50)) {
+                showError(name, 'Tên món ăn phải từ 3 đến 50 ký tự.');
+                isValid = false;
+            } else {
+                clearError(name);
+            }
+
+            // 2. Validate trường "Mô tả"
+            const describe = document.querySelector('input[name="Describe"]');
+            if (!describe.value.trim()) {
+                showError(describe, 'Vui lòng nhập mô tả cho món ăn.');
+                isValid = false;
+            } else if (!validateTextLength(describe.value, 10, 255)) {
+                showError(describe, 'Mô tả phải từ 10 đến 255 ký tự.');
+                isValid = false;
+            } else {
+                clearError(describe);
+            }
+
+            // 3. Validate trường "Loại món ăn"
+            const foodTypeId = document.querySelector('select[name="FoodTypeId"]');
+            if (!foodTypeId.value) {
+                showError(foodTypeId, 'Vui lòng chọn loại món ăn.');
+                isValid = false;
+            } else {
+                clearError(foodTypeId);
+            }
+
+            // 4. Validate trường "Ghi chú"
+            const keyNoteId = document.querySelector('select[name="KeyNoteId"]');
+            if (!keyNoteId.value) {
+                showError(keyNoteId, 'Vui lòng chọn ghi chú.');
+                isValid = false;
+            } else {
+                clearError(keyNoteId);
+            }
+
+            // 5. Validate trường "Thời gian chuẩn bị"
+            const preparationTime = document.querySelector('input[name="PreparationTime"]');
+            if (!preparationTime.value.trim()) {
+                showError(preparationTime, 'Vui lòng nhập thời gian chuẩn bị.');
+                isValid = false;
+            } else if (parseInt(preparationTime.value) <= 0) {
+                showError(preparationTime, 'Thời gian chuẩn bị phải lớn hơn 0.');
+                isValid = false;
+            } else {
+                clearError(preparationTime);
+            }
+
+            // 6. Validate trường "Thời gian nấu"
+            const cookingTime = document.querySelector('input[name="CookingTime"]');
+            if (!cookingTime.value.trim()) {
+                showError(cookingTime, 'Vui lòng nhập thời gian nấu.');
+                isValid = false;
+            } else if (parseInt(cookingTime.value) <= 0) {
+                showError(cookingTime, 'Thời gian nấu phải lớn hơn 0.');
+                isValid = false;
+            } else {
+                clearError(cookingTime);
+            }
+
+            // 7. Validate trường "Độ khó nấu"
+            const cookingDifficultyId = document.querySelector('select[name="CookingDifficultyId"]');
+            if (!cookingDifficultyId.value) {
+                showError(cookingDifficultyId, 'Vui lòng chọn độ khó nấu.');
+                isValid = false;
+            } else {
+                clearError(cookingDifficultyId);
+            }
+
+            // 8. Validate trường "Tải lên hình ảnh"
+            const imageFile = document.querySelector('input[name="ImageFile"]');
+            if (!imageFile.value) {
+                showError(imageFile, 'Vui lòng tải lên hình ảnh của món ăn.');
+                isValid = false;
+            } else if (!validateImageFile(imageFile.value)) {
+                showError(imageFile, 'File hình ảnh không hợp lệ. Vui lòng chọn file .jpg, .jpeg, .png hoặc .gif.');
+                isValid = false;
+            } else {
+                clearError(imageFile);
+            }
+
+            return isValid;
+        }
+
+        function showError(inputField, message) {
+            clearError(inputField); // Xóa lỗi cũ (nếu có)
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'text-danger mt-1';
+            errorDiv.innerText = message;
+            inputField.classList.add('is-invalid');
+            inputField.closest('.mb-3').appendChild(errorDiv);
+        }
+
+        function clearError(inputField) {
+            const parent = inputField.closest('.mb-3');
+            const errorDiv = parent.querySelector('.text-danger');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+            inputField.classList.remove('is-invalid');
+        }
+
+        function validateImageFile(filePath) {
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+            return allowedExtensions.test(filePath);
+        }
+
+        function validateTextLength(text, minLength, maxLength) {
+            const length = text.trim().length;
+            return length >= minLength && length <= maxLength;
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('saveDiseaseForm');
+
+        form.addEventListener('submit', function (event) {
+            if (!validateForm()) {
+                console.log("Form không hợp lệ.");
+                event.preventDefault();
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+
+            // Giới hạn phạm vi tìm kiếm
+            const name = form.querySelector('input[name="Name"]');
+            const describe = form.querySelector('input[name="Describe"]');
+
+            console.log('Kiểm tra giá trị Name:', name ? name.value : 'Không tìm thấy input Name');
+            console.log('Kiểm tra giá trị Describe:', describe ? describe.value : 'Không tìm thấy input Describe');
+
+            if (!name.value.trim()) {
+                showError(name, 'Vui lòng nhập tên bệnh.');
+                isValid = false;
+            } else if (!validateTextLength(name.value, 3, 50)) {
+                showError(name, 'Tên bệnh phải từ 3 đến 50 ký tự.');
+                isValid = false;
+            } else {
+                clearError(name);
+            }
+
+            if (!describe.value.trim()) {
+                showError(describe, 'Vui lòng nhập mô tả cho bệnh.');
+                isValid = false;
+            } else if (!validateTextLength(describe.value, 10, 255)) {
+                showError(describe, 'Mô tả bệnh phải từ 10 đến 255 ký tự.');
+                isValid = false;
+            } else {
+                clearError(describe);
+            }
+
+            return isValid;
+        }
+
+        function showError(inputField, message) {
+            clearError(inputField);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'text-danger mt-1';
+            errorDiv.innerText = message;
+            inputField.classList.add('is-invalid');
+            inputField.parentElement.appendChild(errorDiv);
+        }
+
+        function clearError(inputField) {
+            const parent = inputField.parentElement;
+            const errorDiv = parent.querySelector('.text-danger');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+            inputField.classList.remove('is-invalid');
+        }
+
+        function validateTextLength(text, minLength, maxLength) {
+            const length = text.trim().length;
+            return length >= minLength && length <= maxLength;
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('saveFoodAndDiseaseForm');
+
+        form.addEventListener('submit', function (event) {
+            if (!validateForm()) {
+                console.log("Form không hợp lệ.");
+                event.preventDefault();
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+
+            const diseaseSelect = form.querySelector('select[name="ListOfDiseasesId"]');
+            if (!diseaseSelect.value) {
+                showError(diseaseSelect, 'Vui lòng chọn bệnh.');
+                isValid = false;
+            } else {
+                clearError(diseaseSelect);
+            }
+
+            const foodSelect = form.querySelector('select[name="FoodListId"]');
+            if (!foodSelect.value) {
+                showError(foodSelect, 'Vui lòng chọn món ăn.');
+                isValid = false;
+            } else {
+                clearError(foodSelect);
+            }
+
+            const describe = form.querySelector('input[name="Describe"]');
+            if (!describe.value.trim()) {
+                showError(describe, 'Vui lòng nhập mô tả.');
+                isValid = false;
+            } else if (!validateTextLength(describe.value, 10, 255)) {
+                showError(describe, 'Mô tả phải từ 10 đến 255 ký tự.');
+                isValid = false;
+            } else {
+                clearError(describe);
+            }
+
+            return isValid;
+        }
+
+        function showError(inputField, message) {
+            clearError(inputField); // Xóa lỗi cũ (nếu có)
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'text-danger mt-1';
+            errorDiv.innerText = message;
+            inputField.classList.add('is-invalid');
+
+            if (inputField.tagName === 'SELECT') {
+                inputField.closest('.mb-3').appendChild(errorDiv);
+            } else if (inputField.tagName === 'INPUT') {
+                inputField.closest('.mb-3').appendChild(errorDiv);
+            }
+        }
+
+        function clearError(inputField) {
+            const parent = inputField.closest('.mb-3');
+            const errorDiv = parent.querySelector('.text-danger');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+            inputField.classList.remove('is-invalid');
+        }
+
+        function validateTextLength(text, minLength, maxLength) {
+            const length = text.trim().length;
+            return length >= minLength && length <= maxLength;
+        }
+    });
+
     async function deleteFood(foodId) {
         const confirmed = confirm("Bạn có chắc muốn đổi trạng thái của món ăn này?");
         if (!confirmed) return;
@@ -883,6 +1151,13 @@
 
 <style>
     /* Đảm bảo modal body có đủ không gian */
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
     .modal-body {
         padding: 1rem; /* Tăng padding để tránh phần tử bị sát viền */
         overflow-y: auto; /* Thêm overflow để đảm bảo nội dung không bị tràn ra ngoài */

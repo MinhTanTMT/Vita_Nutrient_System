@@ -27,7 +27,7 @@
                 <!-- Search form -->
                 <form method="get" action="@Url.Action("ListPackages", "Admin")" style="padding: 8px 10px;">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="searchQuery" placeholder="Tìm theo tên" value="@searchQuery" />
+                        <input type="text" maxlength="100" class="form-control" name="searchQuery" placeholder="Tìm theo tên" value="@searchQuery" />
                         <div class="input-group-append">
                             <button class="btn btn-success btn-fw" type="submit">
                                 <i class="mdi mdi-magnify"></i>
@@ -90,7 +90,7 @@
                             @if (currentPage > 1)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("ListPackages", new { page = currentPage - 1 })">Previous</a>
+                                    <a class="page-link" href="@Url.Action("ListPackages", new { page = currentPage - 1 })">Trước</a>
                                 </li>
                             }
                             @for (int i = 1; i <= totalPages; i++)
@@ -102,7 +102,7 @@
                             @if (currentPage < totalPages)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("ListPackages", new { page = currentPage + 1 })">Next</a>
+                                    <a class="page-link" href="@Url.Action("ListPackages", new { page = currentPage + 1 })">Sau</a>
                                 </li>
                             }
                         </ul>

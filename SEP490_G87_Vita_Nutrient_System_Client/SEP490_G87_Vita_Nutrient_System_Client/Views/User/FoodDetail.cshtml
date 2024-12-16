@@ -122,7 +122,8 @@
 
                             <div class="rating-display" style="padding-bottom: 16px;">
                                 <!-- Circle Rating -->
-                                <div class="rating">@(food.Rate)</div>
+                                <div class="rating">@(food.Rate.ToString("F1"))</div>
+
 
                                 <!-- Stars Rating -->
                                 <div class="">
@@ -298,7 +299,7 @@
                                     }
                                     else
                                     {
-                                        <img src="~/images/@r.Urlimage" alt="step @(i+1)"
+                                        <img src="@r.Urlimage" alt="step @(i+1)"
                                              onerror="this.src='/images/foods/default_food.png'; this.onerror=null; " style="width: 200px; height: auto; border-radius: 5px;" />
                                     }
                                 </div>

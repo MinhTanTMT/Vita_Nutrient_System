@@ -26,7 +26,7 @@
                         <form class="search-block" method="get" action="@Url.Action("FoodList", "User")">
                             <div class="input-group">
                                 <input type="hidden" name="foodTypeId" value="@typeId" />
-                                <input type="text" class="form-control" name="searchQuery" placeholder="Tìm kiếm theo tên"
+                            <input type="text" maxlength="100" class="form-control" name="searchQuery" placeholder="Tìm kiếm theo tên"
                                     value="@searchQuery" />
                                 <div class="input-group-append">
                                     <button class="btn btn-success btn-bg-primary btn-fw" type="submit">
@@ -54,7 +54,7 @@
                     </div>
                     @if (foods == null || foods.Count == 0)
                     {
-                        <h1>There is no food.</h1>
+                        <h1>Hiện không tìm thấy món ăn.</h1>
                     }
                     else
                     {
@@ -99,7 +99,7 @@
                                 {
                                     <li class="page-item">
                                         <a class="page-link"
-                                            href="@Url.Action("FoodList", new { page = currentPage - 1 })">Previous</a>
+                                            href="@Url.Action("FoodList", new { page = currentPage - 1 })">Trước</a>
                                     </li>
                                 }
                                 @for (int i = 1; i <= totalPages; i++)
@@ -112,7 +112,7 @@
                                 {
                                     <li class="page-item">
                                         <a class="page-link"
-                                            href="@Url.Action("FoodList", new { page = currentPage + 1 })">Next</a>
+                                            href="@Url.Action("FoodList", new { page = currentPage + 1 })">Sau</a>
                                     </li>
                                 }
                             </ul>

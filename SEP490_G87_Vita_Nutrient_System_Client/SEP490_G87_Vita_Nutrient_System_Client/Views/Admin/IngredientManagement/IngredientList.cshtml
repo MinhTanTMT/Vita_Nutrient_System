@@ -23,7 +23,7 @@
                 <!-- Search form -->
                 <form method="get" action="@Url.Action("IngredientsList", "Admin")" style="padding: 8px 10px;">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="searchQuery" placeholder="Tìm kiếm theo tên" value="@searchQuery" />
+                        <input type="text" maxlength="100" class="form-control" name="searchQuery" placeholder="Tìm kiếm theo tên" value="@searchQuery" />
                         <div class="input-group-append">
                             <button class="btn btn-success btn-fw" type="submit">
                                 <i class="mdi mdi-magnify"></i>
@@ -119,7 +119,7 @@
                             @if (currentPage > 1)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("IngredientsList", new { page = currentPage - 1 })">Previous</a>
+                                    <a class="page-link" href="@Url.Action("IngredientsList", new { page = currentPage - 1 })">Trước</a>
                                 </li>
                             }
                             @for (int i = 1; i <= totalPages; i++)
@@ -131,7 +131,7 @@
                             @if (currentPage < totalPages)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("IngredientsList", new { page = currentPage + 1 })">Next</a>
+                                    <a class="page-link" href="@Url.Action("IngredientsList", new { page = currentPage + 1 })">Sau</a>
                                 </li>
                             }
                         </ul>
@@ -150,21 +150,21 @@
     <!-- Modal -->
     <div class="modal1">
         <div class="modal1-header">
-            <span>Add Ingredient</span>
+            <span>Thêm nguyên liệu</span>
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
         <div class="modal1-body">
             <form id="ingredientForm" asp-controller="Admin" asp-action="AddIngredient" method="post" enctype="multipart/form-data">
-                <label>Name:</label>
+                <label>Tên:</label>
                 <input class="ms-auto" type="text" name="in_name" required/>
 
-                <label>Description:</label>
+                <label>Mô tả:</label>
                 <input class="ms-auto" type="text" name="in_desc" />
 
-                <label>Url image:</label>
+                <label>Hình ảnh:</label>
                 <input type="file" name="urlimg" accept="image/jpeg, image/png, image/jpg" class="form-control ms-auto" placeholder="Ingredient Image">
 
-                <label>Key note:</label>
+                <label>Ghi chú:</label>
                 <select class="form-select ms-auto" name="keynoteId">
                     @foreach(KeyNote keyNote in listKeynotes)
                     {
@@ -172,7 +172,7 @@
                     }
                 </select>
 
-                <label>Type of calculation:</label>
+                <label>Loại tính toán:</label>
                 <select class="form-select ms-auto" name="typeOfCalculationId">
                     @foreach (TypeOfCalculation t in listTypesOfCalculation)
                     {
@@ -182,8 +182,8 @@
             </form>
         </div>
         <div class="modal1-footer">
-            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-            <button class="btn-save" onclick="AddIngredient()">Save</button>
+            <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+            <button class="btn-save" onclick="AddIngredient()">Lưu</button>
         </div>
     </div>
 </div>
