@@ -1,6 +1,6 @@
 ﻿function confirmDelete()
 {
-    return confirm("Are you sure you want to delete this ingredient?");
+    return confirm("Bạn có chắc là muốn xóa nguyên liệu này?");
 }
 // Open Modal Function
 function openModal() {
@@ -25,9 +25,12 @@ function AddIngredient() {
 
     var name = form.elements['in_name'].value.trim();
     var desc = form.elements['in_desc'].value.trim();
+    var img = form.elements['urlimg'].value.trim();
 
     if (name === "" || desc === "") {
         showErrorToast("Vui lòng điền đầy đủ thông tin vào các ô.");
+    } else if (img === "") {
+        showErrorToast("Vui lòng chọn ảnh.");
     } else {
         form.submit();
     }

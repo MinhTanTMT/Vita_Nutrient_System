@@ -331,8 +331,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         /// Sơn
         ////////////////////////////////////////////////////////////
         ///
-
-        [HttpGet("admin/usermanagement/listuser")]
+        [HttpGet("admin/usermanagement/listuser"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> ListUser(int page = 1, int pageSize = 10, string searchQuery = "")
         {
             try
@@ -431,7 +430,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpGet("admin/usermanagement/userdetail/{userId}")]
+        [HttpGet("admin/usermanagement/userdetail/{userId}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> UserDetail(int userId)
         {
             try
@@ -495,7 +494,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpGet("admin/nutritionistmanagement/listnutritionist")]
+        [HttpGet("admin/nutritionistmanagement/listnutritionist"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> ListNutritionist(int page = 1, int pageSize = 10, string searchQuery = "")
         {
             try
@@ -562,7 +561,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpGet("admin/nutritionistmanagement/nutritionistdetail/{nutritionistId}")]
+        [HttpGet("admin/nutritionistmanagement/nutritionistdetail/{nutritionistId}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> NutritionistDetail(int nutritionistId)
         {
             try
@@ -678,7 +677,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return Redirect(returnUrl);
         }
 
-        [HttpGet("admin/ingredientmanagement/ingredientlist")]
+        [HttpGet("admin/ingredientmanagement/ingredientlist"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> IngredientsList(int page = 1, int pageSize = 10, string searchQuery = "")
         {
             try
@@ -795,7 +794,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("IngredientsList", "Admin");
         }
 
-        [HttpGet("admin/ingredientmanagement/updateingredient/{Id}")]
+        [HttpGet("admin/ingredientmanagement/updateingredient/{Id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateIngredient(int Id)
         {
             try
@@ -982,7 +981,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return await UpdateIngredient(model.Id);
         }
 
-        [HttpGet("admin/ingredientmanagement/deleteingredient/{Id}")]
+        [HttpGet("admin/ingredientmanagement/deleteingredient/{Id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteIngredient(int Id)
         {
             try
@@ -1006,7 +1005,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("IngredientsList", "Admin");
         }
 
-        [HttpGet("admin/expertpackagemanagement/listpackages")]
+        [HttpGet("admin/expertpackagemanagement/listpackages"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> ListPackages(int page = 1, int pageSize = 10, string searchQuery = "")
         {
             try
@@ -1145,7 +1144,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("ListPackages", "Admin");
         }
 
-        [HttpGet("admin/expertpackagemanagement/deletepackage/{Id}")]
+        [HttpGet("admin/expertpackagemanagement/deletepackage/{Id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePackage(int Id)
         {
             try
@@ -1177,7 +1176,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("ListPackages", "Admin");
         }
 
-        [HttpGet("admin/foodmanagement/foodingredient/{foodId}")]
+        [HttpGet("admin/foodmanagement/foodingredient/{foodId}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> FoodListIngredients(int foodId)
         {
             try
@@ -1258,7 +1257,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return await FoodListIngredients(foodId);
         }
 
-        [HttpGet("admin/foodmanagement/deleteingredient/{foodId}/{ingreId}")]
+        [HttpGet("admin/foodmanagement/deleteingredient/{foodId}/{ingreId}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveIngredientFromFood(int foodId, int ingreId)
         {
             try

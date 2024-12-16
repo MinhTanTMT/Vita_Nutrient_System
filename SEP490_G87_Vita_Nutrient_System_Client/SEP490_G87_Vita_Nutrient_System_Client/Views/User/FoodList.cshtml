@@ -92,31 +92,51 @@
                             }
                         </div>
 
-                        <!-- Pagination controls -->
-                        <nav aria-label="Page navigation" style="padding: 50px 0 0 0;">
-                            <ul class="pagination justify-content-center">
-                                @if (currentPage > 1)
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link"
-                                            href="@Url.Action("FoodList", new { page = currentPage - 1 })">Trước</a>
-                                    </li>
-                                }
-                                @for (int i = 1; i <= totalPages; i++)
-                                {
-                                    <li class="page-item @(i == currentPage ? "active" : "")">
-                                        <a class="page-link" href="@Url.Action("FoodList", new { page = i })">@i</a>
-                                    </li>
-                                }
-                                @if (currentPage < totalPages)
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link"
-                                            href="@Url.Action("FoodList", new { page = currentPage + 1 })">Sau</a>
-                                    </li>
-                                }
-                            </ul>
-                        </nav>
+                    <!-- Pagination controls -->
+                    <nav aria-label="Page navigation" style="padding: 50px 0 0 0;" id="my_nav">
+                        <ul class="pagination justify-content-center">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = currentPage - 1 })">Trước</a>
+                                </li>
+                            }
+
+                            @if (currentPage > 3)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = 1 })">1</a>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = i })">@i</a>
+                                </li>
+                            }
+
+                            @if (currentPage < totalPages - 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = totalPages })">@totalPages</a>
+                                </li>
+                            }
+
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("FoodList", new { page = currentPage + 1 })">Sau</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
                     }
                 </div>
             </div>

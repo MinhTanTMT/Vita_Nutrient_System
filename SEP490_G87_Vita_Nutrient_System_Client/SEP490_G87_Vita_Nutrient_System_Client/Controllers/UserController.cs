@@ -321,6 +321,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
             try
             {
+                if (User.FindFirst("UserId") is null)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
                 HttpResponseMessage response = foodTypeId == 0 ?
                                     await client.GetAsync(client.BaseAddress + "/Food/GetFoods/")
                                     :
@@ -359,7 +363,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     int totalFoods = foods.Count();
                     var paginatedFoods = foods.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-                    ViewBag.foods = foods;
+                    ViewBag.foods = paginatedFoods;
                     ViewBag.CurrentPage = page;
                     ViewBag.TotalPages = (int)Math.Ceiling(totalFoods / (double)pageSize);
                 }
@@ -392,6 +396,10 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         {
             try
             {
+                if (User.FindFirst("UserId") is null)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
                 int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
                 HttpResponseMessage response =
