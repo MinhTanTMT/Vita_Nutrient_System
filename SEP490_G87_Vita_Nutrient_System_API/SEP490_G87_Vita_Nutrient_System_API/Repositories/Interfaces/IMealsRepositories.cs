@@ -26,6 +26,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Interfaces
 
         Task AddMealSettingsDetailAsync(MealSettingsDetail mealSettingsDetail);
         Task<MealSettingsDetail?> EditMealSettingsDetailAsync(int id, MealSettingsDetailDTO model);
+        Task<MealSettingsDetail> EditMealSettingsDetailActiveAsync(int id, MealSettingsDetailDTO model);
         Task UpdateCalo(int id);
         Task UpdateMealSettingForMealAsync(int id, MealSettingDTO dto);
         Task<MealSettingsDetail> RemoveMealToListAsync(int mealId);
