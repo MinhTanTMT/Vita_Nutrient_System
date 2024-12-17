@@ -93,7 +93,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
 
             builder.Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.IdleTimeout = TimeSpan.FromMinutes(999);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
@@ -108,7 +108,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client
             .AddCookie(options =>
             {
                 options.LoginPath = "/Home/Login"; // Đường dẫn khi chưa đăng nhập
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Session timeout
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(999); // Session timeout
                 options.AccessDeniedPath = "/Home/Error"; // Chuyển hướng tới trang Error khi người dùng bị từ chối quyền
             })
             .AddGoogle(options =>

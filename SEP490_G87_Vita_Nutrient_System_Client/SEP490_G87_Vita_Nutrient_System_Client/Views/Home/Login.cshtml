@@ -35,7 +35,10 @@
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left p-5">
                             <div class="brand-logo">
-                                <img src="~/images/LogoVitaNutri.jpg">
+                                @* <img src="~/images/LogoVitaNutri.jpg"> *@
+                                <a class="navbar-brand brand-logo" href="@Url.Action("Index", "Home")">
+                                    <img src="~/images/LogoVitaNutri.jpg" alt="logo" />
+                                </a>
                             </div>
                             <h4 style="font-family: 'Roboto', sans-serif;">Xin chào! Chúng ta hãy bắt đầu nhé</h4>
                             <h6 style="font-family: 'Roboto', sans-serif;" class="font-weight-light">Đăng nhập để tiếp
