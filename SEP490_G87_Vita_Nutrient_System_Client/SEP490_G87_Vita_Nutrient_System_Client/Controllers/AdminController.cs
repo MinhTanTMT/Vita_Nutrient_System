@@ -710,7 +710,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     if (!string.IsNullOrEmpty(searchQuery))
                     {
                         ingredients = ingredients.Where(u =>
-                            (u.Name).ToLower().Contains(searchQuery.ToLower())
+                         !string.IsNullOrEmpty(u.Name) &&
+                         u.Name.ToLower().Contains(searchQuery.ToLower())
                         ).ToList();
                     }
 

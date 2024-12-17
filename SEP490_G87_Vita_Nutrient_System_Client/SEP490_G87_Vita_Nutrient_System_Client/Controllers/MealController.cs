@@ -1,4 +1,5 @@
-﻿    using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
@@ -30,7 +31,7 @@ using System.Net.Http;
         ///
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> AddMealToList(int mealId , int userId)
         {
             if (userId == 0)
@@ -74,7 +75,7 @@ using System.Net.Http;
 
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> RemoveMealToList(int mealId, int userId)
         {
             // Kiểm tra userId nếu không có, lấy từ token hoặc session.
@@ -109,7 +110,7 @@ using System.Net.Http;
 
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> ChangeOrderNumber(int mealId, string direction)
         {
             try
@@ -134,7 +135,7 @@ using System.Net.Http;
 
 
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> MealSettingsDetailToList(int userId)
         {
             if(userId == 0)
@@ -250,7 +251,7 @@ using System.Net.Http;
             }
             return View(activeMeals);
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> UpdateDietType(int foodTypeIdWant, int userId)
         {
             if (userId == 0)
@@ -285,7 +286,7 @@ using System.Net.Http;
         }
 
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium")]
         public async Task<IActionResult> DietTypeList()
         {
             List<DietType> dietTypes = new List<DietType>();
@@ -322,7 +323,7 @@ using System.Net.Http;
         }
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> UpdateDayOfTheWeek(int dayOfTheWeekStartId, int userId)
         {
             if (userId == 0)
@@ -360,7 +361,7 @@ using System.Net.Http;
 
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> UpdateSameScheduleEveryDay(bool SameScheduleEveryDay, int userId)
         {
             if (userId == 0)
@@ -406,7 +407,7 @@ using System.Net.Http;
 
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> CreateMealSettingsDetailAsync(CreateMealSettingsDetail model, int userId)
         {
 
@@ -447,7 +448,7 @@ using System.Net.Http;
 
 
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> CreateMealSettingsDetailAsync(short dayOfTheWeekId,int userId)
         {
             if (userId == 0)
@@ -480,7 +481,7 @@ using System.Net.Http;
         }
 
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> MealList(short dayOfTheWeekId,int userId)
         {
             List<CreateMealSettingsDetail> meals = new List<CreateMealSettingsDetail>();
@@ -544,7 +545,7 @@ using System.Net.Http;
             return View(meals);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> EditMealSettingsDetailAsync(int id, CreateMealSettingsDetail model, int userId)
         {
             if (!ModelState.IsValid)
@@ -591,7 +592,7 @@ using System.Net.Http;
         }
 
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium,Nutritionist")]
             public async Task<IActionResult> EditMealSettingsDetail(int id, int userId)
             {
             if (userId == 0)
@@ -627,7 +628,7 @@ using System.Net.Http;
             }
 
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> EditMealSettingsDetailActive(int id, int userId)
         {
             if (userId == 0)
@@ -667,7 +668,7 @@ using System.Net.Http;
             return View(mealSettingsDetail);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> EditMealSettingsDetailActiveAsync(int id, CreateMealSettingsDetail model, int userId)
         {
             if (!ModelState.IsValid)
@@ -708,7 +709,7 @@ using System.Net.Http;
             return View("EditMealSettingsDetailActive", model);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> DeleteMealSettingsDetail(int id, short dayOfTheWeekId, int userId)
         {
             // Kiểm tra userId, nếu chưa có thì lấy từ Claims
@@ -799,7 +800,8 @@ using System.Net.Http;
                 ViewBag.NutritionTargetsDaily = new SelectList(nutritionTargetsDaily, "Id", "Title");
                 ViewBag.DaysOfWeek = new SelectList(dayOfTheWeek, "Id", "Name");
             }
-        [HttpGet]
+
+        [HttpGet, Authorize(Roles = "User,UserPremium")]
         public async Task<IActionResult> SaveUserAndCreateMeals()
         {
             try
@@ -856,7 +858,7 @@ using System.Net.Http;
 
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium")]
         public async Task<IActionResult> SaveUserAndCreateMeals(MealAndUserPhysicalStatistics userStats)
         {
             // Kiểm tra model có hợp lệ không
@@ -890,9 +892,6 @@ using System.Net.Http;
             }
             return View(userStats);
         }
-
-
-
     }
 }
 

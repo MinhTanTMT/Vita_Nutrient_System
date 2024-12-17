@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SEP490_G87_Vita_Nutrient_System_Client.Models;
 using System.Net.Http.Headers;
@@ -18,7 +19,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> EditNutritionTargetsDaily(int id,int userId)
         {
             NutritionTargetOfMeal nutritionTargetsDaily = null;
@@ -102,7 +103,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> EditNutritionTargetsDaily(int id, NutritionTargetOfMeal model, int userId)
         {
             if (!ModelState.IsValid)

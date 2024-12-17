@@ -558,9 +558,9 @@
                     <div class="flex flex-col gap-1 text-right">
                         <p class="font-bold">Tổng số Đã Ăn</p>
                         <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Energy, 2)</p>
-                        <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Carbohydrate, 2) gam</p>
+                        <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Carbohydrate, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fat, 2) g</p>
-                        <p class=" mb-5">@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fiber, 2) gam</p>
+                        <p class=" mb-5">@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Fiber, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Iron, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Sodium, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListEatenCalculated.IngredientDetails100gDTO.Cholesterol, 2) g</p>
@@ -570,9 +570,9 @@
                     <div class="flex flex-col gap-1 text-right">
                         <p class="font-bold">Mục Tiêu</p>
                         <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Energy, 2)</p>
-                        <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Carbohydrate, 2) gam</p>
+                        <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Carbohydrate, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fat, 2) g</p>
-                        <p class=" mb-5">@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fiber, 2) gam</p>
+                        <p class=" mb-5">@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fiber, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Iron, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Sodium, 2) g</p>
                         <p>@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Cholesterol, 2) g</p>
@@ -1428,7 +1428,45 @@
         });
     </script>
 
+        <script>
+            var ctx = document.getElementById("myChart").getContext("2d");
+            var myPieChart = new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: ["Chất béo", "Protein", "Carbs"],
+                    datasets: [
+                        {
+                            label: "Phân tích chất dinh dưỡng đa lượng",
+                            data: [@Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Fat, 2), @Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Protein, 2), @Math.Round(ViewBag.foodListTotaAllCalculated.IngredientDetails100gDTO.Carbohydrate, 2)],
+                            backgroundColor: [
+                                "rgba(255, 99, 132, 0.6)",
+                                "rgba(54, 162, 235, 0.6)",
+                                "rgba(255, 206, 86, 0.6)",
+                            ],
+                            borderColor: [
+                                "rgba(255, 99, 132, 1)",
+                                "rgba(54, 162, 235, 1)",
+                                "rgba(255, 206, 86, 1)",
+                            ],
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "top",
+                        },
+                        tooltip: {
+                            enabled: true,
+                        },
+                    },
+                },
+            });
+        </script>
 
 </body>
-<script src="~/js/mainPlanUser.js"></script>
+@* <script src="~/js/mainPlanUser.js"></script> *@
 </html>

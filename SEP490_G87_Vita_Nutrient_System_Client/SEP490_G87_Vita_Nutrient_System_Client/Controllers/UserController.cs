@@ -311,7 +311,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         ////////////////////////////////////////////////////////////
         ///
 
-        [HttpGet("foodsList")]
+        [HttpGet("foodsList"), Authorize]
         public async Task<IActionResult> FoodList(
             string searchQuery = "",
             int foodTypeId = 0,
@@ -390,7 +390,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpGet("foodDetails/{foodId}")]
+        [HttpGet("foodDetails/{foodId}"), Authorize]
          
         public async Task<IActionResult> FoodDetails(int foodId)
         {
@@ -484,7 +484,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpGet("Profile")]
+        [HttpGet("Profile"), Authorize]
         public async Task<IActionResult> UserProfileSon()
         {
             try
@@ -576,7 +576,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpGet("AdminProfile")]
+        [HttpGet("AdminProfile"), Authorize]
         public async Task<IActionResult> AdminProfile()
         {
             try
@@ -620,7 +620,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View("~/Views/User/AdminInfo.cshtml");
         }
 
-        [HttpGet("NutritionistProfile")]
+        [HttpGet("NutritionistProfile"), Authorize]
         public async Task<IActionResult> NutritionistProfile()
         {
             try
@@ -696,7 +696,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View("~/Views/User/NutritionistInfo.cshtml");
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<IActionResult> UpdateUserInfo(string page ,int uid, string uacc, string uaccgg, string ufn, string uln, int user_gender, DateTime udob, string uadd, string uphone)
         {
             try
@@ -741,7 +741,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             };
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<IActionResult> UpdateUserDetails(int uid, string udesc, short uheight, short uage, short uweight, string uwi)
         {
             try
@@ -780,7 +780,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("UserProfileSon", "User");
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<IActionResult> UpdateNutritionistDetails(int uid, string udesc, short uheight, short uage, short uweight)
         {
             try
@@ -817,7 +817,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("NutritionistProfile", "User");
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<IActionResult> UploadAvatar(int userId, IFormFile uava, string page)
         {
             try
@@ -873,7 +873,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             };
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<IActionResult> ChangePassword(string page, int uid, string uopw, string unpw, string ucpw)
         {
             try
@@ -1027,7 +1027,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
             return View("Error");
         }
-        [HttpPost("UserWeightGoal")]
+
+        [HttpPost("UserWeightGoal"), Authorize(Roles = "User, UserPremium")]
         public async Task<IActionResult> UserWeightGoal(UserPhysicalStatistics model)
         {
 
@@ -1076,7 +1077,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             }
         }
 
-        [HttpGet("UserPhysicalStatistics")]
+        [HttpGet("UserPhysicalStatistics"), Authorize(Roles = "User, UserPremium")]
         public async Task<IActionResult> UserPhysicalStatistics()
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
@@ -1125,7 +1126,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return View("Error");
         }
  
-        [HttpPost("UserPhysicalStatistics")]
+        [HttpPost("UserPhysicalStatistics"), Authorize(Roles = "User, UserPremium")]
         public async Task<IActionResult> UserPhysicalStatistics(UserPhysicalStatistics model)
         {
             int userId = int.Parse(User.FindFirst("UserId")?.Value);
@@ -1175,7 +1176,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
         // Call the API to get liked foods
 
-        [HttpGet("NutritionalGoals")]
+        [HttpGet("NutritionalGoals"), Authorize(Roles = "User, UserPremium")]
         public async Task<IActionResult> NutritionalGoals()
         {
             try
@@ -1218,24 +1219,24 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-        [HttpGet()]
-        public async Task<IActionResult> UserProfile()
-        {
+        //[HttpGet()]
+        //public async Task<IActionResult> UserProfile()
+        //{
 
-            /// dùng bao nhiêu thì dùng 
-            int userId = int.Parse(User.FindFirst("UserId")?.Value);
+        //    /// dùng bao nhiêu thì dùng 
+        //    int userId = int.Parse(User.FindFirst("UserId")?.Value);
 
-            HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/Users/GetUserById/" + userId);
+        //    HttpResponseMessage res = await client.GetAsync(client.BaseAddress + "/Users/GetUserById/" + userId);
 
-            if (res.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                HttpContent content = res.Content;
-                string data = await content.ReadAsStringAsync();
+        //    if (res.StatusCode == System.Net.HttpStatusCode.OK)
+        //    {
+        //        HttpContent content = res.Content;
+        //        string data = await content.ReadAsStringAsync();
 
-                return View();
-            }
-            return RedirectToAction("Error");
-        }
+        //        return View();
+        //    }
+        //    return RedirectToAction("Error");
+        //}
 
 
 

@@ -280,7 +280,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ArticlesNews article, IFormFile HeaderImage)
         {
             if (!ModelState.IsValid)
@@ -383,7 +383,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         // POST: Update an article
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(ArticlesNews article, IFormFile HeaderImage)
         {
             ModelState.Remove("HeaderImage");
@@ -528,7 +528,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
             return RedirectToAction("Error");
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "User,UserPremium,Nutritionist")]
         public async Task<IActionResult> AddOrUpdateEvaluation(int articleId, int rating)
         {
             var userId = int.Parse(User.FindFirst("UserId")?.Value);

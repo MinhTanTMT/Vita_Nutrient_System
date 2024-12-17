@@ -295,7 +295,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (mealSettingsDetail.NutritionFocus ?? true)
             {
-                calorieTolerance = 0.1;
+                calorieTolerance = 0.15;
                 carbTolerance = 0.0;
                 fatTolerance = 0.0;
                 proteinTolerance = 0.0;
@@ -305,7 +305,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             else
             {
-                calorieTolerance = 0.1; // 10%
+                calorieTolerance = 0.15; // 10%
                 carbTolerance = 0.15; // 15%
                 fatTolerance = 0.1; // 10%
                 proteinTolerance = 0.1; // 10%
@@ -410,7 +410,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             if (mealSettingsDetail.NutritionFocus ?? true)
             {
-                calorieTolerance = 0.1;
+                calorieTolerance = 0.15;
                 carbTolerance = 0.0;
                 fatTolerance = 0.0;
                 proteinTolerance = 0.0;
@@ -420,7 +420,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             }
             else
             {
-                calorieTolerance = 0.1; // 10%
+                calorieTolerance = 0.15; // 10%
                 carbTolerance = 0.15; // 15%
                 fatTolerance = 0.1; // 10%
                 proteinTolerance = 0.1; // 10%

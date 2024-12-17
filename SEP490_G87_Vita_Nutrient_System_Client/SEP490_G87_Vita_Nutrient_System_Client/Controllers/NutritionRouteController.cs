@@ -235,7 +235,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
         }
 
         // POST: NutritionRoute/Create
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Nutritionist")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NutritionRoute nutritionRoute, int userId, int userListManagementId, string packageName)
         {
@@ -388,7 +388,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
 
 
         // POST: NutritionRoute/Edit/{id}
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Nutritionist")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, NutritionRoute nutritionRoute, int userId, int userListManagementId, string packageName)
         {
@@ -644,9 +644,6 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                 return Json(new { success = false, message = $"Lỗi hệ thống: {ex.Message}" });
             }
         }
-
-
-
 
 
         [HttpPost]

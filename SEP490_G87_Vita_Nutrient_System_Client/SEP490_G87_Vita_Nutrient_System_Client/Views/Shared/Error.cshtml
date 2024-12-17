@@ -1,14 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Không quyền hạn";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<h1 class="text-danger">Không Có Quyền Hạn.</h1>
+<h2 class="text-danger">Bạn hiện tại không có quyền hạn để truy cập vào tính năng của hệ thống.</h2>
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
-</p>
+<h3>Quyền Truy Cập Bị Từ Chối</h3> <p> Chuyển sang môi trường có <strong>quyền truy cập đặc quyền</strong> sẽ cho phép xem thông tin chi tiết hơn về lý do giới hạn quyền truy cập. </p> <p> <strong>Quyền truy cập đặc quyền không nên được kích hoạt cho người dùng thông thường</strong>, vì có thể dẫn đến việc lộ thông tin nhạy cảm hoặc cấp quyền ngoài ý muốn. Để phục vụ mục đích quản trị, quyền truy cập đặc quyền có thể được kích hoạt bằng cách gán các vai trò hoặc quyền hạn phù hợp và khởi động lại ứng dụng. </p>

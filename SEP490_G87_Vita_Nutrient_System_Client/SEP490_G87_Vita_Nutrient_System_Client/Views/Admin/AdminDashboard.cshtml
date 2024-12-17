@@ -56,7 +56,6 @@
                         <img src="~/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
                         <h4 class="font-weight-normal mb-3">
                         Tài khoản tháng này <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                        Tài khoản tháng này <i class="mdi mdi-diamond mdi-24px float-right"></i>
                         </h4>
                     @* <h2 class="mb-5">@ViewBag.BalanceThisMonth</h2> *@
                     <h2 class="mb-5">@ViewBag.BalanceThisMonth.ToString("#,##0.##")</h2>
@@ -790,9 +789,9 @@
     
         // These labels appear in the legend and in the tooltips when hovering different arcs
         labels: [
-          'Tiền ra tháng này',
-          'Tài khoản thánh này',
-          'Tiền vào tháng này',
+          'Tiền ra tháng này ',
+          'Tài khoản thánh này ',
+          'Tiền vào tháng này ',
         ]
       };
       var trafficChartOptions = {

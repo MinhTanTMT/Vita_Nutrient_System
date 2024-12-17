@@ -92,9 +92,9 @@
                             <div>
                                 <h3 class="text-blue-400 font-bold">@item.NameDayOfWeek.ToUpper()</h3>
                                 <p class="text-sm text-red-500" style="cursor: pointer;" onclick="navigateToPlanUser('@item.DayOfWeek')">
-                                    ⚠ @item.DayOfWeek.ToString("yyyy-MM-dd")
+                                    📅 @item.DayOfWeek.ToString("yyyy-MM-dd")
                                 </p>
-                                <p class="text-sm text-red-500">⚠ @item.TotalCaloriesAllDay Calo</p>
+                                <p class="text-sm text-red-500">⚡ @item.TotalCaloriesAllDay Calo</p>
                             </div>
                             <!-- Button inside form -->
                             <form asp-controller="User" asp-action="RefreshTheMealWeek" method="post">
