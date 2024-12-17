@@ -316,7 +316,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                             var authProperties = new AuthenticationProperties
                             {
                                 IsPersistent = false,
-                                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(999)
                             };
 
                             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -411,7 +411,7 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = false,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(999)
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -545,8 +545,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         if (bmi < 16) { status = "GẦY ĐỘ III"; evaluation = "<16Kg/m²"; }
                         else if (bmi < 17) { status = "GẦY ĐỘ II"; evaluation = "16Kg/m² - <17Kg/m²"; }
                         else if (bmi < 18.5) { status = "GẦY ĐỘ I"; evaluation = "17Kg/m² - <18.5Kg/m²"; }
-                        else if (bmi < 23) { status = "BÌNH THƯỜNG"; evaluation = "18.5Kg/m² - <23Kg/m²"; }
-                        else if (bmi < 25) { status = "THỪA CÂN"; evaluation = "23Kg/m² - <25Kg/m²"; }
+                        else if (bmi < 25) { status = "BÌNH THƯỜNG"; evaluation = "18.5Kg/m² - <25Kg/m²"; }
+                        
                         else if (bmi < 30) { status = "BÉO PHÌ ĐỘ I"; evaluation = "25Kg/m² - <30Kg/m²"; }
                         else if (bmi < 35) { status = "BÉO PHÌ ĐỘ II"; evaluation = "30Kg/m² - <35Kg/m²"; }
                         else { status = "BÉO PHÌ ĐỘ III"; evaluation = "≥35Kg/m²"; }
@@ -556,8 +556,8 @@ namespace SEP490_G87_Vita_Nutrient_System_Client.Controllers
                         if (bmi < 15.5) { status = "GẦY ĐỘ III"; evaluation = "<15.5Kg/m²"; }
                         else if (bmi < 16.5) { status = "GẦY ĐỘ II"; evaluation = "15.5Kg/m² - <16.5Kg/m²"; }
                         else if (bmi < 18) { status = "GẦY ĐỘ I"; evaluation = "16.5Kg/m² - <18Kg/m²"; }
-                        else if (bmi < 22.5) { status = "BÌNH THƯỜNG"; evaluation = "18Kg/m² - <22.5Kg/m²"; }
-                        else if (bmi < 24.5) { status = "THỪA CÂN"; evaluation = "22.5Kg/m² - <24.5Kg/m²"; }
+                        else if (bmi < 24.5) { status = "BÌNH THƯỜNG"; evaluation = "18Kg/m² - <24.5Kg/m²"; }
+                        
                         else if (bmi < 29.5) { status = "BÉO PHÌ ĐỘ I"; evaluation = "24.5Kg/m² - <29.5Kg/m²"; }
                         else if (bmi < 34.5) { status = "BÉO PHÌ ĐỘ II"; evaluation = "29.5Kg/m² - <34.5Kg/m²"; }
                         else { status = "BÉO PHÌ ĐỘ III"; evaluation = "≥34.5Kg/m²"; }
