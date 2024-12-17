@@ -168,7 +168,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             existingNutritionTarget.FatsMax = mealSettingsDetail.FatsMax;
             // Cập nhật MinimumFiber
             mealSettingsDetail.MinimumFiber = 0;
-            //MinimumFiber = (short)Math.Round((caloriesPerMeal / 1000) * 14)
             existingNutritionTarget.MinimumFiber = mealSettingsDetail.MinimumFiber;
 
             // Cập nhật FoodWanId
@@ -259,7 +258,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             CarbsMax = (short)(caloriesPerMeal / 4),
                             ProteinMax = (short)(caloriesPerMeal / 4),
                             FatsMax = (short)(caloriesPerMeal / 9),
-                            //MinimumFiber = (short)Math.Round((caloriesPerMeal / 1000) * 14)
                             MinimumFiber = 0
                         };
                         _context.NutritionTargetsDailies.Add(newNutritionTarget);
@@ -274,8 +272,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         meal.FatsMax = (short)(caloriesPerMeal / 9);
                         meal.FatsMin = 0;
                         meal.MinimumFiber = 0;
-/*                        meal.MinimumFiber = (short)Math.Round((caloriesPerMeal / 1000) * 14);
-*/                    }
+                    }
                 }
             }
             await _context.SaveChangesAsync();
@@ -384,9 +381,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                             CarbsMax = (short)(caloriesForSlot / 4),
                             ProteinMax = (short)(caloriesForSlot / 4),
                             FatsMax = (short)(caloriesForSlot / 9),
-                            MinimumFiber = 0,
-/*                            MinimumFiber = (short)Math.Round((caloriesForSlot / 1000) * 14),
-*/
+                            MinimumFiber = 0
                         };
                         _context.NutritionTargetsDailies.Add(newNutritionTarget);
                         meal.NutritionTargetsDailyId = newNutritionTarget.Id;
@@ -399,8 +394,7 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
                         meal.FatsMax = (short)(caloriesForSlot / 9);
                         meal.FatsMin = 0;
                         meal.MinimumFiber = 0;
-/*                        meal.MinimumFiber = (short)Math.Round((caloriesForSlot / 1000) * 14);
-*/                    }
+                    }
                 }
             }
 
