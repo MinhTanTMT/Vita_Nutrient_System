@@ -151,13 +151,6 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
         /// Chiến
         ////////////////////////////////////////////////////////////
         ///
-        /*private void CalculateMacrosAndFiber(NutritionTargetsDaily nutritionTarget, double totalCalories)
-        {
-            nutritionTarget.CarbsMax = (short)(totalCalories / 4);      // 4 calo mỗi gram cho carbs
-            nutritionTarget.ProteinMax = (short)(totalCalories / 4);    // 4 calo mỗi gram cho protein
-            nutritionTarget.FatsMax = (short)(totalCalories / 9);       // 9 calo mỗi gram cho chất béo
-            nutritionTarget.MinimumFiber = (short)Math.Round((totalCalories / 1000) * 14); // Chất xơ tối thiểu
-        }*/
         private void CalculateMacrosAndFiberForMeal(MealSettingsDetail mealSettingsDetail, NutritionTargetsDaily existingNutritionTarget, double totalCalories)
         {
             var mealSetting = _context.MealSettings.FirstOrDefault(x => x.Id == mealSettingsDetail.MealSettingsId);
