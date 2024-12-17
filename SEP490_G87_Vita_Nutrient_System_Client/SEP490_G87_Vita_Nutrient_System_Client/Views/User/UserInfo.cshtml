@@ -233,20 +233,25 @@ else
                 <input type="hidden" name="uid" value="@u.UserId" required />
                 <input type="hidden" name="page" value="user" required />
 
-                <label>Old Password:</label>
-                <input class="ms-auto" type="password" name="uopw" required />
+                <label>Mật Khẩu Cũ:</label>
+                <input class="ms-auto" type="password" name="uopw" required
+                       oninput="this.value = this.value.replace(/\s/g, '')" />
 
-                <label>New Password:</label>
-                <input class="ms-auto" type="password" name="unpw" required />
+                <label>Mật Khẩu Mới:</label>
+                <input class="ms-auto" type="password" name="unpw" required
+                       oninput="this.value = this.value.replace(/\s/g, '')" />
 
-                <label>Confirm Password:</label>
-                <input class="ms-auto" type="password" name="ucpw" required />
+                <label>Nhập Lại Mật Khẩu Mới:</label>
+                <input class="ms-auto" type="password" name="ucpw" required
+                       oninput="this.value = this.value.replace(/\s/g, '')" />
+
                 <div class="modal1-footer">
-                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-                    <button class="btn-save" type="submit" onclick="ChangePass()">Save</button>
+                    <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+                    <button class="btn-save" type="submit" onclick="ChangePass()">Lưu</button>
                 </div>
             </form>
         </div>
+
     </div>
 </div>
 <div id="toast"></div>
