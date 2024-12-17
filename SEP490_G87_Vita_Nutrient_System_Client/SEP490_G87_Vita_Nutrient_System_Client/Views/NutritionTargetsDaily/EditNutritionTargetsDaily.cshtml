@@ -228,7 +228,6 @@
             let carbsMax = Math.round(calories / 4);
             let fatsMax = Math.round(calories / 9);
             let proteinMax = Math.round(calories / 4);
-            let fiberMin = Math.round((calories / 1000) * 14);
 
             isAutoUpdate = true; // Đánh dấu đang tự động cập nhật
 
@@ -243,7 +242,6 @@
             carbsMaxSpan.textContent = `(0 - ${carbsMax})`;
             fatsMaxSpan.textContent = `(0 - ${fatsMax})`;
             proteinMaxSpan.textContent = `(0 - ${proteinMax})`;
-            fiberMinInput.value = fiberMin;
 
             validateMinMax(carbsMinInput, carbsMaxInput, carbsMax);
             validateMinMax(fatsMinInput, fatsMaxInput, fatsMax);
