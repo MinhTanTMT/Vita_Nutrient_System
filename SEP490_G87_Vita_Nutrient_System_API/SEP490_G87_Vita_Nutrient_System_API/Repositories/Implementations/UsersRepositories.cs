@@ -290,6 +290,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                     if (data == null)
                     {
+                        var modifiAllIsDoneUserListManagements = await _context.UserListManagements.FirstOrDefaultAsync(x => x.UserId == accGoogle.UserId && x.IsDone == false);
+                        if (modifiAllIsDoneUserListManagements != null)
+                        {
+                            modifiAllIsDoneUserListManagements.IsDone = true;
+                        }
                         accGoogle.Role = roleUser;
                         await _context.SaveChangesAsync();
                         return true;
@@ -308,6 +313,11 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
                     if (data == null)
                     {
+                        var modifiAllIsDoneUserListManagements = await _context.UserListManagements.FirstOrDefaultAsync(x => x.UserId == accUser.UserId && x.IsDone == false);
+                        if(modifiAllIsDoneUserListManagements != null)
+                        {
+                            modifiAllIsDoneUserListManagements.IsDone = true;
+                        } 
                         accUser.Role = roleUser;
                         await _context.SaveChangesAsync();
                         return true;

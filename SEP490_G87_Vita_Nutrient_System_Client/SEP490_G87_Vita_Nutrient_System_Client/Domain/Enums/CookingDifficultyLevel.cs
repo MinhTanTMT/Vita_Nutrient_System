@@ -2,9 +2,9 @@
 {
     public enum CookingDifficultyLevel
     {
-        SUPERHARD = 1,
-        HARD = 2,
-        MEDIUM = 3,
-        EASY = 4
+        Siêu_Khó = 1,
+        Khó = 2,
+        Trung_Bình = 3,
+        Dễ = 4
     }
 }

@@ -319,7 +319,10 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
             if (dataFood.ingredientDetails100gDTO.Carbohydrate > nutritionTargetsDaily.CarbsMax * (1 + carbTolerance)) return false;
             if (dataFood.ingredientDetails100gDTO.Fat > nutritionTargetsDaily.FatsMax * (1 + fatTolerance)) return false;
             if (dataFood.ingredientDetails100gDTO.Protein > nutritionTargetsDaily.ProteinMax * (1 + proteinTolerance)) return false;
-            if (dataFood.ingredientDetails100gDTO.Fiber < nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
+            //if (dataFood.ingredientDetails100gDTO.Fiber < nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false; // nghe cos mùi lỗi
+            //if (dataFood.ingredientDetails100gDTO.Fiber < nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false; // nghe cos mùi lỗi
+
+            //if (dataFood.ingredientDetails100gDTO.Fiber < nutritionTargetsDaily.MinimumFiber * (1 + fiberTolerance)) return false;
 
             double targetSodiumEveryday = 2300;
             double targetCholesterolEveryday = 300;
@@ -596,138 +599,274 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Repositories.Implementations
 
             double averageCramCount = 100.0;
 
+            List<ScaleAmount> dataScaleAmounts = await _context.ScaleAmounts
+                          .Where(x => x.FoodListId == idFoodListId)
+                          .ToListAsync();
 
-            IEnumerable<FoodListDTO> dataFood = (from scaleAmounts in _context.ScaleAmounts
-                                                 join foodLists in _context.FoodLists
-            on scaleAmounts.FoodListId equals foodLists.FoodListId
-                                                 join ingredientDetails100gs in _context.IngredientDetails100gs
-                                                 on scaleAmounts.IngredientDetailsId equals ingredientDetails100gs.Id
-                                                 join keyNotes in _context.KeyNotes
-                                                 on foodLists.KeyNoteId equals keyNotes.Id
-                                                 where scaleAmounts.FoodListId == idFoodListId
-                                                 select new FoodListDTO
-                                                 {
-                                                     FoodListId = foodLists.FoodListId,
-                                                     Name = foodLists.Name,
-                                                     Describe = foodLists.Describe,
-                                                     Rate = foodLists.Rate,
-                                                     NumberRate = foodLists.NumberRate,
-                                                     Urlimage = foodLists.Urlimage,
-                                                     FoodTypeId = foodLists.FoodTypeId,
-                                                     KeyNoteId = foodLists.KeyNoteId,
-                                                     KeyNote = new KeyNoteDTO
+            if (dataScaleAmounts.Count == 0)
+            {
+                IEnumerable<FoodListDTO> dataFood = (from foodLists in _context.FoodLists
+                                                     join keyNotes in _context.KeyNotes
+                                                     on foodLists.KeyNoteId equals keyNotes.Id
+                                                     where foodLists.FoodListId == idFoodListId
+                                                     select new FoodListDTO
                                                      {
-                                                         Id = keyNotes.Id,
-                                                         KeyList = keyNotes.KeyList
-                                                     },
-                                                     IsActive = foodLists.IsActive,
-                                                     PreparationTime = foodLists.PreparationTime,
-                                                     CookingTime = foodLists.CookingTime,
-                                                     CookingDifficultyId = foodLists.CookingDifficultyId,
-                                                     ingredientDetails100gDTO = new IngredientDetails100gDTO
-                                                     {
-                                                         Id = ingredientDetails100gs.Id,
-                                                         KeyNoteId = ingredientDetails100gs.KeyNoteId,
-                                                         Name = ingredientDetails100gs.Name,
-                                                         Describe = ingredientDetails100gs.Describe,
-                                                         Urlimage = ingredientDetails100gs.Urlimage,
-                                                         TypeOfCalculationId = ingredientDetails100gs.TypeOfCalculationId,
-                                                         Energy = ingredientDetails100gs.Energy / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Water = ingredientDetails100gs.Water / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Protein = ingredientDetails100gs.Protein / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Fat = ingredientDetails100gs.Fat / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Carbohydrate = ingredientDetails100gs.Carbohydrate / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Fiber = ingredientDetails100gs.Fiber / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Ash = ingredientDetails100gs.Ash / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Sugar = ingredientDetails100gs.Sugar / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Galactose = ingredientDetails100gs.Galactose / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Maltose = ingredientDetails100gs.Maltose / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Lactose = ingredientDetails100gs.Lactose / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Fructose = ingredientDetails100gs.Fructose / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Glucose = ingredientDetails100gs.Glucose / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Sucrose = ingredientDetails100gs.Sucrose / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Calcium = ingredientDetails100gs.Calcium / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Iron = ingredientDetails100gs.Iron / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Magnesium = ingredientDetails100gs.Magnesium / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Manganese = ingredientDetails100gs.Manganese / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Phosphorous = ingredientDetails100gs.Phosphorous / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Potassium = ingredientDetails100gs.Potassium / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Sodium = ingredientDetails100gs.Sodium / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Zinc = ingredientDetails100gs.Zinc / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Copper = ingredientDetails100gs.Copper / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Selenium = ingredientDetails100gs.Selenium / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminC = ingredientDetails100gs.VitaminC / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminB1 = ingredientDetails100gs.VitaminB1 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminB2 = ingredientDetails100gs.VitaminB2 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminPp = ingredientDetails100gs.VitaminPp / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminB5 = ingredientDetails100gs.VitaminB5 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminB6 = ingredientDetails100gs.VitaminB6 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Folat = ingredientDetails100gs.Folat / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminB9 = ingredientDetails100gs.VitaminB9 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminH = ingredientDetails100gs.VitaminH / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminB12 = ingredientDetails100gs.VitaminB12 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminA = ingredientDetails100gs.VitaminA / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminD = ingredientDetails100gs.VitaminD / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminE = ingredientDetails100gs.VitaminE / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         VitaminK = ingredientDetails100gs.VitaminK / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         BetaCaroten = ingredientDetails100gs.BetaCaroten / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         AlphaCaroten = ingredientDetails100gs.AlphaCaroten / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         BetaCryptoxanthin = ingredientDetails100gs.BetaCryptoxanthin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Lycopen = ingredientDetails100gs.Lycopen / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         LuteinVsZeaxanthin = ingredientDetails100gs.LuteinVsZeaxanthin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Purin = ingredientDetails100gs.Purin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         TotalIsoflavone = ingredientDetails100gs.TotalIsoflavone / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Daidzein = ingredientDetails100gs.Daidzein / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Genistein = ingredientDetails100gs.Genistein / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Glycetin = ingredientDetails100gs.Glycetin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         TotalSaturatedFattyAcid = ingredientDetails100gs.TotalSaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         PalmiticC160 = ingredientDetails100gs.PalmiticC160 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         MargaricC170 = ingredientDetails100gs.MargaricC170 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         StearicC180 = ingredientDetails100gs.StearicC180 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         ArachidicC200 = ingredientDetails100gs.ArachidicC200 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         BehenicC220 = ingredientDetails100gs.BehenicC220 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         LignocericC240 = ingredientDetails100gs.LignocericC240 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         TotalMonounsaturatedFattyAcid = ingredientDetails100gs.TotalMonounsaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         MyristoleicC141 = ingredientDetails100gs.MyristoleicC141 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         PalmitoleicC161 = ingredientDetails100gs.PalmitoleicC161 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         OleicC181 = ingredientDetails100gs.OleicC181 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         TotalPolyunsaturatedFattyAcid = ingredientDetails100gs.TotalPolyunsaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         LinoleicC182N6 = ingredientDetails100gs.LinoleicC182N6 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         LinolenicC182N3 = ingredientDetails100gs.LinolenicC182N3 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         ArachidonicC204 = ingredientDetails100gs.ArachidonicC204 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         EicosapentaenoicC205N3 = ingredientDetails100gs.EicosapentaenoicC205N3 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         DocosahexaenoicC226N3 = ingredientDetails100gs.DocosahexaenoicC226N3 / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         TotalTransFattyAcid = ingredientDetails100gs.TotalTransFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Cholesterol = ingredientDetails100gs.Cholesterol / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Phytosterol = ingredientDetails100gs.Phytosterol / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Lysin = ingredientDetails100gs.Lysin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Methionin = ingredientDetails100gs.Methionin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Tryptophan = ingredientDetails100gs.Tryptophan / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Phenylalanin = ingredientDetails100gs.Phenylalanin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Threonin = ingredientDetails100gs.Threonin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Valin = ingredientDetails100gs.Valin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Leucin = ingredientDetails100gs.Leucin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Isoleucin = ingredientDetails100gs.Isoleucin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Arginin = ingredientDetails100gs.Arginin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Histidin = ingredientDetails100gs.Histidin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Cystin = ingredientDetails100gs.Cystin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Tyrosin = ingredientDetails100gs.Tyrosin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Alanin = ingredientDetails100gs.Alanin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         AcidAspartic = ingredientDetails100gs.AcidAspartic / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         AcidGlutamic = ingredientDetails100gs.AcidGlutamic / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Glycin = ingredientDetails100gs.Glycin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Prolin = ingredientDetails100gs.Prolin / averageCramCount * scaleAmounts.ScaleAmount1,
-                                                         Serin = ingredientDetails100gs.Serin / averageCramCount * scaleAmounts.ScaleAmount1
-                                                     },
-                                                     ScaleAmounts = new ScaleAmountDTO
-                                                     {
-                                                         FoodListId = scaleAmounts.FoodListId,
-                                                         IngredientDetailsId = scaleAmounts.IngredientDetailsId,
-                                                         ScaleAmount1 = scaleAmounts.ScaleAmount1
-                                                     }
-                                                 }).ToList();
-            return dataFood;
+                                                         FoodListId = foodLists.FoodListId,
+                                                         Name = foodLists.Name,
+                                                         Describe = foodLists.Describe,
+                                                         Rate = foodLists.Rate,
+                                                         NumberRate = foodLists.NumberRate,
+                                                         Urlimage = foodLists.Urlimage,
+                                                         FoodTypeId = foodLists.FoodTypeId,
+                                                         KeyNoteId = foodLists.KeyNoteId,
+                                                         KeyNote = new KeyNoteDTO
+                                                         {
+                                                             Id = keyNotes.Id,
+                                                             KeyList = keyNotes.KeyList
+                                                         },
+                                                         IsActive = foodLists.IsActive,
+                                                         PreparationTime = foodLists.PreparationTime,
+                                                         CookingTime = foodLists.CookingTime,
+                                                         CookingDifficultyId = foodLists.CookingDifficultyId,
+                                                         ingredientDetails100gDTO = new IngredientDetails100gDTO
+                                                         {
+                                                             Id = 0,
+                                                             KeyNoteId = 0,
+                                                             Name = "Nope",
+                                                             Describe = "Nope",
+                                                             Urlimage = "Nope",
+                                                             TypeOfCalculationId = 0,
+                                                             Energy = 0,
+                                                             Water = 0,
+                                                             Protein = 0,
+                                                             Fat = 0,
+                                                             Carbohydrate = 0,
+                                                             Fiber = 0,
+                                                             Ash = 0,
+                                                             Sugar = 0,
+                                                             Galactose = 0,
+                                                             Maltose = 0,
+                                                             Lactose = 0,
+                                                             Fructose = 0,
+                                                             Glucose = 0,
+                                                             Sucrose = 0,
+                                                             Calcium = 0,
+                                                             Iron = 0,
+                                                             Magnesium = 0,
+                                                             Manganese = 0,
+                                                             Phosphorous = 0,
+                                                             Potassium = 0,
+                                                             Sodium = 0,
+                                                             Zinc = 0,
+                                                             Copper = 0,
+                                                             Selenium = 0,
+                                                             VitaminC = 0,
+                                                             VitaminB1 = 0,
+                                                             VitaminB2 = 0,
+                                                             VitaminPp = 0,
+                                                             VitaminB5 = 0,
+                                                             VitaminB6 = 0,
+                                                             Folat = 0,
+                                                             VitaminB9 = 0,
+                                                             VitaminH = 0,
+                                                             VitaminB12 = 0,
+                                                             VitaminA = 0,
+                                                             VitaminD = 0,
+                                                             VitaminE = 0,
+                                                             VitaminK = 0,
+                                                             BetaCaroten = 0,
+                                                             AlphaCaroten = 0,
+                                                             BetaCryptoxanthin = 0,
+                                                             Lycopen = 0,
+                                                             LuteinVsZeaxanthin = 0,
+                                                             Purin = 0,
+                                                             TotalIsoflavone = 0,
+                                                             Daidzein = 0,
+                                                             Genistein = 0,
+                                                             Glycetin = 0,
+                                                             TotalSaturatedFattyAcid = 0,
+                                                             PalmiticC160 = 0,
+                                                             MargaricC170 = 0,
+                                                             StearicC180 = 0,
+                                                             ArachidicC200 = 0,
+                                                             BehenicC220 = 0,
+                                                             LignocericC240 = 0,
+                                                             TotalMonounsaturatedFattyAcid = 0,
+                                                             MyristoleicC141 = 0,
+                                                             PalmitoleicC161 = 0,
+                                                             OleicC181 = 0,
+                                                             TotalPolyunsaturatedFattyAcid = 0,
+                                                             LinoleicC182N6 = 0,
+                                                             LinolenicC182N3 = 0,
+                                                             ArachidonicC204 = 0,
+                                                             EicosapentaenoicC205N3 = 0,
+                                                             DocosahexaenoicC226N3 = 0,
+                                                             TotalTransFattyAcid = 0,
+                                                             Cholesterol = 0,
+                                                             Phytosterol = 0,
+                                                             Lysin = 0,
+                                                             Methionin = 0,
+                                                             Tryptophan = 0,
+                                                             Phenylalanin = 0,
+                                                             Threonin = 0,
+                                                             Valin = 0,
+                                                             Leucin = 0,
+                                                             Isoleucin = 0,
+                                                             Arginin = 0,
+                                                             Histidin = 0,
+                                                             Cystin = 0,
+                                                             Tyrosin = 0,
+                                                             Alanin = 0,
+                                                             AcidAspartic = 0,
+                                                             AcidGlutamic = 0,
+                                                             Glycin = 0,
+                                                             Prolin = 0,
+                                                             Serin = 0,
+                                                         },
+                                                         ScaleAmounts = new ScaleAmountDTO
+                                                         {
+                                                             FoodListId = 0,
+                                                             IngredientDetailsId = 0,
+                                                             ScaleAmount1 = 0
+                                                         }
+                                                     }).ToList();
+                return dataFood;
 
+            }
+            else
+            {
+
+                IEnumerable<FoodListDTO> dataFood = (from scaleAmounts in _context.ScaleAmounts
+                                                     join foodLists in _context.FoodLists
+                on scaleAmounts.FoodListId equals foodLists.FoodListId
+                                                     join ingredientDetails100gs in _context.IngredientDetails100gs
+                                                     on scaleAmounts.IngredientDetailsId equals ingredientDetails100gs.Id
+                                                     join keyNotes in _context.KeyNotes
+                                                     on foodLists.KeyNoteId equals keyNotes.Id
+                                                     where scaleAmounts.FoodListId == idFoodListId
+                                                     select new FoodListDTO
+                                                     {
+                                                         FoodListId = foodLists.FoodListId,
+                                                         Name = foodLists.Name,
+                                                         Describe = foodLists.Describe,
+                                                         Rate = foodLists.Rate,
+                                                         NumberRate = foodLists.NumberRate,
+                                                         Urlimage = foodLists.Urlimage,
+                                                         FoodTypeId = foodLists.FoodTypeId,
+                                                         KeyNoteId = foodLists.KeyNoteId,
+                                                         KeyNote = new KeyNoteDTO
+                                                         {
+                                                             Id = keyNotes.Id,
+                                                             KeyList = keyNotes.KeyList
+                                                         },
+                                                         IsActive = foodLists.IsActive,
+                                                         PreparationTime = foodLists.PreparationTime,
+                                                         CookingTime = foodLists.CookingTime,
+                                                         CookingDifficultyId = foodLists.CookingDifficultyId,
+                                                         ingredientDetails100gDTO = new IngredientDetails100gDTO
+                                                         {
+                                                             Id = ingredientDetails100gs.Id,
+                                                             KeyNoteId = ingredientDetails100gs.KeyNoteId,
+                                                             Name = ingredientDetails100gs.Name,
+                                                             Describe = ingredientDetails100gs.Describe,
+                                                             Urlimage = ingredientDetails100gs.Urlimage,
+                                                             TypeOfCalculationId = ingredientDetails100gs.TypeOfCalculationId,
+                                                             Energy = ingredientDetails100gs.Energy / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Water = ingredientDetails100gs.Water / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Protein = ingredientDetails100gs.Protein / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Fat = ingredientDetails100gs.Fat / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Carbohydrate = ingredientDetails100gs.Carbohydrate / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Fiber = ingredientDetails100gs.Fiber / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Ash = ingredientDetails100gs.Ash / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Sugar = ingredientDetails100gs.Sugar / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Galactose = ingredientDetails100gs.Galactose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Maltose = ingredientDetails100gs.Maltose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Lactose = ingredientDetails100gs.Lactose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Fructose = ingredientDetails100gs.Fructose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Glucose = ingredientDetails100gs.Glucose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Sucrose = ingredientDetails100gs.Sucrose / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Calcium = ingredientDetails100gs.Calcium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Iron = ingredientDetails100gs.Iron / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Magnesium = ingredientDetails100gs.Magnesium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Manganese = ingredientDetails100gs.Manganese / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Phosphorous = ingredientDetails100gs.Phosphorous / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Potassium = ingredientDetails100gs.Potassium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Sodium = ingredientDetails100gs.Sodium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Zinc = ingredientDetails100gs.Zinc / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Copper = ingredientDetails100gs.Copper / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Selenium = ingredientDetails100gs.Selenium / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminC = ingredientDetails100gs.VitaminC / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminB1 = ingredientDetails100gs.VitaminB1 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminB2 = ingredientDetails100gs.VitaminB2 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminPp = ingredientDetails100gs.VitaminPp / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminB5 = ingredientDetails100gs.VitaminB5 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminB6 = ingredientDetails100gs.VitaminB6 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Folat = ingredientDetails100gs.Folat / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminB9 = ingredientDetails100gs.VitaminB9 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminH = ingredientDetails100gs.VitaminH / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminB12 = ingredientDetails100gs.VitaminB12 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminA = ingredientDetails100gs.VitaminA / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminD = ingredientDetails100gs.VitaminD / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminE = ingredientDetails100gs.VitaminE / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             VitaminK = ingredientDetails100gs.VitaminK / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             BetaCaroten = ingredientDetails100gs.BetaCaroten / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             AlphaCaroten = ingredientDetails100gs.AlphaCaroten / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             BetaCryptoxanthin = ingredientDetails100gs.BetaCryptoxanthin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Lycopen = ingredientDetails100gs.Lycopen / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             LuteinVsZeaxanthin = ingredientDetails100gs.LuteinVsZeaxanthin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Purin = ingredientDetails100gs.Purin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             TotalIsoflavone = ingredientDetails100gs.TotalIsoflavone / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Daidzein = ingredientDetails100gs.Daidzein / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Genistein = ingredientDetails100gs.Genistein / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Glycetin = ingredientDetails100gs.Glycetin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             TotalSaturatedFattyAcid = ingredientDetails100gs.TotalSaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             PalmiticC160 = ingredientDetails100gs.PalmiticC160 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             MargaricC170 = ingredientDetails100gs.MargaricC170 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             StearicC180 = ingredientDetails100gs.StearicC180 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             ArachidicC200 = ingredientDetails100gs.ArachidicC200 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             BehenicC220 = ingredientDetails100gs.BehenicC220 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             LignocericC240 = ingredientDetails100gs.LignocericC240 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             TotalMonounsaturatedFattyAcid = ingredientDetails100gs.TotalMonounsaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             MyristoleicC141 = ingredientDetails100gs.MyristoleicC141 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             PalmitoleicC161 = ingredientDetails100gs.PalmitoleicC161 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             OleicC181 = ingredientDetails100gs.OleicC181 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             TotalPolyunsaturatedFattyAcid = ingredientDetails100gs.TotalPolyunsaturatedFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             LinoleicC182N6 = ingredientDetails100gs.LinoleicC182N6 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             LinolenicC182N3 = ingredientDetails100gs.LinolenicC182N3 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             ArachidonicC204 = ingredientDetails100gs.ArachidonicC204 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             EicosapentaenoicC205N3 = ingredientDetails100gs.EicosapentaenoicC205N3 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             DocosahexaenoicC226N3 = ingredientDetails100gs.DocosahexaenoicC226N3 / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             TotalTransFattyAcid = ingredientDetails100gs.TotalTransFattyAcid / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Cholesterol = ingredientDetails100gs.Cholesterol / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Phytosterol = ingredientDetails100gs.Phytosterol / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Lysin = ingredientDetails100gs.Lysin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Methionin = ingredientDetails100gs.Methionin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Tryptophan = ingredientDetails100gs.Tryptophan / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Phenylalanin = ingredientDetails100gs.Phenylalanin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Threonin = ingredientDetails100gs.Threonin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Valin = ingredientDetails100gs.Valin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Leucin = ingredientDetails100gs.Leucin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Isoleucin = ingredientDetails100gs.Isoleucin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Arginin = ingredientDetails100gs.Arginin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Histidin = ingredientDetails100gs.Histidin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Cystin = ingredientDetails100gs.Cystin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Tyrosin = ingredientDetails100gs.Tyrosin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Alanin = ingredientDetails100gs.Alanin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             AcidAspartic = ingredientDetails100gs.AcidAspartic / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             AcidGlutamic = ingredientDetails100gs.AcidGlutamic / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Glycin = ingredientDetails100gs.Glycin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Prolin = ingredientDetails100gs.Prolin / averageCramCount * scaleAmounts.ScaleAmount1,
+                                                             Serin = ingredientDetails100gs.Serin / averageCramCount * scaleAmounts.ScaleAmount1
+                                                         },
+                                                         ScaleAmounts = new ScaleAmountDTO
+                                                         {
+                                                             FoodListId = scaleAmounts.FoodListId,
+                                                             IngredientDetailsId = scaleAmounts.IngredientDetailsId,
+                                                             ScaleAmount1 = scaleAmounts.ScaleAmount1
+                                                         }
+                                                     }).ToList();
+                return dataFood;
+            }
         }
 
 

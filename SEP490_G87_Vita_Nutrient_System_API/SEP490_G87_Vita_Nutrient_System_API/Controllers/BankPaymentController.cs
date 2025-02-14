@@ -55,21 +55,45 @@ namespace SEP490_G87_Vita_Nutrient_System_API.Controllers
         public async Task<IActionResult> APITestCheckCalo(int idFood)
         {
 
+            //Sep490G87VitaNutrientSystemContext _context = new Sep490G87VitaNutrientSystemContext();
+
+            //List<ScaleAmount> dataScaleAmounts = await _context.ScaleAmounts
+            //  .Where(x => x.FoodListId == idFood)
+            //  .ToListAsync();
+
+
+            //if (dataScaleAmounts.Count == 0)
+            //{
+            //    return Ok("Món này không có amout nào");
+            //} else if (dataScaleAmounts.Count > 0)
+            //{
+            //    return Ok("Món này có amout");
+            //} else
+            //{
+            //    return BadRequest();
+            //}
+
+
+
+
+
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
             List<FoodListDTO> dataCollection = new List<FoodListDTO>();
-            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish( await generateMealRepositories.TakeAllTheIngredientsOfTheDish(idFood)));
+            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(2)));
+            dataCollection.Add(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(await generateMealRepositories.TakeAllTheIngredientsOfTheDish(3)));
             return Ok(await generateMealRepositories.TotalAllTheIngredientsOfTheDish(dataCollection));
         }
 
 
         [HttpGet("APITestGetTheListOfDishesByMealSettingsDetails")]
-        public async Task<IActionResult> APITestGetTheListOfDishesByMealSettingsDetails(int idFood, int idMealDetail)
+        public async Task<IActionResult> APITestGetTheListOfDishesByMealSettingsDetails(int idMealDetail)
         {
-
+            List<int> data = new List<int>()
+            {
+                2,3
+            };
             GenerateMealRepositories generateMealRepositories = new GenerateMealRepositories();
-            List<int> dataCollection = new List<int>();
-            dataCollection.Add(idFood);
-            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(dataCollection, idMealDetail, 0));
+            return Ok(await generateMealRepositories.GetTheListOfDishesByMealSettingsDetails(data, idMealDetail, 0));
 
         }
 
